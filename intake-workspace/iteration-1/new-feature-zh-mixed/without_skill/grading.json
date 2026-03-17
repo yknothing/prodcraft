@@ -1,0 +1,13 @@
+{
+  "eval_name": "new-feature-zh-mixed",
+  "configuration": "without_skill",
+  "expectations": [
+    {"text": "produces-intake-brief", "passed": false, "evidence": "No structured intake brief. Response goes directly to technical implementation ideas."},
+    {"text": "classifies-work-type", "passed": false, "evidence": "No work type classification present."},
+    {"text": "recommends-entry-phase", "passed": false, "evidence": "No lifecycle phase recommendation. Jumps straight to database schema design."},
+    {"text": "selects-workflow", "passed": false, "evidence": "No workflow/methodology selection."},
+    {"text": "identifies-risks", "passed": false, "evidence": "No risk identification section. Mentions technical considerations but not as structured risks."},
+    {"text": "proposes-skill-path", "passed": false, "evidence": "Suggests 'start from database schema' but no structured multi-skill path."},
+    {"text": "asks-before-proceeding", "passed": false, "evidence": "Asks about tech stack but does not ask for approval of an approach before starting implementation."}
+  ]
+}

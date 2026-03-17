@@ -1,0 +1,10 @@
+[
+  {
+    "query": "我们的 SaaS 产品需要加一个团队协作功能",
+    "should_trigger": true
+  },
+  {
+    "query": "帮我跑一下 npm test 看看哪些 case fail 了",
+    "should_trigger": false
+  }
+]

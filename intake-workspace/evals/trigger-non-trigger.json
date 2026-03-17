@@ -1,0 +1,62 @@
+[
+  {
+    "query": "帮我把这个函数的变量名从 x, y, z 改成更有意义的名字，就这一个函数，大概 20 行代码",
+    "should_trigger": false,
+    "bucket": "non-trigger",
+    "rationale": "Trivial scoped change."
+  },
+  {
+    "query": "can you explain how kubernetes horizontal pod autoscaling works? I'm trying to understand the algorithm behind it",
+    "should_trigger": false,
+    "bucket": "non-trigger",
+    "rationale": "Knowledge question, not project intake."
+  },
+  {
+    "query": "Review this PR for me: https://github.com/our-org/api/pull/847. Focus on the error handling changes in the middleware",
+    "should_trigger": false,
+    "bucket": "non-trigger",
+    "rationale": "Specific review task already in progress."
+  },
+  {
+    "query": "帮我跑一下 npm test 看看哪些 case fail 了",
+    "should_trigger": false,
+    "bucket": "non-trigger",
+    "rationale": "Command execution only."
+  },
+  {
+    "query": "这段代码有个 typo，第 15 行的 recieve 应该是 receive，帮我改一下",
+    "should_trigger": false,
+    "bucket": "non-trigger",
+    "rationale": "Single typo fix should fast-track without full intake."
+  },
+  {
+    "query": "REST 和 GraphQL 到底选哪个好？我下个 project 想用，但是 team 里面没人用过 GraphQL，不确定 learning curve 会不会太陡",
+    "should_trigger": false,
+    "bucket": "non-trigger",
+    "rationale": "This is a knowledge comparison question, not active work intake."
+  },
+  {
+    "query": "帮我 debug 这个报错：TypeError: Cannot read properties of undefined (reading 'map')。stack trace 指向 src/components/UserList.tsx:23",
+    "should_trigger": false,
+    "bucket": "non-trigger",
+    "rationale": "Specific debugging task should route directly to debugging."
+  },
+  {
+    "query": "git rebase main onto my feature branch and resolve the conflicts in package.json please",
+    "should_trigger": false,
+    "bucket": "non-trigger",
+    "rationale": "Direct git operation request, not a new work intake."
+  },
+  {
+    "query": "write unit tests for the calculateDiscount function in src/pricing/discount.ts. Cover edge cases like negative prices, zero quantity, and expired coupons",
+    "should_trigger": false,
+    "bucket": "non-trigger",
+    "rationale": "Known implementation task; should route directly to TDD."
+  },
+  {
+    "query": "把 README 里面 Redis cache 那段 env variables 的配置说明更新一下，加上我们新增的 REDIS_CLUSTER_MODE 和 REDIS_SENTINEL_HOSTS 两个变量",
+    "should_trigger": false,
+    "bucket": "non-trigger",
+    "rationale": "Specific documentation edit already scoped; no intake needed."
+  }
+]

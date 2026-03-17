@@ -1,0 +1,32 @@
+[
+  {
+    "query": "I want to build a personal finance tracker app from scratch. It should have expense categorization, budget alerts, and bank API integration via Plaid. I'm a solo dev, thinking React + Node",
+    "should_trigger": true,
+    "bucket": "core",
+    "rationale": "Greenfield new product. Intake should classify work type, starting phase, workflow, and initial path."
+  },
+  {
+    "query": "我们的老系统是 PHP 5.6 写的单体应用，现在要逐步迁移到 Go 微服务架构。数据库从 MySQL 迁到 PostgreSQL。团队有 8 个人，预计耗时 6 个月",
+    "should_trigger": true,
+    "bucket": "core",
+    "rationale": "Large migration / brownfield modernization. Intake should strongly own triage and routing."
+  },
+  {
+    "query": "帮我搞一下这个项目，我也不太确定从哪开始。大概是想做一个内部工具，让运营团队可以自己配置推送规则而不用每次找开发改代码",
+    "should_trigger": true,
+    "bucket": "core",
+    "rationale": "High-ambiguity request. This is a canonical intake scenario."
+  },
+  {
+    "query": "想花两个 sprint 专门搞 tech debt，CI pipeline 跑了 45 分钟，test coverage 才 30%，一堆 deprecated API calls 要清理。team lead 已经 approve 了 capacity",
+    "should_trigger": true,
+    "bucket": "core",
+    "rationale": "Multi-sprint initiative with prioritization and sequencing decisions."
+  },
+  {
+    "query": "刚加入这个 team，发现整个 codebase 200k lines 完全没有 documentation，README 是空的，architecture docs 也没有。我想先把 docs 搞起来再开始 contribute code",
+    "should_trigger": true,
+    "bucket": "core",
+    "rationale": "Broad documentation initiative with scope and routing uncertainty."
+  }
+]

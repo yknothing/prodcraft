@@ -1,0 +1,27 @@
+{
+  "iteration": 0,
+  "description": "Triage and route any new piece of work before implementation begins. Classifies work type (feature, bug fix, hotfix, migration, refactoring, tech debt, new product), determines the right lifecycle phase to start at, selects the appropriate workflow methodology (agile, spec-driven, waterfall, hotfix, greenfield, brownfield), and produces an intake brief for user approval. Use this skill whenever the user starts new work, describes a problem to solve, asks to build or fix something, mentions a new feature or project, reports a bug, wants to modernize or migrate a system, or begins any development task -- even if they want to jump straight to coding. This is the mandatory first step; no implementation without intake.",
+  "summary": {
+    "total": 20,
+    "passed": 10,
+    "failed": 10,
+    "recall": 0.0,
+    "precision": 1.0
+  },
+  "analysis": {
+    "pattern": "Zero recall — skill never triggers for any query. All 10 should-trigger failed. All 10 should-not-trigger passed (vacuously correct since nothing triggers).",
+    "root_cause": "Description is mechanistic (focuses on what skill does) rather than intent-matching (what user says). Claude's skill discovery needs stronger signal phrases that map to user language patterns.",
+    "failed_queries_categories": [
+      "new feature request (zh-mixed, en)",
+      "refactoring (zh-en-mixed)",
+      "migration (zh-mixed)",
+      "hotfix/production incident (en)",
+      "new product/greenfield (en)",
+      "vague new work (zh)",
+      "tech debt cleanup (zh-en-mixed)",
+      "compliance feature (en)",
+      "urgent bug fix (zh-en-mixed)",
+      "documentation initiative (zh-en-mixed)"
+    ]
+  }
+}

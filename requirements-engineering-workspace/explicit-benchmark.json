@@ -1,0 +1,83 @@
+[
+  {
+    "id": "approvals-feature-en",
+    "title": "Approvals Feature from Discovery Notes",
+    "prompt": "Work only from the material below. Do not ask follow-up questions. If you need assumptions, state them briefly and continue.\n\nWe interviewed eight operations managers about a new approvals workflow for our SaaS product. Turn this into a reviewed requirements set for the first release.\n\nDiscovery notes:\n- Managers need every purchase request above $5,000 to require manager approval.\n- Finance wants optional second-stage approval above $20,000.\n- Employees complain that current approvals are buried in email and get lost.\n- Managers need a mobile-friendly way to approve or reject quickly.\n- Finance requires a searchable audit trail of who approved, rejected, or delegated a request.\n- Some companies want department-specific approval thresholds.\n- Users need clear status visibility: pending, approved, rejected, sent back.\n- Customers asked for comments on rejection so employees know what to fix.\n- Non-functional expectations mentioned in interviews: approval actions should feel near-instant, the audit trail must be retained for at least 1 year, and only authorized approvers should act on a request.\n\nPlease produce requirements for first release, including priorities, non-goals, traceability to the discovery notes, and measurable non-functional requirements.",
+    "assertions": [
+      {
+        "name": "structured-requirements-artifact",
+        "description": "Produces a structured requirements artifact rather than loose brainstorming notes"
+      },
+      {
+        "name": "separates-functional-and-nfr",
+        "description": "Separates functional requirements from non-functional requirements"
+      },
+      {
+        "name": "includes-priorities",
+        "description": "Assigns priorities such as P0/P1/P2 or equivalent"
+      },
+      {
+        "name": "includes-traceability",
+        "description": "Links requirements back to source interview findings"
+      },
+      {
+        "name": "defines-non-goals",
+        "description": "Calls out at least one clear non-goal or out-of-scope item"
+      }
+    ]
+  },
+  {
+    "id": "expense-workflow-zh",
+    "title": "Chinese Expense Workflow Requirements",
+    "prompt": "只根据下面给出的材料工作，不要反问。如果需要假设，请简短说明后继续。\n\n下面是老板、销售负责人、财务和法务给我的零散输入，请把它整理成一个第一版 requirements set，用于后续架构设计，不要直接进入 API 或数据库设计。\n\n输入材料：\n- 老板：移动端报销必须能拍照上传发票，不然一线销售不会用。\n- 销售负责人：报销提交流程不能超过 3 分钟，否则大家会拖着不报。\n- 财务：单笔超过 3000 元必须补充业务说明；超过 10000 元必须二级审批。\n- 财务：我们需要看到谁在什么时候提交、审批、驳回，日志至少保留 2 年。\n- 法务：涉及个人银行卡和身份证信息时，只有授权角色可以查看。\n- 财务：月末高峰期系统也不能卡，至少要支持 500 个并发提交。\n- 销售负责人：被驳回时必须告诉员工原因，不然他们会反复问。\n- 老板：第一期先做国内员工，不做海外实体和多币种。\n- 财务：需要导出月度报销汇总报表，但可以放到第二优先级。\n\n请输出：功能需求、非功能需求、优先级、来源追踪、明确的不做项。",
+    "assertions": [
+      {
+        "name": "clear-requirement-statements",
+        "description": "Outputs explicit requirement statements instead of repeating stakeholder notes"
+      },
+      {
+        "name": "captures-priority-and-scope",
+        "description": "Captures priorities and explicit out-of-scope items"
+      },
+      {
+        "name": "captures-security-and-audit",
+        "description": "Includes security, audit retention, and authorization requirements"
+      },
+      {
+        "name": "quantifies-non-functional-requirements",
+        "description": "Keeps non-functional requirements measurable, not vague"
+      },
+      {
+        "name": "stays-in-requirements-layer",
+        "description": "Does not primarily jump into implementation or schema design"
+      }
+    ]
+  },
+  {
+    "id": "audit-log-compliance-en",
+    "title": "Compliance-Sensitive Audit Log Requirements",
+    "prompt": "Work only from the material below. Do not ask follow-up questions. If you need assumptions, state them briefly and continue.\n\nWe are building an audit-log capability for a B2B finance platform. Please turn the notes below into a first-release requirements set before architecture starts.\n\nStakeholder notes:\n- Compliance: audit records for financial actions must be retained for 7 years.\n- Security: only explicitly authorized roles may search or export audit logs.\n- Operations: support engineers need fast search by account, actor, date range, and action type.\n- Product: customers want to export filtered audit logs as CSV.\n- Compliance: exported data must be traceable to who exported it and when.\n- Security: audit records themselves must not be editable or deletable through the product.\n- Platform: month-end load is heavy; search must remain responsive.\n- Legal: some regions require data access to be justifiable and reviewable.\n\nPlease output functional requirements, non-functional requirements, priorities, source traceability, and explicit non-goals. Stay in the requirements layer and do not jump into storage design or schema design.",
+    "assertions": [
+      {
+        "name": "captures-compliance-retention",
+        "description": "Defines measurable retention requirements grounded in the compliance notes"
+      },
+      {
+        "name": "captures-access-control-and-export-auditability",
+        "description": "Includes authorization and export traceability requirements"
+      },
+      {
+        "name": "captures-searchability-and-performance",
+        "description": "Defines searchable dimensions and measurable responsiveness expectations"
+      },
+      {
+        "name": "defines-immutability-and-non-goals",
+        "description": "Includes audit-record immutability and at least one explicit non-goal"
+      },
+      {
+        "name": "stays-in-requirements-layer",
+        "description": "Does not primarily jump into storage, schema, or implementation design"
+      }
+    ]
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "id": "expense-workflow-zh",
+  "title": "Chinese Expense Workflow Requirements",
+  "prompt": "只根据下面给出的材料工作，不要反问。如果需要假设，请简短说明后继续。\n\n下面是老板、销售负责人、财务和法务给我的零散输入，请把它整理成一个第一版 requirements set，用于后续架构设计，不要直接进入 API 或数据库设计。\n\n输入材料：\n- 老板：移动端报销必须能拍照上传发票，不然一线销售不会用。\n- 销售负责人：报销提交流程不能超过 3 分钟，否则大家会拖着不报。\n- 财务：单笔超过 3000 元必须补充业务说明；超过 10000 元必须二级审批。\n- 财务：我们需要看到谁在什么时候提交、审批、驳回，日志至少保留 2 年。\n- 法务：涉及个人银行卡和身份证信息时，只有授权角色可以查看。\n- 财务：月末高峰期系统也不能卡，至少要支持 500 个并发提交。\n- 销售负责人：被驳回时必须告诉员工原因，不然他们会反复问。\n- 老板：第一期先做国内员工，不做海外实体和多币种。\n- 财务：需要导出月度报销汇总报表，但可以放到第二优先级。\n\n请输出：功能需求、非功能需求、优先级、来源追踪、明确的不做项。",
+  "assertions": [
+    {
+      "name": "clear-requirement-statements",
+      "description": "Outputs explicit requirement statements instead of repeating stakeholder notes"
+    },
+    {
+      "name": "captures-priority-and-scope",
+      "description": "Captures priorities and explicit out-of-scope items"
+    },
+    {
+      "name": "captures-security-and-audit",
+      "description": "Includes security, audit retention, and authorization requirements"
+    },
+    {
+      "name": "quantifies-non-functional-requirements",
+      "description": "Keeps non-functional requirements measurable, not vague"
+    },
+    {
+      "name": "stays-in-requirements-layer",
+      "description": "Does not primarily jump into implementation or schema design"
+    }
+  ]
+}

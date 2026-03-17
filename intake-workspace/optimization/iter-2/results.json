@@ -1,0 +1,171 @@
+{
+  "skill_name": "intake",
+  "description": "Project intake and work triage \u2014 the mandatory first checkpoint before ANY coding begins. Use this skill BEFORE brainstorming, architecture design, debugging, or planning when someone brings a new piece of work. It decides WHICH approach, workflow, and skill sequence to use. Invoke when a user: wants to start a project or build something new; describes a multi-step initiative (migration, tech debt sprint, compliance overhaul, documentation effort); reports a production incident that needs triage before diving in; asks to refactor or restructure significant code; says they're unsure where to begin or how to approach something. This skill is the router \u2014 it assesses scope and urgency, then hands off to the right downstream skill. Think of it as hospital triage: assess first, treat second. Do NOT use for tasks already in progress: specific debugging with stack traces, writing tests for a known function, running commands, fixing typos, reviewing PRs, or answering questions.",
+  "results": [
+    {
+      "query": "\u6211\u4eec\u7684 SaaS \u4ea7\u54c1\u9700\u8981\u52a0\u4e00\u4e2a\u56e2\u961f\u534f\u4f5c\u529f\u80fd\uff0c\u7528\u6237\u53ef\u4ee5\u5728\u9879\u76ee\u91cc @mention \u961f\u53cb\u7136\u540e\u81ea\u52a8\u53d1\u901a\u77e5\u3002\u8fd9\u4e2a\u529f\u80fd\u4f18\u5148\u7ea7\u5f88\u9ad8\uff0cQ2 \u5c31\u8981\u4e0a\u7ebf",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": false
+    },
+    {
+      "query": "I want to build a personal finance tracker app from scratch. It should have expense categorization, budget alerts, and bank API integration via Plaid. I'm a solo dev, thinking React + Node",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": false
+    },
+    {
+      "query": "hey so our checkout page has been throwing 500 errors since this mornings deploy, about 15% of users are affected and were losing revenue every minute. need this fixed asap",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": false
+    },
+    {
+      "query": "\u6211\u4eec\u7684\u8001\u7cfb\u7edf\u662f PHP 5.6 \u5199\u7684\u5355\u4f53\u5e94\u7528\uff0c\u73b0\u5728\u8981\u9010\u6b65\u8fc1\u79fb\u5230 Go \u5fae\u670d\u52a1\u67b6\u6784\u3002\u6570\u636e\u5e93\u4ece MySQL \u8fc1\u5230 PostgreSQL\u3002\u56e2\u961f\u6709 8 \u4e2a\u4eba\uff0c\u9884\u8ba1\u8017\u65f6 6 \u4e2a\u6708",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": false
+    },
+    {
+      "query": "ok \u8fd9\u4e2a auth module \u6211\u60f3\u91cd\u6784\u4e00\u4e0b\uff0c\u73b0\u5728\u662f\u4e2a 2000 \u884c\u7684 god class\uff0cauth\u3001session management\u3001password reset\u3001OAuth \u5168 mixed \u5728\u4e00\u8d77\uff0c\u5b8c\u5168\u6ca1\u6709 tests\u3002\u6211\u8981 break it apart properly",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": false
+    },
+    {
+      "query": "\u60f3\u82b1\u4e24\u4e2a sprint \u4e13\u95e8\u641e tech debt\uff0cCI pipeline \u8dd1\u4e86 45 \u5206\u949f\uff0ctest coverage \u624d 30%\uff0c\u4e00\u5806 deprecated API calls \u8981\u6e05\u7406\u3002team lead \u5df2\u7ecf approve \u4e86 capacity",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": false
+    },
+    {
+      "query": "we need to add GDPR compliance to our user data handling - right-to-deletion, data export, consent management. Our legal team says we have 3 months to be compliant",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": false
+    },
+    {
+      "query": "\u5e2e\u6211\u641e\u4e00\u4e0b\u8fd9\u4e2a\u9879\u76ee\uff0c\u6211\u4e5f\u4e0d\u592a\u786e\u5b9a\u4ece\u54ea\u5f00\u59cb\u3002\u5927\u6982\u662f\u60f3\u505a\u4e00\u4e2a\u5185\u90e8\u5de5\u5177\uff0c\u8ba9\u8fd0\u8425\u56e2\u961f\u53ef\u4ee5\u81ea\u5df1\u914d\u7f6e\u63a8\u9001\u89c4\u5219\u800c\u4e0d\u7528\u6bcf\u6b21\u627e\u5f00\u53d1\u6539\u4ee3\u7801",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": false
+    },
+    {
+      "query": "there's a race condition in our payment service \u7684 mutex handling\uff0c\u4e24\u4e2a concurrent requests \u53ef\u80fd\u4f1a charge \u540c\u4e00\u4e2a order \u4e24\u6b21\u3002I found it in src/payments/processor.go line 142\uff0c\u8fd9\u4e2a\u6bd4\u8f83\u7d27\u6025",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": false
+    },
+    {
+      "query": "\u521a\u52a0\u5165\u8fd9\u4e2a team\uff0c\u53d1\u73b0\u6574\u4e2a codebase 200k lines \u5b8c\u5168\u6ca1\u6709 documentation\uff0cREADME \u662f\u7a7a\u7684\uff0carchitecture docs \u4e5f\u6ca1\u6709\u3002\u6211\u60f3\u5148\u628a docs \u641e\u8d77\u6765\u518d\u5f00\u59cb contribute code",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": false
+    },
+    {
+      "query": "\u5e2e\u6211\u628a\u8fd9\u4e2a\u51fd\u6570\u7684\u53d8\u91cf\u540d\u4ece x, y, z \u6539\u6210\u66f4\u6709\u610f\u4e49\u7684\u540d\u5b57\uff0c\u5c31\u8fd9\u4e00\u4e2a\u51fd\u6570\uff0c\u5927\u6982 20 \u884c\u4ee3\u7801",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": true
+    },
+    {
+      "query": "can you explain how kubernetes horizontal pod autoscaling works? I'm trying to understand the algorithm behind it",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": true
+    },
+    {
+      "query": "Review this PR for me: https://github.com/our-org/api/pull/847. Focus on the error handling changes in the middleware",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": true
+    },
+    {
+      "query": "\u5e2e\u6211\u8dd1\u4e00\u4e0b npm test \u770b\u770b\u54ea\u4e9b case fail \u4e86",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": true
+    },
+    {
+      "query": "\u8fd9\u6bb5\u4ee3\u7801\u6709\u4e2a typo\uff0c\u7b2c 15 \u884c\u7684 recieve \u5e94\u8be5\u662f receive\uff0c\u5e2e\u6211\u6539\u4e00\u4e0b",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": true
+    },
+    {
+      "query": "REST \u548c GraphQL \u5230\u5e95\u9009\u54ea\u4e2a\u597d\uff1f\u6211\u4e0b\u4e2a project \u60f3\u7528\uff0c\u4f46\u662f team \u91cc\u9762\u6ca1\u4eba\u7528\u8fc7 GraphQL\uff0c\u4e0d\u786e\u5b9a learning curve \u4f1a\u4e0d\u4f1a\u592a\u9661",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": true
+    },
+    {
+      "query": "\u5e2e\u6211 debug \u8fd9\u4e2a\u62a5\u9519\uff1aTypeError: Cannot read properties of undefined (reading 'map')\u3002stack trace \u6307\u5411 src/components/UserList.tsx:23",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": true
+    },
+    {
+      "query": "git rebase main onto my feature branch and resolve the conflicts in package.json please",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": true
+    },
+    {
+      "query": "write unit tests for the calculateDiscount function in src/pricing/discount.ts. Cover edge cases like negative prices, zero quantity, and expired coupons",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": true
+    },
+    {
+      "query": "\u628a README \u91cc\u9762 Redis cache \u90a3\u6bb5 env variables \u7684\u914d\u7f6e\u8bf4\u660e\u66f4\u65b0\u4e00\u4e0b\uff0c\u52a0\u4e0a\u6211\u4eec\u65b0\u589e\u7684 REDIS_CLUSTER_MODE \u548c REDIS_SENTINEL_HOSTS \u4e24\u4e2a\u53d8\u91cf",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": true
+    }
+  ],
+  "summary": {
+    "total": 20,
+    "passed": 10,
+    "failed": 10
+  }
+}

@@ -1,0 +1,93 @@
+# Prodcraft Quality Rules: Maintainability
+# Applied primarily during implementation review and evolution phases.
+
+rules:
+  - id: MNT_001
+    name: "Meaningful Names"
+    description: "Variables, functions, classes, and files must have descriptive, unambiguous names"
+    severity: M
+    timing: post
+    phases: ["04-implementation", "05-quality"]
+    check: "Can you understand the purpose of each identifier without reading its implementation?"
+    action: "Rename to reveal intent; prefer longer descriptive names over short cryptic ones"
+
+  - id: MNT_002
+    name: "Cognitive Complexity Limit"
+    description: "Functions should not exceed a cognitive complexity score of 15"
+    severity: M
+    timing: post
+    phases: ["04-implementation", "05-quality"]
+    check: "Measure cognitive complexity (nested conditions, loops, boolean operators)"
+    action: "Extract helper functions, use early returns, simplify conditionals, apply strategy pattern"
+
+  - id: MNT_003
+    name: "Consistent Code Style"
+    description: "Code must follow the project's established style guide and formatting rules"
+    severity: L
+    timing: post
+    phases: ["04-implementation"]
+    check: "Run linter and formatter; check for style violations"
+    action: "Configure auto-formatting in CI; fix lint errors before review"
+
+  - id: MNT_004
+    name: "Intentional Comments"
+    description: "Comments explain WHY, not WHAT -- code should be self-documenting for the 'what'"
+    severity: L
+    timing: post
+    phases: ["04-implementation", "05-quality"]
+    check: "Are comments explaining obvious code? Are complex decisions undocumented?"
+    action: "Remove comments that restate the code; add comments for non-obvious decisions and trade-offs"
+
+  - id: MNT_005
+    name: "Changelog Discipline"
+    description: "User-visible changes must be documented in changelog or release notes"
+    severity: M
+    timing: post
+    phases: ["06-delivery"]
+    check: "Is there a changelog entry for this change? Are breaking changes highlighted?"
+    action: "Use conventional commits to auto-generate changelogs; manually add context for significant changes"
+
+  - id: MNT_006
+    name: "Dead Code Removal"
+    description: "Unused code, imports, variables, and feature flags must be removed promptly"
+    severity: M
+    timing: post
+    phases: ["04-implementation", "08-evolution"]
+    check: "Scan for unreachable code, unused imports, commented-out blocks, stale feature flags"
+    action: "Delete dead code immediately; it's in version control if you need it later"
+
+  - id: MNT_007
+    name: "Dependency Hygiene"
+    description: "Keep dependencies minimal, up to date, and justified"
+    severity: M
+    timing: post
+    phases: ["04-implementation", "08-evolution"]
+    check: "Are there unused dependencies? Are major versions significantly behind? Are licenses compatible?"
+    action: "Remove unused deps; schedule regular update cycles; prefer standard library over tiny packages"
+
+  - id: MNT_008
+    name: "Architecture Documentation Current"
+    description: "Architecture diagrams and design documents must reflect the actual system"
+    severity: M
+    timing: post
+    phases: ["02-architecture", "08-evolution"]
+    check: "Does the architecture doc match the deployed system? Are there undocumented components?"
+    action: "Update documentation as part of the change; use diagrams-as-code for version control"
+
+  - id: MNT_009
+    name: "Bounded Technical Debt"
+    description: "Technical debt must be documented, tracked, and has a remediation plan"
+    severity: M
+    timing: post
+    phases: ["04-implementation", "08-evolution"]
+    check: "Are TODOs/FIXMEs tracked in the issue tracker? Is there a debt reduction budget?"
+    action: "Convert inline TODOs to tracked issues with priority; allocate sprint capacity for debt reduction"
+
+  - id: MNT_010
+    name: "Graceful Degradation"
+    description: "System should degrade gracefully when dependencies fail, not cascade"
+    severity: H
+    timing: pre
+    phases: ["02-architecture", "04-implementation"]
+    check: "What happens when a dependency is slow or unavailable? Does the system crash or degrade?"
+    action: "Implement circuit breakers, timeouts, fallbacks, and bulkheads for external dependencies"

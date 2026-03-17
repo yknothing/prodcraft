@@ -1,0 +1,122 @@
+[
+  {
+    "query": "我们的 SaaS 产品需要加一个团队协作功能，用户可以在项目里 @mention 队友然后自动发通知。这个功能优先级很高，Q2 就要上线",
+    "should_trigger": true,
+    "rationale": "中文为主+英文术语。明确的新功能需求，需要 intake 判断 scope、选 workflow、规划路径",
+    "language": "zh-mixed"
+  },
+  {
+    "query": "hey so our checkout page has been throwing 500 errors since this mornings deploy, about 15% of users are affected and were losing revenue every minute. need this fixed asap",
+    "should_trigger": true,
+    "rationale": "纯英文口语。生产事故/hotfix 场景，intake 应快速分诊为 hotfix workflow",
+    "language": "en"
+  },
+  {
+    "query": "I want to build a personal finance tracker app from scratch. It should have expense categorization, budget alerts, and bank API integration via Plaid. I'm a solo dev, thinking React + Node",
+    "should_trigger": true,
+    "rationale": "纯英文。全新产品 greenfield 场景，intake 需判断从 discovery 还是 spec 开始",
+    "language": "en"
+  },
+  {
+    "query": "我们的老系统是 PHP 5.6 写的单体应用，现在要逐步迁移到 Go 微服务架构。数据库从 MySQL 迁到 PostgreSQL。团队有 8 个人，预计耗时 6 个月",
+    "should_trigger": true,
+    "rationale": "中文+技术英文。大型迁移 brownfield 场景，intake 需评估 scope 和选 workflow",
+    "language": "zh-mixed"
+  },
+  {
+    "query": "ok 这个 auth module 我想重构一下，现在是个 2000 行的 god class，auth、session management、password reset、OAuth 全 mixed 在一起，完全没有 tests。我要 break it apart properly",
+    "should_trigger": true,
+    "rationale": "典型中英混用口语。重构工作，intake 需判断 scope 并决定是否先做 architecture review",
+    "language": "zh-en-mixed"
+  },
+  {
+    "query": "想花两个 sprint 专门搞 tech debt，CI pipeline 跑了 45 分钟，test coverage 才 30%，一堆 deprecated API calls 要清理。team lead 已经 approve 了 capacity",
+    "should_trigger": true,
+    "rationale": "高度中英混用。技术债清理专项，intake 需确认优先级和 scope",
+    "language": "zh-en-mixed"
+  },
+  {
+    "query": "we need to add GDPR compliance to our user data handling - right-to-deletion, data export, consent management. Our legal team says we have 3 months to be compliant",
+    "should_trigger": true,
+    "rationale": "纯英文。合规需求，intake 需判断属于 feature 还是 cross-cutting，选 spec-driven workflow",
+    "language": "en"
+  },
+  {
+    "query": "帮我搞一下这个项目，我也不太确定从哪开始。大概是想做一个内部工具，让运营团队可以自己配置推送规则而不用每次找开发改代码",
+    "should_trigger": true,
+    "rationale": "纯中文。模糊需求、用户不确定从何开始，这正是 intake 最核心的价值场景",
+    "language": "zh"
+  },
+  {
+    "query": "there's a race condition in our payment service 的 mutex handling，两个 concurrent requests 可能会 charge 同一个 order 两次。I found it in src/payments/processor.go line 142，这个比较紧急",
+    "should_trigger": true,
+    "rationale": "中英频繁切换。已定位 root cause 的 bug fix，intake 应 fast-track 到 implementation + TDD",
+    "language": "zh-en-mixed"
+  },
+  {
+    "query": "刚加入这个 team，发现整个 codebase 200k lines 完全没有 documentation，README 是空的，architecture docs 也没有。我想先把 docs 搞起来再开始 contribute code",
+    "should_trigger": true,
+    "rationale": "中英混用。文档专项工作，intake 应路由到 cross-cutting/documentation 并建议 scope",
+    "language": "zh-en-mixed"
+  },
+  {
+    "query": "帮我把这个函数的变量名从 x, y, z 改成更有意义的名字，就这一个函数，大概 20 行代码",
+    "should_trigger": false,
+    "rationale": "中文+少量英文。trivial change（改变量名），应 fast-track 跳过完整 intake",
+    "language": "zh-mixed"
+  },
+  {
+    "query": "can you explain how kubernetes horizontal pod autoscaling works? I'm trying to understand the algorithm behind it",
+    "should_trigger": false,
+    "rationale": "纯英文。知识问答，不是要开始一项开发工作",
+    "language": "en"
+  },
+  {
+    "query": "Review this PR for me: https://github.com/our-org/api/pull/847. Focus on the error handling changes in the middleware",
+    "should_trigger": false,
+    "rationale": "纯英文。code review 请求，应直接触发 code-review skill 而非 intake",
+    "language": "en"
+  },
+  {
+    "query": "帮我跑一下 npm test 看看哪些 case fail 了",
+    "should_trigger": false,
+    "rationale": "中英混用口语。简单命令执行，不涉及新工作启动",
+    "language": "zh-en-mixed"
+  },
+  {
+    "query": "这段代码有个 typo，第 15 行的 recieve 应该是 receive，帮我改一下",
+    "should_trigger": false,
+    "rationale": "中文+英文。单个 typo 修复，trivial change",
+    "language": "zh-mixed"
+  },
+  {
+    "query": "REST 和 GraphQL 到底选哪个好？我下个 project 想用，但是 team 里面没人用过 GraphQL，不确定 learning curve 会不会太陡",
+    "should_trigger": false,
+    "rationale": "中英混用。技术咨询/比较，虽提到 'next project' 但核心是知识问答而非启动实际工作",
+    "language": "zh-en-mixed"
+  },
+  {
+    "query": "帮我 debug 这个报错：TypeError: Cannot read properties of undefined (reading 'map')。stack trace 指向 src/components/UserList.tsx:23",
+    "should_trigger": false,
+    "rationale": "中英混用。已在进行中的 debugging 请求，应直接进 debugging 而非重新 intake",
+    "language": "zh-en-mixed"
+  },
+  {
+    "query": "git rebase main onto my feature branch and resolve the conflicts in package.json please",
+    "should_trigger": false,
+    "rationale": "纯英文。纯 git 操作请求，不涉及新工作启动",
+    "language": "en"
+  },
+  {
+    "query": "write unit tests for the calculateDiscount function in src/pricing/discount.ts. Cover edge cases like negative prices, zero quantity, and expired coupons",
+    "should_trigger": false,
+    "rationale": "纯英文。写测试的具体任务请求，工作已在 implementation phase，应触发 tdd skill",
+    "language": "en"
+  },
+  {
+    "query": "把 README 里面 Redis cache 那段 env variables 的配置说明更新一下，加上我们新增的 REDIS_CLUSTER_MODE 和 REDIS_SENTINEL_HOSTS 两个变量",
+    "should_trigger": false,
+    "rationale": "中英混用。具体文档更新任务，scope 已明确，不需 intake 分诊",
+    "language": "zh-en-mixed"
+  }
+]

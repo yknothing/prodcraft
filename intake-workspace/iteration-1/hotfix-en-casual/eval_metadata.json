@@ -1,0 +1,35 @@
+{
+  "eval_id": 2,
+  "eval_name": "hotfix-en-casual",
+  "prompt": "hey so our checkout page has been throwing 500 errors since this mornings deploy, about 15% of users are affected and were losing revenue every minute. need this fixed asap",
+  "assertions": [
+    {
+      "name": "produces-intake-brief",
+      "description": "Output contains a structured intake brief (even if abbreviated for urgency)"
+    },
+    {
+      "name": "classifies-as-hotfix",
+      "description": "Correctly classifies work as 'Hotfix' (not regular bug fix)"
+    },
+    {
+      "name": "skips-to-implementation",
+      "description": "Recommends skipping directly to implementation phase (04) given production impact"
+    },
+    {
+      "name": "selects-hotfix-workflow",
+      "description": "Selects hotfix workflow (not agile-sprint)"
+    },
+    {
+      "name": "acknowledges-urgency",
+      "description": "Recognizes the urgency (revenue loss, user impact) and adapts process accordingly"
+    },
+    {
+      "name": "suggests-rollback",
+      "description": "Mentions rollback as an option since the issue started after a deploy"
+    },
+    {
+      "name": "asks-before-proceeding",
+      "description": "Asks for user approval or at minimum confirms approach before diving in"
+    }
+  ]
+}

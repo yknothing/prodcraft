@@ -1,0 +1,91 @@
+{
+  "skill_name": "requirements-engineering",
+  "description": "Define and prioritize functional and non-functional system requirements from interviews, personas, stakeholder notes, or discovery artifacts. Use before spec writing, API design, planning, or implementation when a team needs a first-pass requirements set with priorities, traceability, scope boundaries, and explicit \u201cthe system shall\u201d statements; not for acceptance criteria, PRD drafting, design, review, or coding.",
+  "results": [
+    {
+      "query": "We already interviewed eight customers for our new approvals feature. Turn that into a clear set of functional and non-functional requirements with priorities.",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": false
+    },
+    {
+      "query": "We have market analysis and user personas already. Now define the system requirements for the first release and make them testable.",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": false
+    },
+    {
+      "query": "\u5e2e\u6211\u628a\u8fd9\u4e2a B2B \u62a5\u9500\u6d41\u7a0b\u4ea7\u54c1\u7684\u9700\u6c42\u6574\u7406\u6e05\u695a\uff0c\u533a\u5206 P0/P1/P2\uff0c\u5e76\u8865\u4e0a\u6027\u80fd\u3001\u5b89\u5168\u3001\u5ba1\u8ba1\u8fd9\u4e9b\u975e\u529f\u80fd\u9700\u6c42\u3002",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": false
+    },
+    {
+      "query": "\u8bf7\u6839\u636e\u8fd9\u4e9b\u7528\u6237\u75db\u70b9\uff0c\u5199\u51fa\u7cfb\u7edf shall \u505a\u4ec0\u4e48\u3001\u4ec0\u4e48\u4e0d\u505a\uff0c\u4ee5\u53ca\u6bcf\u6761\u9700\u6c42\u7684\u6765\u6e90\u548c\u4f18\u5148\u7ea7\u3002",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": false
+    },
+    {
+      "query": "I need help documenting acceptance criteria for this already-defined requirement set.",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": true
+    },
+    {
+      "query": "Design the API for our invoicing service. We already know the requirements.",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": true
+    },
+    {
+      "query": "Write the PRD for this feature using the approved requirements doc.",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": true
+    },
+    {
+      "query": "\u5b9e\u73b0\u8fd9\u4e2a\u5bfc\u51fa\u529f\u80fd\u5427\uff0c\u4ee3\u7801\u653e\u5728 services/exporter \u76ee\u5f55\uff0c\u5148\u5199\u6d4b\u8bd5\u518d\u52a8\u5b9e\u73b0\u3002",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": true
+    },
+    {
+      "query": "Review this spec draft and tell me if the user stories are clear enough.",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": true
+    },
+    {
+      "query": "Compare SOC 2 and ISO 27001 for me. I want to understand the difference.",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": true
+    }
+  ],
+  "summary": {
+    "total": 10,
+    "passed": 6,
+    "failed": 4
+  }
+}

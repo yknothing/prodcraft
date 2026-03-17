@@ -1,0 +1,62 @@
+[
+  {
+    "query": "We already interviewed eight customers for our new approvals feature. Turn that into a clear set of functional and non-functional requirements with priorities.",
+    "should_trigger": true,
+    "rationale": "Direct requirements-definition task with explicit need for prioritization and NFRs.",
+    "language": "en"
+  },
+  {
+    "query": "帮我把这个 B2B 报销流程产品的需求整理清楚，区分 P0/P1/P2，并补上性能、安全、审计这些非功能需求。",
+    "should_trigger": true,
+    "rationale": "Explicit request to structure and prioritize requirements, including NFRs.",
+    "language": "zh"
+  },
+  {
+    "query": "We have market analysis and user personas already. Now define the system requirements for the first release and make them testable.",
+    "should_trigger": true,
+    "rationale": "Canonical handoff from discovery into specification.",
+    "language": "en"
+  },
+  {
+    "query": "请根据这些用户痛点，写出系统 shall 做什么、什么不做，以及每条需求的来源和优先级。",
+    "should_trigger": true,
+    "rationale": "Strong traceability and requirement wording signal.",
+    "language": "zh"
+  },
+  {
+    "query": "I need help documenting acceptance criteria for this already-defined requirement set.",
+    "should_trigger": false,
+    "rationale": "This is narrower and should prefer `acceptance-criteria` over full requirements engineering.",
+    "language": "en"
+  },
+  {
+    "query": "Design the API for our invoicing service. We already know the requirements.",
+    "should_trigger": false,
+    "rationale": "Architecture/API design task, not requirements elicitation.",
+    "language": "en"
+  },
+  {
+    "query": "Write the PRD for this feature using the approved requirements doc.",
+    "should_trigger": false,
+    "rationale": "Should prefer `spec-writing`; requirements already exist.",
+    "language": "en"
+  },
+  {
+    "query": "实现这个导出功能吧，代码放在 services/exporter 目录，先写测试再动实现。",
+    "should_trigger": false,
+    "rationale": "Implementation task already scoped; should not route to requirements engineering.",
+    "language": "zh"
+  },
+  {
+    "query": "Compare SOC 2 and ISO 27001 for me. I want to understand the difference.",
+    "should_trigger": false,
+    "rationale": "Knowledge question, not active requirements work.",
+    "language": "en"
+  },
+  {
+    "query": "Review this spec draft and tell me if the user stories are clear enough.",
+    "should_trigger": false,
+    "rationale": "Review task, not fresh requirements engineering.",
+    "language": "en"
+  }
+]

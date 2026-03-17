@@ -1,0 +1,36 @@
+{
+  "iteration": 1,
+  "description": "ALWAYS invoke this skill as the FIRST step when a user describes any non-trivial development work. This includes: building new features or products, fixing bugs or production incidents (500 errors, race conditions, hotfixes), refactoring or restructuring code (god class, breaking apart modules), system migrations (PHP to Go, MySQL to PostgreSQL), tech debt cleanup (slow CI, low test coverage), compliance implementations (GDPR, security), documentation initiatives, or greenfield projects from scratch. The skill performs structured triage — assessing scope, selecting methodology, and planning the work sequence — which prevents wasted effort from jumping straight to code. Trigger whenever the user's request involves planning decisions, has ambiguous scope, spans multiple components, or when they express uncertainty about where to start. Works with English, Chinese, and mixed-language requests. Skip ONLY for: single-line fixes (typos, renames), running existing commands (npm test, git rebase), debugging with a specific error and stack trace, code reviews of existing PRs, or pure knowledge questions.",
+  "summary": {
+    "total": 20,
+    "passed": 13,
+    "failed": 7,
+    "recall": "3/10 (30%)",
+    "precision": "10/10 (100%)",
+    "accuracy": "13/20 (65%)"
+  },
+  "analysis": {
+    "successful_triggers": [
+      "Greenfield projects (build from scratch)",
+      "Large migrations (PHP to Go)",
+      "Uncertain/vague requests (不确定从哪开始)"
+    ],
+    "failed_triggers": [
+      "Hotfix/incident (stolen by systematic-debugging)",
+      "New features (stolen by brainstorming MUST trigger)",
+      "Refactoring (stolen by module-design)",
+      "Tech debt (no competing skill but Claude acts directly)",
+      "Compliance (stolen by brainstorming)",
+      "Bug fixes with known location (stolen by systematic-debugging)",
+      "Documentation initiatives (Claude acts directly)"
+    ],
+    "competing_skills": [
+      "brainstorming: 'MUST use before creating features, building components, adding functionality'",
+      "systematic-debugging: 'Use when encountering any bug, test failure, or unexpected behavior'",
+      "module-design: 'splitting a monolith, defining component boundaries'",
+      "writing-plans: 'spec or requirements for multi-step task'",
+      "software-architecture: 'technology choices, system trade-offs'"
+    ]
+  },
+  "improvement_from_baseline": "+15% accuracy (50% -> 65%), +30% recall (0% -> 30%)"
+}

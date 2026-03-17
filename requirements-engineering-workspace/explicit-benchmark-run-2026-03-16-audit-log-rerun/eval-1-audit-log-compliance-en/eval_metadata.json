@@ -1,0 +1,27 @@
+{
+  "id": "audit-log-compliance-en",
+  "title": "Compliance-Sensitive Audit Log Requirements",
+  "prompt": "Work only from the material below. Do not ask follow-up questions. If you need assumptions, state them briefly and continue.\n\nWe are building an audit-log capability for a B2B finance platform. Please turn the notes below into a first-release requirements set before architecture starts.\n\nStakeholder notes:\n- Compliance: audit records for financial actions must be retained for 7 years.\n- Security: only explicitly authorized roles may search or export audit logs.\n- Operations: support engineers need fast search by account, actor, date range, and action type.\n- Product: customers want to export filtered audit logs as CSV.\n- Compliance: exported data must be traceable to who exported it and when.\n- Security: audit records themselves must not be editable or deletable through the product.\n- Platform: month-end load is heavy; search must remain responsive.\n- Legal: some regions require data access to be justifiable and reviewable.\n\nPlease output functional requirements, non-functional requirements, priorities, source traceability, and explicit non-goals. Stay in the requirements layer and do not jump into storage design or schema design.",
+  "assertions": [
+    {
+      "name": "captures-compliance-retention",
+      "description": "Defines measurable retention requirements grounded in the compliance notes"
+    },
+    {
+      "name": "captures-access-control-and-export-auditability",
+      "description": "Includes authorization and export traceability requirements"
+    },
+    {
+      "name": "captures-searchability-and-performance",
+      "description": "Defines searchable dimensions and measurable responsiveness expectations"
+    },
+    {
+      "name": "defines-immutability-and-non-goals",
+      "description": "Includes audit-record immutability and at least one explicit non-goal"
+    },
+    {
+      "name": "stays-in-requirements-layer",
+      "description": "Does not primarily jump into storage, schema, or implementation design"
+    }
+  ]
+}

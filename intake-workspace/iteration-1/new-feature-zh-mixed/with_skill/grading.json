@@ -1,0 +1,13 @@
+{
+  "eval_name": "new-feature-zh-mixed",
+  "configuration": "with_skill",
+  "expectations": [
+    {"text": "produces-intake-brief", "passed": true, "evidence": "Output contains structured Intake Brief with labeled sections: Work type, Entry phase, Recommended workflow, Key skills, Scope, Risks, Proposed Path, Alternative Approach"},
+    {"text": "classifies-work-type", "passed": true, "evidence": "Correctly classified as 'New Feature'"},
+    {"text": "recommends-entry-phase", "passed": true, "evidence": "Recommended 01-specification as entry phase"},
+    {"text": "selects-workflow", "passed": true, "evidence": "Selected agile-sprint workflow, with reasoning (SaaS + Q2 deadline)"},
+    {"text": "identifies-risks", "passed": true, "evidence": "Identified 2 risks: push notification infrastructure gap and @mention UX complexity"},
+    {"text": "proposes-skill-path", "passed": true, "evidence": "7-step path: spec-writing → system-design → api-design → task-breakdown → tdd → feature-development → code-review"},
+    {"text": "asks-before-proceeding", "passed": true, "evidence": "Ends with '你同意这个路径吗？还是想调整？'"}
+  ]
+}

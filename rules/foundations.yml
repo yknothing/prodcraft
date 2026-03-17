@@ -1,0 +1,95 @@
+# Prodcraft Quality Rules: Foundations
+# These rules apply across all phases and are the bedrock of code quality.
+# Severity: C (Critical/blocking), H (High), M (Medium), L (Low)
+# Timing: pre (before coding), post (after coding), async (background)
+
+rules:
+  - id: FND_001
+    name: "Single Responsibility"
+    description: "Each module, class, and function should have one reason to change"
+    severity: H
+    timing: post
+    phases: ["02-architecture", "04-implementation", "05-quality"]
+    check: "Review each class/module -- does it have a single, clear responsibility?"
+    action: "Split responsibilities into separate units if multiple concerns detected"
+
+  - id: FND_002
+    name: "No Duplication"
+    description: "Eliminate meaningful duplication; do not abstract trivial repetition"
+    severity: M
+    timing: post
+    phases: ["04-implementation", "05-quality"]
+    check: "Scan for duplicated logic blocks (>5 lines of identical business logic)"
+    action: "Extract shared logic only when duplication is meaningful (same concept, not coincidental similarity)"
+
+  - id: FND_003
+    name: "Explicit Over Implicit"
+    description: "Prefer explicit behavior over magic, convention, or hidden side effects"
+    severity: H
+    timing: post
+    phases: ["04-implementation", "05-quality"]
+    check: "Review for hidden side effects, magic values, implicit ordering dependencies"
+    action: "Make behavior visible -- name it, document it, or make it a parameter"
+
+  - id: FND_004
+    name: "Fail Fast"
+    description: "Validate inputs at boundaries, fail immediately with clear errors"
+    severity: H
+    timing: pre
+    phases: ["02-architecture", "04-implementation"]
+    check: "Are inputs validated at system boundaries? Do errors surface immediately?"
+    action: "Add validation at entry points; throw descriptive errors rather than returning partial results"
+
+  - id: FND_005
+    name: "Minimal Interface"
+    description: "Expose the smallest possible API surface; hide implementation details"
+    severity: M
+    timing: post
+    phases: ["02-architecture", "04-implementation"]
+    check: "Are internal details exposed? Could the public API be smaller?"
+    action: "Reduce public API to essential operations; make everything else private/internal"
+
+  - id: FND_006
+    name: "No Magic Numbers"
+    description: "Replace literal values with named constants that explain their purpose"
+    severity: L
+    timing: post
+    phases: ["04-implementation"]
+    check: "Scan for numeric/string literals used in logic (excluding 0, 1, empty string, true/false)"
+    action: "Extract to named constants with clear names that explain the 'why'"
+
+  - id: FND_007
+    name: "Dependency Direction"
+    description: "Dependencies flow inward (high-level policy does not depend on low-level detail)"
+    severity: H
+    timing: pre
+    phases: ["02-architecture", "04-implementation"]
+    check: "Do core business modules depend on infrastructure? Are dependencies inverted?"
+    action: "Apply dependency inversion -- core defines interfaces, infrastructure implements them"
+
+  - id: FND_008
+    name: "Immutability by Default"
+    description: "Prefer immutable data structures; mutate only when necessary and contained"
+    severity: M
+    timing: post
+    phases: ["04-implementation"]
+    check: "Are mutable objects shared across boundaries? Can data structures be made immutable?"
+    action: "Use const/readonly/frozen by default; restrict mutation to clearly bounded operations"
+
+  - id: FND_009
+    name: "Error Handling Strategy"
+    description: "Have a consistent strategy for error handling, not ad-hoc try/catch"
+    severity: H
+    timing: pre
+    phases: ["02-architecture", "04-implementation"]
+    check: "Is there a documented error handling strategy? Are errors handled consistently?"
+    action: "Define error hierarchy, propagation rules, and user-facing error contracts"
+
+  - id: FND_010
+    name: "Configuration Externalization"
+    description: "Environment-specific values must not be hardcoded in source"
+    severity: C
+    timing: pre
+    phases: ["04-implementation", "06-delivery"]
+    check: "Scan for hardcoded URLs, credentials, feature toggles, environment-specific values"
+    action: "Move to environment variables, config files, or secrets management"

@@ -1,0 +1,75 @@
+# Prodcraft Quality Rules: Performance
+# Applied during architecture design, implementation, and quality phases.
+
+rules:
+  - id: PRF_001
+    name: "Performance Budget Defined"
+    description: "Key operations must have explicit performance budgets (response time, throughput)"
+    severity: H
+    timing: pre
+    phases: ["02-architecture", "05-quality"]
+    check: "Are performance budgets defined for critical user-facing operations?"
+    action: "Define budgets: API response <200ms p95, page load <2s, search <500ms, etc."
+
+  - id: PRF_002
+    name: "No N+1 Queries"
+    description: "Database access must not scale linearly with result set size in a single operation"
+    severity: H
+    timing: post
+    phases: ["04-implementation", "05-quality"]
+    check: "Review database queries in loops; check ORM eager/lazy loading behavior"
+    action: "Use batch loading, joins, or eager loading; add query count assertions in tests"
+
+  - id: PRF_003
+    name: "Efficient Collection Operations"
+    description: "Choose appropriate data structures and algorithms for the access pattern"
+    severity: M
+    timing: post
+    phases: ["04-implementation"]
+    check: "Are lookups using lists when maps/sets would be O(1)? Are sorts necessary?"
+    action: "Match data structure to access pattern; prefer hash-based lookups for frequent searches"
+
+  - id: PRF_004
+    name: "Pagination Required"
+    description: "All list/collection APIs must support pagination -- never return unbounded results"
+    severity: H
+    timing: pre
+    phases: ["02-architecture", "04-implementation"]
+    check: "Can any API endpoint return an unbounded number of results?"
+    action: "Implement cursor-based or offset pagination with configurable page size and hard maximum"
+
+  - id: PRF_005
+    name: "Caching Strategy"
+    description: "Frequently accessed, rarely changed data should be cached with clear invalidation"
+    severity: M
+    timing: post
+    phases: ["02-architecture", "04-implementation"]
+    check: "Are there hot data paths without caching? Is cache invalidation well-defined?"
+    action: "Add caching with explicit TTL and invalidation strategy; document cache coherence approach"
+
+  - id: PRF_006
+    name: "Async for I/O"
+    description: "I/O-bound operations should not block request processing threads"
+    severity: H
+    timing: post
+    phases: ["04-implementation"]
+    check: "Are synchronous I/O calls blocking the event loop or thread pool?"
+    action: "Use async/await for I/O; offload long-running tasks to background queues"
+
+  - id: PRF_007
+    name: "Resource Cleanup"
+    description: "Connections, file handles, and other resources must be properly closed"
+    severity: H
+    timing: post
+    phases: ["04-implementation", "05-quality"]
+    check: "Are database connections, HTTP clients, and file handles always closed (even on error)?"
+    action: "Use try-with-resources, context managers, or defer/finally for guaranteed cleanup"
+
+  - id: PRF_008
+    name: "Frontend Performance"
+    description: "Web frontend must meet Core Web Vitals thresholds"
+    severity: M
+    timing: post
+    phases: ["04-implementation", "05-quality"]
+    check: "Measure LCP (<2.5s), FID/INP (<200ms), CLS (<0.1)"
+    action: "Optimize critical rendering path, lazy-load below-fold content, minimize layout shifts"

@@ -1,0 +1,13 @@
+{
+  "eval_name": "hotfix-en-casual",
+  "configuration": "without_skill",
+  "expectations": [
+    {"text": "produces-intake-brief", "passed": false, "evidence": "No structured intake brief. Goes directly to debugging suggestions."},
+    {"text": "classifies-as-hotfix", "passed": false, "evidence": "Does not classify as hotfix or any work type. Treats it as generic debugging."},
+    {"text": "skips-to-implementation", "passed": true, "evidence": "Implicitly goes to implementation/debugging (though without explicit phase awareness)."},
+    {"text": "selects-hotfix-workflow", "passed": false, "evidence": "No workflow selection. No concept of hotfix vs normal process."},
+    {"text": "acknowledges-urgency", "passed": true, "evidence": "Opens with 'This sounds urgent! Let's debug this right away.'"},
+    {"text": "suggests-rollback", "passed": true, "evidence": "Recommends rollback: 'I'd recommend rolling back first to stop the bleeding.'"},
+    {"text": "asks-before-proceeding", "passed": false, "evidence": "Asks for technical info (logs, diff) but does not ask for approval of an approach."}
+  ]
+}

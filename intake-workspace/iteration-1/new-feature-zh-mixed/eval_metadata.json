@@ -1,0 +1,35 @@
+{
+  "eval_id": 1,
+  "eval_name": "new-feature-zh-mixed",
+  "prompt": "我们的 SaaS 产品需要加一个团队协作功能，用户可以在项目里 @mention 队友然后自动发通知。这个功能优先级很高，Q2 就要上线",
+  "assertions": [
+    {
+      "name": "produces-intake-brief",
+      "description": "Output contains a structured intake brief with clearly labeled sections"
+    },
+    {
+      "name": "classifies-work-type",
+      "description": "Correctly classifies work as 'New Feature' (not enhancement, not new product)"
+    },
+    {
+      "name": "recommends-entry-phase",
+      "description": "Recommends starting at specification phase (01-specification) since requirements need defining"
+    },
+    {
+      "name": "selects-workflow",
+      "description": "Selects agile-sprint workflow (SaaS product, Q2 deadline, iterative nature)"
+    },
+    {
+      "name": "identifies-risks",
+      "description": "Identifies at least one relevant risk (e.g., notification infrastructure, @mention parsing, Q2 timeline pressure)"
+    },
+    {
+      "name": "proposes-skill-path",
+      "description": "Proposes a multi-step skill path (not just 'start coding')"
+    },
+    {
+      "name": "asks-before-proceeding",
+      "description": "Asks for user approval before starting implementation"
+    }
+  ]
+}

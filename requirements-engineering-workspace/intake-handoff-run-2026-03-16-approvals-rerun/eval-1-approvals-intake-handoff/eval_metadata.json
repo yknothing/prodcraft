@@ -1,0 +1,31 @@
+{
+  "id": "approvals-intake-handoff",
+  "title": "Approved Intake Brief Handoff for Approvals Feature",
+  "context_files": [
+    "/Users/whatsup/workspace/2026/prodcraft/requirements-engineering-workspace/handoff-fixtures/approvals-intake-brief.md",
+    "/Users/whatsup/workspace/2026/prodcraft/requirements-engineering-workspace/handoff-fixtures/approvals-discovery-notes.md"
+  ],
+  "prompt": "Read `./approvals-intake-brief.md` and `./approvals-discovery-notes.md`. Work only from those two files. Do not ask follow-up questions. If you need assumptions, label them clearly and continue. Produce a first-release requirements set that preserves the handoff constraints, scope boundaries, risks, and open questions from intake.",
+  "assertions": [
+    {
+      "name": "stays-in-specification-phase",
+      "description": "Output remains in the requirements layer and does not jump into architecture or implementation design"
+    },
+    {
+      "name": "preserves-intake-risks",
+      "description": "Carries at least one intake risk or ambiguity into the resulting requirements/open questions"
+    },
+    {
+      "name": "preserves-intake-open-questions",
+      "description": "Keeps at least one intake open question unresolved rather than silently deciding it"
+    },
+    {
+      "name": "respects-no-invented-precision",
+      "description": "Does not convert unsupported quantitative expectations into hard requirements without labeling them as assumptions or open questions"
+    },
+    {
+      "name": "prepares-downstream-handoff",
+      "description": "Produces an artifact shaped for downstream spec-writing or acceptance-criteria work"
+    }
+  ]
+}

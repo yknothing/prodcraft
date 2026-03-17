@@ -1,0 +1,13 @@
+{
+  "eval_name": "refactor-zh-en-mixed",
+  "configuration": "with_skill",
+  "expectations": [
+    {"text": "produces-intake-brief", "passed": true, "evidence": "Structured Intake Brief with all required sections"},
+    {"text": "classifies-as-refactoring", "passed": true, "evidence": "Correctly classified as 'Refactoring'"},
+    {"text": "assesses-scope-accurately", "passed": true, "evidence": "Assessed as 'large' with reasoning (2000 lines + 30+ deps + zero tests)"},
+    {"text": "recommends-architecture-review", "passed": true, "evidence": "Entry phase set to 02-architecture, first skill is system-design for component boundaries"},
+    {"text": "flags-no-tests-risk", "passed": true, "evidence": "Listed '无测试覆盖' as risk #1 with explicit note '最大风险'"},
+    {"text": "suggests-test-first", "passed": true, "evidence": "Step 3 in path: 'tdd — 在动任何代码之前，先写 characterization tests'"},
+    {"text": "asks-before-proceeding", "passed": true, "evidence": "Ends with '你倾向哪个方案？或者需要调整？'"}
+  ]
+}

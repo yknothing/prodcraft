@@ -1,0 +1,27 @@
+{
+  "id": "approvals-intake-handoff",
+  "title": "Approved Intake Brief Handoff for Approvals Feature",
+  "prompt": "Work only from the approved intake brief and discovery notes below. Do not ask follow-up questions. If you need assumptions, label them clearly and continue.\n\nApproved intake brief:\n# Intake Brief\n\n## Work Summary\n- Request: Build a first-release approvals workflow for an existing SaaS product using interview notes from operations managers.\n- Work type: New Feature\n- Entry phase: 01-specification\n- Recommended workflow: agile-sprint\n- Scope assessment: medium\n- Urgency: normal\n\n## Required Artifact\n- Artifact name: intake-brief\n- Status: approved\n- Approver: user\n\n## Routing Decision\n1. First skill: requirements-engineering\n   - Output: requirements-doc\n2. Second skill: spec-writing\n   - Output: technical-spec\n3. Third skill: acceptance-criteria\n   - Output: acceptance-criteria-set\n\n## Key Risks\n1. Approval routing rules may hide ambiguity about manager ownership, threshold semantics, and second-stage finance configuration.\n2. Mobile-friendly approval actions and audit-trail requirements may tempt early solutioning before requirements are agreed.\n\n## Notes for Handoff\n- Constraints:\n  - Stay in the requirements layer; do not jump into API, database, or storage design.\n  - Preserve explicit scope boundaries for release 1.\n  - Treat unsupported quantitative targets as open questions or assumptions, not hard requirements.\n- Open questions:\n  - Is the second-stage finance approval optional per tenant or per request?\n  - How is the requester's manager determined in the existing SaaS product?\n  - Does near-instant need a user-facing latency target or only a back-end SLA?\n- Context that downstream skills must preserve:\n  - This is an existing SaaS product, not a greenfield system.\n  - The next downstream skill expects a reviewed requirements doc, not architecture decisions.\n\nDiscovery notes:\n- Managers need every purchase request above $5,000 to require manager approval.\n- Finance wants optional second-stage approval above $20,000.\n- Employees complain that current approvals are buried in email and get lost.\n- Managers need a mobile-friendly way to approve or reject quickly.\n- Finance requires a searchable audit trail of who approved, rejected, or delegated a request.\n- Some companies want department-specific approval thresholds.\n- Users need clear status visibility: pending, approved, rejected, sent back.\n- Customers asked for comments on rejection so employees know what to fix.\n- Non-functional expectations mentioned in interviews: approval actions should feel near-instant, the audit trail must be retained for at least 1 year, and only authorized approvers should act on a request.\n\nPlease produce a requirements set for first release, preserving the handoff constraints and open questions from intake.",
+  "assertions": [
+    {
+      "name": "stays-in-specification-phase",
+      "description": "Output remains in the requirements layer and does not jump into architecture or implementation design"
+    },
+    {
+      "name": "preserves-intake-risks",
+      "description": "Carries at least one intake risk or ambiguity into the resulting requirements/open questions"
+    },
+    {
+      "name": "preserves-intake-open-questions",
+      "description": "Keeps at least one intake open question unresolved rather than silently deciding it"
+    },
+    {
+      "name": "respects-no-invented-precision",
+      "description": "Does not convert unsupported quantitative expectations into hard requirements without labeling them as assumptions or open questions"
+    },
+    {
+      "name": "prepares-downstream-handoff",
+      "description": "Produces an artifact shaped for downstream spec-writing or acceptance-criteria work"
+    }
+  ]
+}

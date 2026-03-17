@@ -1,0 +1,6 @@
+{
+  "baseline_cwd": "/var/folders/th/mtk3j6l96tnbkd5shwcztjn00000gn/T/prodcraft-explicit-benchmark-approvals-intake-handoff-s5j_8qq6/baseline",
+  "with_skill_cwd": "/var/folders/th/mtk3j6l96tnbkd5shwcztjn00000gn/T/prodcraft-explicit-benchmark-approvals-intake-handoff-s5j_8qq6/with-skill",
+  "copied_skill_path": "/var/folders/th/mtk3j6l96tnbkd5shwcztjn00000gn/T/prodcraft-explicit-benchmark-approvals-intake-handoff-s5j_8qq6/with-skill/skill-under-test/SKILL.md",
+  "isolation_mode": "tempdir-outside-repo"
+}

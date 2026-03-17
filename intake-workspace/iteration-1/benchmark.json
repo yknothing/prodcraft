@@ -1,0 +1,86 @@
+{
+  "skill_name": "intake",
+  "iteration": 1,
+  "configurations": [
+    {
+      "name": "with_skill",
+      "label": "With Intake Skill",
+      "results": [
+        {
+          "eval_name": "new-feature-zh-mixed",
+          "assertions": 7,
+          "passed": 7,
+          "pass_rate": 1.0
+        },
+        {
+          "eval_name": "hotfix-en-casual",
+          "assertions": 7,
+          "passed": 7,
+          "pass_rate": 1.0
+        },
+        {
+          "eval_name": "refactor-zh-en-mixed",
+          "assertions": 7,
+          "passed": 7,
+          "pass_rate": 1.0
+        }
+      ],
+      "aggregate": {
+        "total_assertions": 21,
+        "total_passed": 21,
+        "overall_pass_rate": 1.0
+      }
+    },
+    {
+      "name": "without_skill",
+      "label": "Without Skill (Baseline)",
+      "results": [
+        {
+          "eval_name": "new-feature-zh-mixed",
+          "assertions": 7,
+          "passed": 0,
+          "pass_rate": 0.0
+        },
+        {
+          "eval_name": "hotfix-en-casual",
+          "assertions": 7,
+          "passed": 3,
+          "pass_rate": 0.43
+        },
+        {
+          "eval_name": "refactor-zh-en-mixed",
+          "assertions": 7,
+          "passed": 2,
+          "pass_rate": 0.29
+        }
+      ],
+      "aggregate": {
+        "total_assertions": 21,
+        "total_passed": 5,
+        "overall_pass_rate": 0.24
+      }
+    }
+  ],
+  "delta": {
+    "pass_rate_improvement": 0.76,
+    "description": "Intake skill improves assertion pass rate from 24% to 100% (+76 percentage points)"
+  },
+  "analyst_observations": [
+    {
+      "type": "discriminating_assertions",
+      "detail": "All 7 assertion types discriminate well between with-skill and without-skill. No assertion passes equally in both configurations."
+    },
+    {
+      "type": "baseline_partial_pass",
+      "detail": "Without-skill baseline passes some assertions in hotfix (3/7) and refactor (2/7) scenarios — Claude natively recognizes urgency and suggests tests-first. These are 'capability uplift' areas where the base model partially delivers. The skill's unique value is in STRUCTURE and CLASSIFICATION, not raw capability."
+    },
+    {
+      "type": "encoded_preference_validated",
+      "detail": "The 5 assertions that baseline passes are all about domain knowledge (rollback for hotfix, tests for refactoring). The 16 that only with-skill passes are about PROCESS STRUCTURE: intake brief format, work type classification, phase selection, workflow selection, approval gates. This confirms the 'encoded preference' hypothesis from the GPT review."
+    },
+    {
+      "type": "strongest_skill_value",
+      "detail": "The skill's strongest differential is in 'produces-intake-brief' (0/3 baseline vs 3/3 with-skill) and 'asks-before-proceeding' (0/3 vs 3/3). Without the skill, Claude never produces a structured triage document and never asks for approval before starting work."
+    }
+  ]
+}

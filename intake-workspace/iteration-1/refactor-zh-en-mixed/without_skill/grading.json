@@ -1,0 +1,13 @@
+{
+  "eval_name": "refactor-zh-en-mixed",
+  "configuration": "without_skill",
+  "expectations": [
+    {"text": "produces-intake-brief", "passed": false, "evidence": "No structured intake brief. Goes directly to refactoring plan."},
+    {"text": "classifies-as-refactoring", "passed": false, "evidence": "No explicit work type classification."},
+    {"text": "assesses-scope-accurately", "passed": false, "evidence": "No scope assessment. Does not evaluate dependency count or overall impact."},
+    {"text": "recommends-architecture-review", "passed": false, "evidence": "Skips architecture review, goes directly to suggesting code structure."},
+    {"text": "flags-no-tests-risk", "passed": true, "evidence": "Mentions 'because there are no tests' and suggests writing integration tests first."},
+    {"text": "suggests-test-first", "passed": true, "evidence": "Recommends writing integration tests before each extract step."},
+    {"text": "asks-before-proceeding", "passed": false, "evidence": "Asks to see the code ('给我看看代码') but does not ask for approval of the approach."}
+  ]
+}

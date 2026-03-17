@@ -1,0 +1,13 @@
+{
+  "eval_name": "hotfix-en-casual",
+  "configuration": "with_skill",
+  "expectations": [
+    {"text": "produces-intake-brief", "passed": true, "evidence": "Structured Intake Brief with Work type, Entry phase, Workflow, Skills, Scope, Risks, Immediate Actions, Proposed Path"},
+    {"text": "classifies-as-hotfix", "passed": true, "evidence": "Correctly classified as 'Hotfix'"},
+    {"text": "skips-to-implementation", "passed": true, "evidence": "Entry phase set to 04-implementation with explicit note 'skip directly to diagnosis and fix'"},
+    {"text": "selects-hotfix-workflow", "passed": true, "evidence": "Selected 'hotfix' workflow"},
+    {"text": "acknowledges-urgency", "passed": true, "evidence": "Fast-tracked intake, recognized 'production is actively impacted with revenue loss'"},
+    {"text": "suggests-rollback", "passed": true, "evidence": "Rollback is listed as Immediate Action #1 with reasoning"},
+    {"text": "asks-before-proceeding", "passed": true, "evidence": "Asks 'Shall I proceed with that assumption, or do you want to diagnose first?'"}
+  ]
+}

@@ -1,0 +1,37 @@
+[
+  {
+    "query": "我们的 SaaS 产品需要加一个团队协作功能，用户可以在项目里 @mention 队友然后自动发通知。这个功能优先级很高，Q2 就要上线",
+    "should_trigger": true,
+    "bucket": "overlap",
+    "likely_competitor": "brainstorming",
+    "rationale": "New feature request overlaps strongly with brainstorming."
+  },
+  {
+    "query": "hey so our checkout page has been throwing 500 errors since this mornings deploy, about 15% of users are affected and were losing revenue every minute. need this fixed asap",
+    "should_trigger": true,
+    "bucket": "overlap",
+    "likely_competitor": "systematic-debugging",
+    "rationale": "Production incident overlaps with debugging and hotfix handling."
+  },
+  {
+    "query": "ok 这个 auth module 我想重构一下，现在是个 2000 行的 god class，auth、session management、password reset、OAuth 全 mixed 在一起，完全没有 tests。我要 break it apart properly",
+    "should_trigger": true,
+    "bucket": "overlap",
+    "likely_competitor": "module-design",
+    "rationale": "Large refactor overlaps with module-design and architecture guidance."
+  },
+  {
+    "query": "we need to add GDPR compliance to our user data handling - right-to-deletion, data export, consent management. Our legal team says we have 3 months to be compliant",
+    "should_trigger": true,
+    "bucket": "overlap",
+    "likely_competitor": "brainstorming / software-architecture",
+    "rationale": "Compliance work overlaps with design and architecture skills."
+  },
+  {
+    "query": "there's a race condition in our payment service 的 mutex handling，两个 concurrent requests 可能会 charge 同一个 order 两次。I found it in src/payments/processor.go line 142，这个比较紧急",
+    "should_trigger": true,
+    "bucket": "overlap",
+    "likely_competitor": "systematic-debugging",
+    "rationale": "Known-location urgent bugfix may fast-track past intake."
+  }
+]

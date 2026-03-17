@@ -1,0 +1,112 @@
+# Prodcraft Quality Rules: Security
+# Applied primarily at pre-coding (architecture) and post-coding (review) phases.
+# Based on OWASP Top 10 and production security best practices.
+
+rules:
+  - id: SEC_001
+    name: "Input Validation at Boundaries"
+    description: "All external input must be validated, sanitized, and typed before processing"
+    severity: C
+    timing: pre
+    phases: ["02-architecture", "04-implementation", "05-quality"]
+    check: "Every API endpoint, form handler, file parser, and message consumer validates input"
+    action: "Implement schema validation at all system boundaries; reject malformed input early"
+
+  - id: SEC_002
+    name: "No SQL/NoSQL Injection"
+    description: "Use parameterized queries or ORM; never concatenate user input into queries"
+    severity: C
+    timing: post
+    phases: ["04-implementation", "05-quality"]
+    check: "Scan for string concatenation in database queries"
+    action: "Replace with parameterized queries, prepared statements, or ORM methods"
+
+  - id: SEC_003
+    name: "Authentication Required"
+    description: "All non-public endpoints must require authentication"
+    severity: C
+    timing: pre
+    phases: ["02-architecture", "04-implementation"]
+    check: "Map all endpoints; verify authentication is enforced on non-public routes"
+    action: "Apply authentication middleware/guard; use allowlist (public routes) not denylist"
+
+  - id: SEC_004
+    name: "Authorization Enforced"
+    description: "Every data access must check authorization -- not just authentication"
+    severity: C
+    timing: pre
+    phases: ["02-architecture", "04-implementation"]
+    check: "Can user A access user B's data? Are object-level permissions checked?"
+    action: "Implement authorization checks at the data access layer, not just the route layer"
+
+  - id: SEC_005
+    name: "No Secrets in Code"
+    description: "API keys, passwords, tokens, and certificates must never appear in source code"
+    severity: C
+    timing: pre
+    phases: ["04-implementation", "06-delivery"]
+    check: "Scan source code, config files, and CI/CD configs for hardcoded secrets"
+    action: "Use secrets management (vault, env vars, cloud secrets manager)"
+
+  - id: SEC_006
+    name: "HTTPS Everywhere"
+    description: "All network communication must use TLS; redirect HTTP to HTTPS"
+    severity: C
+    timing: pre
+    phases: ["02-architecture", "06-delivery"]
+    check: "Are all external and internal service communications encrypted in transit?"
+    action: "Configure TLS certificates, HSTS headers, and HTTP-to-HTTPS redirect"
+
+  - id: SEC_007
+    name: "XSS Prevention"
+    description: "Sanitize and escape all user-generated content before rendering in HTML"
+    severity: C
+    timing: post
+    phases: ["04-implementation", "05-quality"]
+    check: "Scan for unsanitized user content in HTML output (raw HTML insertion, template injection)"
+    action: "Use framework auto-escaping; apply Content-Security-Policy headers; use DOMPurify for dynamic content"
+
+  - id: SEC_008
+    name: "CSRF Protection"
+    description: "State-changing requests must include CSRF tokens or use SameSite cookies"
+    severity: H
+    timing: post
+    phases: ["04-implementation"]
+    check: "Are state-changing forms/APIs protected against cross-site request forgery?"
+    action: "Implement CSRF tokens or use SameSite=Strict cookies with proper CORS config"
+
+  - id: SEC_009
+    name: "Dependency Vulnerability Scanning"
+    description: "Third-party dependencies must be scanned for known vulnerabilities"
+    severity: H
+    timing: post
+    phases: ["05-quality", "06-delivery"]
+    check: "Run dependency audit (npm audit, pip audit, cargo audit, etc.)"
+    action: "Update vulnerable dependencies; if no fix available, assess risk and document exception"
+
+  - id: SEC_010
+    name: "Least Privilege"
+    description: "Services, users, and processes should have minimum necessary permissions"
+    severity: H
+    timing: pre
+    phases: ["02-architecture", "06-delivery", "07-operations"]
+    check: "Are service accounts, IAM roles, and database users scoped to minimum permissions?"
+    action: "Audit and reduce permissions; use role-based access with granular scopes"
+
+  - id: SEC_011
+    name: "Audit Logging"
+    description: "Security-relevant actions must be logged with immutable audit trail"
+    severity: H
+    timing: pre
+    phases: ["02-architecture", "04-implementation"]
+    check: "Are authentication, authorization failures, and data modifications logged?"
+    action: "Implement structured audit logging for auth events, data changes, and admin actions"
+
+  - id: SEC_012
+    name: "Rate Limiting"
+    description: "Public-facing endpoints must have rate limiting to prevent abuse"
+    severity: H
+    timing: pre
+    phases: ["02-architecture", "04-implementation"]
+    check: "Are login, registration, API, and webhook endpoints rate-limited?"
+    action: "Implement rate limiting at the API gateway or application level"

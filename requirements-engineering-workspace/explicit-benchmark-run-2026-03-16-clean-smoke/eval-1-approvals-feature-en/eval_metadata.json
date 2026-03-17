@@ -1,0 +1,27 @@
+{
+  "id": "approvals-feature-en",
+  "title": "Approvals Feature from Discovery Notes",
+  "prompt": "Work only from the material below. Do not ask follow-up questions. If you need assumptions, state them briefly and continue.\n\nWe interviewed eight operations managers about a new approvals workflow for our SaaS product. Turn this into a reviewed requirements set for the first release.\n\nDiscovery notes:\n- Managers need every purchase request above $5,000 to require manager approval.\n- Finance wants optional second-stage approval above $20,000.\n- Employees complain that current approvals are buried in email and get lost.\n- Managers need a mobile-friendly way to approve or reject quickly.\n- Finance requires a searchable audit trail of who approved, rejected, or delegated a request.\n- Some companies want department-specific approval thresholds.\n- Users need clear status visibility: pending, approved, rejected, sent back.\n- Customers asked for comments on rejection so employees know what to fix.\n- Non-functional expectations mentioned in interviews: approval actions should feel near-instant, the audit trail must be retained for at least 1 year, and only authorized approvers should act on a request.\n\nPlease produce requirements for first release, including priorities, non-goals, traceability to the discovery notes, and measurable non-functional requirements.",
+  "assertions": [
+    {
+      "name": "structured-requirements-artifact",
+      "description": "Produces a structured requirements artifact rather than loose brainstorming notes"
+    },
+    {
+      "name": "separates-functional-and-nfr",
+      "description": "Separates functional requirements from non-functional requirements"
+    },
+    {
+      "name": "includes-priorities",
+      "description": "Assigns priorities such as P0/P1/P2 or equivalent"
+    },
+    {
+      "name": "includes-traceability",
+      "description": "Links requirements back to source interview findings"
+    },
+    {
+      "name": "defines-non-goals",
+      "description": "Calls out at least one clear non-goal or out-of-scope item"
+    }
+  ]
+}

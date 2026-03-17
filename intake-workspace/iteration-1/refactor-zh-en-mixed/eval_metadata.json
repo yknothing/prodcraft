@@ -1,0 +1,35 @@
+{
+  "eval_id": 3,
+  "eval_name": "refactor-zh-en-mixed",
+  "prompt": "ok 这个 auth module 我想重构一下，现在是个 2000 行的 god class，auth、session management、password reset、OAuth 全 mixed 在一起，完全没有 tests。我要 break it apart properly",
+  "assertions": [
+    {
+      "name": "produces-intake-brief",
+      "description": "Output contains a structured intake brief with clearly labeled sections"
+    },
+    {
+      "name": "classifies-as-refactoring",
+      "description": "Correctly classifies work as 'Refactoring' (not enhancement or bug fix)"
+    },
+    {
+      "name": "assesses-scope-accurately",
+      "description": "Assesses scope as medium or large (2000-line god class is not small)"
+    },
+    {
+      "name": "recommends-architecture-review",
+      "description": "Recommends architecture/design review before diving into code (need to plan component boundaries)"
+    },
+    {
+      "name": "flags-no-tests-risk",
+      "description": "Identifies the absence of tests as a key risk for refactoring"
+    },
+    {
+      "name": "suggests-test-first",
+      "description": "Recommends writing characterization tests before refactoring (TDD or test-first approach)"
+    },
+    {
+      "name": "asks-before-proceeding",
+      "description": "Asks for user approval before starting implementation"
+    }
+  ]
+}

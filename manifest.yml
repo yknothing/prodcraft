@@ -1,0 +1,507 @@
+version: 1.0.0
+name: prodcraft
+description: Lifecycle-aware skills system for production-grade software development
+phases:
+- id: 00-discovery
+  name: Discovery
+  purpose: Understand the problem space, validate feasibility, identify opportunities
+  entry_from:
+  - 08-evolution
+  exit_to:
+  - 01-specification
+  gate: Feasibility approved and opportunity validated
+- id: 01-specification
+  name: Specification
+  purpose: Define what to build with precision and clarity
+  entry_from:
+  - 00-discovery
+  exit_to:
+  - 02-architecture
+  gate: Spec reviewed, acceptance criteria defined, stakeholders signed off
+- id: 02-architecture
+  name: Architecture
+  purpose: Design how to build it -- system structure, interfaces, data, security
+  entry_from:
+  - 01-specification
+  exit_to:
+  - 03-planning
+  gate: Architecture review passed, ADRs documented, risks assessed
+- id: 03-planning
+  name: Planning
+  purpose: Break work into actionable tasks, estimate, assign, sequence
+  entry_from:
+  - 02-architecture
+  exit_to:
+  - 04-implementation
+  gate: Tasks estimated, dependencies mapped, risks mitigated
+- id: 04-implementation
+  name: Implementation
+  purpose: Write code, tests, and documentation -- build the thing
+  entry_from:
+  - 03-planning
+  exit_to:
+  - 05-quality
+  gate: Feature complete, all tests pass, code reviewed
+- id: 05-quality
+  name: Quality
+  purpose: Verify correctness, security, performance, and user experience
+  entry_from:
+  - 04-implementation
+  exit_to:
+  - 06-delivery
+  gate: QA sign-off, security cleared, performance within SLOs
+- id: 06-delivery
+  name: Delivery
+  purpose: Package, deploy, and release to users safely
+  entry_from:
+  - 05-quality
+  exit_to:
+  - 07-operations
+  gate: Deployed to production, rollback verified, metrics baseline established
+- id: 07-operations
+  name: Operations
+  purpose: Monitor, respond to incidents, ensure reliability
+  entry_from:
+  - 06-delivery
+  exit_to:
+  - 08-evolution
+  gate: SLOs met, runbooks validated, on-call handoff complete
+- id: 08-evolution
+  name: Evolution
+  purpose: Learn, improve, manage technical debt, plan next iteration
+  entry_from:
+  - 07-operations
+  exit_to:
+  - 00-discovery
+  gate: Retrospective complete, tech debt cataloged, next cycle planned
+skills:
+- name: intake
+  phase: 00-discovery
+  file: skills/00-discovery/intake/SKILL.md
+  gateway: true
+  status: tested
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: intake-workspace/evals/eval-strategy.md
+    trigger_eval_results_path: intake-workspace/optimization/iter-2/results-mixed.json
+    benchmark_results_path: intake-workspace/iteration-1/benchmark.md
+- name: market-analysis
+  phase: 00-discovery
+  file: skills/00-discovery/market-analysis/SKILL.md
+  status: draft
+- name: user-research
+  phase: 00-discovery
+  file: skills/00-discovery/user-research/SKILL.md
+  status: draft
+- name: feasibility-study
+  phase: 00-discovery
+  file: skills/00-discovery/feasibility-study/SKILL.md
+  status: draft
+- name: requirements-engineering
+  phase: 01-specification
+  file: skills/01-specification/requirements-engineering/SKILL.md
+  status: review
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: requirements-engineering-workspace/evals/eval-strategy.md
+    trigger_eval_set_path: requirements-engineering-workspace/evals/trigger-eval.json
+    trigger_eval_results_path: requirements-engineering-workspace/results-trigger-iter3.json
+    findings_path: requirements-engineering-workspace/findings.md
+    explicit_invocation_plan_path: requirements-engineering-workspace/explicit-invocation-benchmark.md
+    benchmark_results_path: requirements-engineering-workspace/explicit-benchmark-review.md
+    integration_test_path: requirements-engineering-workspace/intake-handoff-review.md
+- name: spec-writing
+  phase: 01-specification
+  file: skills/01-specification/spec-writing/SKILL.md
+  status: draft
+- name: domain-modeling
+  phase: 01-specification
+  file: skills/01-specification/domain-modeling/SKILL.md
+  status: draft
+- name: acceptance-criteria
+  phase: 01-specification
+  file: skills/01-specification/acceptance-criteria/SKILL.md
+  status: draft
+- name: system-design
+  phase: 02-architecture
+  file: skills/02-architecture/system-design/SKILL.md
+  status: draft
+- name: api-design
+  phase: 02-architecture
+  file: skills/02-architecture/api-design/SKILL.md
+  status: draft
+- name: task-breakdown
+  phase: 03-planning
+  file: skills/03-planning/task-breakdown/SKILL.md
+  status: draft
+- name: tdd
+  phase: 04-implementation
+  file: skills/04-implementation/tdd/SKILL.md
+  status: draft
+- name: code-review
+  phase: 05-quality
+  file: skills/05-quality/code-review/SKILL.md
+  status: draft
+- name: testing-strategy
+  phase: 05-quality
+  file: skills/05-quality/testing-strategy/SKILL.md
+  status: draft
+- name: ci-cd
+  phase: 06-delivery
+  file: skills/06-delivery/ci-cd/SKILL.md
+  status: draft
+- name: incident-response
+  phase: 07-operations
+  file: skills/07-operations/incident-response/SKILL.md
+  status: draft
+- name: tech-debt-management
+  phase: 08-evolution
+  file: skills/08-evolution/tech-debt-management/SKILL.md
+  status: draft
+- name: retrospective
+  phase: 08-evolution
+  file: skills/08-evolution/retrospective/SKILL.md
+  status: draft
+- name: documentation
+  phase: cross-cutting
+  file: skills/cross-cutting/documentation/SKILL.md
+  status: draft
+planned_skills:
+- name: data-modeling
+  phase: 02-architecture
+  target_file: skills/02-architecture/data-modeling/SKILL.md
+- name: security-design
+  phase: 02-architecture
+  target_file: skills/02-architecture/security-design/SKILL.md
+- name: tech-selection
+  phase: 02-architecture
+  target_file: skills/02-architecture/tech-selection/SKILL.md
+- name: sprint-planning
+  phase: 03-planning
+  target_file: skills/03-planning/sprint-planning/SKILL.md
+- name: estimation
+  phase: 03-planning
+  target_file: skills/03-planning/estimation/SKILL.md
+- name: risk-assessment
+  phase: 03-planning
+  target_file: skills/03-planning/risk-assessment/SKILL.md
+- name: feature-development
+  phase: 04-implementation
+  target_file: skills/04-implementation/feature-development/SKILL.md
+- name: refactoring
+  phase: 04-implementation
+  target_file: skills/04-implementation/refactoring/SKILL.md
+- name: pair-programming
+  phase: 04-implementation
+  target_file: skills/04-implementation/pair-programming/SKILL.md
+- name: security-audit
+  phase: 05-quality
+  target_file: skills/05-quality/security-audit/SKILL.md
+- name: performance-audit
+  phase: 05-quality
+  target_file: skills/05-quality/performance-audit/SKILL.md
+- name: release-management
+  phase: 06-delivery
+  target_file: skills/06-delivery/release-management/SKILL.md
+- name: deployment-strategy
+  phase: 06-delivery
+  target_file: skills/06-delivery/deployment-strategy/SKILL.md
+- name: feature-flags
+  phase: 06-delivery
+  target_file: skills/06-delivery/feature-flags/SKILL.md
+- name: monitoring-observability
+  phase: 07-operations
+  target_file: skills/07-operations/monitoring-observability/SKILL.md
+- name: runbooks
+  phase: 07-operations
+  target_file: skills/07-operations/runbooks/SKILL.md
+- name: capacity-planning
+  phase: 07-operations
+  target_file: skills/07-operations/capacity-planning/SKILL.md
+- name: migration-strategy
+  phase: 08-evolution
+  target_file: skills/08-evolution/migration-strategy/SKILL.md
+- name: deprecation
+  phase: 08-evolution
+  target_file: skills/08-evolution/deprecation/SKILL.md
+- name: observability
+  phase: cross-cutting
+  target_file: skills/cross-cutting/observability/SKILL.md
+- name: accessibility
+  phase: cross-cutting
+  target_file: skills/cross-cutting/accessibility/SKILL.md
+- name: internationalization
+  phase: cross-cutting
+  target_file: skills/cross-cutting/internationalization/SKILL.md
+- name: compliance
+  phase: cross-cutting
+  target_file: skills/cross-cutting/compliance/SKILL.md
+workflows:
+- name: spec-driven
+  file: workflows/spec-driven.md
+  description: Full specification upfront, phased delivery with formal gates
+  cadence: milestone-based
+  best_for:
+  - regulated
+  - safety-critical
+  - contractual
+  - large-team
+- name: agile-sprint
+  file: workflows/agile-sprint.md
+  description: Iterative sprints, just-enough planning, continuous delivery
+  cadence: 1-2 week sprints
+  best_for:
+  - product-teams
+  - saas
+  - startup
+  - rapid-iteration
+- name: iterative-waterfall
+  file: workflows/iterative-waterfall.md
+  description: Phase-gated with iteration within phases
+  cadence: phase-based (2-6 weeks per phase)
+  best_for:
+  - enterprise
+  - compliance
+  - large-scope
+  - distributed-teams
+- name: hotfix
+  file: workflows/hotfix.md
+  description: 'Emergency path: diagnose, fix, verify, deploy'
+  cadence: on-demand (hours)
+  best_for:
+  - production-incidents
+  - security-vulnerabilities
+  - data-corruption
+- name: greenfield
+  file: workflows/greenfield.md
+  description: New project bootstrap from idea to first deployment
+  cadence: one-time (days to weeks)
+  best_for:
+  - new-products
+  - proof-of-concept
+  - hackathon
+- name: brownfield
+  file: workflows/brownfield.md
+  description: Legacy system modernization and incremental improvement
+  cadence: ongoing (months)
+  best_for:
+  - legacy-modernization
+  - platform-migration
+  - tech-debt-paydown
+personas:
+- name: product-manager
+  file: personas/product-manager.md
+  leads:
+  - 00-discovery
+  - 01-specification
+  advises:
+  - 03-planning
+  - 08-evolution
+- name: architect
+  file: personas/architect.md
+  leads:
+  - 02-architecture
+  advises:
+  - 01-specification
+  - 03-planning
+  - 04-implementation
+- name: developer
+  file: personas/developer.md
+  leads:
+  - 04-implementation
+  advises:
+  - 02-architecture
+  - 03-planning
+  - 05-quality
+- name: reviewer
+  file: personas/reviewer.md
+  leads:
+  - 05-quality
+  advises:
+  - 02-architecture
+  - 04-implementation
+- name: qa-engineer
+  file: personas/qa-engineer.md
+  leads:
+  - 05-quality
+  advises:
+  - 01-specification
+  - 04-implementation
+  - 06-delivery
+- name: devops-engineer
+  file: personas/devops-engineer.md
+  leads:
+  - 06-delivery
+  - 07-operations
+  advises:
+  - 02-architecture
+  - 04-implementation
+- name: tech-lead
+  file: personas/tech-lead.md
+  leads:
+  - 03-planning
+  advises:
+  - 00-discovery
+  - 01-specification
+  - 02-architecture
+  - 04-implementation
+  - 05-quality
+  - 06-delivery
+  - 07-operations
+  - 08-evolution
+artifact_flow:
+- artifact: market-research-report
+  produced_by: market-analysis
+  consumed_by:
+  - feasibility-study
+  - requirements-engineering
+- artifact: user-persona-set
+  produced_by: user-research
+  consumed_by:
+  - requirements-engineering
+  - spec-writing
+- artifact: feasibility-report
+  produced_by: feasibility-study
+  consumed_by:
+  - requirements-engineering
+- artifact: requirements-doc
+  produced_by: requirements-engineering
+  consumed_by:
+  - spec-writing
+  - domain-modeling
+  - acceptance-criteria
+  - system-design
+- artifact: spec-doc
+  produced_by: spec-writing
+  consumed_by:
+  - system-design
+  - api-design
+  - data-modeling
+  - task-breakdown
+- artifact: domain-model
+  produced_by: domain-modeling
+  consumed_by:
+  - system-design
+  - data-modeling
+  - api-design
+- artifact: acceptance-criteria-set
+  produced_by: acceptance-criteria
+  consumed_by:
+  - tdd
+  - testing-strategy
+  - code-review
+- artifact: architecture-doc
+  produced_by: system-design
+  consumed_by:
+  - api-design
+  - data-modeling
+  - security-design
+  - task-breakdown
+  - feature-development
+- artifact: api-contract
+  produced_by: api-design
+  consumed_by:
+  - feature-development
+  - testing-strategy
+- artifact: data-schema
+  produced_by: data-modeling
+  consumed_by:
+  - feature-development
+  - migration-strategy
+- artifact: threat-model
+  produced_by: security-design
+  consumed_by:
+  - security-audit
+  - feature-development
+- artifact: tech-decision-record
+  produced_by: tech-selection
+  consumed_by:
+  - system-design
+  - feature-development
+  - ci-cd
+- artifact: task-list
+  produced_by: task-breakdown
+  consumed_by:
+  - sprint-planning
+  - estimation
+- artifact: sprint-plan
+  produced_by: sprint-planning
+  consumed_by:
+  - feature-development
+  - tdd
+- artifact: risk-register
+  produced_by: risk-assessment
+  consumed_by:
+  - sprint-planning
+  - monitoring-observability
+- artifact: source-code
+  produced_by: feature-development
+  consumed_by:
+  - code-review
+  - testing-strategy
+  - security-audit
+  - performance-audit
+  - ci-cd
+- artifact: test-suite
+  produced_by: tdd
+  consumed_by:
+  - code-review
+  - ci-cd
+  - testing-strategy
+- artifact: review-report
+  produced_by: code-review
+  consumed_by:
+  - feature-development
+  - refactoring
+- artifact: test-report
+  produced_by: testing-strategy
+  consumed_by:
+  - release-management
+- artifact: security-report
+  produced_by: security-audit
+  consumed_by:
+  - release-management
+  - feature-development
+- artifact: performance-report
+  produced_by: performance-audit
+  consumed_by:
+  - release-management
+  - capacity-planning
+- artifact: ci-cd-pipeline
+  produced_by: ci-cd
+  consumed_by:
+  - deployment-strategy
+  - release-management
+- artifact: release-plan
+  produced_by: release-management
+  consumed_by:
+  - deployment-strategy
+- artifact: deployment-runbook
+  produced_by: deployment-strategy
+  consumed_by:
+  - runbooks
+  - incident-response
+- artifact: monitoring-config
+  produced_by: monitoring-observability
+  consumed_by:
+  - incident-response
+  - capacity-planning
+- artifact: incident-playbook
+  produced_by: incident-response
+  consumed_by:
+  - runbooks
+- artifact: postmortem-report
+  produced_by: incident-response
+  consumed_by:
+  - retrospective
+  - risk-assessment
+- artifact: tech-debt-registry
+  produced_by: tech-debt-management
+  consumed_by:
+  - sprint-planning
+  - refactoring
+- artifact: retrospective-report
+  produced_by: retrospective
+  consumed_by:
+  - market-analysis
+  - sprint-planning

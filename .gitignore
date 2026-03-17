@@ -1,0 +1,28 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+
+# Dependencies (if any tooling is added later)
+node_modules/
+__pycache__/
+*.pyc
+
+# Build artifacts
+dist/
+build/
+
+# Local benchmark/debug artifacts that are not part of the checked-in QA evidence
+requirements-engineering-workspace/explicit-benchmark-run-2026-03-16a/
+requirements-engineering-workspace/explicit-benchmark-run-2026-03-16b/
+requirements-engineering-workspace/explicit-benchmark-timeout-smoke-*/

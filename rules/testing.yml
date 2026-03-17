@@ -1,0 +1,93 @@
+# Prodcraft Quality Rules: Testing
+# Applied primarily during implementation and quality phases.
+
+rules:
+  - id: TST_001
+    name: "Test Before Code"
+    description: "Write a failing test that captures the requirement before writing implementation"
+    severity: H
+    timing: pre
+    phases: ["04-implementation"]
+    check: "Does a failing test exist for the requirement being implemented?"
+    action: "Write the test first (RED), then implement (GREEN), then refactor"
+
+  - id: TST_002
+    name: "Test Pyramid Balance"
+    description: "Maintain a healthy ratio: many unit tests, fewer integration tests, minimal E2E tests"
+    severity: M
+    timing: post
+    phases: ["04-implementation", "05-quality"]
+    check: "Is the test distribution balanced? Are there too many slow E2E tests or too few unit tests?"
+    action: "Push test logic down to the fastest level that can catch the bug"
+
+  - id: TST_003
+    name: "No Test Dependencies"
+    description: "Tests must be independent -- no shared mutable state, no execution order dependency"
+    severity: H
+    timing: post
+    phases: ["04-implementation", "05-quality"]
+    check: "Can tests run in any order? Does each test set up and tear down its own state?"
+    action: "Isolate tests; use fresh fixtures; avoid global test state"
+
+  - id: TST_004
+    name: "Test Readability"
+    description: "Tests should clearly communicate what is being tested and what the expected behavior is"
+    severity: M
+    timing: post
+    phases: ["04-implementation"]
+    check: "Can you understand the test intent without reading the implementation?"
+    action: "Use descriptive test names (Given-When-Then or should_X_when_Y), avoid test logic"
+
+  - id: TST_005
+    name: "Edge Case Coverage"
+    description: "Test boundary conditions, error paths, and unusual inputs -- not just the happy path"
+    severity: H
+    timing: post
+    phases: ["04-implementation", "05-quality"]
+    check: "Are null, empty, boundary, overflow, concurrent, and error cases tested?"
+    action: "Add tests for each identified edge case; use property-based testing for broad coverage"
+
+  - id: TST_006
+    name: "No Flaky Tests"
+    description: "Tests must produce consistent results -- same input always produces same outcome"
+    severity: H
+    timing: post
+    phases: ["04-implementation", "05-quality"]
+    check: "Do any tests fail intermittently? Are tests dependent on timing, network, or random data?"
+    action: "Mock external dependencies; use deterministic seeds; fix or quarantine flaky tests"
+
+  - id: TST_007
+    name: "Regression Tests for Bugs"
+    description: "Every bug fix must include a test that would have caught the bug"
+    severity: H
+    timing: pre
+    phases: ["04-implementation"]
+    check: "Does the bug fix PR include a regression test?"
+    action: "Write a test that reproduces the bug first, then fix the code to make it pass"
+
+  - id: TST_008
+    name: "Test Data Management"
+    description: "Test data should be minimal, explicit, and self-contained"
+    severity: M
+    timing: post
+    phases: ["04-implementation", "05-quality"]
+    check: "Are test fixtures minimal? Is test data created inline or in clearly referenced factories?"
+    action: "Use builder/factory patterns; avoid shared test databases; keep fixtures small and focused"
+
+  - id: TST_009
+    name: "Contract Tests for APIs"
+    description: "API boundaries between services should have contract tests ensuring compatibility"
+    severity: H
+    timing: post
+    phases: ["04-implementation", "05-quality"]
+    check: "Do service-to-service APIs have contract tests? Can a provider change break consumers silently?"
+    action: "Implement consumer-driven contract tests (Pact or similar)"
+
+  - id: TST_010
+    name: "Performance Test Baselines"
+    description: "Critical paths should have performance test baselines that detect regressions"
+    severity: M
+    timing: post
+    phases: ["05-quality", "06-delivery"]
+    check: "Are response time and throughput baselines defined for critical operations?"
+    action: "Create benchmark tests for critical paths; fail CI if baselines are exceeded"
