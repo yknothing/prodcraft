@@ -1,0 +1,1 @@
+Read `./access-review-modernization-task-slice.md` and `./access-review-modernization-api-contract.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, label them clearly and continue. Describe how to implement the reassignment flow work for release 1.

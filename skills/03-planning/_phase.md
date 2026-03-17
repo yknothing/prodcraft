@@ -8,10 +8,12 @@ Break the architecture into actionable, estimable, assignable work units. Planni
 
 - Architecture review has passed.
 - Technical approach and component boundaries are defined.
+- Major coexistence or compatibility boundaries are visible enough to sequence work safely.
 
 ## Entry Criteria
 
 - Architecture documents are approved.
+- API contracts are reviewed when the work depends on external or inter-service interfaces.
 - Team capacity and availability are known for the planning horizon.
 - Dependencies on external teams or systems are identified.
 
@@ -44,6 +46,8 @@ risk-assessment ───────┘
 ```
 
 Break down tasks first, then estimate. Risk assessment informs estimation (add buffers for risky items). Sprint planning uses estimates and risk data to sequence work.
+
+In brownfield programs, planning should preserve reversible seams and coexistence work instead of flattening the roadmap into replacement-only implementation.
 
 ## Anti-Patterns
 

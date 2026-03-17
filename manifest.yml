@@ -143,11 +143,21 @@ skills:
 - name: task-breakdown
   phase: 03-planning
   file: skills/03-planning/task-breakdown/SKILL.md
-  status: draft
+  status: review
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: task-breakdown-workspace/evals/eval-strategy.md
+    findings_path: task-breakdown-workspace/findings.md
+    integration_test_path: task-breakdown-workspace/architecture-handoff-review.md
 - name: tdd
   phase: 04-implementation
   file: skills/04-implementation/tdd/SKILL.md
-  status: draft
+  status: review
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: tdd-workspace/evals/eval-strategy.md
+    findings_path: tdd-workspace/findings.md
+    integration_test_path: tdd-workspace/task-handoff-review.md
 - name: code-review
   phase: 05-quality
   file: skills/05-quality/code-review/SKILL.md

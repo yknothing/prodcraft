@@ -9,11 +9,13 @@ Build the product according to the plan, architecture, and specification. Implem
 - Tasks are planned, estimated, and assigned.
 - Development environment and tooling are ready.
 - The team has access to all specified dependencies and services.
+- Contract and coexistence boundaries for the next slice are visible enough to test before coding.
 
 ## Entry Criteria
 
 - Sprint or iteration plan exists with prioritized task list.
 - Architecture and spec documents are accessible to all developers.
+- API contracts or acceptance criteria exist when the slice changes externally visible behavior.
 - CI pipeline is configured and functional.
 - Coding standards and branching strategy are agreed upon.
 
@@ -46,6 +48,8 @@ tdd ←──→ feature-development ←──→ refactoring
 ```
 
 Implementation skills are iterative and interwoven. TDD and feature development form a tight loop. Refactoring happens continuously. Pair programming applies to any of the above.
+
+In brownfield work, implementation should start with the smallest safe slice and the tests that protect coexistence or contract behavior before new code expands.
 
 ## Anti-Patterns
 
