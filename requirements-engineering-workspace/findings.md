@@ -23,6 +23,8 @@ Three trigger-eval iterations were run on **2026-03-16**:
 7. The first **clean isolated** smoke benchmark shows early body-quality lift even though baseline quality is already decent. The skill improves requirements discipline more than raw binary pass/fail counts.
 8. Cross-scenario isolated benchmarking shows the skill is useful under explicit invocation, but also exposed a real regression vector: **invented precision** in NFR quantification. The skill has been tightened to convert unsupported bounds into open questions or labeled assumptions instead.
 9. The first routed handoff benchmark shows that the skill preserves intake constraints better than baseline, especially around explicit scope boundaries, carry-through risks, and downstream handoff shape.
+10. A second routed handoff scenario has now been added for brownfield modernization, but the first official run was blocked by local Claude CLI authentication before either branch generated output.
+11. A supplemental manual evaluation of the brownfield modernization scenario indicates the same pattern as the approvals scenario: baseline can produce a usable requirements draft, but the skill materially improves coexistence-boundary preservation, explicit open questions, and downstream handoff shape.
 
 ## Implication for Prodcraft
 
@@ -42,4 +44,4 @@ For explicit-invocation QA:
 
 ## Next QA Step
 
-Add one more routed handoff scenario, ideally brownfield or modernization-oriented, before treating handoff quality as stable.
+Preserve the manual brownfield review as supplemental evidence, then rerun `access-review-modernization-handoff` through the isolated official harness once local Claude CLI authentication is restored so the second scenario has automated evidence as well.

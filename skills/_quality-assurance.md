@@ -105,6 +105,7 @@ For explicit-invocation benchmarks, control the environment:
 - Run the **with-skill** case in a separate isolated workspace containing only the copied skill package.
 - Do not treat a benchmark as valid if the baseline can see local project instructions, repo-level agent guidance, or neighboring skills.
 - Persist prompts, runtime context, and raw outputs so the evidence can be audited later.
+- If the official harness fails for an environment precondition such as missing local CLI authentication, keep the failed artifact, record the blocker in the evidence review, and rerun after the precondition is restored rather than fabricating a benchmark verdict.
 
 ### Checkpoint 4: Description Optimization
 

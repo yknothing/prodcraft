@@ -1,0 +1,5 @@
+Exit code: 1
+STDERR:
+
+STDOUT:
+Not logged in · Please run /login

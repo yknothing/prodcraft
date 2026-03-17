@@ -8,6 +8,7 @@ Verify that `requirements-engineering` preserves an approved `intake-brief` when
 
 - Initial long-prompt handoff run: `intake-handoff-run-2026-03-16-approvals`
 - Optimized context-file handoff run: `intake-handoff-run-2026-03-16-approvals-rerun`
+- Pending brownfield modernization run: `intake-handoff-run-2026-03-17-modernization`
 
 ## What Changed Between Runs
 
@@ -70,3 +71,91 @@ These are exactly the dimensions that matter in a lifecycle-aware system.
 - This handoff evidence is one scenario only.
 - It does not resolve the weak trigger-discoverability result.
 - It should increase confidence in the skill as a routed/core workflow skill, not as an auto-discoverable skill.
+
+## Brownfield Modernization Scenario
+
+To test whether handoff quality generalizes beyond a net-new feature flow, a second routed handoff scenario was added:
+
+- `access-review-modernization-handoff`
+
+This scenario stresses:
+
+- brownfield coexistence constraints
+- incomplete contractual compatibility knowledge
+- open questions around migration boundaries
+- qualitative NFR pressure without approved numeric targets
+
+### First Execution Attempt
+
+The first official execution artifact exists at `intake-handoff-run-2026-03-17-modernization`, but it did **not** yield model outputs.
+
+Both branches failed before response generation with the local CLI message:
+
+`Not logged in · Please run /login`
+
+Interpretation:
+
+- this is a local harness precondition failure, not evidence against the skill
+- the new scenario is now part of the checked-in QA corpus
+- the scenario must be rerun once the local Claude CLI authentication state is restored
+
+Until that rerun exists, the approvals scenario remains the only completed routed handoff evidence artifact.
+
+## Manual Brownfield Evaluation
+
+Because a non-CLI evaluation was explicitly requested, a supplemental manual review was added at:
+
+- `intake-handoff-manual-run-2026-03-17-modernization`
+
+This manual evaluation includes both:
+
+- a generic baseline response without the skill
+- a skill-applied response using `requirements-engineering`
+
+Important limitation:
+
+- this is **not** an isolated automated benchmark
+- both branches were authored under one reviewer context
+- treat it as supplemental evidence about likely handoff behavior, not as a replacement for isolated benchmark evidence
+
+### Manual Baseline Findings
+
+The baseline response is competent, but it drifts on several points that matter in a lifecycle-aware system:
+
+- it keeps the work in the requirements layer
+- it preserves the high-level coexistence constraint
+- it fails to keep the read-only historical-campaign boundary as an explicit requirement
+- it turns `same-day sync` into a requirement instead of preserving the intake ambiguity cleanly
+- it pulls data-correction and reviewer reassignment into release 1 requirements without clearly marking the scope uncertainty
+- it is less explicit about downstream handoff shape
+
+### Manual With-Skill Findings
+
+The skill-applied response is materially stronger on the handoff dimensions that matter here:
+
+- it stays in the requirements layer
+- it preserves the brownfield coexistence boundary as an explicit release-1 requirement
+- it keeps historical legacy read-only treatment visible as a scope boundary instead of silently collapsing it
+- it preserves unresolved contractual and synchronization questions as open questions
+- it converts unsupported precision into requirement direction plus explicit uncertainty
+- it distinguishes release-1 obligations from out-of-scope rewrite and cutover work
+- it prepares the artifact for downstream `system-design` and `acceptance-criteria`
+
+### Manual Assertion Review
+
+| Assertion | Baseline | With skill | Notes |
+|---|---|---|---|
+| stays in specification phase | pass | pass | Neither branch jumps into architecture or migration sequencing. |
+| preserves brownfield boundary | partial | pass | Baseline mentions coexistence but is weaker on legacy-read-only and release boundary handling. |
+| preserves intake risks | partial | pass | With-skill keeps contractual ambiguity and scope pressure more explicitly. |
+| preserves intake open questions | partial | pass | Baseline keeps some questions, but with-skill protects them more clearly. |
+| respects no invented precision | partial | pass | Baseline turns `same-day sync` into a requirement; with-skill leaves the bound unresolved. |
+| prepares downstream handoff | partial | pass | With-skill makes downstream constraints and handoff intent explicit. |
+
+### Manual Conclusion
+
+This supplemental manual review supports the same emerging conclusion as the approvals scenario:
+
+- `requirements-engineering` is more valuable as a **routed workflow skill** than as an auto-discoverable skill
+- its value is strongest where scope boundaries, open questions, and brownfield constraints must survive handoff
+- the handoff-quality signal now appears in both a feature scenario and a brownfield modernization scenario, although only one of them has completed isolated benchmark evidence so far

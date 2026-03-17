@@ -29,5 +29,40 @@
         "description": "Produces an artifact shaped for downstream spec-writing or acceptance-criteria work"
       }
     ]
+  },
+  {
+    "id": "access-review-modernization-handoff",
+    "title": "Approved Intake Brief Handoff for Brownfield Access Review Modernization",
+    "context_files": [
+      "/Users/whatsup/workspace/2026/prodcraft/requirements-engineering-workspace/handoff-fixtures/access-review-modernization-intake-brief.md",
+      "/Users/whatsup/workspace/2026/prodcraft/requirements-engineering-workspace/handoff-fixtures/access-review-modernization-discovery-notes.md"
+    ],
+    "prompt": "Read `./access-review-modernization-intake-brief.md` and `./access-review-modernization-discovery-notes.md`. Work only from those two files. Do not ask follow-up questions. If you need assumptions, label them clearly and continue. Produce a first-release requirements set that preserves the handoff constraints, brownfield coexistence boundary, risks, and open questions from intake.",
+    "assertions": [
+      {
+        "name": "stays-in-specification-phase",
+        "description": "Output remains in the requirements layer and does not jump into architecture, cutover planning, or implementation design"
+      },
+      {
+        "name": "preserves-brownfield-boundary",
+        "description": "Keeps the release-1 coexistence constraint with the legacy module instead of assuming a full rewrite or same-day cutover"
+      },
+      {
+        "name": "preserves-intake-risks",
+        "description": "Carries at least one intake risk or ambiguity into the resulting requirements/open questions"
+      },
+      {
+        "name": "preserves-intake-open-questions",
+        "description": "Keeps at least one intake open question unresolved rather than silently deciding it"
+      },
+      {
+        "name": "respects-no-invented-precision",
+        "description": "Does not convert unsupported qualitative expectations such as 'feel faster' or 'same-day sync' into hard numerical targets without labeling them as assumptions or open questions"
+      },
+      {
+        "name": "prepares-downstream-handoff",
+        "description": "Produces an artifact shaped for downstream system-design or acceptance-criteria work"
+      }
+    ]
   }
 ]

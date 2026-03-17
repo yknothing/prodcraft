@@ -1,0 +1,7 @@
+{
+  "id": "access-review-modernization-handoff",
+  "title": "Manual Evaluation for Brownfield Access Review Modernization Handoff",
+  "evaluation_mode": "manual-assistant-review",
+  "date": "2026-03-17",
+  "notes": "Supplemental manual evaluation requested by the user after the official local Claude CLI benchmark was blocked by login state. Treat as supplemental evidence, not a replacement for isolated automated benchmarking."
+}
