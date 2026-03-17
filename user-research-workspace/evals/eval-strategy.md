@@ -20,6 +20,8 @@ That means review should focus on:
 - whether it turns those into a concrete research plan instead of skipping to requirements
 - whether it leaves behind an auditable handoff for downstream lifecycle work
 
+At the current review stage, the artifact under evaluation is often `research-plan`, not yet an evidence-backed persona set. That is acceptable as long as the review clearly states the full user-research quality gate remains open until real evidence exists.
+
 ## Review Assertions
 
 For problem-framing handoff scenarios, compare a manual baseline against a with-skill branch using the same input artifact.

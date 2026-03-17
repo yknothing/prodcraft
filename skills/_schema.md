@@ -113,7 +113,7 @@ Artifacts (inputs/outputs) use a consistent naming scheme:
 | Configurations | `ci-config`, `deploy-config`, `monitoring-config` |
 | Decisions | `tech-decision-record`, `architecture-decision-record` |
 | Reports | `review-report`, `audit-report`, `test-report` |
-| Plans | `sprint-plan`, `release-plan`, `capacity-plan` |
+| Plans | `research-plan`, `sprint-plan`, `release-plan`, `capacity-plan` |
 
 ## Methodology Tagging
 

@@ -460,6 +460,9 @@ artifact_flow:
   consumed_by:
   - requirements-engineering
   - spec-writing
+- artifact: research-plan
+  produced_by: user-research
+  consumed_by: []
 - artifact: feasibility-report
   produced_by: feasibility-study
   consumed_by:

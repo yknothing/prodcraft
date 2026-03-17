@@ -10,7 +10,8 @@ The skill is now treated as a **routed discovery skill** whose current evidence 
 
 1. The skill package now acknowledges that `problem-frame` can be a valid upstream input.
 2. The skill contract now explicitly forbids inventing "validated" personas when real user evidence does not yet exist.
-3. The first review-stage handoff review now checks whether `user-research` can turn a framed discovery direction into a concrete research plan without drifting into requirements.
+3. `research-plan` is now declared as a first-class output so the current review evidence matches the actual pre-evidence behavior of the skill.
+4. The first review-stage handoff review now checks whether `user-research` can turn a framed discovery direction into a concrete research plan without drifting into requirements.
 
 ## What We Learned
 
@@ -19,6 +20,14 @@ The skill is now treated as a **routed discovery skill** whose current evidence 
 3. The skill's value is strongest when the team already has a candidate direction but still needs user evidence before requirements should start.
 4. The first signal no longer comes from a single product-direction scenario only; it now also appears in a classic B2B/SaaS brownfield admin-modernization case.
 5. The preferred brownfield scenario now has semi-isolated manual benchmark evidence, which is stronger than plain handoff review but still weaker than a true isolated benchmark.
+
+## Contract Implication
+
+`research-plan` should be treated as a legitimate intermediate discovery artifact:
+
+- it improves observability and handoff discipline
+- it does **not** satisfy the full user-research quality gate by itself
+- downstream specification work should start from evidence-backed personas and journeys, not from a research plan alone
 
 ## Implication for Prodcraft
 

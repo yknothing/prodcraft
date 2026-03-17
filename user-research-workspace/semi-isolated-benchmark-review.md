@@ -13,6 +13,8 @@ It does **not** claim automated isolated benchmark status. The run under review 
 
 but the outputs were still authored in one reviewer context.
 
+Important: this benchmark reviews the quality of the intermediate `research-plan` artifact. It does **not** claim that the full user-research quality gate has been satisfied or that evidence-backed personas already exist.
+
 ## Reviewed Artifact
 
 | Artifact | Scenario | Notes |
