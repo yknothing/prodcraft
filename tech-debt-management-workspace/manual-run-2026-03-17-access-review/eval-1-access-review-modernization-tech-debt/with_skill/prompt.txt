@@ -1,0 +1,6 @@
+Use the `tech-debt-management` skill to convert the provided retrospective and postmortem evidence into a prioritized debt registry.
+
+Keep the result focused on:
+- structural debt rather than generic bugs
+- priority based on recurrence/interest
+- clear owner, timing, and next lifecycle destination

@@ -1,0 +1,8 @@
+{
+  "scenario_id": "access-review-modernization-incident",
+  "mode": "manual-review",
+  "date": "2026-03-17",
+  "phase": "07-operations",
+  "skill_under_test": "incident-response",
+  "comparison": "baseline-vs-with-skill"
+}

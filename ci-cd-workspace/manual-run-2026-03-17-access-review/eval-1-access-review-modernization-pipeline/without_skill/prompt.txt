@@ -1,0 +1,1 @@
+Read the release slice, testing summary, and review findings. Produce a CI/CD pipeline outline for this release.

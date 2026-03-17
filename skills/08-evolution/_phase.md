@@ -9,15 +9,20 @@ Learn from operations, manage technical debt, plan migrations, retire deprecated
 - System is stable in production with established SLOs met.
 - Sufficient operational data exists to identify improvement opportunities.
 - Sprint/phase has completed and retrospective is due.
+- Postmortem or review evidence is available and ready to be converted into next-cycle improvements.
 
 ## Entry Criteria
 
 - Operational metrics are being collected and reviewed.
 - Team has capacity allocated for improvement work (e.g., 20% of sprint).
+- Recent incidents, quality findings, or delivery misses are documented well enough to drive specific follow-up actions.
 
 ## Exit Criteria (Quality Gate)
 
 Retrospective complete. Tech debt cataloged and prioritized. At least 3 actionable improvements identified with owners. Insights documented and fed back to discovery/planning for the next cycle.
+
+Improvement items should be small enough to route back through intake and planning instead of remaining as vague "we should do better" notes.
+Debt items should be prioritized by real recurrence cost and routed to the right next phase rather than left as an undifferentiated backlog.
 
 ## Key Skills
 

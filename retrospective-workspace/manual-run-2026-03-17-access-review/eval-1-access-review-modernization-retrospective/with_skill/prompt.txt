@@ -1,0 +1,7 @@
+Use the `retrospective` skill to turn the provided postmortem and review evidence into a compact retrospective output.
+
+Keep the result focused on:
+- evidence-backed insights
+- no more than 5 improvement actions
+- owner and timing
+- clear next lifecycle destination for each action

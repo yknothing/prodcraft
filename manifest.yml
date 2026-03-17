@@ -179,19 +179,57 @@ skills:
 - name: ci-cd
   phase: 06-delivery
   file: skills/06-delivery/ci-cd/SKILL.md
-  status: draft
+  status: review
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: ci-cd-workspace/evals/eval-strategy.md
+    findings_path: ci-cd-workspace/findings.md
+    integration_test_path: ci-cd-workspace/pipeline-review.md
 - name: incident-response
   phase: 07-operations
   file: skills/07-operations/incident-response/SKILL.md
-  status: draft
+  status: review
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: incident-response-workspace/evals/eval-strategy.md
+    findings_path: incident-response-workspace/findings.md
+    integration_test_path: incident-response-workspace/incident-review.md
+- name: monitoring-observability
+  phase: 07-operations
+  file: skills/07-operations/monitoring-observability/SKILL.md
+  status: review
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: monitoring-observability-workspace/evals/eval-strategy.md
+    findings_path: monitoring-observability-workspace/findings.md
+    integration_test_path: monitoring-observability-workspace/observability-review.md
+- name: runbooks
+  phase: 07-operations
+  file: skills/07-operations/runbooks/SKILL.md
+  status: review
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: runbooks-workspace/evals/eval-strategy.md
+    findings_path: runbooks-workspace/findings.md
+    integration_test_path: runbooks-workspace/runbook-review.md
 - name: tech-debt-management
   phase: 08-evolution
   file: skills/08-evolution/tech-debt-management/SKILL.md
-  status: draft
+  status: review
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: tech-debt-management-workspace/evals/eval-strategy.md
+    findings_path: tech-debt-management-workspace/findings.md
+    integration_test_path: tech-debt-management-workspace/debt-review.md
 - name: retrospective
   phase: 08-evolution
   file: skills/08-evolution/retrospective/SKILL.md
-  status: draft
+  status: review
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: retrospective-workspace/evals/eval-strategy.md
+    findings_path: retrospective-workspace/findings.md
+    integration_test_path: retrospective-workspace/retro-review.md
 - name: documentation
   phase: cross-cutting
   file: skills/cross-cutting/documentation/SKILL.md
@@ -239,12 +277,6 @@ planned_skills:
 - name: feature-flags
   phase: 06-delivery
   target_file: skills/06-delivery/feature-flags/SKILL.md
-- name: monitoring-observability
-  phase: 07-operations
-  target_file: skills/07-operations/monitoring-observability/SKILL.md
-- name: runbooks
-  phase: 07-operations
-  target_file: skills/07-operations/runbooks/SKILL.md
 - name: capacity-planning
   phase: 07-operations
   target_file: skills/07-operations/capacity-planning/SKILL.md

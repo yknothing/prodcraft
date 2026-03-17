@@ -9,6 +9,7 @@ Ship the verified product to users safely and repeatably. Delivery focuses on th
 - QA sign-off is granted.
 - All blocking issues from quality phase are resolved.
 - Release artifacts are built and tested.
+- Rollback and coexistence expectations for the release are explicit enough to automate.
 
 ## Entry Criteria
 
@@ -17,6 +18,7 @@ Ship the verified product to users safely and repeatably. Delivery focuses on th
 - Deployment runbook is prepared or updated.
 - Rollback procedure is documented and tested.
 - Stakeholders are notified of the release window.
+- Test strategy and quality findings are reflected in pipeline gate expectations.
 
 ## Exit Criteria (Quality Gate)
 
@@ -47,6 +49,8 @@ ci-cd ──> deployment-strategy ──> release-management
 ```
 
 CI/CD is the foundation. Deployment strategy determines how code reaches production. Feature flags decouple deployment from release. Release management coordinates the human process.
+
+In brownfield work, delivery must prove the release can fail closed and recover safely; CI/CD is part of that control surface, not just automation glue.
 
 ## Anti-Patterns
 

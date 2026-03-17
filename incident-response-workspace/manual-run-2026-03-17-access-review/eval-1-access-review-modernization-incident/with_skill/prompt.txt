@@ -1,0 +1,8 @@
+Use the `incident-response` skill to turn the provided release context and live signals into a containment-first incident response plan.
+
+Keep the result operational:
+- classify severity
+- assign roles and communication cadence
+- choose mitigation before speculative root-cause work
+- preserve brownfield rollback and coexistence constraints
+- capture the follow-up handoff after recovery

@@ -1,0 +1,8 @@
+{
+  "scenario_id": "access-review-modernization-retrospective",
+  "mode": "manual-review",
+  "date": "2026-03-17",
+  "phase": "08-evolution",
+  "skill_under_test": "retrospective",
+  "comparison": "baseline-vs-with-skill"
+}

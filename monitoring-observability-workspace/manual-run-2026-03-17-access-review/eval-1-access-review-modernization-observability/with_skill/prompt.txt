@@ -1,0 +1,6 @@
+Use the `monitoring-observability` skill to produce an observability plan for this release slice.
+
+Keep the result focused on:
+- user-impactful route and boundary signals
+- brownfield coexistence and rollback visibility
+- actionable alerts that support incident response

@@ -9,6 +9,7 @@ Keep the product running reliably for users. Operations encompasses monitoring, 
 - Code is deployed to production and verified.
 - Monitoring and alerting are configured.
 - On-call rotation is staffed.
+- A live incident, repeated alert, or production degradation requires coordinated containment.
 
 ## Entry Criteria
 
@@ -17,6 +18,7 @@ Keep the product running reliably for users. Operations encompasses monitoring, 
 - Alerting rules are configured for SLO-derived thresholds.
 - On-call runbooks exist for known failure modes.
 - Escalation paths are documented and tested.
+- Current release boundary and rollback options are clear enough to support containment decisions.
 
 ## Exit Criteria (Quality Gate)
 
@@ -46,6 +48,9 @@ monitoring-observability ──> incident-response
 ```
 
 Monitoring is foundational. Incident response depends on monitoring signals. Runbooks codify operational knowledge. Capacity planning uses monitoring data to project needs.
+
+In brownfield systems, incident response should preserve coexistence and fail-closed containment before any broader redesign work begins.
+Monitoring should expose the actual release boundaries that matter, and runbooks should turn incident learning into steps another responder can execute safely.
 
 ## Anti-Patterns
 
