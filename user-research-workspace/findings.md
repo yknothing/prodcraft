@@ -18,6 +18,7 @@ The skill is now treated as a **routed discovery skill** whose current evidence 
 2. The correct early output in this situation is often a **research plan**, not a pretend persona set.
 3. The skill's value is strongest when the team already has a candidate direction but still needs user evidence before requirements should start.
 4. The first signal no longer comes from a single product-direction scenario only; it now also appears in a classic B2B/SaaS brownfield admin-modernization case.
+5. The preferred brownfield scenario now has semi-isolated manual benchmark evidence, which is stronger than plain handoff review but still weaker than a true isolated benchmark.
 
 ## Implication for Prodcraft
 
@@ -29,4 +30,4 @@ The skill is now treated as a **routed discovery skill** whose current evidence 
 
 ## Next QA Step
 
-Upgrade the `seat-guest-management-problem-framing-handoff` review to a semi-isolated benchmark. It is the better representative stress case for classic B2B/SaaS brownfield discovery than `team-invite`.
+Run a true isolated benchmark or cross-reviewer execution drill on `seat-guest-management-problem-framing-handoff`, then show how the resulting research outputs improve a downstream skill such as `requirements-engineering`.

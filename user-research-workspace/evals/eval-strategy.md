@@ -66,9 +66,9 @@ Before `user-research` can move beyond `review`, strengthen evidence in one of t
 2. run a semi-isolated or isolated benchmark from the same framing fixture
 3. show that downstream `requirements-engineering` materially benefits from the resulting user-research artifacts
 
-## Preferred Next Benchmark
+## Preferred Benchmark
 
-If only one stronger benchmark is run next, prefer:
+If only one stronger benchmark is run, prefer:
 
 - `seat-guest-management-problem-framing-handoff`
 
@@ -77,3 +77,7 @@ Why:
 - it is the more representative classic B2B/SaaS brownfield case
 - it tests whether the skill can preserve coexistence boundaries under legacy-admin pressure
 - it is a better stress case than the greenfield-ish `team-invite` path for proving that the skill does not collapse into requirements too early
+
+This benchmark now exists as semi-isolated manual benchmark evidence in:
+
+- `semi-isolated-benchmark-review.md`

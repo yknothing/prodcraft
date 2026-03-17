@@ -114,6 +114,8 @@ skills:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: user-research-workspace/evals/eval-strategy.md
     findings_path: user-research-workspace/findings.md
+    benchmark_plan_path: user-research-workspace/semi-isolated-benchmark.md
+    benchmark_results_path: user-research-workspace/semi-isolated-benchmark-review.md
     integration_test_path: user-research-workspace/problem-framing-handoff-review.md
 - name: feasibility-study
   phase: 00-discovery
