@@ -6,6 +6,8 @@ Evaluate whether `runbooks` converts incident and observability context into a s
 
 At review stage, use manual side-by-side evaluation rather than trigger scoring. This skill is expected to be used through routed operations workflows.
 
+A "non-brownfield comparison scenario" means an incident class without legacy coexistence or migration-specific safety branches. It is used to verify that the runbook skill still improves procedural clarity in a more ordinary service incident.
+
 ## Review Scope
 
 Review the skill on:
@@ -14,6 +16,10 @@ Review the skill on:
    - brownfield modernization incident
    - fail-closed and fallback decisions matter
    - responders need a reusable procedure, not an ad hoc incident note
+2. `team-invite-email-backlog-runbook`
+   - non-brownfield incident
+   - no legacy fallback path exists
+   - queue and provider recovery still need executable steps
 
 ## Assertions
 
@@ -27,6 +33,8 @@ Review the skill on:
 
 - `fixtures/access-review-modernization-incident-summary.md`
 - `fixtures/access-review-modernization-observability-summary.md`
+- `fixtures/team-invite-incident-summary.md`
+- `fixtures/team-invite-observability-summary.md`
 
 ## Method
 
@@ -37,6 +45,7 @@ Review the skill on:
 
 ## Exit Criteria for Review Stage
 
-- At least one routed brownfield runbook scenario reviewed
+- At least one routed brownfield scenario reviewed
+- At least one routed non-brownfield comparison scenario reviewed
 - Clear manual evidence that the skill improves operational executability
 - No claim of tested or production status until broader benchmark coverage exists

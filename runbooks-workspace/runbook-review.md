@@ -39,6 +39,19 @@ The skill-applied runbook is stronger on the dimensions that matter for lifecycl
 - verification and evidence capture are built into the procedure
 - another responder could execute it with much less improvisation
 
+## Additional Scenario: `team-invite-email-backlog-runbook`
+
+This second scenario is intentionally non-brownfield:
+
+- no legacy coexistence or rollback-to-fallback seam exists
+- the issue is an email delivery backlog in a newer invite service
+
+The baseline again produced a loose checklist. The skill-applied runbook still improved quality by:
+
+- defining trigger, owner, and escalation branch clearly
+- converting queue/provider symptoms into ordered steps
+- adding concrete verification and communication checkpoints
+
 ## Assertion Review
 
 | Assertion | Baseline | With skill | Notes |
@@ -56,4 +69,4 @@ The first manual review suggests `runbooks` fits the operations-side spine:
 - it is more valuable as a routed/core workflow skill than as a discoverability-first skill
 - its value comes from turning incident knowledge into repeatable, safe execution steps
 
-This is review-stage evidence only. The next step is a second scenario plus validation that the runbook can be followed by someone other than the author.
+This is review-stage evidence only. The second scenario now exists, which increases confidence that the skill is not overfit to brownfield incidents. The next step is validation that the runbook can be followed by someone other than the author plus isolated benchmarking.

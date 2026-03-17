@@ -40,6 +40,19 @@ The skill-applied plan is stronger on the dimensions that matter for lifecycle-a
 - it produces alerts responders can act on directly
 - it is better shaped for handoff into incident-response and runbooks
 
+## Additional Scenario: `team-invite-observability`
+
+This second scenario is intentionally non-brownfield:
+
+- no legacy coexistence or migration seam exists
+- the service is a newer invite flow with queue-backed email delivery
+
+The baseline again defaulted to generic service metrics. The skill-applied output still improved quality by:
+
+- mapping signals to invite creation, invite acceptance, and email dispatch boundaries
+- keeping queue age and provider failure visible as user-impact signals
+- linking release verification to the actual risky flows instead of generic uptime checks
+
 ## Assertion Review
 
 | Assertion | Baseline | With skill | Notes |
@@ -58,3 +71,5 @@ The first manual review suggests `monitoring-observability` fits the operations-
 - its value comes from making risky boundaries and recovery state visible before triage degrades into guesswork
 
 This is review-stage evidence only. The next step is a second scenario that is not brownfield-specific plus stronger linkage to runbook execution.
+
+That second scenario now exists, which increases confidence that the skill is not overfit to legacy modernization work. The next step is isolated benchmarking plus tighter linkage to live runbook execution.

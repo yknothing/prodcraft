@@ -6,6 +6,7 @@
 - Evidence type: manual routed handoff review
 - Scope covered:
   - one brownfield incident runbook scenario
+  - one non-brownfield incident runbook scenario
 
 ## What Improved
 
@@ -16,7 +17,6 @@
 ## Current Limits
 
 - No isolated benchmark yet
-- No second scenario yet
 - No external execution drill yet
 - No trigger/discoverability evidence, and none is required for review-stage routed use
 
@@ -26,6 +26,6 @@ Keep `runbooks` at `review`.
 
 Advance only after:
 
-1. a second scenario confirms the same behavior for a different incident class
-2. a responder other than the author can execute the runbook successfully
-3. isolated benchmarking is available for at least one scenario
+1. a responder other than the author can execute the runbook successfully
+2. isolated benchmarking is available for at least one scenario
+3. incident-response and observability updates reuse the same runbook shape cleanly

@@ -6,6 +6,8 @@ Evaluate whether `monitoring-observability` turns reviewed architecture and deli
 
 At review stage, use manual side-by-side evaluation rather than trigger scoring. This skill is expected to be a routed operations skill, not a discoverability-first skill.
 
+A "non-brownfield comparison scenario" means a service or release that does not involve legacy coexistence, migration seams, or compatibility burden. It is used to check that the skill generalizes beyond modernization-specific constraints.
+
 ## Review Scope
 
 Review the skill on:
@@ -14,6 +16,10 @@ Review the skill on:
    - brownfield modernization release
    - unsupported reassignment variants should fail closed
    - async sync behavior and rollback health must be visible
+2. `team-invite-observability`
+   - non-brownfield service slice
+   - no legacy coexistence or migration seam
+   - invite delivery and acceptance health must still map to user impact clearly
 
 ## Assertions
 
@@ -28,6 +34,9 @@ Review the skill on:
 - `fixtures/access-review-modernization-architecture-summary.md`
 - `fixtures/access-review-modernization-pipeline-summary.md`
 - `fixtures/access-review-modernization-risk-summary.md`
+- `fixtures/team-invite-architecture-summary.md`
+- `fixtures/team-invite-pipeline-summary.md`
+- `fixtures/team-invite-risk-summary.md`
 
 ## Method
 
@@ -38,6 +47,7 @@ Review the skill on:
 
 ## Exit Criteria for Review Stage
 
-- At least one routed brownfield observability scenario reviewed
+- At least one routed brownfield scenario reviewed
+- At least one routed non-brownfield comparison scenario reviewed
 - Clear manual evidence that the skill improves signal/actionability quality
 - No claim of tested or production status until broader benchmark coverage exists

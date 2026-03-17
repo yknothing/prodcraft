@@ -1,0 +1,6 @@
+Use the `runbooks` skill to create an operational runbook for this incident class.
+
+Keep the result focused on:
+- ordered steps and branch conditions
+- escalation and communication
+- verification and evidence capture

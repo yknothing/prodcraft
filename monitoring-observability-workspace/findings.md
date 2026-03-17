@@ -6,6 +6,7 @@
 - Evidence type: manual routed handoff review
 - Scope covered:
   - one brownfield modernization observability scenario
+  - one non-brownfield service observability scenario
 
 ## What Improved
 
@@ -16,7 +17,6 @@
 ## Current Limits
 
 - No isolated benchmark yet
-- No non-brownfield scenario yet
 - No trigger/discoverability evidence, and none is required for review-stage routed use
 
 ## Recommendation

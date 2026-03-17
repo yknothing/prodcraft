@@ -1,0 +1,6 @@
+Use the `monitoring-observability` skill to produce an observability plan for this service.
+
+Keep the result focused on:
+- user-impactful invite delivery and acceptance signals
+- actionable alerts
+- release verification visibility
