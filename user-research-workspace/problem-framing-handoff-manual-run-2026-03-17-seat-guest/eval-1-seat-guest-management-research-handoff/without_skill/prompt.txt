@@ -1,0 +1,11 @@
+You are given an approved problem-framing artifact for a brownfield B2B SaaS product direction question.
+
+Produce a concise user research plan. Do not use any dedicated user-research skill instructions.
+
+Focus on:
+- who to learn from first
+- what questions need validation before requirements
+- what methods to use
+- what should happen after the research
+
+Stay in discovery. Do not write requirements.

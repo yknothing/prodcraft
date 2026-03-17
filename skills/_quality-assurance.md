@@ -190,6 +190,12 @@ Use these conventions:
 | `qa.security_review_path` | Security checklist or review record |
 | `qa.integration_test_path` | Workflow-chain or end-to-end verification artifact |
 
+Additional `*_path` evidence keys are allowed for supplemental proof, for example:
+
+- downstream-consumer reviews for routed skills
+- secondary handoff reviews for a second scenario
+- manual vs isolated benchmark notes when both are useful
+
 This keeps QA claims auditable. A skill is not "tested" because someone said so; it is tested because the manifest points to the evidence.
 
 ### Evaluation Modes

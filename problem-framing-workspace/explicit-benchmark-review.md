@@ -59,6 +59,13 @@ This matters because the benchmark is not just about better structure. It is als
 - **stronger as a routed workflow / entry-stack skill**
 - valuable when the route is known but the direction still needs explicit trade-off framing
 
+This is now reinforced by downstream-consumption reviews:
+
+- `requirements-engineering-workspace/problem-framing-handoff-review.md`
+- `user-research-workspace/problem-framing-handoff-review.md`
+
+Those reviews show the artifact shape is not only locally neat; it is usable by both specification and discovery consumers.
+
 ## Status Implication
 
 The skill should remain in `review` because:
@@ -70,5 +77,5 @@ The skill should remain in `review` because:
 ## Next Required Evidence
 
 1. Run one true isolated benchmark or cross-reviewer execution drill on either `team-invite-direction` or `access-review-direction`.
-2. Re-check the benchmark after the first real downstream consumer (`requirements-engineering` or `user-research`) uses the `design-direction` artifact in a staged handoff.
+2. Upgrade at least one downstream-consumption chain to semi-isolated or isolated benchmark evidence.
 3. Keep the "low user burden" assertion explicit in future reviews; over-questioning is a known failure mode for this skill class.

@@ -1,0 +1,8 @@
+You are given an approved problem-framing artifact and the `user-research` skill.
+
+Produce a focused discovery-ready research plan that:
+- preserves the chosen direction and non-goals from the framing artifact
+- turns unresolved questions into explicit research questions
+- states what evidence must exist before requirements should begin
+
+Stay in discovery. Do not invent validated personas or write requirements.

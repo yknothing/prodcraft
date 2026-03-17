@@ -99,6 +99,8 @@ skills:
     explicit_invocation_plan_path: problem-framing-workspace/explicit-invocation-benchmark.md
     benchmark_results_path: problem-framing-workspace/explicit-benchmark-review.md
     integration_test_path: problem-framing-workspace/intake-handoff-review.md
+    downstream_integration_test_path: requirements-engineering-workspace/problem-framing-handoff-review.md
+    secondary_downstream_integration_test_path: user-research-workspace/problem-framing-handoff-review.md
 - name: market-analysis
   phase: 00-discovery
   file: skills/00-discovery/market-analysis/SKILL.md
@@ -106,7 +108,13 @@ skills:
 - name: user-research
   phase: 00-discovery
   file: skills/00-discovery/user-research/SKILL.md
-  status: draft
+  status: review
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: user-research-workspace/evals/eval-strategy.md
+    findings_path: user-research-workspace/findings.md
+    integration_test_path: user-research-workspace/problem-framing-handoff-review.md
 - name: feasibility-study
   phase: 00-discovery
   file: skills/00-discovery/feasibility-study/SKILL.md

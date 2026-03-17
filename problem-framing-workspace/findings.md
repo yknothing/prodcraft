@@ -57,6 +57,19 @@ Interpretation:
 - the with-skill delta is strongest on observability, anti-goal preservation, and handoff discipline
 - that is the right value shape for an entry-stack routed skill
 
+## Downstream Consumption Signal
+
+Downstream-consumer reviews now exist at:
+
+- `requirements-engineering-workspace/problem-framing-handoff-review.md`
+- `user-research-workspace/problem-framing-handoff-review.md`
+
+Interpretation:
+
+- `problem-framing` outputs are no longer only internally coherent
+- both a specification skill and a discovery skill can now consume the artifact as a real upstream input
+- the strongest observed lift is still preservation of non-goals, scope boundaries, unresolved questions, and auditable next-step discipline
+
 ## Next QA Step
 
-Run one true isolated benchmark or cross-reviewer execution drill on one of the reviewed scenarios so the current semi-isolated signal can be checked against cleaner evidence.
+Run one true isolated benchmark or cross-reviewer execution drill on one of the reviewed downstream scenarios so the current semi-isolated and downstream-consumption signals can be checked against cleaner evidence.

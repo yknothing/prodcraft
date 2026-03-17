@@ -1,0 +1,12 @@
+{
+  "evaluation_type": "manual_handoff_review",
+  "date": "2026-03-17",
+  "scenario": "team-invite-problem-framing-handoff",
+  "fixture": "user-research-workspace/handoff-fixtures/team-invite-problem-framing.md",
+  "skill_under_test": "skills/00-discovery/user-research/SKILL.md",
+  "branches": [
+    "without_skill",
+    "with_skill"
+  ],
+  "reviewer_note": "Manual comparison authored in one reviewer context; treat as review-stage evidence, not isolated benchmark evidence."
+}
