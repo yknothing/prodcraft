@@ -1,0 +1,1 @@
+Read `./access-review-modernization-architecture.md` and `./access-review-modernization-requirements.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, label them clearly and continue. Produce a release-1 API contract outline for the access-review modernization effort.

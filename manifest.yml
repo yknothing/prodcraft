@@ -134,7 +134,12 @@ skills:
 - name: api-design
   phase: 02-architecture
   file: skills/02-architecture/api-design/SKILL.md
-  status: draft
+  status: review
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: api-design-workspace/evals/eval-strategy.md
+    findings_path: api-design-workspace/findings.md
+    integration_test_path: api-design-workspace/architecture-handoff-review.md
 - name: task-breakdown
   phase: 03-planning
   file: skills/03-planning/task-breakdown/SKILL.md
