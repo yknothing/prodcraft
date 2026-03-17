@@ -30,14 +30,14 @@ metadata:
 
 A testing strategy defines what to test, at what layer, and with what tools. Without it, teams either over-test at the wrong layer (slow, brittle E2E suites) or under-test critical paths (production incidents). The strategy aligns testing effort with risk: high-risk paths get more coverage, low-risk paths get less. It also determines how tests integrate into CI/CD, how test data is managed, and how the team prevents test suite rot.
 
+In a lifecycle-aware system, testing strategy must preserve upstream scope boundaries. Do not hide unsupported release-1 behavior, coexistence risks, or unresolved contract questions under a generic "we have E2E tests" answer.
+
 ## Inputs
 
 - **source-code**: The codebase under test, including its module boundaries and dependency graph.
 - **task-list**: The reviewed implementation slice or change scope that defines what must be verified now.
 - **architecture-doc**: System topology that determines integration points and test boundaries.
 - **api-contract**: API specifications (OpenAPI, GraphQL schema) that drive contract tests.
-
-In a lifecycle-aware system, testing strategy must preserve upstream scope boundaries. Do not hide unsupported release-1 behavior, coexistence risks, or unresolved contract questions under a generic "we have E2E tests" answer.
 
 ## Process
 

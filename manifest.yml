@@ -170,7 +170,12 @@ skills:
 - name: testing-strategy
   phase: 05-quality
   file: skills/05-quality/testing-strategy/SKILL.md
-  status: draft
+  status: review
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: testing-strategy-workspace/evals/eval-strategy.md
+    findings_path: testing-strategy-workspace/findings.md
+    integration_test_path: testing-strategy-workspace/strategy-review.md
 - name: ci-cd
   phase: 06-delivery
   file: skills/06-delivery/ci-cd/SKILL.md
