@@ -48,6 +48,7 @@ Before the first action, state:
 - which paths must be preserved
 - what should fail closed if the system is unsafe
 - whether rollback or fallback is preferred over partial manual repair
+- where any referenced threshold, policy, or guard decision comes from
 
 ### Step 3: Write the Response Steps
 
@@ -56,6 +57,7 @@ Use numbered steps with:
 - commands, dashboards, or checks to use
 - expected observations
 - branch conditions for rollback, fallback, or escalation
+- explicit source or value for any threshold like "communication threshold" or "expected recovery window"
 
 Avoid prose that forces the reader to infer the next move.
 
@@ -86,6 +88,7 @@ Validate that someone other than the author can follow it. Update the runbook af
 3. **No rollback or safe-stop branch** -- Procedures that assume the happy path are dangerous under pressure.
 4. **Outdated environment details** -- Old commands and links are silent operational hazards.
 5. **Missing communication checkpoints** -- Recovery can still fail if stakeholders do not know the current state.
+6. **Magic thresholds** -- Saying "if the threshold is exceeded" without naming the threshold or policy source forces responders to guess.
 
 ## Related Skills
 

@@ -13,6 +13,7 @@
 - The skill now emphasizes executable procedure instead of generic operational prose.
 - Output quality improves when the skill is used explicitly with incident and signal context.
 - The resulting runbook is better aligned with incident-response and observability evidence.
+- A stricter single-author replay found only minor threshold/policy ambiguity rather than structural failure.
 
 ## Current Limits
 
