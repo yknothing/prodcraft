@@ -1,0 +1,1 @@
+First read ./skill-under-test/SKILL.md, then review the task slice, API contract summary, implementation file, and tests. Provide code review feedback with priorities.

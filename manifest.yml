@@ -161,7 +161,12 @@ skills:
 - name: code-review
   phase: 05-quality
   file: skills/05-quality/code-review/SKILL.md
-  status: draft
+  status: review
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: code-review-workspace/evals/eval-strategy.md
+    findings_path: code-review-workspace/findings.md
+    integration_test_path: code-review-workspace/changeset-review.md
 - name: testing-strategy
   phase: 05-quality
   file: skills/05-quality/testing-strategy/SKILL.md

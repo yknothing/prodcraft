@@ -9,12 +9,13 @@ Verify that the implementation meets the specification, acceptance criteria, and
 - Feature implementation is code-complete.
 - Unit and integration tests pass in CI.
 - Code is ready for review.
+- Reviewed task, contract, and architecture context are available for the reviewer.
 
 ## Entry Criteria
 
 - All planned features are implemented and merged to the integration branch.
 - Automated test suite passes with no known failures.
-- Acceptance criteria are documented and available for validation.
+- Task/contract context is documented and available for validation.
 - Test environments are provisioned and configured.
 
 ## Exit Criteria (Quality Gate)
@@ -47,6 +48,8 @@ performance-audit ─────────────────┘
 ```
 
 Code review gates entry to broader testing. Security and performance audits can run in parallel with functional testing. All must pass for QA sign-off.
+
+In brownfield work, quality review must verify that coexistence and unsupported release-boundary behavior are still protected before broader QA sign-off proceeds.
 
 ## Anti-Patterns
 
