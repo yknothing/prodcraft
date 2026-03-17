@@ -6,6 +6,8 @@ Evaluate whether `incident-response` improves a routed production-incident hando
 
 At review stage, use manual side-by-side evaluation instead of auto-trigger scoring. This skill is expected to be a routed operations skill, not a discoverability-first skill.
 
+A "non-brownfield comparison scenario" means an incident that does not depend on legacy coexistence, migration seams, or compatibility burden. It is used to verify that the skill still improves containment and coordination in a more ordinary production failure.
+
 ## Review Scope
 
 Review the skill on:
@@ -15,6 +17,10 @@ Review the skill on:
    - unsupported reassignment variants should fail closed
    - legacy coexistence and rollback still matter
    - a post-release production incident now exists
+2. `team-invite-email-backlog-incident`
+   - non-brownfield service incident
+   - no legacy coexistence or migration seam exists
+   - email delay and queue recovery still require clear containment and communication
 
 ## Assertions
 
@@ -34,6 +40,8 @@ Review the skill on:
 - `fixtures/access-review-modernization-pipeline-summary.md`
 - `fixtures/access-review-modernization-architecture-summary.md`
 - `fixtures/access-review-modernization-incident-alert.md`
+- `fixtures/team-invite-service-summary.md`
+- `fixtures/team-invite-incident-alert.md`
 
 ## Method
 
@@ -44,6 +52,7 @@ Review the skill on:
 
 ## Exit Criteria for Review Stage
 
-- At least one routed brownfield incident scenario reviewed
+- At least one routed brownfield scenario reviewed
+- At least one routed non-brownfield comparison scenario reviewed
 - Clear manual evidence that the skill improves containment discipline and handoff quality
 - No claim of tested or production status until isolated benchmark coverage exists

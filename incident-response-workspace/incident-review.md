@@ -42,6 +42,19 @@ The skill-applied response is stronger on the dimensions that matter for lifecyc
 - it captures evidence before speculative diagnosis
 - it gives clearer command structure, cadence, and post-incident handoff
 
+## Additional Scenario: `team-invite-email-backlog-incident`
+
+This second scenario is intentionally non-brownfield:
+
+- no legacy coexistence or migration seam exists
+- the incident is a queue-backed email delivery backlog in a newer invite service
+
+The baseline again produced a generic incident outline. The skill-applied response still improved quality by:
+
+- prioritizing containment and service-level degradation handling before root-cause speculation
+- setting explicit severity, cadence, and escalation based on user-visible delay
+- shaping clearer handoff to runbooks and follow-up operational work
+
 ## Assertion Review
 
 | Assertion | Baseline | With skill | Notes |
@@ -59,4 +72,4 @@ The first manual review suggests `incident-response` follows the same core-spine
 - it is more valuable as a routed/core workflow skill than as a discoverability-first skill
 - its value comes from preserving release-boundary and coexistence constraints under operational pressure
 
-This is review-stage evidence only. The next step is an isolated benchmark for the same incident plus a second scenario that is not rooted in brownfield coexistence.
+This is review-stage evidence only. The second scenario now exists, which increases confidence that the skill is not overfit to brownfield coexistence problems. The next step is isolated benchmarking plus tighter reuse with runbooks and observability.
