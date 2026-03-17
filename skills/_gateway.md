@@ -15,6 +15,8 @@ The intake hard gate is enforced in two layers:
 1. **Routing policy** -- default to `intake` for new work or ambiguity.
 2. **Workflow contract** -- every workflow requires an approved `intake-brief` before execution.
 
+When intake has identified the likely lifecycle path but the problem statement or solution direction is still fuzzy, route next to `problem-framing` before moving into research, specification, or architecture.
+
 ## Skill Selection Priority
 
 When multiple skills could apply, use this priority order:
@@ -36,7 +38,7 @@ Match based on what phase the work is currently in:
 
 | Current Activity | Phase | Likely Skills |
 |------------------|-------|---------------|
-| Exploring a new idea | 00-discovery | market-analysis, user-research, feasibility-study |
+| Exploring a new idea | 00-discovery | problem-framing, market-analysis, user-research, feasibility-study |
 | Defining requirements | 01-specification | requirements-engineering, spec-writing, domain-modeling |
 | Designing system structure | 02-architecture | system-design, api-design, data-modeling, security-design |
 | Breaking down work | 03-planning | task-breakdown, estimation, risk-assessment |
@@ -114,6 +116,39 @@ IF user_facing THEN accessibility
 IF multi_language THEN internationalization
 ```
 
+## Entry Stack Rules
+
+Prodcraft's entry stack has two layers:
+
+1. `intake` -- classify the work, choose the phase and workflow, and create the `intake-brief`
+2. `problem-framing` -- only when the route is known but the problem or direction is still too fuzzy for clean downstream work
+
+Use `problem-framing` after intake when:
+- the request is new work and still underspecified after routing
+- 2-3 viable directions need comparison before requirements or research
+- downstream work would otherwise start by rediscovering the problem statement
+
+Do not use `problem-framing` when:
+- the route and problem are already clear enough for the next skill
+- the work is already in progress
+- the task is trivial enough for an intake fast-track
+
+### Entry Stack Observability
+
+Each entry-layer handoff must record:
+- why the skill was invoked
+- how many questions were asked and which answers changed the route or direction
+- the primary path or direction selected
+- any meaningful alternative considered
+- the next skill to invoke
+
+### Entry Stack Usability
+
+Entry skills should minimize user burden:
+- `intake`: default to 1-3 questions, never more than 5
+- `problem-framing`: default to 1-3 additional questions, never more than 5
+- do not ask another question unless its answer could change the route, direction, or risk posture
+
 ## Phase Transition Protocol
 
 When transitioning between phases:
@@ -174,7 +209,7 @@ Do not enter a workflow unless the `intake-brief` exists and the user has approv
 
 Prodcraft is designed to complement, not replace, existing skill systems. If your environment has skills like `brainstorming`, `systematic-debugging`, or `writing-plans`:
 
-- `brainstorming` maps to `intake` + phase 00 skills
+- `brainstorming` maps most closely to `intake` -> `problem-framing` -> discovery or specification skills
 - `systematic-debugging` maps to phase 04 implementation (debugging variant)
 - `writing-plans` maps to phase 03 planning skills
 - `executing-plans` maps to phase 04 implementation skills

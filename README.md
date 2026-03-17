@@ -8,6 +8,8 @@ Prodcraft organizes the entire software development lifecycle into composable, m
 
 Every piece of work enters through the **intake** skill -- a mandatory triage that explores context, classifies the work type, determines which lifecycle phase to start at, and recommends a workflow. Think of it as a hospital triage for software development: assess first, then route.
 
+When intake identifies the route but the problem statement or solution direction is still fuzzy, Prodcraft uses a second entry-layer skill, `problem-framing`, before deeper discovery, specification, or architecture work begins.
+
 This hard gate is not meant to depend only on skill discoverability. Prodcraft enforces it through workflow contracts and validation: workflows declare `entry_skill: intake`, require an `intake-brief`, and CI checks those invariants.
 
 ```
@@ -26,7 +28,7 @@ The **gateway** routes to the right workflow (agile, spec-driven, waterfall, hot
 
 Most development skill systems are flat collections -- useful individually but lacking the connective tissue that turns good practices into great outcomes. Prodcraft adds four structural innovations:
 
-1. **Intake-first design** -- Every interaction starts with triage. The `intake` skill classifies work, explores context, and proposes a path before any implementation begins. Inspired by the brainstorming hard-gate pattern: design before code.
+1. **Intake-first design** -- Every interaction starts with triage. The `intake` skill classifies work, explores context, and proposes a path before any implementation begins. If the route is clear but the concept is not, `problem-framing` compares directions and hands off a cleaner problem statement. Inspired by the brainstorming hard-gate pattern: design before code.
 2. **Phase-aware skills** -- Each skill knows where it sits in the lifecycle (discovery through evolution), what it needs as input, and what it produces as output.
 3. **Methodology adapters** -- The same skills can be orchestrated differently for spec-driven, agile, or iterative-waterfall development. Skills are methodology-agnostic; workflows are methodology-specific.
 4. **Quality gates** -- Phase transitions have explicit entry/exit criteria. You cannot proceed to implementation without architecture review; you cannot deploy without quality verification.
@@ -37,6 +39,7 @@ Prodcraft treats `intake` as a system rule, not just a trigger hint:
 
 - New work should route through `skills/00-discovery/intake/SKILL.md`
 - Every workflow requires an approved `intake-brief`
+- Entry-layer decisions should stay observable through `intake-brief` and, when used, `problem-frame`
 - CI validates workflow entry rules so the gate cannot silently drift out of sync
 
 Use the validator locally:
@@ -149,17 +152,17 @@ Evolution ──[Retrospective complete]──> Discovery (next cycle)
    ln -s /path/to/prodcraft/skills ~/.claude/skills/prodcraft
    ```
 
-2. Use workflow commands to orchestrate:
-   ```
-   /orchestrator --workflow=agile-sprint --phase=implementation
-   ```
+2. Start new work through the intake skill and follow the routed workflow:
+   - open `skills/00-discovery/intake/SKILL.md`
+   - produce an `intake-brief`
+   - use `skills/_gateway.md` plus the selected file in `workflows/` to choose the next skills
 
-3. Skills are triggered automatically based on context, or invoked directly:
-   ```
-   /tdd          # Test-Driven Development
-   /code-review  # Request code review
-   /spec-write   # Write specification
-   ```
+3. Invoke individual skills by loading their `SKILL.md` packages in context. For example:
+   - `skills/04-implementation/tdd/SKILL.md`
+   - `skills/05-quality/code-review/SKILL.md`
+   - `skills/06-delivery/ci-cd/SKILL.md`
+
+Prodcraft does **not** ship a standalone `/orchestrator` command. The orchestration layer is defined by the checked-in skill packages, gateway rules, workflow files, and validator.
 
 ### Standalone Usage
 

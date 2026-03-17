@@ -79,13 +79,18 @@ skills:
   phase: 00-discovery
   file: skills/00-discovery/intake/SKILL.md
   gateway: true
-  status: tested
+  status: review
   evaluation_mode: discoverability
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: intake-workspace/evals/eval-strategy.md
+    findings_path: intake-workspace/redesign-notes.md
     trigger_eval_results_path: intake-workspace/optimization/iter-2/results-mixed.json
     benchmark_results_path: intake-workspace/iteration-1/benchmark.md
+- name: problem-framing
+  phase: 00-discovery
+  file: skills/00-discovery/problem-framing/SKILL.md
+  status: draft
 - name: market-analysis
   phase: 00-discovery
   file: skills/00-discovery/market-analysis/SKILL.md
@@ -438,6 +443,30 @@ artifact_flow:
   - spec-writing
 - artifact: feasibility-report
   produced_by: feasibility-study
+  consumed_by:
+  - requirements-engineering
+- artifact: intake-brief
+  produced_by: intake
+  consumed_by:
+  - problem-framing
+  - market-analysis
+  - user-research
+  - feasibility-study
+  - requirements-engineering
+- artifact: problem-frame
+  produced_by: problem-framing
+  consumed_by:
+  - market-analysis
+  - user-research
+  - feasibility-study
+  - requirements-engineering
+- artifact: options-brief
+  produced_by: problem-framing
+  consumed_by:
+  - feasibility-study
+  - requirements-engineering
+- artifact: design-direction
+  produced_by: problem-framing
   consumed_by:
   - requirements-engineering
 - artifact: requirements-doc

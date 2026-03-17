@@ -29,6 +29,8 @@ Every piece of work -- a new feature, a bug fix, a refactoring, a migration -- e
 
 Without intake, teams jump straight to coding and discover mid-way that they're solving the wrong problem, using the wrong approach, or missing critical constraints. Thirty seconds of triage prevents hours of wasted effort.
 
+Intake is the **control plane** for entry, not the full discovery workshop. Its job is to classify, route, and make the next step observable. If deeper concept shaping is needed after routing is chosen, hand off to a downstream discovery skill rather than turning intake into a long design session.
+
 ## Hard Gate
 
 No implementation, architecture, or planning work may begin until intake is complete and the user approves the proposed path.
@@ -77,9 +79,11 @@ Priority order:
 
 Stop when you have enough. Typically 1-3 questions suffice. Never more than 5.
 
+Default to the smallest question budget that still changes the routing decision. If the first two answers already make the path clear, stop and propose the route.
+
 ### Step 4: Propose Approach
 
-Present a concise intake brief:
+Present a concise intake brief. Compare **path options**, not detailed implementation or architecture options:
 
 ```
 ## Intake Brief
@@ -100,6 +104,8 @@ Present a concise intake brief:
 [Different path with different trade-offs]
 ```
 
+Only include an alternative path when the trade-off is real and decision-relevant. One clear alternative is usually enough.
+
 ### Step 5: Get Approval
 
 Wait for user confirmation. Accept:
@@ -110,6 +116,20 @@ Wait for user confirmation. Accept:
 ### Step 6: Handoff
 
 Transition to the first skill in the proposed path, passing the intake brief as context.
+
+If routing is clear but the problem or solution direction is still too fuzzy for specification or discovery research, hand off to [problem-framing](../problem-framing/SKILL.md) before moving deeper into the lifecycle.
+
+## Observability Requirements
+
+Intake must leave behind a usable record of **why** the work entered the system this way.
+
+The `intake-brief` must capture:
+- why intake was invoked or fast-tracked
+- the key questions asked and the answers that changed routing
+- the recommended path and any meaningful alternative considered
+- the next skill to invoke and the reason it is next
+
+This keeps routing decisions auditable without forcing downstream skills to reconstruct the conversation.
 
 ## Methodology Selection Signals
 
@@ -127,6 +147,7 @@ Transition to the first skill in the proposed path, passing the intake brief as 
 3. **Guessing the methodology** -- Don't assume agile because it's popular. Match methodology to constraints and context.
 4. **Rigid phase assignment** -- The lifecycle is a guide, not a prison. A bug fix might need architecture review if it reveals a design flaw.
 5. **Ignoring existing context** -- If the project has CLAUDE.md, existing specs, or established conventions, incorporate them.
+6. **Turning intake into a full design session** -- Intake should decide the route. If the work needs option exploration or concept shaping, route to problem-framing instead of expanding intake indefinitely.
 
 ## Examples
 

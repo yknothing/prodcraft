@@ -10,6 +10,8 @@ Prodcraft is a lifecycle-aware skills system for production-grade software devel
 
 Intake triages the work, determines the lifecycle phase and methodology, and routes to the correct skill sequence. This is a hard gate -- no implementation, architecture, or planning work may begin until intake is complete and the user approves the proposed path.
 
+If intake identifies the route but the problem statement or solution direction is still too fuzzy for clean downstream work, hand off to `skills/00-discovery/problem-framing/SKILL.md` before moving deeper into the lifecycle. Keep intake concise; do not turn it into a full design workshop.
+
 The routing logic is defined in `skills/_gateway.md`, which maps user intent to skill sequences, handles workflow selection, and defines fast-track rules for trivial changes.
 
 Exceptions: if the user explicitly requests to skip intake for trivial work (typo fixes, comment updates), produce a 2-3 sentence intake summary and confirm.

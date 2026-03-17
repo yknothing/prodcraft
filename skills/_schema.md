@@ -106,6 +106,7 @@ Artifacts (inputs/outputs) use a consistent naming scheme:
 
 | Category | Examples |
 |----------|----------|
+| Framing | `intake-brief`, `problem-frame`, `options-brief`, `design-direction` |
 | Documents | `requirements-doc`, `spec-doc`, `architecture-doc` |
 | Diagrams | `component-diagram`, `sequence-diagram`, `er-diagram` |
 | Code artifacts | `source-code`, `test-suite`, `migration-script` |
