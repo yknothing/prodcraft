@@ -20,6 +20,8 @@ The skill is now treated as a **routed discovery skill** whose current evidence 
 3. The skill's value is strongest when the team already has a candidate direction but still needs user evidence before requirements should start.
 4. The first signal no longer comes from a single product-direction scenario only; it now also appears in a classic B2B/SaaS brownfield admin-modernization case.
 5. The preferred brownfield scenario now has semi-isolated manual benchmark evidence, which is stronger than plain handoff review but still weaker than a true isolated benchmark.
+6. A downstream specification-consumption review now exists for the same brownfield scenario, showing that evidence-backed user-research artifacts improve later requirements work rather than just producing cleaner discovery documents.
+7. That downstream specification-consumption path now also has semi-isolated manual benchmark evidence, so the value of `user-research` is no longer supported only by discovery-local reviews.
 
 ## Contract Implication
 
@@ -28,6 +30,8 @@ The skill is now treated as a **routed discovery skill** whose current evidence 
 - it improves observability and handoff discipline
 - it does **not** satisfy the full user-research quality gate by itself
 - downstream specification work should start from evidence-backed personas and journeys, not from a research plan alone
+
+The new downstream review follows that rule: it uses evidence-shaped persona and journey fixtures, not the earlier `research-plan`, when testing `requirements-engineering`.
 
 ## Implication for Prodcraft
 

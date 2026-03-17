@@ -27,6 +27,8 @@ Three trigger-eval iterations were run on **2026-03-16**:
 11. A supplemental manual evaluation of the brownfield modernization scenario indicates the same pattern as the approvals scenario: baseline can produce a usable requirements draft, but the skill materially improves coexistence-boundary preservation, explicit open questions, and downstream handoff shape.
 12. The staged entry-stack handoff from `problem-framing` to `requirements-engineering` is now recognized as part of the intended contract, and the skill package has been updated to acknowledge `problem-frame` and `design-direction` as valid upstream inputs.
 13. A first staged handoff review from `problem-framing` into `requirements-engineering` has been added for the access-review modernization scenario, including a manual baseline/with-skill branch pair. The early signal matches the intake-handoff evidence: the skill is stronger at preserving explicit scope boundaries, non-goals, and unresolved questions than a generic baseline draft.
+14. A downstream review from evidence-backed `user-research` fixtures into `requirements-engineering` now exists for the classic B2B/SaaS `seat-and-guest-management` scenario. The skill is stronger than baseline at preserving release-1 non-goals, segment-sensitive traceability, and guest-first coexistence boundaries.
+15. The same `seat-and-guest-management` downstream path now has semi-isolated manual benchmark evidence, which is stronger than plain branch-pair review and includes an explicit contamination check.
 
 ## Implication for Prodcraft
 
@@ -38,6 +40,7 @@ For now, it is better understood as:
 - a strong candidate for workflow-driven or manual invocation
 - a skill whose value must next be measured through explicit invocation quality and handoff quality, not just discovery metadata
 - a downstream consumer that must preserve upstream framing artifacts, not just raw discovery notes
+- a downstream consumer that should also preserve evidence-backed persona and journey signals instead of flattening them into generic admin requirements
 
 For explicit-invocation QA:
 
@@ -47,4 +50,4 @@ For explicit-invocation QA:
 
 ## Next QA Step
 
-Upgrade the staged `problem-framing -> requirements-engineering` review from manual branch-pair evidence to a cleaner semi-isolated or isolated benchmark using `handoff-fixtures/access-review-modernization-problem-framing.md`.
+Run a true isolated benchmark or cross-reviewer execution drill for one of the two strongest routed chains: `problem-framing -> requirements-engineering` or `user-research -> requirements-engineering`.

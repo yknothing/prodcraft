@@ -117,6 +117,7 @@ skills:
     benchmark_plan_path: user-research-workspace/semi-isolated-benchmark.md
     benchmark_results_path: user-research-workspace/semi-isolated-benchmark-review.md
     integration_test_path: user-research-workspace/problem-framing-handoff-review.md
+    downstream_spec_integration_test_path: requirements-engineering-workspace/user-research-handoff-review.md
 - name: feasibility-study
   phase: 00-discovery
   file: skills/00-discovery/feasibility-study/SKILL.md
@@ -136,6 +137,9 @@ skills:
     benchmark_results_path: requirements-engineering-workspace/explicit-benchmark-review.md
     integration_test_path: requirements-engineering-workspace/intake-handoff-review.md
     framing_integration_test_path: requirements-engineering-workspace/problem-framing-handoff-review.md
+    user_research_integration_test_path: requirements-engineering-workspace/user-research-handoff-review.md
+    user_research_benchmark_plan_path: requirements-engineering-workspace/user-research-semi-isolated-benchmark.md
+    user_research_benchmark_results_path: requirements-engineering-workspace/user-research-semi-isolated-benchmark-review.md
 - name: spec-writing
   phase: 01-specification
   file: skills/01-specification/spec-writing/SKILL.md
