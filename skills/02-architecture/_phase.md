@@ -6,14 +6,15 @@ Design the system structure that satisfies the specification. Architecture decis
 
 ## When to Enter
 
-- Specification is signed off by engineering lead and product owner.
-- Requirements and domain model are stable enough to design against.
+- Reviewed requirements are available with scope boundaries and key open questions recorded.
+- A spec document and domain model exist if the selected workflow requires them or if system complexity warrants them.
 
 ## Entry Criteria
 
-- Spec document exists and has been reviewed.
-- Domain model is documented with entity relationships.
-- Non-functional requirements (performance, scale, security) are quantified.
+- Requirements document exists and has been reviewed.
+- Spec document exists for spec-driven or waterfall work; otherwise reviewed requirements are sufficient.
+- Domain model is documented when the system is complex enough to need explicit boundary modeling.
+- Non-functional requirements are quantified where known, and unresolved bounds are logged as open questions rather than hidden assumptions.
 
 ## Exit Criteria (Quality Gate)
 

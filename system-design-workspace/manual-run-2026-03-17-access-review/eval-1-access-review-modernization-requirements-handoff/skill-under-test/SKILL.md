@@ -131,32 +131,6 @@ For each major decision, document:
 5. **Architecture Astronautics** -- Over-abstracting and over-generalizing for hypothetical future needs. Design for today's known requirements with extension points for likely changes.
 6. **Closing open questions by accident** -- Turning unresolved compatibility, synchronization, or rollout questions into assumed architecture facts without labeling them as assumptions or follow-up decisions.
 
-## Examples
-
-**Choosing between monolith and microservices:**
-- Team of 4 developers, single product, 1-2 releases per week --> modular monolith. Low coordination overhead, simple deployment, easy debugging.
-- Team of 30 across 6 squads, each owning a business domain, independent release schedules --> microservices. Team autonomy justifies the operational complexity.
-
-**ADR example:**
-```
-# ADR-003: Use event sourcing for order processing
-
-Status: Accepted
-
-Context: Orders go through complex state transitions. Audit requirements demand
-full history. Multiple services react to order state changes.
-
-Decision: Implement event sourcing for the Order aggregate. Store events in
-an append-only event store. Project read models for query needs.
-
-Consequences:
-+ Full audit trail without additional logging
-+ Natural integration with event-driven architecture
-- Increased complexity in read model projection
-- Team needs training on event sourcing patterns
-- Eventually consistent read models require UX consideration
-```
-
 ## Related Skills
 
 - [spec-writing](../../01-specification/spec-writing/SKILL.md) -- Provides the spec-doc input

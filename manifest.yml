@@ -125,7 +125,12 @@ skills:
 - name: system-design
   phase: 02-architecture
   file: skills/02-architecture/system-design/SKILL.md
-  status: draft
+  status: review
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: system-design-workspace/evals/eval-strategy.md
+    findings_path: system-design-workspace/findings.md
+    integration_test_path: system-design-workspace/requirements-handoff-review.md
 - name: api-design
   phase: 02-architecture
   file: skills/02-architecture/api-design/SKILL.md

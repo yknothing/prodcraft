@@ -1,0 +1,1 @@
+Read `./access-review-modernization-requirements.md`. Work only from that file. Do not ask follow-up questions. If you need assumptions, label them clearly and continue. Produce a high-level architecture for release 1 that responds to the requirements and brownfield coexistence constraints.
