@@ -13,10 +13,11 @@ It does **not** claim automated isolated benchmark status. The run under review 
 
 but the outputs were still authored in one reviewer context.
 
-## Reviewed Artifact
+## Reviewed Artifacts
 
 | Artifact | Scenario | Notes |
 |---|---|---|
+| `user-research-handoff-manual-run-2026-03-17-team-invite` | `team-invite-user-research-handoff` | Non-brownfield comparison case |
 | `user-research-handoff-manual-run-2026-03-17-seat-guest` | `seat-guest-management-user-research-handoff` | Preferred classic B2B/SaaS brownfield downstream benchmark |
 
 ## Fixture Honesty Note
@@ -35,13 +36,10 @@ This run is **not** fully isolated because the same reviewer authored both branc
 
 ## Cross-Branch Review
 
-| Dimension | Baseline | With skill | Judgment |
+| Scenario | Baseline | With skill | Judgment |
 |---|---|---|---|
-| specification boundary | stays mostly in specification, but broadens the admin problem quickly | stays in specification and keeps the release-1 problem narrower | **Positive lift** |
-| evidence traceability | captures major themes, but source linkage is light | links requirements more clearly back to persona and journey evidence | **Positive lift** |
-| non-goals | mostly sensible, but under-specified | explicit and stable throughout the draft | **Positive lift** |
-| primary vs contrast segment pressure | tends to blend guest collaboration and governance-heavy needs | keeps the primary guest-first segment centered and pushes governance-heavy signals into later-scope questions | **Positive lift** |
-| downstream handoff | usable for later design | cleaner handoff into `system-design` and `acceptance-criteria` | **Positive lift** |
+| `team-invite-user-research-handoff` | Produces a plausible invite requirements draft, but enterprise and later-stage onboarding concerns re-enter the draft too easily and evidence traceability is light | Keeps `email-invite-first` explicit, preserves later enterprise paths as non-goals or open questions, and ties requirements more clearly to persona/journey signals | **Positive lift** |
+| `seat-guest-management-user-research-handoff` | Produces a plausible requirements draft, but broadens the admin problem and weakens segment separation | Keeps `guest-first coexistence` explicit, preserves brownfield non-goals, and ties obligations back to persona/journey evidence more cleanly | **Positive lift** |
 
 ## What the Benchmark Shows
 
@@ -54,9 +52,15 @@ Baseline can already produce a plausible requirements draft. The with-skill delt
 - making persona and journey evidence more auditable
 - preventing governance-heavy secondary concerns from silently becoming the default design center
 
-### 2. The brownfield SaaS case is a good stress test
+### 2. The signal is no longer brownfield-only
 
-This scenario is harder than a generic feature request because it sits at the boundary between collaboration needs, admin controls, and commercial pressure. The skill helps keep the first release problem narrow enough to specify.
+The non-brownfield `team-invite` case shows the same underlying value pattern:
+
+- better preservation of the chosen release-1 path
+- clearer non-goals
+- cleaner traceability from user evidence into requirements
+
+The brownfield case remains the stronger stress test, but the lift is now visible in both environments.
 
 ### 3. The evidence is stronger, but still not final-form
 
@@ -72,5 +76,5 @@ This benchmark is stronger than plain downstream review, but weaker than a true 
 
 ## Next Required Evidence
 
-1. run a true isolated benchmark or cross-reviewer execution drill on this same scenario
-2. keep the same rigor for one non-brownfield user-research handoff so the signal is not brownfield-only
+1. run a true isolated benchmark or cross-reviewer execution drill on the preferred brownfield scenario
+2. keep the non-brownfield case as a standing comparison scenario in future reruns

@@ -22,6 +22,7 @@ The skill is now treated as a **routed discovery skill** whose current evidence 
 5. The preferred brownfield scenario now has semi-isolated manual benchmark evidence, which is stronger than plain handoff review but still weaker than a true isolated benchmark.
 6. A downstream specification-consumption review now exists for the same brownfield scenario, showing that evidence-backed user-research artifacts improve later requirements work rather than just producing cleaner discovery documents.
 7. That downstream specification-consumption path now also has semi-isolated manual benchmark evidence, so the value of `user-research` is no longer supported only by discovery-local reviews.
+8. A non-brownfield downstream comparison scenario now exists as well, which reduces the risk that the observed downstream lift is only a brownfield artifact.
 
 ## Contract Implication
 

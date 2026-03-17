@@ -1,0 +1,10 @@
+You are given completed user-research artifacts for a collaborative SaaS release-1 decision.
+
+Produce a concise requirements draft for release 1. Do not use any dedicated requirements-engineering skill instructions.
+
+Focus on:
+- the most important functional requirements
+- obvious non-goals or scope boundaries
+- any major open questions
+
+Stay in specification. Do not write architecture or implementation design.

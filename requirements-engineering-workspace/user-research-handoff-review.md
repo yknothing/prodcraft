@@ -4,9 +4,17 @@
 
 Verify that `requirements-engineering` can consume evidence-backed user-research artifacts, then turn them into release-1 requirements without flattening segment evidence, reopening excluded scope, or collapsing discovery findings into premature solution commitments.
 
-## Scenario
+## Scenarios
 
-- `seat-guest-management-user-research-handoff`
+### Scenario A: `team-invite-user-research-handoff`
+
+This is a non-brownfield collaborative SaaS specification scenario where:
+
+- user research has already validated that lightweight email invite is the dominant release-1 path
+- the product still needs a simple onboarding flow rather than enterprise identity-first setup
+- requirements work must sharpen release-1 obligations without turning the problem into SSO or bulk-admin scope too early
+
+### Scenario B: `seat-guest-management-user-research-handoff`
 
 This is a classic B2B/SaaS brownfield specification scenario where:
 
@@ -15,6 +23,14 @@ This is a classic B2B/SaaS brownfield specification scenario where:
 - requirements work must sharpen release-1 obligations without turning the problem into a broad pricing, procurement, or policy redesign
 
 ## Artifacts Reviewed
+
+### Scenario A
+
+- Input fixture: `handoff-fixtures/team-invite-user-persona-set.md`
+- Input fixture: `handoff-fixtures/team-invite-user-journey-map.md`
+- Manual branch pair: `user-research-handoff-manual-run-2026-03-17-team-invite`
+
+### Scenario B
 
 - Input fixture: `handoff-fixtures/seat-guest-management-user-persona-set.md`
 - Input fixture: `handoff-fixtures/seat-guest-management-user-journey-map.md`
@@ -26,22 +42,30 @@ The user-research artifacts used here are **QA fixtures**, not real production c
 
 ## Baseline Findings
 
-The manual baseline requirements draft is usable, but it shows the generic drift expected when the research evidence is not reinforced by the skill:
+Across both scenarios, the manual baseline requirements drafts are usable, but they show the generic drift expected when research evidence is not reinforced by the skill:
 
-- it captures the guest-access theme, but weakens the difference between primary and contrast segments
-- it starts to blend guest collaboration needs with broader seat-governance and procurement concerns
-- it keeps release-1 scope mostly sensible, but leaves non-goals and escalation thresholds under-specified
-- it is less explicit about which requirements are directly traceable to observed persona and journey evidence
+- major user needs are preserved, but evidence traceability is relatively light
+- release-1 scope remains mostly sensible, yet non-goals and escalation triggers are under-specified
+- primary and contrast segment pressures are more likely to blur together than remain intentionally separated
+
+Scenario-specific drift also appears:
+
+- in Scenario A, enterprise identity and bulk-admin extensions re-enter the conversation earlier than the research signal justifies
+- in Scenario B, guest collaboration starts to blend with broader governance and procurement scope
 
 ## With-Skill Findings
 
-The skill-applied response is materially stronger on the downstream dimensions that matter here:
+Across both scenarios, the skill-applied responses are materially stronger on the downstream dimensions that matter here:
 
 - keep the work in the requirements layer
-- preserve `guest-first coexistence` as a release-1 boundary rather than a generic admin-program rewrite
 - translate persona and journey evidence into clearer P0/P1 obligations
-- keep pricing redesign, org-wide policy engines, and forced seat-model migration explicit as non-goals
-- carry forward governance-heavy account behavior as open questions or later-scope triggers instead of silently mixing it into day-one requirements
+- keep later-scope expansions explicit as non-goals
+- carry forward contrast-segment pressure as open questions or later-scope triggers instead of silently mixing it into day-one requirements
+
+Scenario-specific advantages also appear:
+
+- in Scenario A, `email-invite-first` remains the clear release-1 boundary instead of sliding toward SSO-first or bulk provisioning
+- in Scenario B, `guest-first coexistence` remains the release-1 boundary instead of expanding into a generic admin-program rewrite
 
 ## Assertion Review
 
@@ -55,10 +79,10 @@ The skill-applied response is materially stronger on the downstream dimensions t
 
 ## Current Conclusion
 
-This downstream-consumption review shows that evidence-backed `user-research` artifacts can improve `requirements-engineering` output quality. The lift is strongest on scope discipline, segment-sensitive traceability, and preservation of release-1 non-goals.
+This downstream-consumption review shows that evidence-backed `user-research` artifacts can improve `requirements-engineering` output quality in both non-brownfield and brownfield SaaS scenarios. The lift is strongest on scope discipline, segment-sensitive traceability, and preservation of release-1 non-goals.
 
 ## Remaining Limits
 
 - this review is still manual evidence, not isolated benchmark evidence
 - the fixtures are synthetic QA artifacts, not real field data
-- the next stronger step is to upgrade this scenario to a semi-isolated or isolated benchmark
+- the next stronger step is to keep upgrading one or both scenarios to semi-isolated or isolated benchmark evidence

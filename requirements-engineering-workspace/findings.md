@@ -29,6 +29,7 @@ Three trigger-eval iterations were run on **2026-03-16**:
 13. A first staged handoff review from `problem-framing` into `requirements-engineering` has been added for the access-review modernization scenario, including a manual baseline/with-skill branch pair. The early signal matches the intake-handoff evidence: the skill is stronger at preserving explicit scope boundaries, non-goals, and unresolved questions than a generic baseline draft.
 14. A downstream review from evidence-backed `user-research` fixtures into `requirements-engineering` now exists for the classic B2B/SaaS `seat-and-guest-management` scenario. The skill is stronger than baseline at preserving release-1 non-goals, segment-sensitive traceability, and guest-first coexistence boundaries.
 15. The same `seat-and-guest-management` downstream path now has semi-isolated manual benchmark evidence, which is stronger than plain branch-pair review and includes an explicit contamination check.
+16. A non-brownfield `team-invite` downstream benchmark scenario now exists as a comparison case. The same core lift appears there too: stronger preservation of release-1 boundaries, clearer non-goals, and more explicit evidence traceability.
 
 ## Implication for Prodcraft
 

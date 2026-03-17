@@ -1,0 +1,8 @@
+You are given completed user-research artifacts and the `requirements-engineering` skill.
+
+Produce a requirements draft that:
+- stays in specification
+- turns persona and journey evidence into clearer release-1 obligations
+- preserves non-goals and open questions instead of silently resolving them
+
+Do not write architecture or implementation design.
