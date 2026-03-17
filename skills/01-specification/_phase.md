@@ -8,12 +8,15 @@ Define precisely what to build. Specification translates validated discovery ins
 
 - Feasibility study is approved with a "go" decision.
 - The team has a clear problem statement and target user definition from discovery.
+- Or an approved `problem-frame` / `design-direction` exists and the team is ready to convert that direction into reviewed requirements.
 
 ## Entry Criteria
 
 - Feasibility report exists with a documented go decision.
 - Market research report and user personas are available.
 - A product owner or sponsor is identified and available for decisions.
+
+For lighter or routed entry paths, a reviewed `problem-frame` and approved `design-direction` may substitute for a heavier discovery packet as long as the problem statement, scope boundary, and open questions are explicit.
 
 ## Exit Criteria (Quality Gate)
 

@@ -1,0 +1,12 @@
+{
+  "evaluation_type": "manual_handoff_review",
+  "date": "2026-03-17",
+  "scenario": "access-review-direction",
+  "fixture": "problem-framing-workspace/fixtures/access-review-modernization-intake-brief.md",
+  "skill_under_test": "skills/00-discovery/problem-framing/SKILL.md",
+  "branches": [
+    "without_skill",
+    "with_skill"
+  ],
+  "reviewer_note": "Manual comparison authored in one reviewer context; treat as review-stage evidence, not isolated benchmark evidence."
+}

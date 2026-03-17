@@ -1,0 +1,12 @@
+{
+  "evaluation_type": "manual_staged_handoff_review",
+  "date": "2026-03-17",
+  "scenario": "access-review-modernization-problem-framing-handoff",
+  "fixture": "requirements-engineering-workspace/handoff-fixtures/access-review-modernization-problem-framing.md",
+  "skill_under_test": "skills/01-specification/requirements-engineering/SKILL.md",
+  "branches": [
+    "without_skill",
+    "with_skill"
+  ],
+  "reviewer_note": "Manual comparison authored in one reviewer context; treat as supplemental routed evidence, not isolated benchmark evidence."
+}

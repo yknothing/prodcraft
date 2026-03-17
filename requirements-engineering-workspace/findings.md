@@ -25,6 +25,8 @@ Three trigger-eval iterations were run on **2026-03-16**:
 9. The first routed handoff benchmark shows that the skill preserves intake constraints better than baseline, especially around explicit scope boundaries, carry-through risks, and downstream handoff shape.
 10. A second routed handoff scenario has now been added for brownfield modernization, but the first official run was blocked by local Claude CLI authentication before either branch generated output.
 11. A supplemental manual evaluation of the brownfield modernization scenario indicates the same pattern as the approvals scenario: baseline can produce a usable requirements draft, but the skill materially improves coexistence-boundary preservation, explicit open questions, and downstream handoff shape.
+12. The staged entry-stack handoff from `problem-framing` to `requirements-engineering` is now recognized as part of the intended contract, and the skill package has been updated to acknowledge `problem-frame` and `design-direction` as valid upstream inputs.
+13. A first staged handoff review from `problem-framing` into `requirements-engineering` has been added for the access-review modernization scenario, including a manual baseline/with-skill branch pair. The early signal matches the intake-handoff evidence: the skill is stronger at preserving explicit scope boundaries, non-goals, and unresolved questions than a generic baseline draft.
 
 ## Implication for Prodcraft
 
@@ -35,6 +37,7 @@ For now, it is better understood as:
 - a core specification skill in the lifecycle
 - a strong candidate for workflow-driven or manual invocation
 - a skill whose value must next be measured through explicit invocation quality and handoff quality, not just discovery metadata
+- a downstream consumer that must preserve upstream framing artifacts, not just raw discovery notes
 
 For explicit-invocation QA:
 
@@ -44,4 +47,4 @@ For explicit-invocation QA:
 
 ## Next QA Step
 
-Preserve the manual brownfield review as supplemental evidence, then rerun `access-review-modernization-handoff` through the isolated official harness once local Claude CLI authentication is restored so the second scenario has automated evidence as well.
+Upgrade the staged `problem-framing -> requirements-engineering` review from manual branch-pair evidence to a cleaner semi-isolated or isolated benchmark using `handoff-fixtures/access-review-modernization-problem-framing.md`.

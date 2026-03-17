@@ -1,0 +1,5 @@
+You are given a reviewed problem frame and approved design direction.
+
+Produce a release-1 requirements draft from that input. Do not use any dedicated requirements-engineering skill instructions.
+
+Stay at the requirements layer if possible.

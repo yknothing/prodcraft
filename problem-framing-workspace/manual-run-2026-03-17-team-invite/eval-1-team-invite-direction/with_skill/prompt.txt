@@ -1,0 +1,8 @@
+You are given an approved intake brief and the `problem-framing` skill.
+
+Produce the outputs expected by the skill:
+- a concise problem frame
+- a small options brief
+- a recommended design direction
+
+Stay before requirements and architecture. Keep extra questioning to zero unless the fixture is insufficient.

@@ -84,3 +84,19 @@ Do not treat all positive misses as equivalent.
 - **Non-trigger precision target**: 10/10 non-trigger prompts should stay non-trigger.
 - **Overlap target**: document which competing skill wins each case; do not force a binary pass/fail interpretation.
 - **Mixed continuity target**: do not accept a large blended-score regression unless core recall clearly improves and false positives stay controlled.
+
+## Post-Redesign Follow-Up (2026-03-17)
+
+`intake` has since been tightened as the first layer of a two-step entry stack:
+
+- `intake` handles routing and path comparison
+- `problem-framing` handles deeper option shaping when routing is already clear
+
+Because the body contract changed, the old trigger and benchmark evidence should be treated as historically useful but not fully current.
+
+The next intake QA pass should verify:
+
+1. **Core discoverability still holds** for the strongest entry prompts.
+2. **Question load remains low** after the tighter routing-only positioning.
+3. **Observability improves** because the `intake-brief` now records why intake was used, which answers changed routing, and what skill is next.
+4. **Handoff discipline improves** by routing fuzzy post-intake cases to `problem-framing` instead of stretching intake into a full design conversation.

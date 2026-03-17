@@ -1,0 +1,9 @@
+You are given an approved intake brief for a brownfield modernization direction question.
+
+Produce a concise direction note for the team. Do not use any dedicated problem-framing skill instructions.
+
+Focus on:
+- the likely release-1 direction
+- major alternatives
+- open questions
+- what the team should do next

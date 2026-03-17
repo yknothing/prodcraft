@@ -1,0 +1,5 @@
+You are given a reviewed problem frame and approved design direction plus the `requirements-engineering` skill.
+
+Produce a release-1 requirements draft that preserves the framing non-goals, chosen direction, and open questions.
+
+Stay in the requirements layer.
