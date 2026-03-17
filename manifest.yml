@@ -80,6 +80,7 @@ skills:
   file: skills/00-discovery/intake/SKILL.md
   gateway: true
   status: tested
+  evaluation_mode: discoverability
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: intake-workspace/evals/eval-strategy.md
@@ -101,6 +102,7 @@ skills:
   phase: 01-specification
   file: skills/01-specification/requirements-engineering/SKILL.md
   status: review
+  evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: requirements-engineering-workspace/evals/eval-strategy.md
@@ -126,6 +128,7 @@ skills:
   phase: 02-architecture
   file: skills/02-architecture/system-design/SKILL.md
   status: review
+  evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: system-design-workspace/evals/eval-strategy.md
@@ -135,6 +138,7 @@ skills:
   phase: 02-architecture
   file: skills/02-architecture/api-design/SKILL.md
   status: review
+  evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: api-design-workspace/evals/eval-strategy.md
@@ -144,6 +148,7 @@ skills:
   phase: 03-planning
   file: skills/03-planning/task-breakdown/SKILL.md
   status: review
+  evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: task-breakdown-workspace/evals/eval-strategy.md
@@ -153,6 +158,7 @@ skills:
   phase: 04-implementation
   file: skills/04-implementation/tdd/SKILL.md
   status: review
+  evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: tdd-workspace/evals/eval-strategy.md
@@ -162,6 +168,7 @@ skills:
   phase: 05-quality
   file: skills/05-quality/code-review/SKILL.md
   status: review
+  evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: code-review-workspace/evals/eval-strategy.md
@@ -171,6 +178,7 @@ skills:
   phase: 05-quality
   file: skills/05-quality/testing-strategy/SKILL.md
   status: review
+  evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: testing-strategy-workspace/evals/eval-strategy.md
@@ -180,6 +188,7 @@ skills:
   phase: 06-delivery
   file: skills/06-delivery/ci-cd/SKILL.md
   status: review
+  evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: ci-cd-workspace/evals/eval-strategy.md
@@ -189,6 +198,7 @@ skills:
   phase: 07-operations
   file: skills/07-operations/incident-response/SKILL.md
   status: review
+  evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: incident-response-workspace/evals/eval-strategy.md
@@ -198,6 +208,7 @@ skills:
   phase: 07-operations
   file: skills/07-operations/monitoring-observability/SKILL.md
   status: review
+  evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: monitoring-observability-workspace/evals/eval-strategy.md
@@ -207,6 +218,7 @@ skills:
   phase: 07-operations
   file: skills/07-operations/runbooks/SKILL.md
   status: review
+  evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: runbooks-workspace/evals/eval-strategy.md
@@ -216,6 +228,7 @@ skills:
   phase: 08-evolution
   file: skills/08-evolution/tech-debt-management/SKILL.md
   status: review
+  evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: tech-debt-management-workspace/evals/eval-strategy.md
@@ -225,6 +238,7 @@ skills:
   phase: 08-evolution
   file: skills/08-evolution/retrospective/SKILL.md
   status: review
+  evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: retrospective-workspace/evals/eval-strategy.md

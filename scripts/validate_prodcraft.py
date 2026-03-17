@@ -60,6 +60,11 @@ SKILL_STATUSES = {
     "deprecated",
 }
 
+EVALUATION_MODES = {
+    "discoverability",
+    "routed",
+}
+
 
 def load_frontmatter(path: Path) -> tuple[dict, str]:
     text = path.read_text()
@@ -193,6 +198,13 @@ def validate_manifest_skill_status(manifest: dict, errors: list[str]) -> None:
             errors.append(f"{MANIFEST_PATH}: skill `{name}` has invalid or missing `status`")
             continue
 
+        evaluation_mode = entry.get("evaluation_mode")
+        if status != "draft" and evaluation_mode not in EVALUATION_MODES:
+            errors.append(
+                f"{MANIFEST_PATH}: skill `{name}` with status `{status}` must define `evaluation_mode` as one of {sorted(EVALUATION_MODES)}"
+            )
+            continue
+
         qa = entry.get("qa")
         if status != "draft" and not isinstance(qa, dict):
             errors.append(f"{MANIFEST_PATH}: skill `{name}` with status `{status}` must define a `qa` mapping")
@@ -209,10 +221,18 @@ def validate_manifest_skill_status(manifest: dict, errors: list[str]) -> None:
                     )
 
         if status in {"tested", "secure", "production"}:
-            if not isinstance(qa, dict) or "trigger_eval_results_path" not in qa:
-                errors.append(
-                    f"{MANIFEST_PATH}: skill `{name}` with status `{status}` must define `qa.trigger_eval_results_path`"
-                )
+            if evaluation_mode == "discoverability":
+                if not isinstance(qa, dict) or "trigger_eval_results_path" not in qa:
+                    errors.append(
+                        f"{MANIFEST_PATH}: discoverability skill `{name}` with status `{status}` must define `qa.trigger_eval_results_path`"
+                    )
+            elif evaluation_mode == "routed":
+                required_paths = {"benchmark_results_path", "integration_test_path"}
+                missing = sorted(required_paths - set(qa or {}))
+                if missing:
+                    errors.append(
+                        f"{MANIFEST_PATH}: routed skill `{name}` with status `{status}` is missing QA artifacts {', '.join(missing)}"
+                    )
 
         if status == "production":
             required_paths = {"security_review_path", "integration_test_path"}

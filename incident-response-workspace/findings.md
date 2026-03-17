@@ -27,5 +27,5 @@ Keep `incident-response` at `review`.
 Advance only after:
 
 1. an isolated benchmark confirms the same behavior without workspace contamination
-2. follow-on operational skills (`runbooks`, `monitoring-observability`) establish stronger adjacent evidence
-3. incident outputs are reused cleanly in a runbook execution drill
+2. incident outputs are reused cleanly in a runbook execution drill
+3. observability and runbook evidence stay aligned with the same incident boundaries

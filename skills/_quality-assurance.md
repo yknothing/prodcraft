@@ -172,6 +172,7 @@ Track these metrics for each skill over time:
 Prodcraft tracks QA state directly in [`manifest.yml`](../../manifest.yml):
 
 - Every active skill declares a `status`
+- Every non-draft skill declares an `evaluation_mode`
 - Non-draft skills declare a `qa` mapping with evidence paths
 - Paths in `qa` must resolve to checked-in artifacts or scripts
 
@@ -180,6 +181,7 @@ Use these conventions:
 | Field | Meaning |
 |-------|---------|
 | `status` | Lifecycle state for the skill (`draft`, `review`, `tested`, `secure`, `production`, `deprecated`) |
+| `evaluation_mode` | QA posture for the skill (`discoverability` for metadata-first skills, `routed` for workflow/intake/handoff-driven skills) |
 | `qa.structure_validation_path` | Structural validator or script used to verify the skill package |
 | `qa.eval_strategy_path` | Human-readable evaluation strategy or rubric |
 | `qa.trigger_eval_set_path` | Pending eval inputs for skills under review |
@@ -189,6 +191,21 @@ Use these conventions:
 | `qa.integration_test_path` | Workflow-chain or end-to-end verification artifact |
 
 This keeps QA claims auditable. A skill is not "tested" because someone said so; it is tested because the manifest points to the evidence.
+
+### Evaluation Modes
+
+Prodcraft uses two QA modes because not every Anthropic-native skill should be judged mainly by discoverability:
+
+1. `discoverability`
+   - Use for skills whose value depends on being found from metadata alone.
+   - Typical example: `intake`
+   - Trigger eval is a primary gate before `tested`
+
+2. `routed`
+   - Use for skills normally invoked by intake, workflow routing, or explicit handoff.
+   - Typical examples: `requirements-engineering`, `system-design`, `runbooks`
+   - Trigger eval can still be informative, but it is not the main gate
+   - Explicit-invocation benchmark and integration evidence are the main gates before `tested`
 
 ## Skill Lifecycle Status
 
@@ -205,8 +222,9 @@ Every skill in the manifest should have one of these statuses:
 
 Status transitions should be evidence-backed:
 
-- `draft` -> `review`: structure is valid and eval inputs exist
-- `review` -> `tested`: trigger eval results exist and meet the target bar
+- `draft` -> `review`: structure is valid, evaluation mode is chosen, and review evidence strategy exists
+- `review` -> `tested` for `discoverability`: trigger eval results exist and meet the target bar
+- `review` -> `tested` for `routed`: explicit-invocation benchmark and integration evidence exist and meet the target bar
 - `tested` -> `secure`: security review artifact exists with no blocking findings
 - `secure` -> `production`: integration tests exist and all required QA artifacts are present
 

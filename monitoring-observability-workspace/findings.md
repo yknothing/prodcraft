@@ -25,6 +25,6 @@ Keep `monitoring-observability` at `review`.
 
 Advance only after:
 
-1. a second scenario confirms the same behavior for a less brownfield-specific service
-2. runbook and incident-response evidence reuse the same signal model cleanly
-3. isolated benchmarking is available for at least one scenario
+1. incident-response and runbooks reuse the same signal model cleanly
+2. isolated benchmarking is available for at least one scenario
+3. at least one observability plan is exercised against a concrete post-deploy or incident drill
