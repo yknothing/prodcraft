@@ -70,7 +70,7 @@ If none of these apply, use the standard workflow. Not everything urgent is a ho
 
 **Purpose:** Write the minimal, surgical fix.
 
-**Skills:** Apply `tdd`.
+**Skills:** Apply `tdd` and `feature-development`.
 
 **Actions:**
 1. Create a hotfix branch from the production release tag or branch.
@@ -90,7 +90,7 @@ If none of these apply, use the standard workflow. Not everything urgent is a ho
 
 **Purpose:** Verify the fix resolves the issue without introducing regressions.
 
-**Skills:** Apply `testing-strategy` and `code-review`.
+**Skills:** Apply `testing-strategy`, `code-review`, and `security-audit` when the hotfix addresses a vulnerability or trust-boundary failure.
 
 **Actions:**
 1. Run the automated test suite. All existing tests must pass.
@@ -111,7 +111,7 @@ If none of these apply, use the standard workflow. Not everything urgent is a ho
 
 **Purpose:** Deploy the fix to production with verification.
 
-**Skills:** Apply `ci-cd` and `documentation`.
+**Skills:** Apply `ci-cd`, `deployment-strategy`, and `documentation`.
 
 **Actions:**
 1. Deploy to production using the standard deployment pipeline (do not bypass it).

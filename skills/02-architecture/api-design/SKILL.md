@@ -123,5 +123,5 @@ record those as explicit contract assumptions, deferred fields, or open question
 
 - [system-design](../system-design/SKILL.md) -- defines the components that need APIs
 - [domain-modeling](../../01-specification/domain-modeling/SKILL.md) -- provides the resource model
-- `feature-development` (planned) -- implements the API
+- [feature-development](../../04-implementation/feature-development/SKILL.md) -- implements the API
 - [testing-strategy](../../05-quality/testing-strategy/SKILL.md) -- contract testing for APIs

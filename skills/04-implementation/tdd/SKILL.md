@@ -9,7 +9,6 @@ metadata:
   - task-list
   outputs:
   - test-suite
-  - source-code
   prerequisites:
   - task-breakdown
   quality_gate: All acceptance criteria have corresponding tests, all tests pass, coverage meets threshold
@@ -122,6 +121,6 @@ TDD is a default, not a religion. Skip test-first for:
 ## Related Skills
 
 - [acceptance-criteria](../../01-specification/acceptance-criteria/SKILL.md) -- provides the test specifications
-- `feature-development` (planned) -- the broader implementation context
-- `refactoring` (planned) -- the REFACTOR step, applied more broadly
+- [feature-development](../feature-development/SKILL.md) -- turns the tested slice into the reviewable implementation increment
+- [refactoring](../refactoring/SKILL.md) -- applies the REFACTOR step more broadly once behavior is protected
 - [code-review](../../05-quality/code-review/SKILL.md) -- reviews both code and tests

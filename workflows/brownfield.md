@@ -109,7 +109,7 @@ Break the modernization into increments where each one:
 
 **Purpose:** Execute each modernization increment safely.
 
-**Skills:** Apply `tdd`, `code-review`, `documentation`, and `ci-cd`.
+**Skills:** Apply `tdd`, `feature-development`, `refactoring`, `code-review`, `documentation`, and `ci-cd`.
 
 The implementation cycle for each increment:
 
@@ -134,7 +134,7 @@ The implementation cycle for each increment:
 
 **Purpose:** Verify that each increment preserves existing behavior and delivers the intended improvement.
 
-**Skills:** Apply `testing-strategy`, `code-review`, and `documentation`.
+**Skills:** Apply `testing-strategy`, `code-review`, `security-audit`, and `documentation`.
 
 1. **Regression testing:** Run the full characterization test suite. No regressions allowed.
 2. **Performance comparison:** Benchmark old vs. new. The new implementation must not degrade performance.
@@ -148,7 +148,7 @@ The implementation cycle for each increment:
 
 **Purpose:** Deploy the new component alongside the old with controlled traffic routing.
 
-**Skills:** Apply `ci-cd` and `documentation`.
+**Skills:** Apply `ci-cd`, `deployment-strategy`, and `documentation`.
 
 1. Deploy the new component to production with traffic routing set to 0%.
 2. Route 1-5% of traffic to the new component. Monitor for errors.

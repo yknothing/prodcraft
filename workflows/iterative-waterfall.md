@@ -104,7 +104,7 @@ Requirements are versioned. Each revision is tracked with change rationale. The 
 
 **Purpose:** Build the software according to the architecture and plan.
 
-**Skills:** Apply `tdd`, `code-review`, `documentation`, and `ci-cd`.
+**Skills:** Apply `tdd`, `feature-development`, `refactoring`, `code-review`, `documentation`, and `ci-cd`.
 
 **Iteration within phase:** Implement in increments aligned to the WBS. Each increment includes coding, unit testing, code review, and integration. Weekly progress reviews allow course correction.
 
@@ -123,7 +123,7 @@ Deviations from the architecture or specification are logged and escalated throu
 
 **Purpose:** Verify the implementation against the specification.
 
-**Skills:** Apply `testing-strategy`, `code-review`, and `documentation`.
+**Skills:** Apply `testing-strategy`, `code-review`, `security-audit`, and `documentation`.
 
 **Iteration within phase:** Execute test plan, report defects, fix defects, re-test. Iterate until exit criteria met.
 
@@ -140,7 +140,7 @@ Deviations from the architecture or specification are logged and escalated throu
 
 **Purpose:** Deploy to production with controlled risk.
 
-**Skills:** Apply `ci-cd` and `documentation`.
+**Skills:** Apply `ci-cd`, `deployment-strategy`, and `documentation`.
 
 **Inputs:** Release-ready software, deployment plan, rollback plan, communication plan.
 **Outputs:** Production deployment, release notes, deployment verification report.

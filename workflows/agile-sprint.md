@@ -49,7 +49,7 @@ Quick synchronization. Each team member shares progress, plans, and blockers. Th
 
 **Phases active:** Implementation, Quality.
 
-**Skills:** Apply `tdd`, `code-review`, and `documentation`.
+**Skills:** Apply `tdd`, `feature-development`, `refactoring`, `code-review`, and `documentation`.
 
 Development and testing happen together, not sequentially. Test-driven development is the default. Code review happens on every pull request. The definition of done includes tests, documentation, and review approval.
 
@@ -62,7 +62,7 @@ Branches are short-lived -- measured in hours or days, not weeks. Continuous int
 
 **Phases active:** Quality.
 
-**Skills:** Apply `testing-strategy` and `code-review` (lightweight, throughout the sprint).
+**Skills:** Apply `testing-strategy`, `security-audit`, and `code-review` (lightweight, throughout the sprint).
 
 Quality is not a phase gate -- it is woven into every day. Automated tests run on every commit. QA engineers perform exploratory testing as features are completed, not after all features are done. Defects found in the current sprint are fixed in the current sprint.
 
@@ -70,7 +70,7 @@ Quality is not a phase gate -- it is woven into every day. Automated tests run o
 
 **Phases active:** Delivery.
 
-**Skills:** Apply `ci-cd` and `documentation`.
+**Skills:** Apply `ci-cd`, `deployment-strategy`, and `documentation`.
 
 Features ship to production behind feature flags as soon as they pass review and automated testing. Canary releases expose new code to a small percentage of users first. The deployment pipeline is fully automated -- a merge to main triggers the release process.
 

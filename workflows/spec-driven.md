@@ -102,7 +102,7 @@ Tasks are traced back to requirements. Every task has an estimate, an owner, and
 
 **Purpose:** Build the system according to specification and architecture.
 
-**Skills:** Apply `tdd`, `code-review`, and `documentation`.
+**Skills:** Apply `tdd`, `feature-development`, `refactoring`, `code-review`, and `documentation`.
 
 **Inputs:** TDD, task breakdown, coding standards, test strategy.
 **Outputs:** Working software, unit tests, integration tests, code documentation, implementation notes.
@@ -120,7 +120,7 @@ Code is written against the specification -- deviations require a formal change 
 
 **Purpose:** Comprehensive verification against specification.
 
-**Skills:** Apply `testing-strategy`, `code-review`, and `documentation`.
+**Skills:** Apply `testing-strategy`, `code-review`, `security-audit`, and `documentation`.
 
 **Inputs:** Working software, specification, acceptance criteria, test plan.
 **Outputs:** Test results, defect reports, performance benchmarks, security scan results, release readiness assessment.
@@ -138,7 +138,7 @@ Every acceptance criterion is verified. Performance is benchmarked against non-f
 
 **Purpose:** Controlled release to production.
 
-**Skills:** Apply `ci-cd` and `documentation`.
+**Skills:** Apply `ci-cd`, `deployment-strategy`, and `documentation`.
 
 **Inputs:** Release-ready software, deployment plan, rollback plan, stakeholder communication plan.
 **Outputs:** Production deployment, release notes, stakeholder notification, deployment verification.

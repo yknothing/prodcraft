@@ -266,9 +266,18 @@ def validate_manifest_skill_status(manifest: dict, errors: list[str]) -> None:
 
 
 def validate_artifact_flow(manifest: dict, errors: list[str]) -> None:
+    # Most artifacts have a single canonical producer, but implementation artifacts like
+    # `source-code` may legitimately come from more than one skill.
+    def producer_set(value: object) -> set[str]:
+        if isinstance(value, str):
+            return {value}
+        if isinstance(value, list):
+            return {item for item in value if isinstance(item, str)}
+        return set()
+
     artifact_flow = {
         entry["artifact"]: {
-            "produced_by": entry.get("produced_by"),
+            "produced_by": producer_set(entry.get("produced_by")),
             "consumed_by": set(entry.get("consumed_by", []) or []),
         }
         for entry in manifest.get("artifact_flow", [])
@@ -290,7 +299,7 @@ def validate_artifact_flow(manifest: dict, errors: list[str]) -> None:
         if isinstance(outputs, list):
             for artifact in outputs:
                 flow_entry = artifact_flow.get(artifact)
-                if not flow_entry or flow_entry.get("produced_by") != skill_name:
+                if not flow_entry or skill_name not in flow_entry.get("produced_by", set()):
                     errors.append(
                         f"{path}: output artifact `{artifact}` must appear in manifest artifact_flow with produced_by `{skill_name}`"
                     )

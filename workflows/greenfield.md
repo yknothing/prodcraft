@@ -97,7 +97,7 @@ Break the MVP into vertical slices -- each slice delivers a working user flow en
 
 **Purpose:** Build the MVP in vertical slices, deployed incrementally.
 
-**Skills:** Apply `tdd`, `code-review`, `documentation`, and `ci-cd`.
+**Skills:** Apply `tdd`, `feature-development`, `refactoring`, `code-review`, `documentation`, and `ci-cd`.
 
 **Week 1 priorities:**
 1. Repository setup (version control, branching strategy, CI pipeline).
@@ -124,7 +124,7 @@ Break the MVP into vertical slices -- each slice delivers a working user flow en
 
 **Purpose:** Establish the quality baseline that all future work builds on.
 
-**Skills:** Apply `testing-strategy`, `code-review`, and `documentation` (baseline scan).
+**Skills:** Apply `testing-strategy`, `code-review`, `security-audit`, and `documentation` (baseline scan).
 
 For a greenfield project, quality is about establishing patterns, not exhaustive testing:
 
@@ -140,7 +140,7 @@ For a greenfield project, quality is about establishing patterns, not exhaustive
 
 **Purpose:** Ensure the deployment pipeline is robust and repeatable.
 
-**Skills:** Apply `ci-cd` and `documentation`.
+**Skills:** Apply `ci-cd`, `deployment-strategy`, and `documentation`.
 
 If you deployed incrementally during implementation (as recommended), this phase is about hardening what you already have:
 
