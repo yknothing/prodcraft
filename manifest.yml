@@ -166,6 +166,18 @@ skills:
     benchmark_plan_path: system-design-workspace/isolated-benchmark-plan.md
     findings_path: system-design-workspace/findings.md
     integration_test_path: system-design-workspace/requirements-handoff-review.md
+- name: data-modeling
+  phase: 02-architecture
+  file: skills/02-architecture/data-modeling/SKILL.md
+  status: draft
+- name: security-design
+  phase: 02-architecture
+  file: skills/02-architecture/security-design/SKILL.md
+  status: draft
+- name: tech-selection
+  phase: 02-architecture
+  file: skills/02-architecture/tech-selection/SKILL.md
+  status: draft
 - name: api-design
   phase: 02-architecture
   file: skills/02-architecture/api-design/SKILL.md
@@ -188,6 +200,18 @@ skills:
     benchmark_plan_path: task-breakdown-workspace/isolated-benchmark-plan.md
     findings_path: task-breakdown-workspace/findings.md
     integration_test_path: task-breakdown-workspace/architecture-handoff-review.md
+- name: estimation
+  phase: 03-planning
+  file: skills/03-planning/estimation/SKILL.md
+  status: draft
+- name: risk-assessment
+  phase: 03-planning
+  file: skills/03-planning/risk-assessment/SKILL.md
+  status: draft
+- name: sprint-planning
+  phase: 03-planning
+  file: skills/03-planning/sprint-planning/SKILL.md
+  status: draft
 - name: tdd
   phase: 04-implementation
   file: skills/04-implementation/tdd/SKILL.md
@@ -247,6 +271,10 @@ skills:
 - name: deployment-strategy
   phase: 06-delivery
   file: skills/06-delivery/deployment-strategy/SKILL.md
+  status: draft
+- name: release-management
+  phase: 06-delivery
+  file: skills/06-delivery/release-management/SKILL.md
   status: draft
 - name: incident-response
   phase: 07-operations
@@ -308,33 +336,12 @@ skills:
   file: skills/cross-cutting/documentation/SKILL.md
   status: draft
 planned_skills:
-- name: data-modeling
-  phase: 02-architecture
-  target_file: skills/02-architecture/data-modeling/SKILL.md
-- name: security-design
-  phase: 02-architecture
-  target_file: skills/02-architecture/security-design/SKILL.md
-- name: tech-selection
-  phase: 02-architecture
-  target_file: skills/02-architecture/tech-selection/SKILL.md
-- name: sprint-planning
-  phase: 03-planning
-  target_file: skills/03-planning/sprint-planning/SKILL.md
-- name: estimation
-  phase: 03-planning
-  target_file: skills/03-planning/estimation/SKILL.md
-- name: risk-assessment
-  phase: 03-planning
-  target_file: skills/03-planning/risk-assessment/SKILL.md
 - name: pair-programming
   phase: 04-implementation
   target_file: skills/04-implementation/pair-programming/SKILL.md
 - name: performance-audit
   phase: 05-quality
   target_file: skills/05-quality/performance-audit/SKILL.md
-- name: release-management
-  phase: 06-delivery
-  target_file: skills/06-delivery/release-management/SKILL.md
 - name: feature-flags
   phase: 06-delivery
   target_file: skills/06-delivery/feature-flags/SKILL.md
@@ -535,6 +542,7 @@ artifact_flow:
   - acceptance-criteria
   - system-design
   - api-design
+  - tech-selection
 - artifact: spec-doc
   produced_by: spec-writing
   consumed_by:
@@ -562,7 +570,9 @@ artifact_flow:
   - api-design
   - data-modeling
   - security-design
+  - tech-selection
   - task-breakdown
+  - risk-assessment
   - feature-development
   - security-audit
   - code-review
@@ -580,6 +590,7 @@ artifact_flow:
   - testing-strategy
   - task-breakdown
   - tdd
+  - security-design
   - code-review
   - monitoring-observability
 - artifact: api-documentation
@@ -606,6 +617,7 @@ artifact_flow:
   consumed_by:
   - sprint-planning
   - estimation
+  - risk-assessment
   - tdd
   - feature-development
   - code-review
@@ -613,7 +625,12 @@ artifact_flow:
   - ci-cd
 - artifact: dependency-graph
   produced_by: task-breakdown
-  consumed_by: []
+  consumed_by:
+  - risk-assessment
+- artifact: estimate-set
+  produced_by: estimation
+  consumed_by:
+  - sprint-planning
 - artifact: sprint-plan
   produced_by: sprint-planning
   consumed_by:
@@ -622,6 +639,7 @@ artifact_flow:
 - artifact: risk-register
   produced_by: risk-assessment
   consumed_by:
+  - estimation
   - sprint-planning
   - monitoring-observability
 - artifact: source-code

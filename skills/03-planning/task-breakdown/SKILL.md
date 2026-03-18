@@ -121,6 +121,6 @@ When the work is modernization or migration:
 ## Related Skills
 
 - [system-design](../../02-architecture/system-design/SKILL.md) -- provides the architecture to decompose
-- `estimation` (planned) -- estimates effort for each task
-- `sprint-planning` (planned) -- selects tasks for the sprint
+- [estimation](../estimation/SKILL.md) -- estimates effort for each task
+- [sprint-planning](../sprint-planning/SKILL.md) -- selects tasks for the sprint
 - [tdd](../../04-implementation/tdd/SKILL.md) -- implements tasks test-first

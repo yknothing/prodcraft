@@ -71,7 +71,7 @@ Before you modernize, you must document what the system currently does -- includ
 
 **Purpose:** Design the modernization approach -- how to get from current state to target state incrementally.
 
-**Skills:** Apply `system-design`, `api-design`, and `requirements-engineering`.
+**Skills:** Apply `system-design`, `api-design`, `data-modeling`, `security-design`, and `tech-selection`.
 
 The default pattern is the strangler fig: build new functionality alongside the old, gradually routing traffic to the new system, and eventually decommissioning the old.
 
@@ -89,7 +89,7 @@ The default pattern is the strangler fig: build new functionality alongside the 
 
 **Purpose:** Sequence the modernization into increments that each deliver value and reduce risk.
 
-**Skills:** Apply `task-breakdown`, `feasibility-study`, and `system-design`.
+**Skills:** Apply `task-breakdown`, `risk-assessment`, and `estimation`.
 
 Break the modernization into increments where each one:
 - Is independently deployable and reversible.
@@ -148,7 +148,7 @@ The implementation cycle for each increment:
 
 **Purpose:** Deploy the new component alongside the old with controlled traffic routing.
 
-**Skills:** Apply `ci-cd`, `deployment-strategy`, and `documentation`.
+**Skills:** Apply `ci-cd`, `release-management`, `deployment-strategy`, and `documentation`.
 
 1. Deploy the new component to production with traffic routing set to 0%.
 2. Route 1-5% of traffic to the new component. Monitor for errors.

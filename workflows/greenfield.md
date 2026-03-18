@@ -57,7 +57,7 @@ Write user stories for the MVP. Be ruthless about scope. For each proposed featu
 
 **Purpose:** Make the foundational technical decisions that are expensive to change later.
 
-**Skills:** Apply `system-design`, `api-design`, and `feasibility-study`.
+**Skills:** Apply `system-design`, `api-design`, `data-modeling`, `security-design`, and `tech-selection`.
 
 This is the highest-leverage phase in a greenfield project. Focus decisions on:
 
@@ -84,7 +84,7 @@ This is the highest-leverage phase in a greenfield project. Focus decisions on:
 
 **Purpose:** Sequence the MVP build for maximum learning with minimum waste.
 
-**Skills:** Apply `task-breakdown` and `requirements-engineering`.
+**Skills:** Apply `task-breakdown`, `risk-assessment`, and `estimation`.
 
 Break the MVP into vertical slices -- each slice delivers a working user flow end-to-end. Prioritize slices that validate the riskiest assumptions first.
 
@@ -140,7 +140,7 @@ For a greenfield project, quality is about establishing patterns, not exhaustive
 
 **Purpose:** Ensure the deployment pipeline is robust and repeatable.
 
-**Skills:** Apply `ci-cd`, `deployment-strategy`, and `documentation`.
+**Skills:** Apply `ci-cd`, `release-management`, `deployment-strategy`, and `documentation`.
 
 If you deployed incrementally during implementation (as recommended), this phase is about hardening what you already have:
 

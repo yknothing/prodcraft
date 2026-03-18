@@ -90,4 +90,4 @@ Write a clear go/no-go/pivot recommendation:
 - [market-analysis](../market-analysis/SKILL.md) -- provides market context
 - [user-research](../user-research/SKILL.md) -- provides user validation
 - [requirements-engineering](../../01-specification/requirements-engineering/SKILL.md) -- next step if go decision
-- `tech-selection` (planned) -- builds on technical feasibility findings
+- [tech-selection](../../02-architecture/tech-selection/SKILL.md) -- builds on technical feasibility findings

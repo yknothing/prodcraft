@@ -104,5 +104,5 @@ If release boundaries or sync semantics remain constrained, use staging and gate
 
 - [testing-strategy](../../05-quality/testing-strategy/SKILL.md) -- defines what tests to run in the pipeline
 - [deployment-strategy](../deployment-strategy/SKILL.md) -- defines deployment patterns (blue-green, canary)
-- `release-management` (planned) -- coordinates release process
+- [release-management](../release-management/SKILL.md) -- coordinates release process
 - [monitoring-observability](../../07-operations/monitoring-observability/SKILL.md) -- post-deployment validation

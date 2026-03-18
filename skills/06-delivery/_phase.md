@@ -43,12 +43,12 @@ Code is deployed to production and verified. Smoke tests pass in production. Mon
 ## Skill Sequence
 
 ```
-ci-cd ──> deployment-strategy ──> release-management
-                │
-          feature-flags
+ci-cd ──> release-management ──> deployment-strategy
+                                  │
+                            feature-flags
 ```
 
-CI/CD is the foundation. Deployment strategy determines how code reaches production. Feature flags decouple deployment from release. Release management coordinates the human process.
+CI/CD is the foundation. Release management coordinates the human process and readiness decision. Deployment strategy turns that plan into a concrete rollout and rollback path. Feature flags decouple deployment from release.
 
 In brownfield work, delivery must prove the release can fail closed and recover safely; CI/CD is part of that control surface, not just automation glue.
 

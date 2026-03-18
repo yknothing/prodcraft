@@ -97,5 +97,5 @@ Prefer actions that reduce recurrence risk and improve future handoffs instead o
 
 - [incident-response](../../07-operations/incident-response/SKILL.md) -- postmortems feed into retrospectives
 - [tech-debt-management](../tech-debt-management/SKILL.md) -- retro surfaces debt patterns
-- `sprint-planning` (planned) -- retro improvements feed into next sprint
+- [sprint-planning](../../03-planning/sprint-planning/SKILL.md) -- retro improvements feed into next sprint
 - [intake](../../00-discovery/intake/SKILL.md) -- retro insights trigger new work via intake

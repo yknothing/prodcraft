@@ -66,7 +66,7 @@ Requirements are versioned. Each revision is tracked with change rationale. The 
 
 **Purpose:** Design a system that fulfills all specified requirements.
 
-**Skills:** Apply `system-design`, `api-design`, `domain-modeling`, and `requirements-engineering`.
+**Skills:** Apply `system-design`, `api-design`, `data-modeling`, `security-design`, and `tech-selection`.
 
 **Iteration within phase:** Propose architecture, review against requirements and quality attributes, revise. Prototype high-risk components if needed. Expect 2-3 design iterations.
 
@@ -85,7 +85,7 @@ Requirements are versioned. Each revision is tracked with change rationale. The 
 
 **Purpose:** Break the architecture into implementable work units and schedule delivery.
 
-**Skills:** Apply `task-breakdown`, `system-design`, and `feasibility-study`.
+**Skills:** Apply `task-breakdown`, `risk-assessment`, and `estimation`.
 
 **Iteration within phase:** Create initial work breakdown, validate estimates with implementers, adjust sequencing based on dependencies and risk, finalize.
 
@@ -140,7 +140,7 @@ Deviations from the architecture or specification are logged and escalated throu
 
 **Purpose:** Deploy to production with controlled risk.
 
-**Skills:** Apply `ci-cd`, `deployment-strategy`, and `documentation`.
+**Skills:** Apply `ci-cd`, `release-management`, `deployment-strategy`, and `documentation`.
 
 **Inputs:** Release-ready software, deployment plan, rollback plan, communication plan.
 **Outputs:** Production deployment, release notes, deployment verification report.

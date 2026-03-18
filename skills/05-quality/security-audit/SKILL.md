@@ -85,4 +85,4 @@ Every finding should point to the affected boundary, evidence, and expected reme
 - [code-review](../code-review/SKILL.md) -- catches general correctness and maintainability issues before the deeper security pass
 - [testing-strategy](../testing-strategy/SKILL.md) -- incorporates security checks into the broader verification plan
 - [deployment-strategy](../../06-delivery/deployment-strategy/SKILL.md) -- consumes the audit when rollout risk or blast radius must be constrained
-- `security-design` (planned) -- provides deeper threat modeling and control design upstream
+- [security-design](../../02-architecture/security-design/SKILL.md) -- provides deeper threat modeling and control design upstream

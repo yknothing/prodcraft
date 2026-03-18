@@ -66,7 +66,7 @@ Every requirement gets a unique identifier for traceability. Acceptance criteria
 
 **Purpose:** System design that satisfies all specified requirements.
 
-**Skills:** Apply `system-design`, `api-design`, `domain-modeling`, and `requirements-engineering`.
+**Skills:** Apply `system-design`, `api-design`, `data-modeling`, `security-design`, and `tech-selection`.
 
 **Inputs:** PRD, functional specification, non-functional requirements, existing system documentation.
 **Outputs:** Technical Design Document (TDD), Architecture Decision Records (ADRs), API specifications, data model diagrams, infrastructure plan.
@@ -84,7 +84,7 @@ Every architectural decision is recorded as an ADR with full rationale and alter
 
 **Purpose:** Detailed work breakdown, scheduling, and resource allocation.
 
-**Skills:** Apply `task-breakdown`, `system-design`, and `feasibility-study`.
+**Skills:** Apply `task-breakdown`, `risk-assessment`, and `estimation`.
 
 **Inputs:** TDD, ADRs, team capacity, external dependencies.
 **Outputs:** Work breakdown structure, project schedule, resource allocation, dependency map, risk mitigation plan.
@@ -138,7 +138,7 @@ Every acceptance criterion is verified. Performance is benchmarked against non-f
 
 **Purpose:** Controlled release to production.
 
-**Skills:** Apply `ci-cd`, `deployment-strategy`, and `documentation`.
+**Skills:** Apply `ci-cd`, `release-management`, `deployment-strategy`, and `documentation`.
 
 **Inputs:** Release-ready software, deployment plan, rollback plan, stakeholder communication plan.
 **Outputs:** Production deployment, release notes, stakeholder notification, deployment verification.
