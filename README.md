@@ -55,7 +55,7 @@ python scripts/validate_prodcraft.py \
 
 ```
 prodcraft/
-  skills/                    # Core: lifecycle-organized skills
+  skills/                    # Core: lifecycle-organized skill definitions
     00-discovery/            # Market research, feasibility, concept validation
     01-specification/        # Requirements, specs, domain modeling, acceptance criteria
     02-architecture/         # System design, API design, data modeling, security
@@ -66,11 +66,16 @@ prodcraft/
     07-operations/           # Monitoring, incident response, runbooks, capacity
     08-evolution/            # Tech debt, migration, deprecation, retrospective
     cross-cutting/           # Documentation, observability, accessibility, compliance
+  eval/                      # Per-skill QA evidence, mirroring the skills/ phase structure
+    00-discovery/            # Eval artifacts for discovery-phase skills
+    01-specification/        # ...and so on through 08-evolution
   workflows/                 # Methodology-specific orchestrations
   personas/                  # AI agent role definitions
   rules/                     # Quality rules engine (YAML)
   templates/                 # Document templates (PRD, TDD, ADR, RFC, postmortem)
   examples/                  # Real-world usage examples
+  scripts/                   # Structural validator and benchmark runner
+  manifest.yml               # QA state index: skill status and evidence paths
 ```
 
 ## Skill Format

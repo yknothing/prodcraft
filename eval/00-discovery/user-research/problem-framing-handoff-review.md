@@ -27,7 +27,7 @@ This is a classic B2B/SaaS brownfield discovery scenario where:
 ### Scenario A
 
 - Input fixture: `handoff-fixtures/team-invite-problem-framing.md`
-- Upstream framing source: `problem-framing-workspace/manual-run-2026-03-17-team-invite`
+- Upstream framing source: `eval/00-discovery/problem-framing/manual-run-2026-03-17-team-invite`
 - Manual branch pair: `problem-framing-handoff-manual-run-2026-03-17-team-invite`
 
 ### Scenario B

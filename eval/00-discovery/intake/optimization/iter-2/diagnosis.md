@@ -42,8 +42,8 @@ After quota resets at 6pm Asia/Shanghai on 2026-03-14:
 
 Suggested rerun target:
 
-- overwrite `intake-workspace/optimization/iter-2/results.json` after preflight passes, or
-- write to `intake-workspace/optimization/iter-2/results-rerun.json`
+- overwrite `eval/00-discovery/intake/optimization/iter-2/results.json` after preflight passes, or
+- write to `eval/00-discovery/intake/optimization/iter-2/results-rerun.json`
 
 ## Update: 2026-03-18 Valid Rerun
 

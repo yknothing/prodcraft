@@ -61,8 +61,8 @@ Interpretation:
 
 Downstream-consumer reviews now exist at:
 
-- `requirements-engineering-workspace/problem-framing-handoff-review.md`
-- `user-research-workspace/problem-framing-handoff-review.md`
+- `eval/01-specification/requirements-engineering/problem-framing-handoff-review.md`
+- `eval/00-discovery/user-research/problem-framing-handoff-review.md`
 
 Interpretation:
 

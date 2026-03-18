@@ -17,7 +17,7 @@ This is a brownfield modernization scenario where:
 ## Artifacts Reviewed
 
 - Input fixture: `handoff-fixtures/access-review-modernization-problem-framing.md`
-- Upstream framing source: `problem-framing-workspace/manual-run-2026-03-17-access-review`
+- Upstream framing source: `eval/00-discovery/problem-framing/manual-run-2026-03-17-access-review`
 - Manual branch pair: `problem-framing-handoff-manual-run-2026-03-17-access-review`
 
 ## Contract Alignment Note

@@ -83,13 +83,13 @@ skills:
   evaluation_mode: discoverability
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: intake-workspace/evals/eval-strategy.md
-    benchmark_plan_path: intake-workspace/post-redesign-benchmark-plan.md
-    findings_path: intake-workspace/current-evidence-status.md
-    redesign_notes_path: intake-workspace/redesign-notes.md
-    revalidation_plan_path: intake-workspace/evals/eval-strategy.md
-    historical_trigger_eval_results_path: intake-workspace/optimization/iter-2/results-mixed.json
-    historical_benchmark_results_path: intake-workspace/iteration-1/benchmark.md
+    eval_strategy_path: eval/00-discovery/intake/evals/eval-strategy.md
+    benchmark_plan_path: eval/00-discovery/intake/post-redesign-benchmark-plan.md
+    findings_path: eval/00-discovery/intake/current-evidence-status.md
+    redesign_notes_path: eval/00-discovery/intake/redesign-notes.md
+    revalidation_plan_path: eval/00-discovery/intake/evals/eval-strategy.md
+    historical_trigger_eval_results_path: eval/00-discovery/intake/optimization/iter-2/results-mixed.json
+    historical_benchmark_results_path: eval/00-discovery/intake/iteration-1/benchmark.md
 - name: problem-framing
   phase: 00-discovery
   file: skills/00-discovery/problem-framing/SKILL.md
@@ -97,13 +97,13 @@ skills:
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: problem-framing-workspace/evals/eval-strategy.md
-    findings_path: problem-framing-workspace/findings.md
-    explicit_invocation_plan_path: problem-framing-workspace/explicit-invocation-benchmark.md
-    benchmark_results_path: problem-framing-workspace/explicit-benchmark-review.md
-    integration_test_path: problem-framing-workspace/intake-handoff-review.md
-    downstream_integration_test_path: requirements-engineering-workspace/problem-framing-handoff-review.md
-    secondary_downstream_integration_test_path: user-research-workspace/problem-framing-handoff-review.md
+    eval_strategy_path: eval/00-discovery/problem-framing/evals/eval-strategy.md
+    findings_path: eval/00-discovery/problem-framing/findings.md
+    explicit_invocation_plan_path: eval/00-discovery/problem-framing/explicit-invocation-benchmark.md
+    benchmark_results_path: eval/00-discovery/problem-framing/explicit-benchmark-review.md
+    integration_test_path: eval/00-discovery/problem-framing/intake-handoff-review.md
+    downstream_integration_test_path: eval/01-specification/requirements-engineering/problem-framing-handoff-review.md
+    secondary_downstream_integration_test_path: eval/00-discovery/user-research/problem-framing-handoff-review.md
 - name: market-analysis
   phase: 00-discovery
   file: skills/00-discovery/market-analysis/SKILL.md
@@ -115,12 +115,12 @@ skills:
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: user-research-workspace/evals/eval-strategy.md
-    findings_path: user-research-workspace/findings.md
-    benchmark_plan_path: user-research-workspace/semi-isolated-benchmark.md
-    benchmark_results_path: user-research-workspace/semi-isolated-benchmark-review.md
-    integration_test_path: user-research-workspace/problem-framing-handoff-review.md
-    downstream_spec_integration_test_path: requirements-engineering-workspace/user-research-handoff-review.md
+    eval_strategy_path: eval/00-discovery/user-research/evals/eval-strategy.md
+    findings_path: eval/00-discovery/user-research/findings.md
+    benchmark_plan_path: eval/00-discovery/user-research/semi-isolated-benchmark.md
+    benchmark_results_path: eval/00-discovery/user-research/semi-isolated-benchmark-review.md
+    integration_test_path: eval/00-discovery/user-research/problem-framing-handoff-review.md
+    downstream_spec_integration_test_path: eval/01-specification/requirements-engineering/user-research-handoff-review.md
 - name: feasibility-study
   phase: 00-discovery
   file: skills/00-discovery/feasibility-study/SKILL.md
@@ -132,17 +132,17 @@ skills:
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: requirements-engineering-workspace/evals/eval-strategy.md
-    trigger_eval_set_path: requirements-engineering-workspace/evals/trigger-eval.json
-    trigger_eval_results_path: requirements-engineering-workspace/results-trigger-iter3.json
-    findings_path: requirements-engineering-workspace/findings.md
-    explicit_invocation_plan_path: requirements-engineering-workspace/explicit-invocation-benchmark.md
-    benchmark_results_path: requirements-engineering-workspace/explicit-benchmark-review.md
-    integration_test_path: requirements-engineering-workspace/intake-handoff-review.md
-    framing_integration_test_path: requirements-engineering-workspace/problem-framing-handoff-review.md
-    user_research_integration_test_path: requirements-engineering-workspace/user-research-handoff-review.md
-    user_research_benchmark_plan_path: requirements-engineering-workspace/user-research-semi-isolated-benchmark.md
-    user_research_benchmark_results_path: requirements-engineering-workspace/user-research-semi-isolated-benchmark-review.md
+    eval_strategy_path: eval/01-specification/requirements-engineering/evals/eval-strategy.md
+    trigger_eval_set_path: eval/01-specification/requirements-engineering/evals/trigger-eval.json
+    trigger_eval_results_path: eval/01-specification/requirements-engineering/results-trigger-iter3.json
+    findings_path: eval/01-specification/requirements-engineering/findings.md
+    explicit_invocation_plan_path: eval/01-specification/requirements-engineering/explicit-invocation-benchmark.md
+    benchmark_results_path: eval/01-specification/requirements-engineering/explicit-benchmark-review.md
+    integration_test_path: eval/01-specification/requirements-engineering/intake-handoff-review.md
+    framing_integration_test_path: eval/01-specification/requirements-engineering/problem-framing-handoff-review.md
+    user_research_integration_test_path: eval/01-specification/requirements-engineering/user-research-handoff-review.md
+    user_research_benchmark_plan_path: eval/01-specification/requirements-engineering/user-research-semi-isolated-benchmark.md
+    user_research_benchmark_results_path: eval/01-specification/requirements-engineering/user-research-semi-isolated-benchmark-review.md
 - name: spec-writing
   phase: 01-specification
   file: skills/01-specification/spec-writing/SKILL.md
@@ -162,10 +162,10 @@ skills:
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: system-design-workspace/evals/eval-strategy.md
-    benchmark_plan_path: system-design-workspace/isolated-benchmark-plan.md
-    findings_path: system-design-workspace/findings.md
-    integration_test_path: system-design-workspace/requirements-handoff-review.md
+    eval_strategy_path: eval/02-architecture/system-design/evals/eval-strategy.md
+    benchmark_plan_path: eval/02-architecture/system-design/isolated-benchmark-plan.md
+    findings_path: eval/02-architecture/system-design/findings.md
+    integration_test_path: eval/02-architecture/system-design/requirements-handoff-review.md
 - name: data-modeling
   phase: 02-architecture
   file: skills/02-architecture/data-modeling/SKILL.md
@@ -185,10 +185,10 @@ skills:
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: api-design-workspace/evals/eval-strategy.md
-    benchmark_plan_path: api-design-workspace/isolated-benchmark-plan.md
-    findings_path: api-design-workspace/findings.md
-    integration_test_path: api-design-workspace/architecture-handoff-review.md
+    eval_strategy_path: eval/02-architecture/api-design/evals/eval-strategy.md
+    benchmark_plan_path: eval/02-architecture/api-design/isolated-benchmark-plan.md
+    findings_path: eval/02-architecture/api-design/findings.md
+    integration_test_path: eval/02-architecture/api-design/architecture-handoff-review.md
 - name: task-breakdown
   phase: 03-planning
   file: skills/03-planning/task-breakdown/SKILL.md
@@ -196,10 +196,10 @@ skills:
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: task-breakdown-workspace/evals/eval-strategy.md
-    benchmark_plan_path: task-breakdown-workspace/isolated-benchmark-plan.md
-    findings_path: task-breakdown-workspace/findings.md
-    integration_test_path: task-breakdown-workspace/architecture-handoff-review.md
+    eval_strategy_path: eval/03-planning/task-breakdown/evals/eval-strategy.md
+    benchmark_plan_path: eval/03-planning/task-breakdown/isolated-benchmark-plan.md
+    findings_path: eval/03-planning/task-breakdown/findings.md
+    integration_test_path: eval/03-planning/task-breakdown/architecture-handoff-review.md
 - name: estimation
   phase: 03-planning
   file: skills/03-planning/estimation/SKILL.md
@@ -219,10 +219,10 @@ skills:
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: tdd-workspace/evals/eval-strategy.md
-    benchmark_plan_path: tdd-workspace/isolated-benchmark-plan.md
-    findings_path: tdd-workspace/findings.md
-    integration_test_path: tdd-workspace/task-handoff-review.md
+    eval_strategy_path: eval/04-implementation/tdd/evals/eval-strategy.md
+    benchmark_plan_path: eval/04-implementation/tdd/isolated-benchmark-plan.md
+    findings_path: eval/04-implementation/tdd/findings.md
+    integration_test_path: eval/04-implementation/tdd/task-handoff-review.md
 - name: feature-development
   phase: 04-implementation
   file: skills/04-implementation/feature-development/SKILL.md
@@ -238,10 +238,10 @@ skills:
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: code-review-workspace/evals/eval-strategy.md
-    benchmark_plan_path: code-review-workspace/isolated-benchmark-plan.md
-    findings_path: code-review-workspace/findings.md
-    integration_test_path: code-review-workspace/changeset-review.md
+    eval_strategy_path: eval/05-quality/code-review/evals/eval-strategy.md
+    benchmark_plan_path: eval/05-quality/code-review/isolated-benchmark-plan.md
+    findings_path: eval/05-quality/code-review/findings.md
+    integration_test_path: eval/05-quality/code-review/changeset-review.md
 - name: testing-strategy
   phase: 05-quality
   file: skills/05-quality/testing-strategy/SKILL.md
@@ -249,10 +249,10 @@ skills:
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: testing-strategy-workspace/evals/eval-strategy.md
-    benchmark_plan_path: testing-strategy-workspace/isolated-benchmark-plan.md
-    findings_path: testing-strategy-workspace/findings.md
-    integration_test_path: testing-strategy-workspace/strategy-review.md
+    eval_strategy_path: eval/05-quality/testing-strategy/evals/eval-strategy.md
+    benchmark_plan_path: eval/05-quality/testing-strategy/isolated-benchmark-plan.md
+    findings_path: eval/05-quality/testing-strategy/findings.md
+    integration_test_path: eval/05-quality/testing-strategy/strategy-review.md
 - name: security-audit
   phase: 05-quality
   file: skills/05-quality/security-audit/SKILL.md
@@ -264,10 +264,10 @@ skills:
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: ci-cd-workspace/evals/eval-strategy.md
-    benchmark_plan_path: ci-cd-workspace/isolated-benchmark-plan.md
-    findings_path: ci-cd-workspace/findings.md
-    integration_test_path: ci-cd-workspace/pipeline-review.md
+    eval_strategy_path: eval/06-delivery/ci-cd/evals/eval-strategy.md
+    benchmark_plan_path: eval/06-delivery/ci-cd/isolated-benchmark-plan.md
+    findings_path: eval/06-delivery/ci-cd/findings.md
+    integration_test_path: eval/06-delivery/ci-cd/pipeline-review.md
 - name: deployment-strategy
   phase: 06-delivery
   file: skills/06-delivery/deployment-strategy/SKILL.md
@@ -283,10 +283,10 @@ skills:
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: incident-response-workspace/evals/eval-strategy.md
-    benchmark_plan_path: incident-response-workspace/isolated-benchmark-plan.md
-    findings_path: incident-response-workspace/findings.md
-    integration_test_path: incident-response-workspace/incident-review.md
+    eval_strategy_path: eval/07-operations/incident-response/evals/eval-strategy.md
+    benchmark_plan_path: eval/07-operations/incident-response/isolated-benchmark-plan.md
+    findings_path: eval/07-operations/incident-response/findings.md
+    integration_test_path: eval/07-operations/incident-response/incident-review.md
 - name: monitoring-observability
   phase: 07-operations
   file: skills/07-operations/monitoring-observability/SKILL.md
@@ -294,10 +294,10 @@ skills:
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: monitoring-observability-workspace/evals/eval-strategy.md
-    benchmark_plan_path: monitoring-observability-workspace/isolated-benchmark-plan.md
-    findings_path: monitoring-observability-workspace/findings.md
-    integration_test_path: monitoring-observability-workspace/observability-review.md
+    eval_strategy_path: eval/07-operations/monitoring-observability/evals/eval-strategy.md
+    benchmark_plan_path: eval/07-operations/monitoring-observability/isolated-benchmark-plan.md
+    findings_path: eval/07-operations/monitoring-observability/findings.md
+    integration_test_path: eval/07-operations/monitoring-observability/observability-review.md
 - name: runbooks
   phase: 07-operations
   file: skills/07-operations/runbooks/SKILL.md
@@ -305,10 +305,10 @@ skills:
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: runbooks-workspace/evals/eval-strategy.md
-    benchmark_plan_path: runbooks-workspace/isolated-benchmark-plan.md
-    findings_path: runbooks-workspace/findings.md
-    integration_test_path: runbooks-workspace/runbook-review.md
+    eval_strategy_path: eval/07-operations/runbooks/evals/eval-strategy.md
+    benchmark_plan_path: eval/07-operations/runbooks/isolated-benchmark-plan.md
+    findings_path: eval/07-operations/runbooks/findings.md
+    integration_test_path: eval/07-operations/runbooks/runbook-review.md
 - name: tech-debt-management
   phase: 08-evolution
   file: skills/08-evolution/tech-debt-management/SKILL.md
@@ -316,10 +316,10 @@ skills:
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: tech-debt-management-workspace/evals/eval-strategy.md
-    benchmark_plan_path: tech-debt-management-workspace/isolated-benchmark-plan.md
-    findings_path: tech-debt-management-workspace/findings.md
-    integration_test_path: tech-debt-management-workspace/debt-review.md
+    eval_strategy_path: eval/08-evolution/tech-debt-management/evals/eval-strategy.md
+    benchmark_plan_path: eval/08-evolution/tech-debt-management/isolated-benchmark-plan.md
+    findings_path: eval/08-evolution/tech-debt-management/findings.md
+    integration_test_path: eval/08-evolution/tech-debt-management/debt-review.md
 - name: retrospective
   phase: 08-evolution
   file: skills/08-evolution/retrospective/SKILL.md
@@ -327,10 +327,10 @@ skills:
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: retrospective-workspace/evals/eval-strategy.md
-    benchmark_plan_path: retrospective-workspace/isolated-benchmark-plan.md
-    findings_path: retrospective-workspace/findings.md
-    integration_test_path: retrospective-workspace/retro-review.md
+    eval_strategy_path: eval/08-evolution/retrospective/evals/eval-strategy.md
+    benchmark_plan_path: eval/08-evolution/retrospective/isolated-benchmark-plan.md
+    findings_path: eval/08-evolution/retrospective/findings.md
+    integration_test_path: eval/08-evolution/retrospective/retro-review.md
 - name: documentation
   phase: cross-cutting
   file: skills/cross-cutting/documentation/SKILL.md

@@ -61,8 +61,8 @@ This matters because the benchmark is not just about better structure. It is als
 
 This is now reinforced by downstream-consumption reviews:
 
-- `requirements-engineering-workspace/problem-framing-handoff-review.md`
-- `user-research-workspace/problem-framing-handoff-review.md`
+- `eval/01-specification/requirements-engineering/problem-framing-handoff-review.md`
+- `eval/00-discovery/user-research/problem-framing-handoff-review.md`
 
 Those reviews show the artifact shape is not only locally neat; it is usable by both specification and discovery consumers.
 

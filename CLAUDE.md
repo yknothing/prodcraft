@@ -31,6 +31,7 @@ Exceptions: if the user explicitly requests to skip intake for trivial work (typ
 - Skill files: `skills/{phase}/{skill-name}/SKILL.md` with Anthropic runtime frontmatter plus Prodcraft `metadata`
 - Phase overview files: `skills/{phase}/_phase.md` describing entry/exit criteria
 - Schema files: `skills/_schema.md`, `workflows/_schema.md`, `personas/_schema.md`
+- QA evidence: `eval/{phase}/{skill-name}/` mirrors the `skills/` directory tree; each directory holds eval sets, fixtures, benchmark results, and findings for one skill
 - All file names use kebab-case
 - All content in English
 
