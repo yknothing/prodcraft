@@ -1,6 +1,6 @@
 ---
 name: spec-writing
-description: Use when writing a detailed technical specification or product requirements document
+description: Write a shared product or technical specification that defines scope, non-goals, interfaces, rollout concerns, and open questions. Use when reviewed requirements must become a design-ready written contract for spec-driven work, greenfield bootstrap, or brownfield target-state documentation; not for routine agile story refinement.
 metadata:
   phase: 01-specification
   inputs:
@@ -17,6 +17,8 @@ metadata:
   methodologies:
   - spec-driven
   - waterfall
+  - greenfield
+  - brownfield
   effort: large
 ---
 
@@ -26,13 +28,17 @@ metadata:
 
 ## Context
 
-Spec writing is the heaviest specification skill, used primarily in spec-driven and waterfall workflows. In agile workflows, this is replaced by lightweight user stories with acceptance criteria. The spec is the contract between product and engineering.
+Spec writing is the heaviest specification skill, used primarily in spec-driven and waterfall workflows. In greenfield work, it can be used in a lighter form to lock the first-release contract before architecture begins. In brownfield work, it documents current behavior, target-state boundaries, or modernization constraints that downstream design and implementation must not rediscover from scratch.
+
+Do not reach for this skill during routine agile story refinement. In day-to-day sprint work, prefer lightweight requirements, acceptance criteria, and task breakdown unless the change is large enough to need a shared written contract.
 
 ## Process
 
 ### Step 1: Structure the Document
 
-Use a consistent template (see `templates/tdd-doc.md`):
+Use a consistent template:
+- product / feature scope documents: `templates/prd.md`
+- technical design proposals: `templates/rfc.md`
 1. **Overview** -- One paragraph explaining what this is and why it matters
 2. **Goals** -- What success looks like (measurable)
 3. **Non-Goals** -- Explicitly what this does NOT cover (prevents scope creep)

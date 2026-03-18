@@ -84,9 +84,11 @@ skills:
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: intake-workspace/evals/eval-strategy.md
-    findings_path: intake-workspace/redesign-notes.md
-    trigger_eval_results_path: intake-workspace/optimization/iter-2/results-mixed.json
-    benchmark_results_path: intake-workspace/iteration-1/benchmark.md
+    findings_path: intake-workspace/current-evidence-status.md
+    redesign_notes_path: intake-workspace/redesign-notes.md
+    revalidation_plan_path: intake-workspace/evals/eval-strategy.md
+    historical_trigger_eval_results_path: intake-workspace/optimization/iter-2/results-mixed.json
+    historical_benchmark_results_path: intake-workspace/iteration-1/benchmark.md
 - name: problem-framing
   phase: 00-discovery
   file: skills/00-discovery/problem-framing/SKILL.md
@@ -160,6 +162,7 @@ skills:
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: system-design-workspace/evals/eval-strategy.md
+    benchmark_plan_path: system-design-workspace/isolated-benchmark-plan.md
     findings_path: system-design-workspace/findings.md
     integration_test_path: system-design-workspace/requirements-handoff-review.md
 - name: api-design
@@ -180,6 +183,7 @@ skills:
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: task-breakdown-workspace/evals/eval-strategy.md
+    benchmark_plan_path: task-breakdown-workspace/isolated-benchmark-plan.md
     findings_path: task-breakdown-workspace/findings.md
     integration_test_path: task-breakdown-workspace/architecture-handoff-review.md
 - name: tdd
@@ -190,6 +194,7 @@ skills:
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: tdd-workspace/evals/eval-strategy.md
+    benchmark_plan_path: tdd-workspace/isolated-benchmark-plan.md
     findings_path: tdd-workspace/findings.md
     integration_test_path: tdd-workspace/task-handoff-review.md
 - name: code-review
@@ -200,6 +205,7 @@ skills:
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: code-review-workspace/evals/eval-strategy.md
+    benchmark_plan_path: code-review-workspace/isolated-benchmark-plan.md
     findings_path: code-review-workspace/findings.md
     integration_test_path: code-review-workspace/changeset-review.md
 - name: testing-strategy
@@ -220,6 +226,7 @@ skills:
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: ci-cd-workspace/evals/eval-strategy.md
+    benchmark_plan_path: ci-cd-workspace/isolated-benchmark-plan.md
     findings_path: ci-cd-workspace/findings.md
     integration_test_path: ci-cd-workspace/pipeline-review.md
 - name: incident-response

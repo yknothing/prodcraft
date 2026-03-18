@@ -184,6 +184,7 @@ Use these conventions:
 | `evaluation_mode` | QA posture for the skill (`discoverability` for metadata-first skills, `routed` for workflow/intake/handoff-driven skills) |
 | `qa.structure_validation_path` | Structural validator or script used to verify the skill package |
 | `qa.eval_strategy_path` | Human-readable evaluation strategy or rubric |
+| `qa.benchmark_plan_path` | Planned benchmark protocol when review-stage coverage is being built but final results are not ready yet |
 | `qa.trigger_eval_set_path` | Pending eval inputs for skills under review |
 | `qa.trigger_eval_results_path` | Latest trigger eval results for tested or production skills |
 | `qa.benchmark_results_path` | Benchmark or quality-comparison artifact |
@@ -195,6 +196,8 @@ Additional `*_path` evidence keys are allowed for supplemental proof, for exampl
 - downstream-consumer reviews for routed skills
 - secondary handoff reviews for a second scenario
 - manual vs isolated benchmark notes when both are useful
+- historical evidence retained for audit after a skill contract changes
+- revalidation plans that explain what evidence must be regenerated before status can advance
 
 This keeps QA claims auditable. A skill is not "tested" because someone said so; it is tested because the manifest points to the evidence.
 

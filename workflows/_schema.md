@@ -83,6 +83,8 @@ Guidance for tailoring the workflow to different contexts:
 
 Workflows orchestrate existing skills from `skills/` -- they never duplicate skill content. A workflow says *when* and *in what order* to apply skills, not *how* to perform the skill itself.
 
+Referenced skills should also declare methodology tags compatible with the workflow that uses them. If a workflow invokes a skill as a routed exception, that exception should be explicit in the skill's `metadata.methodologies` rather than left as an undocumented assumption.
+
 **Do:** "During the specification phase, apply the `spec-writing` skill to produce the PRD."
 **Don't:** Reproduce the full spec-writing process inline in the workflow file.
 

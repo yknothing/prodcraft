@@ -1,6 +1,6 @@
 ---
 name: feasibility-study
-description: Use when evaluating whether a product idea is technically viable, economically sound, and operationally sustainable
+description: Evaluate whether a product, migration, or modernization direction is viable across technical, economic, operational, and delivery constraints. Use when discovery has narrowed the opportunity enough to support a go/no-go, pivot, or scope-down decision before requirements, architecture, or major implementation begins.
 metadata:
   phase: 00-discovery
   inputs:

@@ -131,15 +131,6 @@ The `intake-brief` must capture:
 
 This keeps routing decisions auditable without forcing downstream skills to reconstruct the conversation.
 
-## Methodology Selection Signals
-
-- **Spec-driven**: regulated industry, contractual deliverable, large team, compliance, safety-critical
-- **Agile**: product iteration, startup, evolving requirements, small team, SaaS
-- **Waterfall**: well-understood requirements, enterprise, distributed teams, compliance checkpoints
-- **Hotfix**: production down, security vulnerability, data corruption, revenue impact
-- **Greenfield**: no existing codebase, new product/service, proof of concept
-- **Brownfield**: legacy system exists, migration needed, modernization goal
-
 ## Anti-Patterns
 
 1. **Skipping intake for "obvious" tasks** -- Even simple changes benefit from 30 seconds of context. The fast-track exists for truly trivial work.
@@ -149,43 +140,6 @@ This keeps routing decisions auditable without forcing downstream skills to reco
 5. **Ignoring existing context** -- If the project has CLAUDE.md, existing specs, or established conventions, incorporate them.
 6. **Turning intake into a full design session** -- Intake should decide the route. If the work needs option exploration or concept shaping, route to problem-framing instead of expanding intake indefinitely.
 
-## Examples
+## Reference Material
 
-### Feature Request
-```
-User: "Add dark mode support to the settings page"
-
-Intake Brief:
-- Work type: New Feature
-- Entry phase: 01-specification
-- Workflow: agile-sprint
-- Skills: spec-writing -> system-design -> task-breakdown -> tdd -> code-review
-- Scope: medium
-- Risks: CSS architecture may not support theming cleanly
-```
-
-### Production Bug
-```
-User: "Users are getting 500 errors on checkout"
-
-Intake Brief:
-- Work type: Hotfix
-- Entry phase: 04-implementation (skip to diagnosis)
-- Workflow: hotfix
-- Skills: debugging -> tdd (regression test) -> code-review -> deployment
-- Scope: small (hopefully)
-- Risks: Root cause may be in payment provider, not our code
-```
-
-### New Project
-```
-User: "I want to build a CLI tool for managing database migrations"
-
-Intake Brief:
-- Work type: New Product
-- Entry phase: 00-discovery
-- Workflow: greenfield
-- Skills: feasibility -> requirements -> system-design -> tech-selection -> tdd
-- Scope: large
-- Risks: Scope creep, existing tools in space
-```
+For methodology selection signals and worked intake examples, see [routing-signals-and-examples](references/routing-signals-and-examples.md). Keep the main skill focused on routing discipline; use the reference only when a path decision needs more comparison detail.

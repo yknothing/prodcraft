@@ -98,7 +98,7 @@ metadata:
 - `metadata.prerequisites` -- Other skills that should complete first
 - `metadata.quality_gate` -- Exit criteria before downstream skills proceed
 - `metadata.roles` -- Which personas are best suited to execute this skill
-- `metadata.methodologies` -- Which workflows include this skill (`all`, `agile`, `spec-driven`, `waterfall`)
+- `metadata.methodologies` -- Which workflow families or explicit workflows include this skill (`all`, `agile`, `spec-driven`, `waterfall`, `greenfield`, `brownfield`, `hotfix`)
 - `metadata.effort` -- Relative effort: `small` (<1h), `medium` (1-4h), `large` (4h-2d), `xlarge` (2d+)
 
 ## Workflows

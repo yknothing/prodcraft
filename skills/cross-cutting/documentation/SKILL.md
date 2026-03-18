@@ -1,6 +1,6 @@
 ---
 name: documentation
-description: Use when creating, reviewing, or improving technical documentation at any project phase
+description: Create, review, or update technical documentation that must stay accurate, discoverable, and tied to code or operations. Use when a feature, architecture decision, incident, or workflow change needs tutorials, reference docs, ADRs, runbooks, or maintenance guidance rather than ad hoc notes.
 metadata:
   phase: cross-cutting
   inputs: []

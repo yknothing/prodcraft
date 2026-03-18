@@ -247,8 +247,40 @@ def extract_backtick_refs(text: str) -> set[str]:
     return set(re.findall(r"`([a-z0-9-]+)`", text))
 
 
+def load_skill_methodologies(errors: list[str]) -> dict[str, list[str]]:
+    skill_methods: dict[str, list[str]] = {}
+    for path in sorted(SKILLS_DIR.rglob("SKILL.md")):
+        try:
+            frontmatter, _body = load_frontmatter(path)
+        except ValueError as exc:
+            errors.append(str(exc))
+            continue
+
+        name = frontmatter.get("name")
+        metadata = frontmatter.get("metadata", {})
+        methods = metadata.get("methodologies", [])
+        if isinstance(name, str) and isinstance(methods, list):
+            skill_methods[name] = methods
+    return skill_methods
+
+
+def workflow_compatibility_tags(workflow_name: str) -> set[str]:
+    tags = {"all", workflow_name}
+    family_aliases = {
+        "agile-sprint": {"agile"},
+        "iterative-waterfall": {"waterfall"},
+        "spec-driven": {"spec-driven"},
+        "greenfield": {"greenfield"},
+        "brownfield": {"brownfield"},
+        "hotfix": {"hotfix"},
+    }
+    tags.update(family_aliases.get(workflow_name, set()))
+    return tags
+
+
 def validate_workflow_skill_references(manifest: dict, errors: list[str]) -> None:
     skills = manifest_skill_names(manifest)
+    skill_methods = load_skill_methodologies(errors)
     allowed_non_skill_tokens = {
         "all",
         "intake",
@@ -257,13 +289,21 @@ def validate_workflow_skill_references(manifest: dict, errors: list[str]) -> Non
     for path in sorted(WORKFLOWS_DIR.glob("*.md")):
         if path.name.startswith("_"):
             continue
-        _frontmatter, body = load_frontmatter(path)
+        frontmatter, body = load_frontmatter(path)
         refs = extract_backtick_refs(body)
         missing = sorted(ref for ref in refs if ref not in skills and ref not in allowed_non_skill_tokens)
         if missing:
             errors.append(
                 f"{path}: references undefined skills/tokens {', '.join('`' + item + '`' for item in missing)}"
             )
+
+        compatibility_tags = workflow_compatibility_tags(frontmatter.get("name", ""))
+        for ref in sorted(ref for ref in refs if ref in skills):
+            methods = skill_methods.get(ref, [])
+            if methods and not compatibility_tags.intersection(methods):
+                errors.append(
+                    f"{path}: references skill `{ref}` but workflow `{frontmatter.get('name')}` is incompatible with metadata.methodologies {methods}"
+                )
 
 
 def main() -> int:

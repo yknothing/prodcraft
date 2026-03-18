@@ -32,7 +32,7 @@ A sprint follows a repeating cadence. The phases weave through this rhythm:
 
 **Phases active:** Discovery, Specification, Architecture, Planning.
 
-**Skills:** Apply `requirements-engineering` (lightweight), `spec-writing`, `acceptance-criteria`, and `task-breakdown`.
+**Skills:** Apply `requirements-engineering` (lightweight), `acceptance-criteria`, and `task-breakdown`.
 
 The product manager brings a prioritized backlog. The team selects work for the sprint based on capacity. Stories are refined just enough to begin work -- detailed design happens during implementation. Architecture decisions are made at the story level, with the architect advising on system-wide implications.
 
