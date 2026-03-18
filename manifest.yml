@@ -84,6 +84,7 @@ skills:
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: intake-workspace/evals/eval-strategy.md
+    benchmark_plan_path: intake-workspace/post-redesign-benchmark-plan.md
     findings_path: intake-workspace/current-evidence-status.md
     redesign_notes_path: intake-workspace/redesign-notes.md
     revalidation_plan_path: intake-workspace/evals/eval-strategy.md
@@ -173,6 +174,7 @@ skills:
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: api-design-workspace/evals/eval-strategy.md
+    benchmark_plan_path: api-design-workspace/isolated-benchmark-plan.md
     findings_path: api-design-workspace/findings.md
     integration_test_path: api-design-workspace/architecture-handoff-review.md
 - name: task-breakdown
@@ -216,6 +218,7 @@ skills:
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: testing-strategy-workspace/evals/eval-strategy.md
+    benchmark_plan_path: testing-strategy-workspace/isolated-benchmark-plan.md
     findings_path: testing-strategy-workspace/findings.md
     integration_test_path: testing-strategy-workspace/strategy-review.md
 - name: ci-cd
@@ -237,6 +240,7 @@ skills:
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: incident-response-workspace/evals/eval-strategy.md
+    benchmark_plan_path: incident-response-workspace/isolated-benchmark-plan.md
     findings_path: incident-response-workspace/findings.md
     integration_test_path: incident-response-workspace/incident-review.md
 - name: monitoring-observability
@@ -247,6 +251,7 @@ skills:
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: monitoring-observability-workspace/evals/eval-strategy.md
+    benchmark_plan_path: monitoring-observability-workspace/isolated-benchmark-plan.md
     findings_path: monitoring-observability-workspace/findings.md
     integration_test_path: monitoring-observability-workspace/observability-review.md
 - name: runbooks
@@ -257,6 +262,7 @@ skills:
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: runbooks-workspace/evals/eval-strategy.md
+    benchmark_plan_path: runbooks-workspace/isolated-benchmark-plan.md
     findings_path: runbooks-workspace/findings.md
     integration_test_path: runbooks-workspace/runbook-review.md
 - name: tech-debt-management
@@ -267,6 +273,7 @@ skills:
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: tech-debt-management-workspace/evals/eval-strategy.md
+    benchmark_plan_path: tech-debt-management-workspace/isolated-benchmark-plan.md
     findings_path: tech-debt-management-workspace/findings.md
     integration_test_path: tech-debt-management-workspace/debt-review.md
 - name: retrospective
@@ -277,6 +284,7 @@ skills:
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: retrospective-workspace/evals/eval-strategy.md
+    benchmark_plan_path: retrospective-workspace/isolated-benchmark-plan.md
     findings_path: retrospective-workspace/findings.md
     integration_test_path: retrospective-workspace/retro-review.md
 - name: documentation
@@ -466,12 +474,17 @@ artifact_flow:
   consumed_by:
   - feasibility-study
   - requirements-engineering
+  - user-research
 - artifact: user-persona-set
   produced_by: user-research
   consumed_by:
+  - feasibility-study
   - requirements-engineering
   - spec-writing
 - artifact: research-plan
+  produced_by: user-research
+  consumed_by: []
+- artifact: user-journey-map
   produced_by: user-research
   consumed_by: []
 - artifact: feasibility-report
@@ -486,6 +499,12 @@ artifact_flow:
   - user-research
   - feasibility-study
   - requirements-engineering
+- artifact: phase-recommendation
+  produced_by: intake
+  consumed_by: []
+- artifact: workflow-recommendation
+  produced_by: intake
+  consumed_by: []
 - artifact: problem-frame
   produced_by: problem-framing
   consumed_by:
@@ -509,6 +528,7 @@ artifact_flow:
   - domain-modeling
   - acceptance-criteria
   - system-design
+  - api-design
 - artifact: spec-doc
   produced_by: spec-writing
   consumed_by:
@@ -516,9 +536,11 @@ artifact_flow:
   - api-design
   - data-modeling
   - task-breakdown
+  - acceptance-criteria
 - artifact: domain-model
   produced_by: domain-modeling
   consumed_by:
+  - spec-writing
   - system-design
   - data-modeling
   - api-design
@@ -536,11 +558,26 @@ artifact_flow:
   - security-design
   - task-breakdown
   - feature-development
+  - code-review
+  - testing-strategy
+  - ci-cd
+  - incident-response
+  - monitoring-observability
+- artifact: component-diagram
+  produced_by: system-design
+  consumed_by: []
 - artifact: api-contract
   produced_by: api-design
   consumed_by:
   - feature-development
   - testing-strategy
+  - task-breakdown
+  - tdd
+  - code-review
+  - monitoring-observability
+- artifact: api-documentation
+  produced_by: api-design
+  consumed_by: []
 - artifact: data-schema
   produced_by: data-modeling
   consumed_by:
@@ -562,6 +599,13 @@ artifact_flow:
   consumed_by:
   - sprint-planning
   - estimation
+  - tdd
+  - code-review
+  - testing-strategy
+  - ci-cd
+- artifact: dependency-graph
+  produced_by: task-breakdown
+  consumed_by: []
 - artifact: sprint-plan
   produced_by: sprint-planning
   consumed_by:
@@ -573,7 +617,7 @@ artifact_flow:
   - sprint-planning
   - monitoring-observability
 - artifact: source-code
-  produced_by: feature-development
+  produced_by: tdd
   consumed_by:
   - code-review
   - testing-strategy
@@ -591,10 +635,16 @@ artifact_flow:
   consumed_by:
   - feature-development
   - refactoring
+  - retrospective
+  - tech-debt-management
 - artifact: test-report
   produced_by: testing-strategy
   consumed_by:
   - release-management
+- artifact: test-strategy-doc
+  produced_by: testing-strategy
+  consumed_by:
+  - ci-cd
 - artifact: security-report
   produced_by: security-audit
   consumed_by:
@@ -610,6 +660,12 @@ artifact_flow:
   consumed_by:
   - deployment-strategy
   - release-management
+  - incident-response
+  - monitoring-observability
+  - runbooks
+- artifact: build-artifacts
+  produced_by: ci-cd
+  consumed_by: []
 - artifact: release-plan
   produced_by: release-management
   consumed_by:
@@ -624,22 +680,50 @@ artifact_flow:
   consumed_by:
   - incident-response
   - capacity-planning
+  - runbooks
+- artifact: alert-rules
+  produced_by: monitoring-observability
+  consumed_by: []
+- artifact: service-dashboard
+  produced_by: monitoring-observability
+  consumed_by: []
 - artifact: incident-playbook
   produced_by: incident-response
   consumed_by:
   - runbooks
+- artifact: incident-timeline
+  produced_by: incident-response
+  consumed_by:
+  - retrospective
 - artifact: postmortem-report
   produced_by: incident-response
   consumed_by:
   - retrospective
   - risk-assessment
+  - tech-debt-management
+- artifact: operational-runbook
+  produced_by: runbooks
+  consumed_by: []
+- artifact: escalation-checklist
+  produced_by: runbooks
+  consumed_by: []
 - artifact: tech-debt-registry
   produced_by: tech-debt-management
   consumed_by:
   - sprint-planning
   - refactoring
+- artifact: remediation-plan
+  produced_by: tech-debt-management
+  consumed_by: []
 - artifact: retrospective-report
   produced_by: retrospective
   consumed_by:
   - market-analysis
   - sprint-planning
+  - tech-debt-management
+- artifact: improvement-actions
+  produced_by: retrospective
+  consumed_by: []
+- artifact: documentation-artifact
+  produced_by: documentation
+  consumed_by: []

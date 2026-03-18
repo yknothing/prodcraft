@@ -126,7 +126,7 @@ If a change silently hard-codes an unresolved architecture or contract decision,
 
 ## Related Skills
 
-- [feature-development](../../04-implementation/feature-development/SKILL.md) -- produces the code under review
+- `feature-development` (planned) -- produces the code under review
 - [testing-strategy](../testing-strategy/SKILL.md) -- defines the testing standards applied during review
-- [security-audit](../security-audit/SKILL.md) -- deeper security analysis for high-risk changes
+- `security-audit` (planned) -- deeper security analysis for high-risk changes
 - [tech-debt-management](../../08-evolution/tech-debt-management/SKILL.md) -- consumes review findings to track systemic issues

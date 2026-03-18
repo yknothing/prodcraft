@@ -49,6 +49,7 @@ CHECKS = {
     "manifest-files",
     "manifest-skill-status",
     "workflow-skill-refs",
+    "artifact-flow",
 }
 
 SKILL_STATUSES = {
@@ -106,6 +107,17 @@ def validate_skill_file(path: Path, errors: list[str]) -> None:
         if field not in frontmatter:
             errors.append(f"{path}: missing required skill field `{field}`")
 
+    description = frontmatter.get("description")
+    if not isinstance(description, str):
+        errors.append(f"{path}: `description` must be a string")
+    else:
+        if len(description) > 1024:
+            errors.append(f"{path}: `description` must be 1024 characters or fewer for Anthropic discovery")
+        if "<" in description or ">" in description:
+            errors.append(f"{path}: `description` must not contain XML angle brackets")
+        if not re.search(r"\bUse (when|after|before)\b", description):
+            errors.append(f"{path}: `description` must include an explicit trigger such as `Use when`, `Use after`, or `Use before`")
+
     metadata = frontmatter.get("metadata")
     if not isinstance(metadata, dict):
         errors.append(f"{path}: missing required skill field `metadata`")
@@ -133,6 +145,16 @@ def validate_skill_file(path: Path, errors: list[str]) -> None:
         if index + 1 < len(lines) and lines[index + 1].startswith("  "):
             errors.append(f"{path}: `description` must remain on a single line for Anthropic skill discovery")
         break
+
+    skill_dir = path.parent
+    if (skill_dir / "README.md").exists():
+        errors.append(f"{path}: skill packages must not contain README.md; keep agent-facing guidance in SKILL.md or references/")
+
+    _frontmatter, body = load_frontmatter(path)
+    for rel_target in re.findall(r"\((references|scripts|assets)/([^)]+)\)", body):
+        bundled_path = skill_dir / rel_target[0] / rel_target[1]
+        if not bundled_path.exists():
+            errors.append(f"{path}: referenced bundled resource `{bundled_path.relative_to(ROOT)}` does not exist")
 
 
 def validate_workflow_file(path: Path, errors: list[str], selected_checks: set[str]) -> None:
@@ -243,6 +265,45 @@ def validate_manifest_skill_status(manifest: dict, errors: list[str]) -> None:
                 )
 
 
+def validate_artifact_flow(manifest: dict, errors: list[str]) -> None:
+    artifact_flow = {
+        entry["artifact"]: {
+            "produced_by": entry.get("produced_by"),
+            "consumed_by": set(entry.get("consumed_by", []) or []),
+        }
+        for entry in manifest.get("artifact_flow", [])
+        if isinstance(entry, dict) and "artifact" in entry
+    }
+
+    for path in sorted(SKILLS_DIR.rglob("SKILL.md")):
+        try:
+            frontmatter, _body = load_frontmatter(path)
+        except ValueError as exc:
+            errors.append(str(exc))
+            continue
+
+        skill_name = frontmatter.get("name")
+        metadata = frontmatter.get("metadata", {})
+        outputs = metadata.get("outputs", [])
+        inputs = metadata.get("inputs", [])
+
+        if isinstance(outputs, list):
+            for artifact in outputs:
+                flow_entry = artifact_flow.get(artifact)
+                if not flow_entry or flow_entry.get("produced_by") != skill_name:
+                    errors.append(
+                        f"{path}: output artifact `{artifact}` must appear in manifest artifact_flow with produced_by `{skill_name}`"
+                    )
+
+        if isinstance(inputs, list):
+            for artifact in inputs:
+                flow_entry = artifact_flow.get(artifact)
+                if flow_entry and skill_name not in flow_entry.get("consumed_by", set()):
+                    errors.append(
+                        f"{path}: input artifact `{artifact}` appears in manifest artifact_flow and must list `{skill_name}` in consumed_by"
+                    )
+
+
 def extract_backtick_refs(text: str) -> set[str]:
     return set(re.findall(r"`([a-z0-9-]+)`", text))
 
@@ -335,6 +396,9 @@ def main() -> int:
 
     if "manifest-skill-status" in selected_checks and manifest:
         validate_manifest_skill_status(manifest, errors)
+
+    if "artifact-flow" in selected_checks and manifest:
+        validate_artifact_flow(manifest, errors)
 
     if errors:
         for error in errors:

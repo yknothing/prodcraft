@@ -102,4 +102,4 @@ Before relying on the setup:
 - [ci-cd](../../06-delivery/ci-cd/SKILL.md) -- provides release and rollback context
 - [incident-response](../incident-response/SKILL.md) -- consumes observability signals during incidents
 - [runbooks](../runbooks/SKILL.md) -- attaches response steps to alerts
-- [capacity-planning](../capacity-planning/SKILL.md) -- uses operational signals for projection
+- `capacity-planning` (planned) -- uses operational signals for projection

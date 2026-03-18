@@ -122,6 +122,6 @@ TDD is a default, not a religion. Skip test-first for:
 ## Related Skills
 
 - [acceptance-criteria](../../01-specification/acceptance-criteria/SKILL.md) -- provides the test specifications
-- [feature-development](../feature-development/SKILL.md) -- the broader implementation context
-- [refactoring](../refactoring/SKILL.md) -- the REFACTOR step, applied more broadly
+- `feature-development` (planned) -- the broader implementation context
+- `refactoring` (planned) -- the REFACTOR step, applied more broadly
 - [code-review](../../05-quality/code-review/SKILL.md) -- reviews both code and tests

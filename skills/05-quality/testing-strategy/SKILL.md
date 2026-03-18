@@ -131,6 +131,6 @@ Establish practices to prevent and manage flaky tests:
 
 - [tdd](../../04-implementation/tdd/SKILL.md) -- provides the test-first discipline that feeds into strategy
 - [code-review](../code-review/SKILL.md) -- reviews test quality alongside code quality
-- [security-audit](../security-audit/SKILL.md) -- security testing integrates into the strategy
-- [performance-audit](../performance-audit/SKILL.md) -- performance testing as part of the overall approach
+- `security-audit` (planned) -- security testing integrates into the strategy
+- `performance-audit` (planned) -- performance testing as part of the overall approach
 - [ci-cd](../../06-delivery/ci-cd/SKILL.md) -- consumes the strategy to configure pipeline test stages
