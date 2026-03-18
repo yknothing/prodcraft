@@ -1,6 +1,6 @@
 ---
 name: feasibility-study
-description: Evaluate whether a product, migration, or modernization direction is viable across technical, economic, operational, and delivery constraints. Use when discovery has narrowed the opportunity enough to support a go/no-go, pivot, or scope-down decision before requirements, architecture, or major implementation begins.
+description: Use when discovery has narrowed an idea enough that the team must make a go/no-go, pivot, or scope-down decision based on technical, economic, operational, or timeline viability before requirements, architecture, or major implementation.
 metadata:
   phase: 00-discovery
   inputs:

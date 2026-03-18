@@ -1,6 +1,6 @@
 ---
 name: requirements-engineering
-description: Use when the work is still at the “what should we build” stage rather than design or implementation. Apply before spec-writing, architecture, API design, planning, or coding when interviews, personas, stakeholder notes, or discovery artifacts must be turned into prioritized functional requirements, non-functional requirements, scope boundaries, traceable sources, and explicit “the system shall” statements; not for acceptance criteria, PRD drafting from an approved requirements doc, spec review, or implementation.
+description: Use when the work is still at the “what should we build” stage and approved discovery inputs or entry-stack outputs must become prioritized requirements and scope boundaries before specification, architecture, planning, or coding. Not for acceptance criteria, spec review, or implementation.
 metadata:
   phase: 01-specification
   inputs:

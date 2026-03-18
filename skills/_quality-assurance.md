@@ -120,6 +120,12 @@ This refines the `description` field in frontmatter to:
 - Clarify the skill's scope and boundaries
 - Ensure it doesn't overlap with other skills
 
+When editing descriptions, follow the platform guidance that governs real runtime behavior:
+
+- Anthropic: the `description` is how Claude decides when to apply the skill, so it should include words users would naturally say and become more specific if the skill triggers too often.
+- Anthropic: skill descriptions are loaded into context so Claude knows what is available, which means unnecessary verbosity creates avoidable context pressure across the whole skill set.
+- OpenAI: skills should define when to use a workflow, while the detailed steps and result format belong in the skill body and supporting files rather than being packed into metadata.
+
 ## Security-Specific Checks
 
 Skills are security-sensitive artifacts -- they control AI agent behavior. Every skill must pass these security checks:

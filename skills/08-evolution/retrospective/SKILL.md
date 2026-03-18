@@ -1,6 +1,6 @@
 ---
 name: retrospective
-description: Turn evidence from a sprint, release, or incident into a small set of owned improvement actions with deadlines and follow-up routes. Use when a delivery cycle has ended and the team needs to capture what worked, what failed, and what should enter the next planning or intake loop.
+description: Use when a sprint, release, or incident has ended and the team needs to turn evidence about what worked, what failed, and what should change into a small set of owned follow-up actions.
 metadata:
   phase: 08-evolution
   inputs:

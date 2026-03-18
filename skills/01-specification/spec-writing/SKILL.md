@@ -1,6 +1,6 @@
 ---
 name: spec-writing
-description: Write a shared product or technical specification that defines scope, non-goals, interfaces, rollout concerns, and open questions. Use when reviewed requirements must become a design-ready written contract for spec-driven work, greenfield bootstrap, or brownfield target-state documentation; not for routine agile story refinement.
+description: Use when reviewed requirements need a shared product or technical specification that fixes scope, non-goals, interfaces, rollout concerns, and open questions before architecture or implementation. Skip for routine agile story refinement.
 metadata:
   phase: 01-specification
   inputs:

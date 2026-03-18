@@ -1,15 +1,7 @@
 {
   "skill_name": "intake",
-  "description": "Assess new engineering work before execution by classifying the work type, choosing the right lifecycle starting phase and workflow, and producing an intake brief for approval. Use when a user is starting a new product, migration, major cross-cutting initiative, multi-sprint tech debt effort, broad documentation push, or says they are unsure where to begin and need routing before implementation. Also use when a feature, refactor, or incident needs scope triage first rather than immediate execution. Do not use for tasks already in progress or already tightly scoped: specific debugging with stack traces, writing tests for a known function, running commands, trivial edits, reviewing PRs, or pure knowledge questions.",
+  "description": "Route engineering work before execution. Use when a user is starting a feature, bug fix, hotfix, product, migration, or refactor and the next phase or workflow is unclear, or when they are unsure where to begin. Do not use for ongoing work, debugging, trivial edits, direct commands, PR review, or pure questions.",
   "results": [
-    {
-      "query": "hey so our checkout page has been throwing 500 errors since this mornings deploy, about 15% of users are affected and were losing revenue every minute. need this fixed asap",
-      "should_trigger": true,
-      "trigger_rate": 0.0,
-      "triggers": 0,
-      "runs": 2,
-      "pass": false
-    },
     {
       "query": "ok \u8fd9\u4e2a auth module \u6211\u60f3\u91cd\u6784\u4e00\u4e0b\uff0c\u73b0\u5728\u662f\u4e2a 2000 \u884c\u7684 god class\uff0cauth\u3001session management\u3001password reset\u3001OAuth \u5168 mixed \u5728\u4e00\u8d77\uff0c\u5b8c\u5168\u6ca1\u6709 tests\u3002\u6211\u8981 break it apart properly",
       "should_trigger": true,
@@ -20,6 +12,14 @@
     },
     {
       "query": "\u6211\u4eec\u7684 SaaS \u4ea7\u54c1\u9700\u8981\u52a0\u4e00\u4e2a\u56e2\u961f\u534f\u4f5c\u529f\u80fd\uff0c\u7528\u6237\u53ef\u4ee5\u5728\u9879\u76ee\u91cc @mention \u961f\u53cb\u7136\u540e\u81ea\u52a8\u53d1\u901a\u77e5\u3002\u8fd9\u4e2a\u529f\u80fd\u4f18\u5148\u7ea7\u5f88\u9ad8\uff0cQ2 \u5c31\u8981\u4e0a\u7ebf",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 2,
+      "pass": false
+    },
+    {
+      "query": "hey so our checkout page has been throwing 500 errors since this mornings deploy, about 15% of users are affected and were losing revenue every minute. need this fixed asap",
       "should_trigger": true,
       "trigger_rate": 0.0,
       "triggers": 0,

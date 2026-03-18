@@ -1,6 +1,6 @@
 ---
 name: market-analysis
-description: Analyze market opportunity, competitor positioning, and adoption gaps for a new product or expansion idea. Use when discovery needs evidence about segment attractiveness, alternatives, pricing pressure, or unmet demand before feasibility, user research, or requirements are finalized.
+description: Use when discovery needs evidence about market demand, competitors, pricing pressure, or underserved segments for a new product or expansion idea before feasibility, user research, or requirements are finalized.
 metadata:
   phase: 00-discovery
   inputs: []

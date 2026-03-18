@@ -45,3 +45,25 @@ Suggested rerun target:
 - overwrite `intake-workspace/optimization/iter-2/results.json` after preflight passes, or
 - write to `intake-workspace/optimization/iter-2/results-rerun.json`
 
+## Update: 2026-03-18 Valid Rerun
+
+A later rerun was completed successfully after preflight returned `OK`.
+
+For the tightened routing-only description that began `Route engineering work before execution.` the bucketed results were:
+
+- core recall: `0/5`
+- overlap recall: `0/5`
+- non-trigger precision: `10/10`
+- mixed-set accuracy: `10/20`
+
+This means the earlier quota diagnosis is no longer the main explanation for iteration-2 failure. The tighter metadata truly over-corrected toward precision and lost discoverability on the strongest intake prompts.
+
+## Update: 2026-03-18 Second Rerun Blocked
+
+After revising the description again to restore more user-natural trigger phrases, another rerun was attempted on the same day.
+
+That rerun did **not** start because Claude CLI returned:
+
+`You're out of extra usage · resets Mar 20, 6pm (Asia/Singapore)`
+
+So the current description revision is still awaiting a valid post-reset rerun.

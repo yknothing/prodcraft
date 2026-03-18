@@ -1,6 +1,6 @@
 ---
 name: intake
-description: 'Assess new engineering work before execution by classifying the work type, choosing the right lifecycle starting phase and workflow, and producing an intake brief for approval. Use when a user is starting a new product, migration, major cross-cutting initiative, multi-sprint tech debt effort, broad documentation push, or says they are unsure where to begin and need routing before implementation. Also use when a feature, refactor, or incident needs scope triage first rather than immediate execution. Do not use for tasks already in progress or already tightly scoped: specific debugging with stack traces, writing tests for a known function, running commands, trivial edits, reviewing PRs, or pure knowledge questions.'
+description: 'Route new engineering work before execution. Use when a user wants to build a new product, app, or internal tool, start from scratch, plan a migration, run a multi-sprint tech-debt or documentation effort, or says they are not sure where to start. Also use when a feature, refactor, or hotfix needs scope triage before implementation. Do not use for ongoing work, concrete debugging, trivial edits, direct commands, PR review, or pure questions.'
 metadata:
   phase: 00-discovery
   inputs: []

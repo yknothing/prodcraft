@@ -1,6 +1,6 @@
 ---
 name: documentation
-description: Create, review, or update technical documentation that must stay accurate, discoverable, and tied to code or operations. Use when a feature, architecture decision, incident, or workflow change needs tutorials, reference docs, ADRs, runbooks, or maintenance guidance rather than ad hoc notes.
+description: Use when a feature, architecture decision, incident, or workflow change needs durable technical documentation such as tutorials, reference docs, ADRs, runbooks, or maintenance guidance instead of ad hoc notes.
 metadata:
   phase: cross-cutting
   inputs: []
