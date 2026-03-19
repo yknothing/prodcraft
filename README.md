@@ -51,7 +51,7 @@ python scripts/validate_prodcraft.py \
   --check workflow-entry-gate
 ```
 
-For local QA/test/eval runs in this repository, prefer the locally installed `gemini` CLI. Do not use Claude CLI for routine reruns here; its cost is too high for this project. If a checked-in helper still targets Claude, treat it as legacy and update or replace it before relying on it.
+For local QA/test/eval runs in this repository, prefer the locally installed `gemini` CLI. Do not use Claude CLI for routine reruns here; its cost is too high for this project. The one exception is Anthropic-specific trigger-discoverability evaluation, which should run only through the vendored harness in `tools/anthropic_trigger_eval/` when you explicitly need official Claude trigger behavior.
 
 ## Project Structure
 

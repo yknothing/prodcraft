@@ -1,0 +1,213 @@
+import importlib.util
+import json
+import os
+import subprocess
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+from unittest import mock
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+SCRIPT_PATH = REPO_ROOT / "scripts" / "run_explicit_skill_benchmark.py"
+
+
+def load_module():
+    spec = importlib.util.spec_from_file_location("run_explicit_skill_benchmark", SCRIPT_PATH)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+class FakeProcess:
+    def __init__(self, stdout="OK\n", stderr="", returncode=0):
+        self._stdout = stdout
+        self._stderr = stderr
+        self.returncode = returncode
+        self.pid = 12345
+
+    def communicate(self, timeout=None):
+        return self._stdout, self._stderr
+
+    def wait(self):
+        return self.returncode
+
+
+class RunExplicitSkillBenchmarkTests(unittest.TestCase):
+    def test_run_prompt_uses_gemini_plan_mode_by_default(self):
+        module = load_module()
+        fake_process = FakeProcess()
+
+        with mock.patch.object(module.subprocess, "Popen", return_value=fake_process) as popen:
+            output = module.run_prompt(
+                prompt="say only OK",
+                runner="gemini",
+                model=None,
+                cwd=Path("/tmp"),
+                timeout_seconds=5,
+            )
+
+        self.assertEqual(output, "OK")
+        cmd = popen.call_args.args[0]
+        self.assertEqual(cmd[0], "gemini")
+        self.assertIn("-p", cmd)
+        self.assertIn("--output-format", cmd)
+        self.assertIn("text", cmd)
+        self.assertIn("--approval-mode", cmd)
+        self.assertIn("plan", cmd)
+        self.assertNotIn("claude", cmd)
+
+    def test_main_records_default_runner_and_writes_outputs(self):
+        module = load_module()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            temp_root = Path(tmpdir)
+            benchmark_path = temp_root / "benchmark.json"
+            skill_path = temp_root / "skill"
+            skill_path.mkdir()
+            (skill_path / "SKILL.md").write_text("# placeholder skill\n", encoding="utf-8")
+
+            context_file = temp_root / "brief.md"
+            context_file.write_text("brief context\n", encoding="utf-8")
+            benchmark_path.write_text(
+                json.dumps(
+                    [
+                        {
+                            "id": "demo-scenario",
+                            "title": "Demo Scenario",
+                            "prompt": "Summarize the copied context.",
+                            "context_files": [str(context_file)],
+                            "assertions": [],
+                        }
+                    ]
+                ),
+                encoding="utf-8",
+            )
+
+            output_dir = temp_root / "results"
+            argv = [
+                "run_explicit_skill_benchmark.py",
+                "--benchmark",
+                str(benchmark_path),
+                "--skill-path",
+                str(skill_path),
+                "--output-dir",
+                str(output_dir),
+            ]
+
+            with mock.patch.object(module, "run_prompt", side_effect=["baseline output", "skill output"]):
+                with mock.patch.object(sys, "argv", argv):
+                    exit_code = module.main()
+
+            self.assertEqual(exit_code, 0)
+            run_metadata = json.loads((output_dir / "run_metadata.json").read_text(encoding="utf-8"))
+            self.assertEqual(run_metadata["runner"], "gemini")
+
+            scenario_dir = output_dir / "eval-1-demo-scenario"
+            self.assertEqual(
+                (scenario_dir / "without_skill" / "response.md").read_text(encoding="utf-8").strip(),
+                "baseline output",
+            )
+            self.assertEqual(
+                (scenario_dir / "with_skill" / "response.md").read_text(encoding="utf-8").strip(),
+                "skill output",
+            )
+
+    def test_script_runs_end_to_end_with_fake_gemini_cli(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            temp_root = Path(tmpdir)
+            bin_dir = temp_root / "bin"
+            bin_dir.mkdir()
+
+            fake_gemini = bin_dir / "gemini"
+            fake_gemini.write_text(
+                "\n".join(
+                    [
+                        "#!/bin/sh",
+                        "prompt=''",
+                        "while [ \"$#\" -gt 0 ]; do",
+                        "  case \"$1\" in",
+                        "    -p|--prompt)",
+                        "      shift",
+                        "      prompt=\"$1\"",
+                        "      ;;",
+                        "    --output-format|--approval-mode|--model)",
+                        "      shift",
+                        "      ;;",
+                        "  esac",
+                        "  shift",
+                        "done",
+                        "case \"$prompt\" in",
+                        "  *\"First read ./skill-under-test/SKILL.md\"*) printf 'skill cli output\\n' ;;",
+                        "  *) printf 'baseline cli output\\n' ;;",
+                        "esac",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            fake_gemini.chmod(0o755)
+
+            benchmark_path = temp_root / "benchmark.json"
+            skill_path = temp_root / "skill"
+            skill_path.mkdir()
+            (skill_path / "SKILL.md").write_text("# placeholder skill\n", encoding="utf-8")
+
+            context_file = temp_root / "brief.md"
+            context_file.write_text("brief context\n", encoding="utf-8")
+            benchmark_path.write_text(
+                json.dumps(
+                    [
+                        {
+                            "id": "demo-scenario",
+                            "title": "Demo Scenario",
+                            "prompt": "Summarize the copied context.",
+                            "context_files": [str(context_file)],
+                            "assertions": [],
+                        }
+                    ]
+                ),
+                encoding="utf-8",
+            )
+
+            output_dir = temp_root / "results"
+            env = os.environ.copy()
+            env["PATH"] = f"{bin_dir}{os.pathsep}{env['PATH']}"
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT_PATH),
+                    "--benchmark",
+                    str(benchmark_path),
+                    "--skill-path",
+                    str(skill_path),
+                    "--output-dir",
+                    str(output_dir),
+                ],
+                cwd=REPO_ROOT,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr or result.stdout)
+            run_metadata = json.loads((output_dir / "run_metadata.json").read_text(encoding="utf-8"))
+            self.assertEqual(run_metadata["runner"], "gemini")
+
+            scenario_dir = output_dir / "eval-1-demo-scenario"
+            self.assertEqual(
+                (scenario_dir / "without_skill" / "response.md").read_text(encoding="utf-8").strip(),
+                "baseline cli output",
+            )
+            self.assertEqual(
+                (scenario_dir / "with_skill" / "response.md").read_text(encoding="utf-8").strip(),
+                "skill cli output",
+            )
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Small preflight check for Claude CLI before long eval runs.
+"""Small preflight check for the vendored Anthropic trigger-eval harness.
 
 Usage:
-  python3 intake-workspace/scripts/preflight_claude_eval.py
-  python3 intake-workspace/scripts/preflight_claude_eval.py --model claude-opus-4-6
+  python3 eval/00-discovery/intake/scripts/preflight_claude_eval.py
+  python3 eval/00-discovery/intake/scripts/preflight_claude_eval.py --model claude-opus-4-6
 """
 
 from __future__ import annotations
@@ -12,12 +12,15 @@ import argparse
 import json
 import os
 import subprocess
-import sys
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[4]
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Check whether Claude CLI is usable before running evals."
+        description="Check whether Claude CLI is usable before running the vendored Anthropic trigger eval."
     )
     parser.add_argument("--model", help="Optional Claude model name")
     args = parser.parse_args()
@@ -33,7 +36,7 @@ def main() -> int:
         capture_output=True,
         text=True,
         env=env,
-        cwd="/Users/whatsup/workspace/2026/prodcraft",
+        cwd=str(ROOT),
     )
 
     stdout = (result.stdout or "").strip()

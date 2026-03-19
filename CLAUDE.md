@@ -73,7 +73,7 @@ No build system. This is a documentation/configuration project. Validation is st
 - Input/output chains must be acyclic (no circular dependencies between phases)
 - Every skill must pass skill-creator evaluation before production status
 
-For local QA/test/eval execution in this repository, prefer the installed `gemini` CLI. Do not use Claude CLI for routine reruns here; treat any remaining Claude-specific helpers as legacy until they are migrated.
+For local QA/test/eval execution in this repository, prefer the installed `gemini` CLI. Do not use Claude CLI for routine reruns here. The exception is Anthropic-specific trigger-discoverability evaluation, which should run only through the vendored harness in `tools/anthropic_trigger_eval/` when official Claude trigger semantics are required.
 
 ## Style Guide
 

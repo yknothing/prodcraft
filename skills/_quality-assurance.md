@@ -111,7 +111,7 @@ Repository execution note:
 
 - For local QA/test/eval runs in this repo, prefer the installed `gemini` CLI.
 - Do not spend Claude CLI quota on routine reruns for this project.
-- If a checked-in helper script still targets Claude, treat that script as legacy until it is migrated or replaced.
+- Anthropic trigger-discoverability eval is the exception: if you need official Claude trigger semantics, run the vendored harness in `tools/anthropic_trigger_eval/` rather than any user-local plugin cache path.
 
 ### Checkpoint 4: Description Optimization
 

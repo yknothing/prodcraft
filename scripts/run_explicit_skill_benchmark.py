@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run an explicit-invocation benchmark for a skill using isolated Claude sessions."""
+"""Run an explicit-invocation benchmark for a skill using isolated CLI sessions."""
 
 from __future__ import annotations
 
@@ -14,20 +14,46 @@ from datetime import datetime
 from pathlib import Path
 
 
-def run_prompt(prompt: str, tools: str, model: str | None, cwd: Path, timeout_seconds: int) -> str:
-    cmd = [
-        "claude",
-        "-p",
-        prompt,
-        "--output-format",
-        "text",
-        "--permission-mode",
-        "bypassPermissions",
-        "--tools",
-        tools,
-    ]
+SUPPORTED_RUNNERS = {"claude", "gemini"}
+
+
+def build_prompt_command(runner: str, prompt: str, model: str | None) -> list[str]:
+    if runner == "gemini":
+        cmd = [
+            "gemini",
+            "-p",
+            prompt,
+            "--output-format",
+            "text",
+            "--approval-mode",
+            "plan",
+        ]
+    elif runner == "claude":
+        cmd = [
+            "claude",
+            "-p",
+            prompt,
+            "--output-format",
+            "text",
+            "--permission-mode",
+            "bypassPermissions",
+            "--tools",
+            "Read",
+        ]
+    else:
+        raise ValueError(f"Unsupported runner: {runner}")
+
     if model:
         cmd.extend(["--model", model])
+    return cmd
+
+
+def run_prompt(prompt: str, runner: str, model: str | None, cwd: Path, timeout_seconds: int) -> str:
+    cmd = build_prompt_command(runner, prompt, model)
+    env = os.environ.copy()
+    if runner == "claude":
+        env.pop("CLAUDECODE", None)
+
     process = subprocess.Popen(
         cmd,
         cwd=cwd,
@@ -35,6 +61,7 @@ def run_prompt(prompt: str, tools: str, model: str | None, cwd: Path, timeout_se
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         start_new_session=True,
+        env=env,
     )
     try:
         stdout, stderr = process.communicate(timeout=timeout_seconds)
@@ -73,7 +100,7 @@ def append_text(path: Path, content: str) -> None:
 def run_case(
     *,
     prompt: str,
-    tools: str,
+    runner: str,
     model: str | None,
     timeout_seconds: int,
     cwd: Path,
@@ -82,7 +109,7 @@ def run_case(
     try:
         output = run_prompt(
             prompt,
-            tools=tools,
+            runner=runner,
             model=model,
             cwd=cwd,
             timeout_seconds=timeout_seconds,
@@ -114,8 +141,14 @@ def main() -> int:
     parser.add_argument("--benchmark", required=True, help="Path to benchmark JSON.")
     parser.add_argument("--skill-path", required=True, help="Path to skill directory containing SKILL.md.")
     parser.add_argument("--output-dir", required=True, help="Directory to write benchmark outputs.")
-    parser.add_argument("--model", default=None, help="Optional Claude model override.")
-    parser.add_argument("--timeout-seconds", type=int, default=120, help="Per-prompt timeout for claude -p.")
+    parser.add_argument(
+        "--runner",
+        choices=sorted(SUPPORTED_RUNNERS),
+        default="gemini",
+        help="CLI runner to invoke for each benchmark prompt. Defaults to gemini.",
+    )
+    parser.add_argument("--model", default=None, help="Optional model override for the selected runner.")
+    parser.add_argument("--timeout-seconds", type=int, default=120, help="Per-prompt timeout for the selected CLI runner.")
     parser.add_argument("--scenario-id", default=None, help="Optional single scenario id to run.")
     args = parser.parse_args()
 
@@ -139,6 +172,7 @@ def main() -> int:
             {
                 "benchmark": str(benchmark_path),
                 "skill_path": str(skill_path),
+                "runner": args.runner,
                 "model": args.model,
                 "run_started_at": timestamp,
                 "scenario_count": len(scenarios),
@@ -195,7 +229,7 @@ def main() -> int:
             append_text(progress_log, f"running {scenario['id']} without_skill")
             run_case(
                 prompt=baseline_prompt,
-                tools="Read",
+                runner=args.runner,
                 model=args.model,
                 timeout_seconds=args.timeout_seconds,
                 cwd=baseline_dir,
@@ -205,7 +239,7 @@ def main() -> int:
             append_text(progress_log, f"running {scenario['id']} with_skill")
             run_case(
                 prompt=with_skill_prompt,
-                tools="Read",
+                runner=args.runner,
                 model=args.model,
                 timeout_seconds=args.timeout_seconds,
                 cwd=with_skill_dir,
