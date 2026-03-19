@@ -89,8 +89,13 @@ Important: the official trigger eval is a **description-discoverability** test. 
 For critical skills (gateway, intake, TDD, code-review), run benchmarks:
 
 ```
-/skill-creator benchmark [skill-name]
+python3 scripts/run_explicit_skill_benchmark.py \
+  --benchmark <path-to-benchmark.json> \
+  --skill-path <path-to-skill-dir> \
+  --output-dir <path-to-output-dir>
 ```
+
+The repository benchmark runner defaults to `gemini`. Use `--runner claude` only when you intentionally need a Claude-side comparison.
 
 This measures:
 - **Variance analysis**: How consistent are the skill's outputs across runs?
@@ -174,7 +179,7 @@ Track these metrics for each skill over time:
 | Metric | Target | Measurement |
 |--------|--------|-------------|
 | Trigger accuracy | >90% | skill-creator eval results |
-| Output consistency | <15% variance | skill-creator benchmark results |
+| Output consistency | <15% variance | explicit benchmark results |
 | User satisfaction | >4/5 rating | Post-use feedback |
 | False trigger rate | <5% | skill-creator eval results |
 | Security findings | 0 critical/high | Security review checklist |

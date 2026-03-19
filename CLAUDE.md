@@ -54,12 +54,12 @@ When editing personas:
 
 ## Skill Quality Assurance
 
-**Every new or modified skill MUST go through the skill-creator QA pipeline** before being marked as production-ready. See `skills/_quality-assurance.md` for the full process.
+**Every new or modified skill MUST go through the repository QA pipeline** before being marked as production-ready. See `skills/_quality-assurance.md` for the full process.
 
 Key checkpoints:
 1. **Structure validation**: Use `/skill-creator` to validate format and frontmatter
 2. **Trigger accuracy**: Run `/skill-creator eval` to test triggering precision
-3. **Performance benchmarking**: Run `/skill-creator benchmark` for variance analysis
+3. **Performance benchmarking**: Run `python3 scripts/run_explicit_skill_benchmark.py ...` for isolated variance analysis (defaults to Gemini)
 4. **Description optimization**: Run `/skill-creator optimize` for trigger accuracy
 5. **Security review**: Complete the security checklist (prompt injection, command safety, data protection, scope limitation, supply chain safety)
 
@@ -71,7 +71,7 @@ No build system. This is a documentation/configuration project. Validation is st
 - Every skill referenced in a workflow must exist in `skills/`
 - Every persona referenced in a skill must exist in `personas/`
 - Input/output chains must be acyclic (no circular dependencies between phases)
-- Every skill must pass skill-creator evaluation before production status
+- Every skill must pass the documented QA checks before production status
 
 For local QA/test/eval execution in this repository, prefer the installed `gemini` CLI. Do not use Claude CLI for routine reruns here. The exception is Anthropic-specific trigger-discoverability evaluation, which should run only through the vendored harness in `tools/anthropic_trigger_eval/` when official Claude trigger semantics are required.
 
