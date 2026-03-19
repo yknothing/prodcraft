@@ -11,6 +11,7 @@ Cross-cutting skills are triggered by context, not by phase transitions:
 - User-facing text? Apply internationalization.
 - Any code, workflow, or AI execution path? Apply observability (structured events, usage accounting, logs, metrics).
 - Any project? Apply documentation.
+- Any recurring bug, regression, or incident symptom that may already be known? Apply bug-history-retrieval.
 - Regulated industry? Apply compliance.
 
 ## Key Skills
@@ -19,6 +20,7 @@ Cross-cutting skills are triggered by context, not by phase transitions:
 |---|---|---|
 | documentation | Any phase produces artifacts worth documenting | small-medium |
 | observability | Any code, workflow, or AI execution boundary needs structured telemetry and stable signal contracts | medium |
+| bug-history-retrieval | A current failure may match known defects in canonical trackers, monitoring, release, or git history | small |
 | accessibility | Any user interface is built or modified | small-medium |
 | internationalization | Any user-facing text is created | medium |
 | compliance | Regulatory or legal requirements apply | large |

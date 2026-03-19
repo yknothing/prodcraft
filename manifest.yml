@@ -341,6 +341,10 @@ skills:
   phase: cross-cutting
   file: skills/cross-cutting/observability/SKILL.md
   status: draft
+- name: bug-history-retrieval
+  phase: cross-cutting
+  file: skills/cross-cutting/bug-history-retrieval/SKILL.md
+  status: draft
 planned_skills:
 - name: pair-programming
   phase: 04-implementation
@@ -773,3 +777,9 @@ artifact_flow:
   consumed_by:
   - feature-development
   - monitoring-observability
+- artifact: historical-defect-context
+  produced_by: bug-history-retrieval
+  consumed_by: []
+- artifact: fix-lineage-brief
+  produced_by: bug-history-retrieval
+  consumed_by: []
