@@ -107,6 +107,12 @@ For explicit-invocation benchmarks, control the environment:
 - Persist prompts, runtime context, and raw outputs so the evidence can be audited later.
 - If the official harness fails for an environment precondition such as missing local CLI authentication, keep the failed artifact, record the blocker in the evidence review, and rerun after the precondition is restored rather than fabricating a benchmark verdict.
 
+Repository execution note:
+
+- For local QA/test/eval runs in this repo, prefer the installed `gemini` CLI.
+- Do not spend Claude CLI quota on routine reruns for this project.
+- If a checked-in helper script still targets Claude, treat that script as legacy until it is migrated or replaced.
+
 ### Checkpoint 4: Description Optimization
 
 Optimize the trigger description for better matching accuracy:

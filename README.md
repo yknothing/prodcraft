@@ -51,6 +51,8 @@ python scripts/validate_prodcraft.py \
   --check workflow-entry-gate
 ```
 
+For local QA/test/eval runs in this repository, prefer the locally installed `gemini` CLI. Do not use Claude CLI for routine reruns here; its cost is too high for this project. If a checked-in helper still targets Claude, treat it as legacy and update or replace it before relying on it.
+
 ## Project Structure
 
 ```

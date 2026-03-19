@@ -73,6 +73,8 @@ No build system. This is a documentation/configuration project. Validation is st
 - Input/output chains must be acyclic (no circular dependencies between phases)
 - Every skill must pass skill-creator evaluation before production status
 
+For local QA/test/eval execution in this repository, prefer the installed `gemini` CLI. Do not use Claude CLI for routine reruns here; treat any remaining Claude-specific helpers as legacy until they are migrated.
+
 ## Style Guide
 
 - Skills should be actionable (focus on what to do, not theory)
