@@ -1,6 +1,6 @@
 {
-  "baseline_cwd": "/var/folders/th/mtk3j6l96tnbkd5shwcztjn00000gn/T/prodcraft-explicit-benchmark-audit-log-compliance-en-b63pfulr/baseline",
-  "with_skill_cwd": "/var/folders/th/mtk3j6l96tnbkd5shwcztjn00000gn/T/prodcraft-explicit-benchmark-audit-log-compliance-en-b63pfulr/with-skill",
-  "copied_skill_path": "/var/folders/th/mtk3j6l96tnbkd5shwcztjn00000gn/T/prodcraft-explicit-benchmark-audit-log-compliance-en-b63pfulr/with-skill/skill-under-test/SKILL.md",
+  "baseline_workspace": "baseline",
+  "with_skill_workspace": "with-skill",
+  "copied_skill_path": "with-skill/skill-under-test/SKILL.md",
   "isolation_mode": "tempdir-outside-repo"
 }

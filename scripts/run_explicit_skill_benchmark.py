@@ -139,7 +139,12 @@ def run_case(
         )
 
 
-def copy_context_files(context_files: list[str], target_dir: Path, benchmark_path: Path) -> list[str]:
+def copy_context_files(
+    context_files: list[str],
+    target_dir: Path,
+    benchmark_path: Path,
+    workspace_label: str,
+) -> list[str]:
     copied = []
     for item in context_files:
         source = resolve_context_file(item, benchmark_path)
@@ -147,7 +152,7 @@ def copy_context_files(context_files: list[str], target_dir: Path, benchmark_pat
         if not source.exists():
             raise FileNotFoundError(f"context file not found: {source}")
         shutil.copy2(source, destination)
-        copied.append(str(destination))
+        copied.append(f"{workspace_label}/{source.name}")
     return copied
 
 
@@ -209,8 +214,18 @@ def main() -> int:
             isolated_skill_dir = with_skill_dir / "skill-under-test"
             shutil.copytree(skill_path, isolated_skill_dir, dirs_exist_ok=True)
             context_files = scenario.get("context_files", [])
-            copied_baseline_context = copy_context_files(context_files, baseline_dir, benchmark_path)
-            copied_with_skill_context = copy_context_files(context_files, with_skill_dir, benchmark_path)
+            copied_baseline_context = copy_context_files(
+                context_files,
+                baseline_dir,
+                benchmark_path,
+                "baseline",
+            )
+            copied_with_skill_context = copy_context_files(
+                context_files,
+                with_skill_dir,
+                benchmark_path,
+                "with-skill",
+            )
 
             baseline_prompt = (
                 "Work only from the request below. Do not read any local files or rely on repository instructions. "
@@ -230,9 +245,9 @@ def main() -> int:
                 scenario_dir / "runtime_context.json",
                 json.dumps(
                     {
-                        "baseline_cwd": str(baseline_dir),
-                        "with_skill_cwd": str(with_skill_dir),
-                        "copied_skill_path": str(isolated_skill_dir / "SKILL.md"),
+                        "baseline_workspace": "baseline",
+                        "with_skill_workspace": "with-skill",
+                        "copied_skill_path": "with-skill/skill-under-test/SKILL.md",
                         "baseline_context_files": copied_baseline_context,
                         "with_skill_context_files": copied_with_skill_context,
                         "isolation_mode": "tempdir-outside-repo",

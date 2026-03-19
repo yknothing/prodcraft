@@ -130,6 +130,12 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
             self.assertEqual(run_metadata["runner"], "gemini")
 
             scenario_dir = output_dir / "eval-1-demo-scenario"
+            runtime_context = json.loads((scenario_dir / "runtime_context.json").read_text(encoding="utf-8"))
+            self.assertEqual(runtime_context["baseline_workspace"], "baseline")
+            self.assertEqual(runtime_context["with_skill_workspace"], "with-skill")
+            self.assertEqual(runtime_context["copied_skill_path"], "with-skill/skill-under-test/SKILL.md")
+            self.assertEqual(runtime_context["baseline_context_files"], ["baseline/brief.md"])
+            self.assertEqual(runtime_context["with_skill_context_files"], ["with-skill/brief.md"])
             self.assertEqual(
                 (scenario_dir / "without_skill" / "response.md").read_text(encoding="utf-8").strip(),
                 "baseline output",
@@ -223,6 +229,10 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
             self.assertEqual(run_metadata["runner"], "gemini")
 
             scenario_dir = output_dir / "eval-1-demo-scenario"
+            runtime_context = json.loads((scenario_dir / "runtime_context.json").read_text(encoding="utf-8"))
+            self.assertEqual(runtime_context["baseline_workspace"], "baseline")
+            self.assertEqual(runtime_context["with_skill_workspace"], "with-skill")
+            self.assertEqual(runtime_context["copied_skill_path"], "with-skill/skill-under-test/SKILL.md")
             self.assertEqual(
                 (scenario_dir / "without_skill" / "response.md").read_text(encoding="utf-8").strip(),
                 "baseline cli output",

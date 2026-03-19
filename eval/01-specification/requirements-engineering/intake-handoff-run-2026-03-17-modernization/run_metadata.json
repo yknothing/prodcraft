@@ -1,6 +1,7 @@
 {
   "benchmark": "eval/01-specification/requirements-engineering/intake-handoff-benchmark.json",
   "skill_path": "skills/01-specification/requirements-engineering",
+  "runner": "claude",
   "model": null,
   "run_started_at": "2026-03-17T09:23:52",
   "scenario_count": 1

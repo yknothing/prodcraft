@@ -1,14 +1,14 @@
 {
-  "baseline_cwd": "/var/folders/th/mtk3j6l96tnbkd5shwcztjn00000gn/T/prodcraft-explicit-benchmark-access-review-modernization-handoff-5k3tyrgz/baseline",
-  "with_skill_cwd": "/var/folders/th/mtk3j6l96tnbkd5shwcztjn00000gn/T/prodcraft-explicit-benchmark-access-review-modernization-handoff-5k3tyrgz/with-skill",
-  "copied_skill_path": "/var/folders/th/mtk3j6l96tnbkd5shwcztjn00000gn/T/prodcraft-explicit-benchmark-access-review-modernization-handoff-5k3tyrgz/with-skill/skill-under-test/SKILL.md",
+  "baseline_workspace": "baseline",
+  "with_skill_workspace": "with-skill",
+  "copied_skill_path": "with-skill/skill-under-test/SKILL.md",
   "baseline_context_files": [
-    "/var/folders/th/mtk3j6l96tnbkd5shwcztjn00000gn/T/prodcraft-explicit-benchmark-access-review-modernization-handoff-5k3tyrgz/baseline/access-review-modernization-intake-brief.md",
-    "/var/folders/th/mtk3j6l96tnbkd5shwcztjn00000gn/T/prodcraft-explicit-benchmark-access-review-modernization-handoff-5k3tyrgz/baseline/access-review-modernization-discovery-notes.md"
+    "baseline/access-review-modernization-intake-brief.md",
+    "baseline/access-review-modernization-discovery-notes.md"
   ],
   "with_skill_context_files": [
-    "/var/folders/th/mtk3j6l96tnbkd5shwcztjn00000gn/T/prodcraft-explicit-benchmark-access-review-modernization-handoff-5k3tyrgz/with-skill/access-review-modernization-intake-brief.md",
-    "/var/folders/th/mtk3j6l96tnbkd5shwcztjn00000gn/T/prodcraft-explicit-benchmark-access-review-modernization-handoff-5k3tyrgz/with-skill/access-review-modernization-discovery-notes.md"
+    "with-skill/access-review-modernization-intake-brief.md",
+    "with-skill/access-review-modernization-discovery-notes.md"
   ],
   "isolation_mode": "tempdir-outside-repo"
 }
