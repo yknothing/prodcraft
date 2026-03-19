@@ -1,0 +1,27 @@
+{
+  "id": "seat-management-research-route",
+  "title": "Fuzzy Research-Oriented Discovery Request",
+  "prompt": "We think admins hate the current seat management flow, but we are not sure whether the real issue is permissions, procurement, or guest users.",
+  "assertions": [
+    {
+      "name": "produces-intake-brief",
+      "description": "Produces an explicit intake artifact or equivalent routing summary that keeps the entry decision observable"
+    },
+    {
+      "name": "recognizes-fuzzy-direction",
+      "description": "Recognizes that the route is a discovery path but the product direction is still fuzzy"
+    },
+    {
+      "name": "hands-off-to-problem-framing",
+      "description": "Hands off to problem-framing or an equivalent discovery skill rather than trying to do the framing itself"
+    },
+    {
+      "name": "captures-routing-observability",
+      "description": "Captures the key risks, unanswered questions, or routing reasons needed by the downstream skill"
+    },
+    {
+      "name": "keeps-question-load-low",
+      "description": "Keeps the question budget low and focused on routing, not on a full discovery interview"
+    }
+  ]
+}

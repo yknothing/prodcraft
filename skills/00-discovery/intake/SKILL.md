@@ -85,13 +85,15 @@ Default to the smallest question budget that still changes the routing decision.
 
 Present a concise intake brief. Compare **path options**, not detailed implementation or architecture options:
 
+Name concrete Prodcraft skills whenever the next step is already known. Avoid generic labels like `specification`, `architecture`, `planning`, or `implementation` when a specific skill can already be named. If the exact downstream skill is still genuinely undecided, say that explicitly as an open routing question rather than pretending a generic phase label is a settled handoff target.
+
 ```
 ## Intake Brief
 
 **Work type**: [classification from Step 2]
 **Entry phase**: [which lifecycle phase]
 **Recommended workflow**: [methodology]
-**Key skills needed**: [3-7 skills from lifecycle]
+**Key skills needed**: [3-7 concrete Prodcraft skills, or clearly marked open routing questions]
 **Scope assessment**: [small / medium / large / xlarge]
 **Key risks**: [1-2 biggest risks or unknowns]
 

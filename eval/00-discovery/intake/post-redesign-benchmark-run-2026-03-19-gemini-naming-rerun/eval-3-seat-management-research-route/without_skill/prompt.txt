@@ -1,0 +1,3 @@
+Work only from the request below. Do not read any local files or rely on repository instructions. If you need assumptions, state them briefly and continue.
+
+We think admins hate the current seat management flow, but we are not sure whether the real issue is permissions, procurement, or guest users.

@@ -26,3 +26,6 @@ build/
 eval/01-specification/requirements-engineering/explicit-benchmark-run-2026-03-16a/
 eval/01-specification/requirements-engineering/explicit-benchmark-run-2026-03-16b/
 eval/01-specification/requirements-engineering/explicit-benchmark-timeout-smoke-*/
+eval/00-discovery/intake/post-redesign-benchmark-run-*-smoke/
+eval/00-discovery/intake/post-redesign-benchmark-run-*-gemini/
+eval/00-discovery/intake/post-redesign-benchmark-run-*-gemini-clean/

@@ -1,0 +1,27 @@
+{
+  "id": "ambiguous-dark-mode-scope",
+  "title": "Ambiguous New Feature Scope",
+  "prompt": "Add dark mode to the settings experience, but we are not sure whether this belongs only in web settings or across all surfaces.",
+  "assertions": [
+    {
+      "name": "produces-intake-brief",
+      "description": "Produces an explicit intake artifact or equivalent routing summary instead of jumping straight into implementation ideas"
+    },
+    {
+      "name": "classifies-entry-path",
+      "description": "Classifies the work type, entry phase, and recommended workflow clearly enough to justify the route"
+    },
+    {
+      "name": "keeps-question-load-low",
+      "description": "Asks at most a minimal number of routing questions before proposing the path, or proceeds directly if the route is already clear"
+    },
+    {
+      "name": "stays-out-of-solution-design",
+      "description": "Does not primarily expand into detailed architecture, UI design, or implementation planning"
+    },
+    {
+      "name": "records-next-step-and-approval-gate",
+      "description": "Names the next skill or lifecycle step and makes clear that approval is needed before deeper work proceeds"
+    }
+  ]
+}

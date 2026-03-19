@@ -85,6 +85,8 @@ skills:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/00-discovery/intake/evals/eval-strategy.md
     benchmark_plan_path: eval/00-discovery/intake/post-redesign-benchmark-plan.md
+    benchmark_results_path: eval/00-discovery/intake/post-redesign-benchmark-review.md
+    integration_test_path: eval/00-discovery/intake/post-redesign-integration-review.md
     findings_path: eval/00-discovery/intake/current-evidence-status.md
     redesign_notes_path: eval/00-discovery/intake/redesign-notes.md
     revalidation_plan_path: eval/00-discovery/intake/evals/eval-strategy.md

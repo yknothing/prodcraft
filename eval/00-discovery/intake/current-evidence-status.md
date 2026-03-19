@@ -12,6 +12,8 @@ That status is intentional. The skill's current body contract changed after the 
 - the historical benchmark remains useful for understanding the kind of routing discipline `intake` can add versus baseline
 - the redesign notes remain valid context for why the skill returned to `review`
 - the 2026-03-18 bucketed rerun in `optimization/iter-2/results-{core,overlap,non-trigger,mixed}.json` is current evidence for the tightened routing-only description that began `Route engineering work before execution.`
+- the 2026-03-19 isolated Gemini benchmark in `post-redesign-benchmark-run-2026-03-19-gemini-naming-rerun` is current evidence for the redesigned body contract under explicit invocation
+- the 2026-03-19 integration review in `post-redesign-integration-review.md` is current evidence that the generated `intake-brief` usually preserves enough routing context for downstream use
 
 ## New Evidence From 2026-03-18
 
@@ -40,6 +42,31 @@ After reviewing those results, the description was revised again to restore high
 
 That newer description has **not** been validly rerun yet.
 
+## New Evidence From 2026-03-19
+
+A clean isolated Gemini benchmark was completed after fixing runner-side Gemini startup-noise contamination.
+
+Reviewed artifacts:
+
+- `post-redesign-benchmark-run-2026-03-19-gemini-clean`
+- `post-redesign-benchmark-run-2026-03-19-gemini-naming-rerun`
+
+Current benchmark conclusion:
+
+- baseline still drifts strongly into implementation plans or direct research execution
+- with-skill output consistently restores routing discipline, approval gating, and observable handoff shape
+- the redesign split with `problem-framing` is visible in current evidence, especially on fuzzy discovery requests
+- a follow-up rerun after tightening downstream naming improved first-hop handoff specificity on the brownfield migration path
+
+The same run also supported a manual integration review:
+
+- `post-redesign-integration-review.md`
+
+Current integration conclusion:
+
+- the generated `intake-brief` now usually preserves enough context for downstream use
+- the remaining quality gap is mostly later-stage route specificity, not missing routing context or first-hop handoff ambiguity
+
 ## Current Blocker
 
 An immediate rerun of the updated description on **2026-03-18** was blocked by Claude quota:
@@ -61,13 +88,24 @@ Why:
 2. the redesigned skill now hands fuzzy routed cases to `problem-framing`
 3. current QA needs to verify lower question load, stronger observability, and cleaner handoff behavior, not just the old trigger/benchmark shape
 
+The following artifact is also treated as **superseded exploratory evidence**, not current primary proof:
+
+- `post-redesign-benchmark-run-2026-03-19-gemini`
+- `post-redesign-benchmark-run-2026-03-19-gemini-clean`
+
+Why:
+
+1. `post-redesign-benchmark-run-2026-03-19-gemini` was generated before the benchmark runner stripped Gemini MCP startup noise from stored responses
+2. `post-redesign-benchmark-run-2026-03-19-gemini-clean` was generated before the skill body was tightened again to improve downstream handoff naming
+3. `post-redesign-benchmark-run-2026-03-19-gemini-naming-rerun` now reflects the current body contract
+
 ## What Must Be Re-Generated
 
 Before `intake` can move beyond `review`, regenerate:
 
 1. a post-redesign trigger eval using the bucketed strategy in `evals/eval-strategy.md`
-2. a post-redesign benchmark focused on routing discipline, approval gating, and handoff quality
-3. an integration review that checks whether the `intake-brief` now supports direct downstream use and `problem-framing` handoff without missing routing context
+2. a tighter follow-up benchmark only if the skill body changes again after the 2026-03-19 clean benchmark
+3. a deeper downstream execution drill if we want stronger proof than the current review of benchmark-produced handoff artifacts
 
 The trigger-eval requirement now splits into two sub-parts:
 

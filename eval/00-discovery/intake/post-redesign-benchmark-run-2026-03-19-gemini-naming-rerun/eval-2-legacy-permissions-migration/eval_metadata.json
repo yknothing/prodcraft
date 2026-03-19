@@ -1,0 +1,27 @@
+{
+  "id": "legacy-permissions-migration",
+  "title": "Large Brownfield Migration Request",
+  "prompt": "We need to move our legacy permissions model to a new access-review system over several quarters.",
+  "assertions": [
+    {
+      "name": "produces-intake-brief",
+      "description": "Produces an explicit intake artifact or equivalent routing summary rather than a migration plan"
+    },
+    {
+      "name": "routes-to-brownfield-discovery",
+      "description": "Recognizes this as a brownfield discovery-level effort and chooses a multi-phase path instead of immediate execution"
+    },
+    {
+      "name": "preserves-uncertainty",
+      "description": "Keeps major migration unknowns or risks explicit instead of inventing a concrete rollout plan"
+    },
+    {
+      "name": "names-downstream-handoff",
+      "description": "Names the next skill or handoff destination explicitly and explains why it is next"
+    },
+    {
+      "name": "stays-out-of-cutover-design",
+      "description": "Does not primarily turn into architecture, cutover sequencing, or implementation detail"
+    }
+  ]
+}

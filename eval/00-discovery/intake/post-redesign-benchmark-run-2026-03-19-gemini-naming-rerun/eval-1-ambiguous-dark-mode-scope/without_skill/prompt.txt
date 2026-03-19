@@ -1,0 +1,3 @@
+Work only from the request below. Do not read any local files or rely on repository instructions. If you need assumptions, state them briefly and continue.
+
+Add dark mode to the settings experience, but we are not sure whether this belongs only in web settings or across all surfaces.

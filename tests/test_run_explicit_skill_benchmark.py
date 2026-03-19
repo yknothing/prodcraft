@@ -36,6 +36,34 @@ class FakeProcess:
 
 
 class RunExplicitSkillBenchmarkTests(unittest.TestCase):
+    def test_sanitize_runner_output_strips_gemini_preamble_noise(self):
+        module = load_module()
+        noisy_output = "\n".join(
+            [
+                "Loaded cached credentials.",
+                "Loading extension: chrome-devtools-mcp",
+                "Registering notification handlers for server 'pencil'. Capabilities: { logging: {}, tools: {} }",
+                "Server 'pencil' has tools but did not declare 'listChanged' capability. Listening anyway for robustness...",
+                "[MCP error] Error during discovery for MCP server 'MCP_DOCKER': MCP error -32000: Connection closed",
+                "    at McpError.fromError (file:///tmp/fake.js:1:1)",
+                "MCP issues detected. Run /mcp list for status.## Intake Brief",
+                "",
+                "**Work type**: Migration",
+            ]
+        )
+
+        self.assertEqual(
+            module.sanitize_runner_output("gemini", noisy_output),
+            "## Intake Brief\n\n**Work type**: Migration",
+        )
+
+    def test_sanitize_runner_output_preserves_clean_text(self):
+        module = load_module()
+        clean_output = "## Intake Brief\n\n**Work type**: Bug Fix"
+
+        self.assertEqual(module.sanitize_runner_output("gemini", clean_output), clean_output)
+        self.assertEqual(module.sanitize_runner_output("claude", clean_output), clean_output)
+
     def test_display_path_prefers_repo_relative_paths(self):
         module = load_module()
         repo_path = REPO_ROOT / "eval" / "01-specification" / "requirements-engineering" / "explicit-benchmark.json"
@@ -62,7 +90,7 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
 
     def test_run_prompt_uses_gemini_plan_mode_by_default(self):
         module = load_module()
-        fake_process = FakeProcess()
+        fake_process = FakeProcess(stdout="Loaded cached credentials.\nMCP issues detected. Run /mcp list for status.OK\n")
 
         with mock.patch.object(module.subprocess, "Popen", return_value=fake_process) as popen:
             output = module.run_prompt(

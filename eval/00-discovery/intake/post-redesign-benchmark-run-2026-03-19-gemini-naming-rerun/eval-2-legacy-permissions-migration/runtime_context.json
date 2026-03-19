@@ -1,0 +1,8 @@
+{
+  "baseline_workspace": "baseline",
+  "with_skill_workspace": "with-skill",
+  "copied_skill_path": "with-skill/skill-under-test/SKILL.md",
+  "baseline_context_files": [],
+  "with_skill_context_files": [],
+  "isolation_mode": "tempdir-outside-repo"
+}

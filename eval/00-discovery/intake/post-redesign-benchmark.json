@@ -1,0 +1,83 @@
+[
+  {
+    "id": "ambiguous-dark-mode-scope",
+    "title": "Ambiguous New Feature Scope",
+    "prompt": "Add dark mode to the settings experience, but we are not sure whether this belongs only in web settings or across all surfaces.",
+    "assertions": [
+      {
+        "name": "produces-intake-brief",
+        "description": "Produces an explicit intake artifact or equivalent routing summary instead of jumping straight into implementation ideas"
+      },
+      {
+        "name": "classifies-entry-path",
+        "description": "Classifies the work type, entry phase, and recommended workflow clearly enough to justify the route"
+      },
+      {
+        "name": "keeps-question-load-low",
+        "description": "Asks at most a minimal number of routing questions before proposing the path, or proceeds directly if the route is already clear"
+      },
+      {
+        "name": "stays-out-of-solution-design",
+        "description": "Does not primarily expand into detailed architecture, UI design, or implementation planning"
+      },
+      {
+        "name": "records-next-step-and-approval-gate",
+        "description": "Names the next skill or lifecycle step and makes clear that approval is needed before deeper work proceeds"
+      }
+    ]
+  },
+  {
+    "id": "legacy-permissions-migration",
+    "title": "Large Brownfield Migration Request",
+    "prompt": "We need to move our legacy permissions model to a new access-review system over several quarters.",
+    "assertions": [
+      {
+        "name": "produces-intake-brief",
+        "description": "Produces an explicit intake artifact or equivalent routing summary rather than a migration plan"
+      },
+      {
+        "name": "routes-to-brownfield-discovery",
+        "description": "Recognizes this as a brownfield discovery-level effort and chooses a multi-phase path instead of immediate execution"
+      },
+      {
+        "name": "preserves-uncertainty",
+        "description": "Keeps major migration unknowns or risks explicit instead of inventing a concrete rollout plan"
+      },
+      {
+        "name": "names-downstream-handoff",
+        "description": "Names the next skill or handoff destination explicitly and explains why it is next"
+      },
+      {
+        "name": "stays-out-of-cutover-design",
+        "description": "Does not primarily turn into architecture, cutover sequencing, or implementation detail"
+      }
+    ]
+  },
+  {
+    "id": "seat-management-research-route",
+    "title": "Fuzzy Research-Oriented Discovery Request",
+    "prompt": "We think admins hate the current seat management flow, but we are not sure whether the real issue is permissions, procurement, or guest users.",
+    "assertions": [
+      {
+        "name": "produces-intake-brief",
+        "description": "Produces an explicit intake artifact or equivalent routing summary that keeps the entry decision observable"
+      },
+      {
+        "name": "recognizes-fuzzy-direction",
+        "description": "Recognizes that the route is a discovery path but the product direction is still fuzzy"
+      },
+      {
+        "name": "hands-off-to-problem-framing",
+        "description": "Hands off to problem-framing or an equivalent discovery skill rather than trying to do the framing itself"
+      },
+      {
+        "name": "captures-routing-observability",
+        "description": "Captures the key risks, unanswered questions, or routing reasons needed by the downstream skill"
+      },
+      {
+        "name": "keeps-question-load-low",
+        "description": "Keeps the question budget low and focused on routing, not on a full discovery interview"
+      }
+    ]
+  }
+]

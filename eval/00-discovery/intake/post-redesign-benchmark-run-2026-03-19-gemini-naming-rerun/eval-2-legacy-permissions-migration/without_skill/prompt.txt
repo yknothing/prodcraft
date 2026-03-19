@@ -1,0 +1,3 @@
+Work only from the request below. Do not read any local files or rely on repository instructions. If you need assumptions, state them briefly and continue.
+
+We need to move our legacy permissions model to a new access-review system over several quarters.

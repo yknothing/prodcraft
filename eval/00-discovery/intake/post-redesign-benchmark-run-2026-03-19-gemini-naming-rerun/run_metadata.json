@@ -1,0 +1,8 @@
+{
+  "benchmark": "eval/00-discovery/intake/post-redesign-benchmark.json",
+  "skill_path": "skills/00-discovery/intake",
+  "runner": "gemini",
+  "model": null,
+  "run_started_at": "2026-03-20T00:59:12",
+  "scenario_count": 3
+}

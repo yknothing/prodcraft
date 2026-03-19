@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shutil
 import signal
 import subprocess
@@ -16,6 +17,28 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SUPPORTED_RUNNERS = {"claude", "gemini"}
+GEMINI_PREAMBLE_LINE_PREFIXES = (
+    "Loaded cached credentials.",
+    "Loading extension:",
+    "Registering notification handlers for server ",
+    "Server '",
+    "[MCP error]",
+    "[MCP info]",
+    "Scheduling MCP context refresh...",
+    "Executing MCP context refresh...",
+    "MCP context refresh already in progress",
+    "MCP context refresh complete.",
+    "Coalescing burst refresh requests",
+    "Tool with name ",
+    "Skill conflict detected:",
+)
+GEMINI_PREAMBLE_CONTINUATIONS = ("at ", "code:", "data:", "}",)
+GEMINI_INLINE_PREAMBLE_PATTERNS = (
+    re.compile(r"^Loaded cached credentials\.\s*"),
+    re.compile(r"^MCP issues detected\. Run /mcp list for status\.?"),
+    re.compile(r'^Tool with name ".*?" is already registered\. Overwriting\.'),
+    re.compile(r'^Skill conflict detected: .*?\.md"\.', re.DOTALL),
+)
 
 
 def build_prompt_command(runner: str, prompt: str, model: str | None) -> list[str]:
@@ -63,6 +86,39 @@ def resolve_context_file(item: str, benchmark_path: Path) -> Path:
     return (benchmark_path.parent / candidate).resolve()
 
 
+def sanitize_runner_output(runner: str, output: str) -> str:
+    text = output.strip()
+    if runner != "gemini" or not text:
+        return text
+
+    lines = text.splitlines()
+    cleaned: list[str] = []
+    skipping_preamble = True
+
+    for line in lines:
+        candidate = line
+        if skipping_preamble:
+            stripped = candidate.lstrip()
+            if not stripped:
+                continue
+            while True:
+                updated = candidate
+                for pattern in GEMINI_INLINE_PREAMBLE_PATTERNS:
+                    updated = pattern.sub("", updated, count=1)
+                if updated == candidate:
+                    break
+                candidate = updated.lstrip()
+            stripped = candidate.lstrip()
+            if not stripped:
+                continue
+            if stripped.startswith(GEMINI_PREAMBLE_LINE_PREFIXES) or stripped.startswith(GEMINI_PREAMBLE_CONTINUATIONS):
+                continue
+            skipping_preamble = False
+        cleaned.append(candidate)
+
+    return "\n".join(cleaned).strip()
+
+
 def run_prompt(prompt: str, runner: str, model: str | None, cwd: Path, timeout_seconds: int) -> str:
     cmd = build_prompt_command(runner, prompt, model)
     env = os.environ.copy()
@@ -98,7 +154,7 @@ def run_prompt(prompt: str, runner: str, model: str | None, cwd: Path, timeout_s
             stderr=stderr,
         )
 
-    return stdout.strip()
+    return sanitize_runner_output(runner, stdout)
 
 
 def write_text(path: Path, content: str) -> None:
