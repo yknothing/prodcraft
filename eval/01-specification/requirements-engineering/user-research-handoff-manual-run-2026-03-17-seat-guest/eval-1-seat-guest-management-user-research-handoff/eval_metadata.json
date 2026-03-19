@@ -3,8 +3,8 @@
   "date": "2026-03-17",
   "scenario": "seat-guest-management-user-research-handoff",
   "fixture": [
-    "requirements-engineering-workspace/handoff-fixtures/seat-guest-management-user-persona-set.md",
-    "requirements-engineering-workspace/handoff-fixtures/seat-guest-management-user-journey-map.md"
+    "eval/01-specification/requirements-engineering/handoff-fixtures/seat-guest-management-user-persona-set.md",
+    "eval/01-specification/requirements-engineering/handoff-fixtures/seat-guest-management-user-journey-map.md"
   ],
   "skill_under_test": "skills/01-specification/requirements-engineering/SKILL.md",
   "branches": [

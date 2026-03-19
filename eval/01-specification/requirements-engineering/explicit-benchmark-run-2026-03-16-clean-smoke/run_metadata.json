@@ -1,5 +1,5 @@
 {
-  "benchmark": "/Users/whatsup/workspace/2026/prodcraft/requirements-engineering-workspace/explicit-benchmark.json",
+  "benchmark": "/Users/whatsup/workspace/2026/prodcraft/eval/01-specification/requirements-engineering/explicit-benchmark.json",
   "skill_path": "/Users/whatsup/workspace/2026/prodcraft/skills/01-specification/requirements-engineering",
   "model": "claude-sonnet-4-6",
   "run_started_at": "2026-03-16T15:09:22",

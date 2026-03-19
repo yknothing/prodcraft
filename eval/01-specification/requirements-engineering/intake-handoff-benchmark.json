@@ -3,8 +3,8 @@
     "id": "approvals-intake-handoff",
     "title": "Approved Intake Brief Handoff for Approvals Feature",
     "context_files": [
-      "/Users/whatsup/workspace/2026/prodcraft/requirements-engineering-workspace/handoff-fixtures/approvals-intake-brief.md",
-      "/Users/whatsup/workspace/2026/prodcraft/requirements-engineering-workspace/handoff-fixtures/approvals-discovery-notes.md"
+      "/Users/whatsup/workspace/2026/prodcraft/eval/01-specification/requirements-engineering/handoff-fixtures/approvals-intake-brief.md",
+      "/Users/whatsup/workspace/2026/prodcraft/eval/01-specification/requirements-engineering/handoff-fixtures/approvals-discovery-notes.md"
     ],
     "prompt": "Read `./approvals-intake-brief.md` and `./approvals-discovery-notes.md`. Work only from those two files. Do not ask follow-up questions. If you need assumptions, label them clearly and continue. Produce a first-release requirements set that preserves the handoff constraints, scope boundaries, risks, and open questions from intake.",
     "assertions": [
@@ -34,8 +34,8 @@
     "id": "access-review-modernization-handoff",
     "title": "Approved Intake Brief Handoff for Brownfield Access Review Modernization",
     "context_files": [
-      "/Users/whatsup/workspace/2026/prodcraft/requirements-engineering-workspace/handoff-fixtures/access-review-modernization-intake-brief.md",
-      "/Users/whatsup/workspace/2026/prodcraft/requirements-engineering-workspace/handoff-fixtures/access-review-modernization-discovery-notes.md"
+      "/Users/whatsup/workspace/2026/prodcraft/eval/01-specification/requirements-engineering/handoff-fixtures/access-review-modernization-intake-brief.md",
+      "/Users/whatsup/workspace/2026/prodcraft/eval/01-specification/requirements-engineering/handoff-fixtures/access-review-modernization-discovery-notes.md"
     ],
     "prompt": "Read `./access-review-modernization-intake-brief.md` and `./access-review-modernization-discovery-notes.md`. Work only from those two files. Do not ask follow-up questions. If you need assumptions, label them clearly and continue. Produce a first-release requirements set that preserves the handoff constraints, brownfield coexistence boundary, risks, and open questions from intake.",
     "assertions": [

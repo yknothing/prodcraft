@@ -2,7 +2,7 @@
   "evaluation_type": "manual_handoff_review",
   "date": "2026-03-17",
   "scenario": "access-review-direction",
-  "fixture": "problem-framing-workspace/fixtures/access-review-modernization-intake-brief.md",
+  "fixture": "eval/00-discovery/problem-framing/fixtures/access-review-modernization-intake-brief.md",
   "skill_under_test": "skills/00-discovery/problem-framing/SKILL.md",
   "branches": [
     "without_skill",

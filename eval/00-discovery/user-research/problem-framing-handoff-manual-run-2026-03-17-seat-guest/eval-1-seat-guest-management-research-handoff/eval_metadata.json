@@ -2,7 +2,7 @@
   "evaluation_type": "manual_handoff_review",
   "date": "2026-03-17",
   "scenario": "seat-guest-management-problem-framing-handoff",
-  "fixture": "user-research-workspace/handoff-fixtures/seat-guest-management-problem-framing.md",
+  "fixture": "eval/00-discovery/user-research/handoff-fixtures/seat-guest-management-problem-framing.md",
   "skill_under_test": "skills/00-discovery/user-research/SKILL.md",
   "branches": [
     "without_skill",
