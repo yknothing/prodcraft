@@ -145,3 +145,5 @@ This keeps routing decisions auditable without forcing downstream skills to reco
 ## Reference Material
 
 For methodology selection signals and worked intake examples, see [routing-signals-and-examples](references/routing-signals-and-examples.md). Keep the main skill focused on routing discipline; use the reference only when a path decision needs more comparison detail.
+
+For edge cases that commonly derail intake routing under pressure, see [Gotchas](references/gotchas.md).

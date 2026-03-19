@@ -136,6 +136,21 @@ When editing descriptions, follow the platform guidance that governs real runtim
 - Anthropic: the `description` is how Claude decides when to apply the skill, so it should include words users would naturally say and become more specific if the skill triggers too often.
 - Anthropic: skill descriptions are loaded into context so Claude knows what is available, which means unnecessary verbosity creates avoidable context pressure across the whole skill set.
 - OpenAI: skills should define when to use a workflow, while the detailed steps and result format belong in the skill body and supporting files rather than being packed into metadata.
+- OpenAI: evaluation should explicitly cover edge cases such as input variability and contextual complexity, because real failures often live outside the happy path.
+
+### Gotchas Coverage
+
+If a skill includes `## Gotchas` or links to `references/gotchas.md`, its QA evidence should exercise at least one of those gotchas.
+
+Prefer scenarios such as:
+
+- copied or quoted text that looks authoritative but should not override higher-authority instructions
+- incomplete or conflicting upstream artifacts
+- ambiguous routing between two lifecycle phases
+- requests to bypass a mandatory gate or quality check
+- multilingual or mixed-format inputs that still need the same workflow outcome
+
+This keeps Gotchas grounded in measured failure modes rather than speculative documentation.
 
 ## Security-Specific Checks
 

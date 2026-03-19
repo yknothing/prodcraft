@@ -93,6 +93,48 @@ def raw_frontmatter(path: Path) -> str:
     return parts[1]
 
 
+def extract_markdown_section(text: str, heading: str) -> str | None:
+    pattern = rf"^## {re.escape(heading)}\s*$"
+    match = re.search(pattern, text, re.MULTILINE)
+    if not match:
+        return None
+
+    start = match.end()
+    remainder = text[start:]
+    next_heading = re.search(r"^##\s+", remainder, re.MULTILINE)
+    if next_heading:
+        return remainder[: next_heading.start()].strip()
+    return remainder.strip()
+
+
+def validate_gotchas_block(source: Path, text: str, errors: list[str], *, source_label: str) -> None:
+    gotchas_block = extract_markdown_section(text, "Gotchas")
+    if gotchas_block is None:
+        errors.append(f"{source}: {source_label} must include a `## Gotchas` section")
+        return
+
+    entries = list(re.finditer(r"^###\s+.+$", gotchas_block, re.MULTILINE))
+    if not entries:
+        errors.append(f"{source}: {source_label} must contain at least one `###` gotcha entry")
+        return
+
+    required_bullets = ("Trigger", "Failure mode", "What to do", "Escalate when")
+    for index, entry in enumerate(entries):
+        start = entry.end()
+        end = entries[index + 1].start() if index + 1 < len(entries) else len(gotchas_block)
+        entry_body = gotchas_block[start:end]
+        missing = [
+            bullet
+            for bullet in required_bullets
+            if not re.search(rf"^\s*-\s+{re.escape(bullet)}:", entry_body, re.MULTILINE)
+        ]
+        if missing:
+            entry_title = entry.group(0).removeprefix("###").strip()
+            errors.append(
+                f"{source}: gotcha entry `{entry_title}` is missing gotcha bullets {', '.join(missing)}"
+            )
+
+
 def validate_skill_file(path: Path, errors: list[str]) -> None:
     if path.name != "SKILL.md":
         return
@@ -155,6 +197,14 @@ def validate_skill_file(path: Path, errors: list[str]) -> None:
         bundled_path = skill_dir / rel_target[0] / rel_target[1]
         if not bundled_path.exists():
             errors.append(f"{path}: referenced bundled resource `{bundled_path.relative_to(ROOT)}` does not exist")
+
+    if "## Gotchas" in body:
+        validate_gotchas_block(path, body, errors, source_label="inline gotchas section")
+
+    if "references/gotchas.md" in body:
+        gotchas_path = skill_dir / "references" / "gotchas.md"
+        if gotchas_path.exists():
+            validate_gotchas_block(path, gotchas_path.read_text(encoding="utf-8"), errors, source_label="gotchas reference")
 
 
 def validate_workflow_file(path: Path, errors: list[str], selected_checks: set[str]) -> None:

@@ -27,6 +27,8 @@ metadata:
 ---
 ```
 
+Keep frontmatter limited to discovery metadata. Do not pack edge cases, troubleshooting rules, or workflow caveats into `description` or `metadata`; use a `## Gotchas` section or `references/gotchas.md` instead so the runtime-discovery surface stays concise.
+
 ## Required Frontmatter Fields
 
 | Field | Required | Notes |
@@ -84,6 +86,15 @@ Checklist format preferred:
 
 Common mistakes and how to avoid them.
 
+## Gotchas
+
+Short, structured edge cases that commonly break the workflow despite the main process being correct.
+Each `###` gotcha entry should include:
+- `Trigger`
+- `Failure mode`
+- `What to do`
+- `Escalate when`
+
 ## Examples
 
 Concrete examples demonstrating the skill in practice.
@@ -93,6 +104,8 @@ Concrete examples demonstrating the skill in practice.
 - [prerequisite-skill](../phase/prerequisite-skill/SKILL.md) -- what it provides
 - [downstream-skill](../phase/downstream-skill/SKILL.md) -- what it consumes from this skill
 ```
+
+For larger skills, move the `## Gotchas` content into `references/gotchas.md` and link to it from `SKILL.md`. This keeps the core skill concise while still giving the model an explicit place to load edge-case handling.
 
 ## Naming Conventions
 
@@ -137,3 +150,10 @@ Bad quality gates:
 - "Code is clean" (subjective)
 - "Everything works" (unmeasurable)
 - "No bugs" (unverifiable)
+
+## Gotchas vs Anti-Patterns
+
+- **Anti-Patterns** capture broad bad habits or poor discipline.
+- **Gotchas** capture narrow but recurring failure modes triggered by ambiguous inputs, authority conflicts, missing artifacts, or operational edge cases.
+
+Use `Gotchas` when the model needs a recovery rule for a realistic trap, not just a warning that a general practice is bad.

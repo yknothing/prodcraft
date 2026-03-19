@@ -108,6 +108,26 @@ metadata:
 - `metadata.methodologies` -- Which workflow families or explicit workflows include this skill (`all`, `agile`, `spec-driven`, `waterfall`, `greenfield`, `brownfield`, `hotfix`)
 - `metadata.effort` -- Relative effort: `small` (<1h), `medium` (1-4h), `large` (4h-2d), `xlarge` (2d+)
 
+### Gotchas
+
+Prodcraft now supports a structured **Gotchas** mechanism for edge cases that should not live in discovery metadata.
+
+- Use `## Gotchas` in `SKILL.md` when the edge cases are short and central to the workflow
+- Use `references/gotchas.md` when the edge cases are important but would make `SKILL.md` too heavy
+- Keep Gotchas out of frontmatter so `name` and `description` stay optimized for discovery
+
+Each gotcha entry uses the same four fields:
+
+```markdown
+### <Short failure mode title>
+- Trigger: ...
+- Failure mode: ...
+- What to do: ...
+- Escalate when: ...
+```
+
+This separation follows Anthropic's context-efficiency and progressive-disclosure guidance while matching OpenAI's emphasis on clear delimiters and explicit edge-case handling. See [skills/_gotchas.md](skills/_gotchas.md).
+
 ## Workflows
 
 Three methodology adapters compose the same skills differently:
