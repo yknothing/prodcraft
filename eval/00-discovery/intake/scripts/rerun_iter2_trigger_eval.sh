@@ -25,6 +25,7 @@ run_eval_set() {
   local eval_name="$1"
   local eval_path="$2"
   local out_file="$OUT_DIR/results-${eval_name}.json"
+  local observability_file="$OUT_DIR/results-${eval_name}.observability.jsonl"
   local cmd=(
     python3 "$RUN_EVAL_SCRIPT"
     --eval-set "$eval_path"
@@ -32,6 +33,7 @@ run_eval_set() {
     --runs-per-query 2
     --timeout 45
     --num-workers 5
+    --observability-output "$observability_file"
   )
 
   if [[ -n "$MODEL" ]]; then

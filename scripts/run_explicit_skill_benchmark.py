@@ -10,12 +10,20 @@ import re
 import shutil
 import signal
 import subprocess
+import sys
 import tempfile
+import time
 from datetime import datetime
 from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from tools.execution_observability import ExecutionTrace, infer_skill_identity, new_span_id
+
+
 SUPPORTED_RUNNERS = {"claude", "gemini"}
 GEMINI_PREAMBLE_LINE_PREFIXES = (
     "Loaded cached credentials.",
@@ -176,7 +184,39 @@ def run_case(
     timeout_seconds: int,
     cwd: Path,
     result_dir: Path,
+    observability_output: Path,
+    branch_label: str,
+    scenario_id: str,
+    skill_name: str | None = None,
+    phase: str | None = None,
 ) -> None:
+    trace = ExecutionTrace(
+        output_path=observability_output,
+        runner=runner,
+        model_name=model,
+        skill_name=skill_name,
+        phase=phase,
+        workflow=None,
+    )
+    skill_span_id = None
+    if skill_name:
+        skill_span_id = new_span_id()
+        trace.emit(
+            event_type="skill_invocation.started",
+            status="started",
+            span_id=skill_span_id,
+            metadata={"branch": branch_label, "scenario_id": scenario_id},
+        )
+
+    runner_span_id = new_span_id()
+    trace.emit(
+        event_type="runner_execution.started",
+        status="started",
+        span_id=runner_span_id,
+        parent_span_id=skill_span_id,
+        metadata={"branch": branch_label, "scenario_id": scenario_id, "timeout_ms": timeout_seconds * 1000},
+    )
+    start_time = time.monotonic()
     try:
         output = run_prompt(
             prompt,
@@ -185,14 +225,128 @@ def run_case(
             cwd=cwd,
             timeout_seconds=timeout_seconds,
         )
-        write_text(result_dir / "response.md", output)
+        response_path = result_dir / "response.md"
+        write_text(response_path, output)
+        duration_ms = int((time.monotonic() - start_time) * 1000)
+        trace.emit(
+            event_type="model_usage.unavailable",
+            status="unavailable",
+            span_id=new_span_id(),
+            parent_span_id=runner_span_id,
+            artifact_path=display_path(response_path),
+            usage_source="unavailable",
+            metadata={
+                "branch": branch_label,
+                "scenario_id": scenario_id,
+                "reason": "runner output did not expose token usage",
+            },
+        )
+        trace.emit(
+            event_type="runner_execution.completed",
+            status="completed",
+            span_id=runner_span_id,
+            parent_span_id=skill_span_id,
+            duration_ms=duration_ms,
+            artifact_path=display_path(response_path),
+            metadata={"branch": branch_label, "scenario_id": scenario_id},
+        )
+        if skill_span_id:
+            trace.emit(
+                event_type="skill_invocation.completed",
+                status="completed",
+                span_id=skill_span_id,
+                duration_ms=duration_ms,
+                artifact_path=display_path(response_path),
+                metadata={"branch": branch_label, "scenario_id": scenario_id},
+            )
     except subprocess.TimeoutExpired:
-        write_text(result_dir / "error.txt", f"Timed out after {timeout_seconds}s")
+        error_path = result_dir / "error.txt"
+        write_text(error_path, f"Timed out after {timeout_seconds}s")
+        duration_ms = int((time.monotonic() - start_time) * 1000)
+        trace.emit(
+            event_type="model_usage.unavailable",
+            status="unavailable",
+            span_id=new_span_id(),
+            parent_span_id=runner_span_id,
+            artifact_path=display_path(error_path),
+            usage_source="unavailable",
+            metadata={
+                "branch": branch_label,
+                "scenario_id": scenario_id,
+                "reason": "runner timed out before usage could be recorded",
+            },
+        )
+        trace.emit(
+            event_type="runner_execution.failed",
+            status="failed",
+            span_id=runner_span_id,
+            parent_span_id=skill_span_id,
+            duration_ms=duration_ms,
+            artifact_path=display_path(error_path),
+            metadata={
+                "branch": branch_label,
+                "scenario_id": scenario_id,
+                "error_type": "timeout",
+                "timeout_ms": timeout_seconds * 1000,
+            },
+        )
+        if skill_span_id:
+            trace.emit(
+                event_type="skill_invocation.failed",
+                status="failed",
+                span_id=skill_span_id,
+                duration_ms=duration_ms,
+                artifact_path=display_path(error_path),
+                metadata={"branch": branch_label, "scenario_id": scenario_id, "error_type": "timeout"},
+            )
     except subprocess.CalledProcessError as exc:
+        error_path = result_dir / "error.txt"
         write_text(
-            result_dir / "error.txt",
+            error_path,
             f"Exit code: {exc.returncode}\nSTDERR:\n{exc.stderr}\nSTDOUT:\n{exc.stdout}",
         )
+        duration_ms = int((time.monotonic() - start_time) * 1000)
+        trace.emit(
+            event_type="model_usage.unavailable",
+            status="unavailable",
+            span_id=new_span_id(),
+            parent_span_id=runner_span_id,
+            artifact_path=display_path(error_path),
+            usage_source="unavailable",
+            metadata={
+                "branch": branch_label,
+                "scenario_id": scenario_id,
+                "reason": "runner exited with non-zero status before usage could be recorded",
+            },
+        )
+        trace.emit(
+            event_type="runner_execution.failed",
+            status="failed",
+            span_id=runner_span_id,
+            parent_span_id=skill_span_id,
+            duration_ms=duration_ms,
+            artifact_path=display_path(error_path),
+            metadata={
+                "branch": branch_label,
+                "scenario_id": scenario_id,
+                "error_type": "called_process_error",
+                "returncode": exc.returncode,
+            },
+        )
+        if skill_span_id:
+            trace.emit(
+                event_type="skill_invocation.failed",
+                status="failed",
+                span_id=skill_span_id,
+                duration_ms=duration_ms,
+                artifact_path=display_path(error_path),
+                metadata={
+                    "branch": branch_label,
+                    "scenario_id": scenario_id,
+                    "error_type": "called_process_error",
+                    "returncode": exc.returncode,
+                },
+            )
 
 
 def copy_context_files(
@@ -257,6 +411,8 @@ def main() -> int:
         ),
     )
     progress_log = output_dir / "progress.log"
+    observability_output = output_dir / "execution-observability.jsonl"
+    skill_name, phase = infer_skill_identity(skill_path)
 
     for index, scenario in enumerate(scenarios, start=1):
         scenario_dir = output_dir / f"eval-{index}-{scenario['id']}"
@@ -320,6 +476,9 @@ def main() -> int:
                 timeout_seconds=args.timeout_seconds,
                 cwd=baseline_dir,
                 result_dir=scenario_dir / "without_skill",
+                observability_output=observability_output,
+                branch_label="without_skill",
+                scenario_id=scenario["id"],
             )
 
             append_text(progress_log, f"running {scenario['id']} with_skill")
@@ -330,6 +489,11 @@ def main() -> int:
                 timeout_seconds=args.timeout_seconds,
                 cwd=with_skill_dir,
                 result_dir=scenario_dir / "with_skill",
+                observability_output=observability_output,
+                branch_label="with_skill",
+                scenario_id=scenario["id"],
+                skill_name=skill_name,
+                phase=phase,
             )
 
             append_text(progress_log, f"completed {scenario['id']}")

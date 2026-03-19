@@ -19,6 +19,12 @@ import uuid
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from tools.execution_observability import ExecutionTrace, new_span_id
+
 try:
     from .utils import parse_skill_md
 except ImportError:  # pragma: no cover - direct script execution
@@ -41,12 +47,37 @@ def run_single_query(
     timeout: int,
     project_root: str,
     model: str | None = None,
+    observability_output: str | None = None,
 ) -> bool:
     """Run a single query and return whether the skill was triggered."""
     unique_id = uuid.uuid4().hex[:8]
     clean_name = f"{skill_name}-skill-{unique_id}"
     project_commands_dir = Path(project_root) / ".claude" / "commands"
     command_file = project_commands_dir / f"{clean_name}.md"
+    trace = ExecutionTrace(
+        output_path=Path(observability_output) if observability_output else None,
+        runner="claude",
+        model_name=model,
+        skill_name=skill_name,
+        phase=None,
+        workflow="discoverability-eval",
+    )
+    skill_span_id = new_span_id()
+    runner_span_id = new_span_id()
+    trace.emit(
+        event_type="skill_invocation.started",
+        status="started",
+        span_id=skill_span_id,
+        metadata={"query": query},
+    )
+    trace.emit(
+        event_type="runner_execution.started",
+        status="started",
+        span_id=runner_span_id,
+        parent_span_id=skill_span_id,
+        metadata={"query": query, "timeout_ms": timeout * 1000},
+    )
+    start_time = time.monotonic()
 
     try:
         project_commands_dir.mkdir(parents=True, exist_ok=True)
@@ -84,13 +115,43 @@ def run_single_query(
         )
 
         triggered = False
-        start_time = time.time()
+        wall_start = time.time()
         buffer = ""
         pending_tool_name = None
         accumulated_json = ""
 
+        def finalize(result: bool) -> bool:
+            duration_ms = int((time.monotonic() - start_time) * 1000)
+            trace.emit(
+                event_type="model_usage.unavailable",
+                status="unavailable",
+                span_id=new_span_id(),
+                parent_span_id=runner_span_id,
+                usage_source="unavailable",
+                metadata={
+                    "query": query,
+                    "reason": "runner stream did not expose token usage",
+                },
+            )
+            trace.emit(
+                event_type="runner_execution.completed",
+                status="completed",
+                span_id=runner_span_id,
+                parent_span_id=skill_span_id,
+                duration_ms=duration_ms,
+                metadata={"query": query, "triggered": result},
+            )
+            trace.emit(
+                event_type="skill_invocation.completed",
+                status="completed",
+                span_id=skill_span_id,
+                duration_ms=duration_ms,
+                metadata={"query": query, "triggered": result},
+            )
+            return result
+
         try:
-            while time.time() - start_time < timeout:
+            while time.time() - wall_start < timeout:
                 if process.poll() is not None:
                     remaining = process.stdout.read()
                     if remaining:
@@ -129,20 +190,20 @@ def run_single_query(
                                     pending_tool_name = tool_name
                                     accumulated_json = ""
                                 else:
-                                    return False
+                                    return finalize(False)
 
                         elif se_type == "content_block_delta" and pending_tool_name:
                             delta = se.get("delta", {})
                             if delta.get("type") == "input_json_delta":
                                 accumulated_json += delta.get("partial_json", "")
                                 if clean_name in accumulated_json:
-                                    return True
+                                    return finalize(True)
 
                         elif se_type in ("content_block_stop", "message_stop"):
                             if pending_tool_name:
-                                return clean_name in accumulated_json
+                                return finalize(clean_name in accumulated_json)
                             if se_type == "message_stop":
-                                return False
+                                return finalize(False)
 
                     elif event.get("type") == "assistant":
                         message = event.get("message", {})
@@ -155,16 +216,16 @@ def run_single_query(
                                 triggered = True
                             elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
                                 triggered = True
-                            return triggered
+                            return finalize(triggered)
 
                     elif event.get("type") == "result":
-                        return triggered
+                        return finalize(triggered)
         finally:
             if process.poll() is None:
                 process.kill()
                 process.wait()
 
-        return triggered
+        return finalize(triggered)
     finally:
         if command_file.exists():
             command_file.unlink()
@@ -180,6 +241,7 @@ def run_eval(
     runs_per_query: int = 1,
     trigger_threshold: float = 0.5,
     model: str | None = None,
+    observability_output: str | None = None,
 ) -> dict:
     """Run the full eval set and return results."""
     results = []
@@ -202,6 +264,7 @@ def run_eval(
                         timeout,
                         str(project_root),
                         model,
+                        observability_output,
                     )
                 except Exception as exc:
                     print(f"Warning: query failed: {exc}", file=sys.stderr)
@@ -220,6 +283,7 @@ def run_eval(
                         timeout,
                         str(project_root),
                         model,
+                        observability_output,
                     )
                     future_to_info[future] = (item, run_idx)
 
@@ -276,6 +340,7 @@ def main() -> int:
     parser.add_argument("--runs-per-query", type=int, default=3, help="Number of runs per query")
     parser.add_argument("--trigger-threshold", type=float, default=0.5, help="Trigger rate threshold")
     parser.add_argument("--model", default=None, help="Claude model override for the vendored Anthropic harness")
+    parser.add_argument("--observability-output", default=None, help="Optional JSONL path for execution observability events")
     parser.add_argument("--verbose", action="store_true", help="Print progress to stderr")
     args = parser.parse_args()
 
@@ -303,6 +368,7 @@ def main() -> int:
         runs_per_query=args.runs_per_query,
         trigger_threshold=args.trigger_threshold,
         model=args.model,
+        observability_output=args.observability_output,
     )
 
     if args.verbose:

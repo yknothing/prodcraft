@@ -21,6 +21,10 @@ def load_module():
     return module
 
 
+def read_jsonl(path: Path):
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+
 class FakeProcess:
     def __init__(self, stdout="OK\n", stderr="", returncode=0):
         self._stdout = stdout
@@ -156,6 +160,13 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
             self.assertEqual(exit_code, 0)
             run_metadata = json.loads((output_dir / "run_metadata.json").read_text(encoding="utf-8"))
             self.assertEqual(run_metadata["runner"], "gemini")
+            events = read_jsonl(output_dir / "execution-observability.jsonl")
+            event_types = {event["event_type"] for event in events}
+            self.assertIn("runner_execution.started", event_types)
+            self.assertIn("runner_execution.completed", event_types)
+            self.assertIn("skill_invocation.started", event_types)
+            self.assertIn("skill_invocation.completed", event_types)
+            self.assertIn("model_usage.unavailable", event_types)
 
             scenario_dir = output_dir / "eval-1-demo-scenario"
             runtime_context = json.loads((scenario_dir / "runtime_context.json").read_text(encoding="utf-8"))
@@ -255,6 +266,10 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, msg=result.stderr or result.stdout)
             run_metadata = json.loads((output_dir / "run_metadata.json").read_text(encoding="utf-8"))
             self.assertEqual(run_metadata["runner"], "gemini")
+            events = read_jsonl(output_dir / "execution-observability.jsonl")
+            model_usage_events = [event for event in events if event["event_type"] == "model_usage.unavailable"]
+            self.assertTrue(model_usage_events)
+            self.assertTrue(all(event["usage_source"] == "unavailable" for event in model_usage_events))
 
             scenario_dir = output_dir / "eval-1-demo-scenario"
             runtime_context = json.loads((scenario_dir / "runtime_context.json").read_text(encoding="utf-8"))

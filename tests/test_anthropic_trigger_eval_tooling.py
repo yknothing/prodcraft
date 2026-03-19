@@ -21,6 +21,7 @@ class AnthropicTriggerEvalToolingTests(unittest.TestCase):
         self.assertNotIn("intake-workspace", content)
         self.assertNotIn(".claude/plugins/cache/claude-plugins-official/skill-creator", content)
         self.assertIn("tools/anthropic_trigger_eval/run_eval.py", content)
+        self.assertIn("--observability-output", content)
         self.assertIn("eval/00-discovery/intake/evals/trigger-core.json", content)
         self.assertIn("eval/00-discovery/intake/evals/trigger-overlap.json", content)
         self.assertIn("eval/00-discovery/intake/evals/trigger-non-trigger.json", content)
@@ -64,6 +65,7 @@ class AnthropicTriggerEvalToolingTests(unittest.TestCase):
                 json.dumps([{"query": "start from scratch", "should_trigger": True}]),
                 encoding="utf-8",
             )
+            observability_path = temp_root / "execution-observability.jsonl"
 
             env = os.environ.copy()
             env["PATH"] = f"{bin_dir}{os.pathsep}{env['PATH']}"
@@ -82,6 +84,8 @@ class AnthropicTriggerEvalToolingTests(unittest.TestCase):
                     "1",
                     "--timeout",
                     "3",
+                    "--observability-output",
+                    str(observability_path),
                 ],
                 cwd=temp_root,
                 env=env,
@@ -94,6 +98,17 @@ class AnthropicTriggerEvalToolingTests(unittest.TestCase):
             payload = json.loads(result.stdout)
             self.assertEqual(payload["summary"]["passed"], 1)
             self.assertEqual(payload["summary"]["total"], 1)
+            events = [
+                json.loads(line)
+                for line in observability_path.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            ]
+            event_types = {event["event_type"] for event in events}
+            self.assertIn("runner_execution.started", event_types)
+            self.assertIn("runner_execution.completed", event_types)
+            self.assertIn("skill_invocation.started", event_types)
+            self.assertIn("skill_invocation.completed", event_types)
+            self.assertIn("model_usage.unavailable", event_types)
 
 
 if __name__ == "__main__":

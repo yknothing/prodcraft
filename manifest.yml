@@ -337,6 +337,10 @@ skills:
   phase: cross-cutting
   file: skills/cross-cutting/documentation/SKILL.md
   status: draft
+- name: observability
+  phase: cross-cutting
+  file: skills/cross-cutting/observability/SKILL.md
+  status: draft
 planned_skills:
 - name: pair-programming
   phase: 04-implementation
@@ -356,9 +360,6 @@ planned_skills:
 - name: deprecation
   phase: 08-evolution
   target_file: skills/08-evolution/deprecation/SKILL.md
-- name: observability
-  phase: cross-cutting
-  target_file: skills/cross-cutting/observability/SKILL.md
 - name: accessibility
   phase: cross-cutting
   target_file: skills/cross-cutting/accessibility/SKILL.md
@@ -761,3 +762,14 @@ artifact_flow:
 - artifact: documentation-artifact
   produced_by: documentation
   consumed_by: []
+- artifact: observability-spec
+  produced_by: observability
+  consumed_by:
+  - feature-development
+  - ci-cd
+  - monitoring-observability
+- artifact: execution-event-schema
+  produced_by: observability
+  consumed_by:
+  - feature-development
+  - monitoring-observability
