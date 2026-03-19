@@ -14,6 +14,7 @@ from datetime import datetime
 from pathlib import Path
 
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
 SUPPORTED_RUNNERS = {"claude", "gemini"}
 
 
@@ -46,6 +47,20 @@ def build_prompt_command(runner: str, prompt: str, model: str | None) -> list[st
     if model:
         cmd.extend(["--model", model])
     return cmd
+
+
+def display_path(path: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(REPO_ROOT))
+    except ValueError:
+        return str(path.resolve())
+
+
+def resolve_context_file(item: str, benchmark_path: Path) -> Path:
+    candidate = Path(item)
+    if candidate.is_absolute():
+        return candidate.resolve()
+    return (benchmark_path.parent / candidate).resolve()
 
 
 def run_prompt(prompt: str, runner: str, model: str | None, cwd: Path, timeout_seconds: int) -> str:
@@ -124,10 +139,10 @@ def run_case(
         )
 
 
-def copy_context_files(context_files: list[str], target_dir: Path) -> list[str]:
+def copy_context_files(context_files: list[str], target_dir: Path, benchmark_path: Path) -> list[str]:
     copied = []
     for item in context_files:
-        source = Path(item).resolve()
+        source = resolve_context_file(item, benchmark_path)
         destination = target_dir / source.name
         if not source.exists():
             raise FileNotFoundError(f"context file not found: {source}")
@@ -170,8 +185,8 @@ def main() -> int:
         output_dir / "run_metadata.json",
         json.dumps(
             {
-                "benchmark": str(benchmark_path),
-                "skill_path": str(skill_path),
+                "benchmark": display_path(benchmark_path),
+                "skill_path": display_path(skill_path),
                 "runner": args.runner,
                 "model": args.model,
                 "run_started_at": timestamp,
@@ -194,8 +209,8 @@ def main() -> int:
             isolated_skill_dir = with_skill_dir / "skill-under-test"
             shutil.copytree(skill_path, isolated_skill_dir, dirs_exist_ok=True)
             context_files = scenario.get("context_files", [])
-            copied_baseline_context = copy_context_files(context_files, baseline_dir)
-            copied_with_skill_context = copy_context_files(context_files, with_skill_dir)
+            copied_baseline_context = copy_context_files(context_files, baseline_dir, benchmark_path)
+            copied_with_skill_context = copy_context_files(context_files, with_skill_dir, benchmark_path)
 
             baseline_prompt = (
                 "Work only from the request below. Do not read any local files or rely on repository instructions. "

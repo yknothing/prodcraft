@@ -36,6 +36,30 @@ class FakeProcess:
 
 
 class RunExplicitSkillBenchmarkTests(unittest.TestCase):
+    def test_display_path_prefers_repo_relative_paths(self):
+        module = load_module()
+        repo_path = REPO_ROOT / "eval" / "01-specification" / "requirements-engineering" / "explicit-benchmark.json"
+
+        self.assertEqual(
+            module.display_path(repo_path),
+            "eval/01-specification/requirements-engineering/explicit-benchmark.json",
+        )
+
+    def test_resolve_context_file_uses_benchmark_parent_for_relative_paths(self):
+        module = load_module()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            temp_root = Path(tmpdir)
+            benchmark_dir = temp_root / "bench"
+            fixture_dir = benchmark_dir / "fixtures"
+            fixture_dir.mkdir(parents=True)
+            benchmark_path = benchmark_dir / "benchmark.json"
+            fixture_path = fixture_dir / "brief.md"
+            fixture_path.write_text("fixture\n", encoding="utf-8")
+
+            resolved = module.resolve_context_file("fixtures/brief.md", benchmark_path)
+            self.assertEqual(resolved, fixture_path.resolve())
+
     def test_run_prompt_uses_gemini_plan_mode_by_default(self):
         module = load_module()
         fake_process = FakeProcess()

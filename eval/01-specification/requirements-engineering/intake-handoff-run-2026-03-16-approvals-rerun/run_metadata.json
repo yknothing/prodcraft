@@ -1,6 +1,6 @@
 {
-  "benchmark": "/Users/whatsup/workspace/2026/prodcraft/eval/01-specification/requirements-engineering/intake-handoff-benchmark.json",
-  "skill_path": "/Users/whatsup/workspace/2026/prodcraft/skills/01-specification/requirements-engineering",
+  "benchmark": "eval/01-specification/requirements-engineering/intake-handoff-benchmark.json",
+  "skill_path": "skills/01-specification/requirements-engineering",
   "model": "claude-sonnet-4-6",
   "run_started_at": "2026-03-16T15:31:24",
   "scenario_count": 1
