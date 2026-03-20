@@ -107,6 +107,12 @@ Concrete examples demonstrating the skill in practice.
 
 For larger skills, move the `## Gotchas` content into `references/gotchas.md` and link to it from `SKILL.md`. This keeps the core skill concise while still giving the model an explicit place to load edge-case handling.
 
+## User-Facing Output Style
+
+- User-facing outputs default to Chinese unless the user explicitly asks for another language.
+- Use plain language. Keep sentences short. Explain the point directly.
+- When framing work, proposing a path, or reviewing direction, keep checking current system shape and collaboration quality if they affect scope, risk, sequencing, or handoff quality.
+
 ## Naming Conventions
 
 - Directory names match the `name` field: `api-design/SKILL.md` has `name: api-design`

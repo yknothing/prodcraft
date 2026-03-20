@@ -80,6 +80,7 @@ Produce a concise `problem-frame` covering:
 - open questions
 
 The problem frame must be sharp enough that downstream skills do not have to rediscover the core problem.
+Use plain language, default to Chinese for user-facing output unless the user asks for another language, and explicitly note system shape or collaboration quality when they materially affect the framing.
 
 ### Step 4: Compare 2-3 Directions
 
@@ -100,6 +101,8 @@ Record a `design-direction` that includes:
 - why it wins over the alternatives
 - what must remain open for downstream skills
 - the next lifecycle destination (`market-analysis`, `user-research`, `feasibility-study`, or `requirements-engineering`)
+
+When the route depends on team boundaries, ownership clarity, workflow friction, or architectural sprawl, say so directly as a collaboration quality or system shape concern instead of hiding it inside generic risk wording.
 
 ### Step 6: Get Approval and Handoff
 

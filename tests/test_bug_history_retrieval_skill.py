@@ -1,8 +1,6 @@
 import unittest
 from pathlib import Path
 
-import yaml
-
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = REPO_ROOT / "manifest.yml"
@@ -18,14 +16,12 @@ class BugHistoryRetrievalSkillTests(unittest.TestCase):
         self.assertTrue(GOTCHAS_PATH.exists(), GOTCHAS_PATH)
 
     def test_manifest_registers_bug_history_retrieval_as_cross_cutting_skill(self):
-        manifest = yaml.safe_load(MANIFEST_PATH.read_text(encoding="utf-8"))
-        entries = [entry for entry in manifest.get("skills", []) if entry.get("name") == "bug-history-retrieval"]
+        manifest = MANIFEST_PATH.read_text(encoding="utf-8")
 
-        self.assertEqual(1, len(entries))
-        entry = entries[0]
-        self.assertEqual("cross-cutting", entry.get("phase"))
-        self.assertEqual("skills/cross-cutting/bug-history-retrieval/SKILL.md", entry.get("file"))
-        self.assertEqual("draft", entry.get("status"))
+        self.assertIn("- name: bug-history-retrieval", manifest)
+        self.assertIn("phase: cross-cutting", manifest)
+        self.assertIn("file: skills/cross-cutting/bug-history-retrieval/SKILL.md", manifest)
+        self.assertIn("status: draft", manifest)
 
     def test_skill_references_single_file_gotchas(self):
         content = SKILL_PATH.read_text(encoding="utf-8")

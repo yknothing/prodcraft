@@ -85,6 +85,10 @@ Default to the smallest question budget that still changes the routing decision.
 
 Present a concise intake brief. Compare **path options**, not detailed implementation or architecture options:
 
+- Use plain language and keep the brief easy to scan.
+- Default to Chinese for user-facing output unless the user asks for another language.
+- Call out system shape and collaboration quality when they materially affect routing, risk, or the next handoff.
+
 Name concrete Prodcraft skills whenever the next step is already known. Avoid generic labels like `specification`, `architecture`, `planning`, or `implementation` when a specific skill can already be named. If the exact downstream skill is still genuinely undecided, say that explicitly as an open routing question rather than pretending a generic phase label is a settled handoff target.
 
 ```

@@ -217,3 +217,9 @@ Prodcraft is designed to complement, not replace, existing skill systems. If you
 - `verification-before-completion` remains as a cross-cutting gate
 
 Use whichever skill system is more appropriate for the context. Prodcraft adds lifecycle awareness; existing skills may have deeper domain-specific guidance.
+
+For repository-local experiments in this repo, Prodcraft may temporarily run in **repo-authoritative mode** for software-development work by installing the global `prodcraft` gateway skill through `scripts/install_prodcraft_global_skill.py` and disabling the global `brainstorming` skill through `scripts/manage_brainstorming_gate.py`. When that override is active:
+
+- `intake` becomes the mandatory first software-development entry point
+- the override action and restore action must remain observable through the script's JSONL event log
+- non-Prodcraft global skills are still available unless explicitly suppressed separately

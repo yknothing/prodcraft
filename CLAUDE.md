@@ -16,6 +16,8 @@ The routing logic is defined in `skills/_gateway.md`, which maps user intent to 
 
 Exceptions: if the user explicitly requests to skip intake for trivial work (typo fixes, comment updates), produce a 2-3 sentence intake summary and confirm.
 
+For repository-local validation experiments that need Prodcraft to become the authoritative software-development entry system, use `scripts/install_prodcraft_global_skill.py` to install the global `prodcraft` gateway skill under `~/.agents/skills/prodcraft`, and `scripts/manage_brainstorming_gate.py` to temporarily disable or restore the global `brainstorming` skill. Both scripts write reversible state and JSONL event logs under `build/` so the experiment remains observable.
+
 ## Key Concepts
 
 - **Gateway** (`skills/_gateway.md`) is the routing logic that connects user intent to the right skill sequence
@@ -42,6 +44,11 @@ When editing skills:
 - Ensure inputs reference outputs from earlier-phase skills
 - Ensure quality gates are measurable and verifiable
 - Cross-reference related skills using canonical `SKILL.md` links; from a skill body, same-phase links look like `[skill-name](../skill-name/SKILL.md)` and cross-phase links look like `[skill-name](../../phase/skill-name/SKILL.md)`
+
+When producing user-facing skill outputs:
+- User-facing responses default to Chinese unless the user explicitly asks for another language
+- Use plain language, short sentences, and direct explanations rather than abstract or inflated wording
+- Keep checking current system shape and collaboration quality when they materially affect routing, scope, risk, or handoff
 
 When editing workflows:
 - Workflows compose skills, they do not duplicate skill content
