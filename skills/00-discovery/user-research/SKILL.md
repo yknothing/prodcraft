@@ -31,6 +31,11 @@ User research transforms market understanding into actionable user profiles. It 
 
 When invoked immediately after [problem-framing](../problem-framing/SKILL.md), the first responsibility is to turn the upstream open questions into a concrete research plan. Do **not** invent personas or "validated" findings before real user evidence exists.
 
+## Inputs
+
+- **intake-brief** -- produced by the preceding skill in the lifecycle
+- **problem-frame** -- produced by the preceding skill in the lifecycle
+- **market-research-report** -- produced by the preceding skill in the lifecycle
 ## Process
 
 ### Step 1: Define Research Questions

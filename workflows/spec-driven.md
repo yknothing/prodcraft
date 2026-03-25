@@ -168,6 +168,40 @@ Monitoring covers all SLAs. Incident response follows documented procedures. Eve
 **Outputs:** Evolution plan, updated roadmap, improvement tickets, process adjustments.
 **Duration:** Periodic reviews (monthly or quarterly).
 
+## Quality Gates
+
+Spec-driven gates are formal and BLOCKING. No phase begins until its predecessor gate is cleared.
+
+### Discovery Approval
+
+- **Criteria:** Problem statement signed off. Stakeholder map complete. Regulatory constraints catalogued. Risk register reviewed.
+- **Approvers:** Product manager, project sponsor, compliance officer (if applicable).
+- **Type:** BLOCKING.
+
+### Specification Review
+
+- **Criteria:** Requirements complete, unambiguous, and reviewed by all stakeholders. Acceptance criteria testable and signed off. Traceability matrix in place.
+- **Approvers:** Product manager, QA lead, stakeholders.
+- **Type:** BLOCKING.
+
+### Architecture Approval
+
+- **Criteria:** Architecture documented and reviewed. Non-functional requirements addressed. Security design reviewed. ADR log complete.
+- **Approvers:** Architect, tech lead, security lead.
+- **Type:** BLOCKING.
+
+### Code Complete
+
+- **Criteria:** All features implemented to spec. Code review complete for all changes. Unit test coverage meets target. No critical or high-severity defects open. All change requests resolved.
+- **Approvers:** Tech lead, QA lead.
+- **Type:** BLOCKING.
+
+### Release Readiness
+
+- **Criteria:** All acceptance criteria verified. Performance meets benchmarks. No critical defects. Security scan clean or findings accepted with documented rationale. Regression suite passing.
+- **Approvers:** QA engineer, product manager, security lead.
+- **Type:** BLOCKING.
+
 ## Change Control
 
 In this workflow, scope changes after the Specification Review gate require a formal change request:

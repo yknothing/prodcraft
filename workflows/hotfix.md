@@ -155,6 +155,26 @@ Ensure the hotfix is merged into the main development branch:
 2. Resolve any conflicts.
 3. Ensure CI passes on the main branch with the hotfix included.
 
+## Quality Gates
+
+### Fix Approval Gate
+
+- **Criteria:** Root cause identified. Fix is minimal and surgical (no unrelated changes). Test reproducing the original issue is written and passing. All existing automated tests pass.
+- **Approvers:** Peer engineer (fast-track review, 30-minute target).
+- **Type:** BLOCKING -- no production deployment without code review approval.
+
+### Staging Verification Gate
+
+- **Criteria:** Fix deployed to staging. Issue verified resolved in production-like environment. No regressions observed in targeted exploratory testing.
+- **Approvers:** Hotfix owner.
+- **Type:** BLOCKING -- do not deploy to production without staging verification.
+
+### Production Stability Gate
+
+- **Criteria:** Production deployment verified. Error rates normal. Related functionality checked. Stakeholders notified of resolution.
+- **Approvers:** Hotfix owner and on-call engineer.
+- **Type:** BLOCKING -- incident is not closed until production stability is confirmed.
+
 ## Communication Protocol
 
 | Time | Communication |

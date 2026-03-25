@@ -23,6 +23,27 @@ metadata:
 
 > The mandatory entry point for all work. No implementation without intake. No exceptions.
 
+## Context
+
+Intake is the control plane for all engineering work in Prodcraft. Every piece of work — feature, bug fix, refactoring, migration, or research — enters the lifecycle through intake. Its job is to classify the work type, route to the correct lifecycle phase and methodology, and produce the `intake-brief` that anchors every downstream skill. It is triage, not a design session.
+
+## Inputs
+
+- **user-request** -- the raw description of the work to be done
+- **existing-context** -- project documentation, recent commits, open issues (read silently before asking questions)
+
+## Outputs
+
+- **intake-brief** -- structured routing record: work type, entry phase, workflow recommendation, key skills, scope assessment, key risks
+- **phase-recommendation** -- the lifecycle phase where work should begin
+- **workflow-recommendation** -- the methodology best suited to the work
+
+## Quality Gate
+
+- [ ] Intake brief produced and approved by the user, covering work type, entry phase, workflow recommendation, and key risks.
+- [ ] Next skill to invoke is explicitly named in the brief (not a generic phase label).
+- [ ] Fast-track rationale documented if intake was shortened.
+
 ## Why Intake Exists
 
 Every piece of work -- a new feature, a bug fix, a refactoring, a migration -- enters the lifecycle somewhere. Intake determines **where** and **how** to proceed. Think of it as hospital triage for software: assess the situation, determine urgency and scope, route to the right treatment.

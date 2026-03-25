@@ -13,7 +13,7 @@ metadata:
   - review-report
   prerequisites:
   - tdd
-  quality_gate: All blocking issues resolved, no unresolved security findings
+  quality_gate: All blocking issues resolved, no unresolved security findings, no unapproved magic values or hardcoded configuration
   roles:
   - reviewer
   - developer
@@ -56,7 +56,19 @@ Scan for OWASP Top 10 issues: injection flaws, broken authentication, sensitive 
 
 ### Step 4: Check Maintainability
 
-Evaluate naming clarity, function and class structure, cyclomatic complexity, and duplication. Ask: will someone unfamiliar with this code understand it in six months? Flag magic numbers, overly clever code, and missing documentation on non-obvious logic.
+Evaluate naming clarity, function and class structure, cyclomatic complexity, and duplication. Ask: will someone unfamiliar with this code understand it in six months? Flag overly clever code and missing documentation on non-obvious logic.
+
+Also enforce baseline coding standards as **Blocking** issues:
+
+- **No magic values**: Do not merge unexplained numeric literals, string literals, or structured literals that encode domain meaning, protocol fields, or policy thresholds.
+- **No hardcoded configuration**: Do not merge environment-specific hosts, regions, tenant identifiers, URLs, credentials, API keys, or feature thresholds embedded directly in source without an approved configuration boundary.
+- **Single source of truth**: Repeated literals that represent the same domain concept must converge to a named constant, configuration key, or shared schema -- unless the repetition is purely syntactic noise in tests.
+
+Approved exceptions must use this exact token, either on the same line as the literal or within two preceding lines:
+
+`ALLOW_MAGIC_NUMBER: reason, ticket`
+
+Where `reason` is a short justification and `ticket` is a tracker id that explains why a named constant or configuration entry is not appropriate yet.
 
 ### Step 5: Check Tests
 
@@ -74,7 +86,7 @@ Look for N+1 query patterns, unbounded loops, memory leaks, missing pagination, 
 ### Step 7: Provide Actionable Feedback
 
 Classify each comment by severity:
-- **Blocking**: Must fix before merge (bugs, security issues, data loss risks).
+- **Blocking**: Must fix before merge (bugs, security issues, data loss risks, unapproved magic values, hardcoded configuration).
 - **Should-fix**: Strong recommendation, but not a merge blocker (readability, minor design issues).
 - **Nit**: Optional improvement (style, naming preferences).
 - **Question**: Clarification needed, not necessarily a problem.
@@ -96,12 +108,26 @@ If a change silently hard-codes an unresolved architecture or contract decision,
 - [ ] PR description explains the what and why
 - [ ] Code compiles and tests pass in CI
 - [ ] No hardcoded secrets, credentials, or PII
+- [ ] No unapproved magic values or hardcoded configuration (see Blocking rules in Step 4)
 - [ ] Error handling is explicit, not swallowed
 - [ ] Public APIs have documentation
 - [ ] Database migrations are backward-compatible
 - [ ] No TODO comments without linked issues
 - [ ] Logging is present at appropriate levels
 - [ ] Feature flags wrap incomplete functionality
+
+## Automation Alignment
+
+This repository ships a lightweight, cross-language pre-commit hook that mirrors the same baseline expectations as the human review:
+
+- Hook entrypoint: `.githooks/pre-commit`
+- Scanner implementation: `scripts/hooks/no_magic_values_scan.py`
+
+Enable it locally:
+
+```bash
+git config core.hooksPath .githooks
+```
 
 ## Outputs
 
@@ -114,6 +140,7 @@ If a change silently hard-codes an unresolved architecture or contract decision,
 - [ ] Author has responded to all review comments
 - [ ] At least one approving review from a qualified reviewer
 - [ ] CI pipeline passes after final changes
+- [ ] No unapproved magic values or hardcoded configuration remain in the changeset
 
 ## Anti-Patterns
 
@@ -123,6 +150,16 @@ If a change silently hard-codes an unresolved architecture or contract decision,
 4. **Scope creep**: Requesting large refactors unrelated to the change. Open a separate issue for broader improvements.
 5. **Delayed reviews**: Letting PRs sit for days. Aim for initial review within 4 business hours for small changes, 1 business day for large changes.
 6. **Approving guessed behavior**: Letting a changeset merge even though it resolves unsupported or unresolved release-1 behavior by assumption.
+
+## Gotchas
+
+See [Gotchas](references/gotchas.md) before debating scanner noise, approving one-off literals, or "cleaning up" hardcoded values by renaming variables.
+
+### Scanner catches an unavoidable protocol literal
+- Trigger: A literal is mandated by a public protocol or platform contract.
+- Failure mode: The team disables blocking checks globally to land one change.
+- What to do: Keep blocking checks enabled and annotate only the constrained line with `ALLOW_MAGIC_NUMBER: reason, ticket`.
+- Escalate when: The same contract literal appears in multiple files and should become a shared constant wrapper.
 
 ## Related Skills
 

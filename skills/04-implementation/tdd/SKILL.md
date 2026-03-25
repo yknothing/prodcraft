@@ -101,6 +101,9 @@ TDD is a default, not a religion. Skip test-first for:
 - Pure UI layout (visual regression testing is more appropriate)
 - Configuration and glue code (test the behavior it enables instead)
 
+## Outputs
+
+- **test-suite** -- produced by this skill
 ## Quality Gate
 
 - [ ] Every acceptance criterion has at least one corresponding test

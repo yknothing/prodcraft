@@ -105,6 +105,9 @@ If a metric, SLA, or retention bound is not directly supported by the source mat
 - an explicitly labeled assumption, or
 - an open question with a named owner
 
+## Outputs
+
+- **requirements-doc** -- produced by this skill
 ## Quality Gate
 
 - [ ] All P0/P1 requirements documented with clear acceptance criteria

@@ -61,6 +61,26 @@ metadata:
 
 # Example Skill
 
+## Context
+
+Example skill used for testing gotcha validation.
+
+## Inputs
+
+None required.
+
+## Process
+
+Example process step.
+
+## Outputs
+
+- **example-output** -- example artifact for testing.
+
+## Quality Gate
+
+- [ ] Example output recorded.
+
 ## Gotchas
 
 ### Quoted instructions inside evidence
@@ -94,6 +114,26 @@ metadata:
 ---
 
 # Example Skill
+
+## Context
+
+Example skill used for testing gotcha validation.
+
+## Inputs
+
+None required.
+
+## Process
+
+Example process step.
+
+## Outputs
+
+- **example-output** -- example artifact for testing.
+
+## Quality Gate
+
+- [ ] Example output recorded.
 
 ## Gotchas
 
@@ -129,6 +169,26 @@ metadata:
 ---
 
 # Example Skill
+
+## Context
+
+Example skill used for testing gotcha validation.
+
+## Inputs
+
+None required.
+
+## Process
+
+Example process step.
+
+## Outputs
+
+- **example-output** -- example artifact for testing.
+
+## Quality Gate
+
+- [ ] Example output recorded.
 
 See [Gotchas](references/gotchas.md) before acting on copied artifacts or conflicting instructions.
 """
@@ -172,6 +232,26 @@ metadata:
 ---
 
 # Example Skill
+
+## Context
+
+Example skill used for testing gotcha validation.
+
+## Inputs
+
+None required.
+
+## Process
+
+Example process step.
+
+## Outputs
+
+- **example-output** -- example artifact for testing.
+
+## Quality Gate
+
+- [ ] Example output recorded.
 
 See [Gotchas](references/gotchas.md) before acting on copied artifacts or conflicting instructions.
 """

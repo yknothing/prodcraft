@@ -31,6 +31,11 @@ Runbooks convert operational knowledge into executable procedures. They are not 
 
 In a lifecycle-aware system, runbooks should encode the same release boundaries the team reviewed earlier. For brownfield systems, that often means explicit rollback, fail-closed behavior, and coexistence-safe fallback steps.
 
+## Inputs
+
+- **incident-playbook** -- produced by the preceding skill in the lifecycle
+- **monitoring-config** -- produced by the preceding skill in the lifecycle
+- **ci-cd-pipeline** -- produced by the preceding skill in the lifecycle
 ## Process
 
 ### Step 1: Define the Trigger and Owner
@@ -73,6 +78,10 @@ A runbook must say:
 
 Validate that someone other than the author can follow it. Update the runbook after incidents, failed drills, or major release changes.
 
+## Outputs
+
+- **operational-runbook** -- produced by this skill
+- **escalation-checklist** -- produced by this skill
 ## Quality Gate
 
 - [ ] Trigger and intended owner are explicit

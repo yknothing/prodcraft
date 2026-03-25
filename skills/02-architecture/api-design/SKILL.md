@@ -103,6 +103,10 @@ If architecture or requirements still leave uncertainty around:
 
 record those as explicit contract assumptions, deferred fields, or open questions. Do not silently hard-code them into endpoint behavior.
 
+## Outputs
+
+- **api-contract** -- produced by this skill
+- **api-documentation** -- produced by this skill
 ## Quality Gate
 
 - [ ] API contract specified in OpenAPI/protobuf/GraphQL schema

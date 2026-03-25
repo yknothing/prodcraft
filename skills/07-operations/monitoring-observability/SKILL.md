@@ -33,6 +33,11 @@ Monitoring and observability translate system behavior into signals responders c
 
 In a lifecycle-aware system, observability should preserve release intent. For brownfield work, make sure dashboards and alerts distinguish safe supported behavior from unsupported or coexistence-sensitive paths.
 
+## Inputs
+
+- **architecture-doc** -- produced by the preceding skill in the lifecycle
+- **ci-cd-pipeline** -- produced by the preceding skill in the lifecycle
+- **api-contract** -- produced by the preceding skill in the lifecycle
 ## Process
 
 ### Step 1: Map User-Critical and Boundary-Critical Signals
@@ -81,6 +86,11 @@ Before relying on the setup:
 - verify dashboards show release markers and recovery clearly
 - verify the signal is strong enough to support incident-response and rollback decisions
 
+## Outputs
+
+- **monitoring-config** -- produced by this skill
+- **alert-rules** -- produced by this skill
+- **service-dashboard** -- produced by this skill
 ## Quality Gate
 
 - [ ] User-facing and boundary-critical flows are explicitly instrumented

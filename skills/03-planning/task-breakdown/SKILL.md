@@ -101,6 +101,10 @@ When the work is modernization or migration:
 - avoid public-API or data-migration commitments that depend on unresolved architecture questions
 - make rollback or fallback work a first-class task where coexistence matters
 
+## Outputs
+
+- **task-list** -- produced by this skill
+- **dependency-graph** -- produced by this skill
 ## Quality Gate
 
 - [ ] Every task is 1-3 days of effort

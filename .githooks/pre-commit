@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Lightweight cross-language gate for magic values and hardcoded configuration.
+python3 scripts/hooks/no_magic_values_scan.py --git staged --fail-on-findings

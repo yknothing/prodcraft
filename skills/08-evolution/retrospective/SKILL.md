@@ -30,6 +30,11 @@ Retrospective is the skill that completes the lifecycle loop. It feeds insights 
 
 In a lifecycle-aware system, a retrospective is not a generic feelings exercise. It must turn concrete evidence from postmortems, reviews, and delivery outcomes into a small number of changes the team will actually route back through intake and planning.
 
+## Inputs
+
+- **incident-timeline** -- produced by the preceding skill in the lifecycle
+- **postmortem-report** -- produced by the preceding skill in the lifecycle
+- **review-report** -- produced by the preceding skill in the lifecycle
 ## Process
 
 ### Step 1: Set the Stage (5 min)
@@ -75,6 +80,10 @@ Prefer actions that reduce recurrence risk and improve future handoffs instead o
 - Confirm which follow-up items become intake-ready work
 - Rate the retrospective itself (meta-improvement)
 
+## Outputs
+
+- **retrospective-report** -- produced by this skill
+- **improvement-actions** -- produced by this skill
 ## Quality Gate
 
 - [ ] No more than 5 improvement actions chosen

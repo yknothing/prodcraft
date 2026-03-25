@@ -32,6 +32,10 @@ Spec writing is the heaviest specification skill, used primarily in spec-driven 
 
 Do not reach for this skill during routine agile story refinement. In day-to-day sprint work, prefer lightweight requirements, acceptance criteria, and task breakdown unless the change is large enough to need a shared written contract.
 
+## Inputs
+
+- **requirements-doc** -- produced by the preceding skill in the lifecycle
+- **domain-model** -- produced by the preceding skill in the lifecycle
 ## Process
 
 ### Step 1: Structure the Document
@@ -70,6 +74,9 @@ For every feature, explicitly state:
 - **Engineering review**: Have the implementing team review for feasibility and questions
 - **Resolve all open questions** before approving for implementation
 
+## Outputs
+
+- **spec-doc** -- produced by this skill
 ## Quality Gate
 
 - [ ] All sections of the template completed

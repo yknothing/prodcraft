@@ -32,6 +32,12 @@ CI/CD is the backbone of reliable delivery. Continuous Integration ensures every
 
 In a lifecycle-aware system, CI/CD must preserve upstream quality and rollout constraints. It should not flatten unresolved brownfield risks into a generic "deploy after tests pass" pipeline.
 
+## Inputs
+
+- **source-code** -- produced by the preceding skill in the lifecycle
+- **test-strategy-doc** -- produced by the preceding skill in the lifecycle
+- **architecture-doc** -- produced by the preceding skill in the lifecycle
+- **task-list** -- produced by the preceding skill in the lifecycle
 ## Process
 
 ### Step 1: Design Pipeline Stages
@@ -82,6 +88,10 @@ If release boundaries or sync semantics remain constrained, use staging and gate
 - Link to logs and artifacts for quick debugging
 - Alert on deployment completion
 
+## Outputs
+
+- **ci-cd-pipeline** -- produced by this skill
+- **build-artifacts** -- produced by this skill
 ## Quality Gate
 
 - [ ] Pipeline runs on every PR and merge to main

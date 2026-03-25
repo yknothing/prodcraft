@@ -32,6 +32,11 @@ Every codebase accumulates technical debt -- shortcuts taken, technologies that 
 
 In a lifecycle-aware system, technical debt should be grounded in evidence. Do not dump every annoyance into a debt bucket. Focus on structural issues that repeatedly show up in reviews, incidents, slow delivery, or brittle coexistence boundaries.
 
+## Inputs
+
+- **review-report** -- produced by the preceding skill in the lifecycle
+- **retrospective-report** -- produced by the preceding skill in the lifecycle
+- **postmortem-report** -- produced by the preceding skill in the lifecycle
 ## Process
 
 ### Step 1: Identify Debt from Repeated Evidence
@@ -91,6 +96,10 @@ For each top debt item, define:
 - success signal
 - next lifecycle destination (`intake`, `planning`, `implementation`, or `delivery`)
 
+## Outputs
+
+- **tech-debt-registry** -- produced by this skill
+- **remediation-plan** -- produced by this skill
 ## Quality Gate
 
 - [ ] Debt registry is current and accessible to the team

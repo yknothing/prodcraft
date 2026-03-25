@@ -26,6 +26,9 @@ metadata:
 
 Domain modeling creates a shared understanding of the core concepts in your system. It establishes a ubiquitous language -- terms that mean the same thing to everyone on the team. This prevents the #1 communication failure: using the same word to mean different things.
 
+## Inputs
+
+- **requirements-doc** -- produced by the preceding skill in the lifecycle
 ## Process
 
 ### Step 1: Identify Core Entities
@@ -55,6 +58,9 @@ Group related entities into bounded contexts (DDD). Each context has its own mod
 
 Walk through the model with stakeholders using real scenarios. The model should make business conversations easier, not harder.
 
+## Outputs
+
+- **domain-model** -- produced by this skill
 ## Quality Gate
 
 - [ ] Core entities and relationships documented visually (ER diagram or similar)

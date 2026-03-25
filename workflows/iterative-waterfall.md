@@ -165,6 +165,40 @@ Deployment follows a rehearsed plan. Rollback is tested before go-live. Stakehol
 **Inputs:** Operational data, user feedback, market changes, tech debt inventory.
 **Outputs:** Evolution plan, updated roadmap, process improvements.
 
+## Quality Gates
+
+Phase gates are BLOCKING. Each gate must be cleared before the next phase begins. Gates operate as formal review events — deliverables are presented, criteria checked, and approval recorded.
+
+### Discovery Review
+
+- **Criteria:** Problem clearly defined. Stakeholders identified and consulted. Constraints documented. Risks catalogued. Discovery Summary packaged for handoff.
+- **Approvers:** Product manager, project sponsor.
+- **Type:** BLOCKING.
+
+### Specification Review
+
+- **Criteria:** Requirements detailed and verified against discovery. Domain model reviewed. Acceptance criteria testable. Iteration cycles within specification complete.
+- **Approvers:** Product manager, architect, QA lead.
+- **Type:** BLOCKING.
+
+### Architecture Review
+
+- **Criteria:** Architecture validated against requirements. Risk register updated. Non-functional requirements addressed. Implementation plan approved.
+- **Approvers:** Architect, tech lead, product manager, project sponsor.
+- **Type:** BLOCKING.
+
+### Code Complete
+
+- **Criteria:** All planned work items implemented. Code reviewed. Unit test coverage meets target. Integration tests passing. Deviation log resolved.
+- **Approvers:** Tech lead, reviewer.
+- **Type:** BLOCKING.
+
+### Release Readiness
+
+- **Criteria:** All acceptance criteria verified. Defect backlog at acceptable level (no critical, limited high). Performance benchmarks met. Security assessment clean or findings accepted.
+- **Approvers:** QA engineer, product manager, security lead, operations lead.
+- **Type:** BLOCKING.
+
 ## Cross-Phase Feedback: Change Requests
 
 When a later phase discovers an issue with an earlier phase's deliverable, the formal process is:

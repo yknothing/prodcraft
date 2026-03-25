@@ -28,6 +28,10 @@ metadata:
 
 Feasibility is the gate between "interesting idea" and "committed project." It prevents wasting months on ideas that are technically impossible, economically unviable, or operationally unsustainable. The output is a go/no-go/pivot decision.
 
+## Inputs
+
+- **market-research-report** -- produced by the preceding skill in the lifecycle
+- **user-persona-set** -- produced by the preceding skill in the lifecycle
 ## Process
 
 ### Step 1: Technical Feasibility
@@ -71,6 +75,9 @@ Write a clear go/no-go/pivot recommendation:
 - Key risks and mitigations
 - Recommended next steps (proceed to specification, pivot direction, or shelve)
 
+## Outputs
+
+- **feasibility-report** -- produced by this skill
 ## Quality Gate
 
 - [ ] All four feasibility dimensions assessed

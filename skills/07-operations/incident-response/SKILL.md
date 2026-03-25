@@ -33,6 +33,11 @@ Incident response is the skill of managing production failures under pressure. I
 
 In a lifecycle-aware system, incident response must preserve the release boundary that just shipped. Do not widen scope into redesign during the incident. For brownfield systems, prefer mitigations that fail closed, preserve coexistence, and protect data integrity even if the temporary user experience becomes narrower.
 
+## Inputs
+
+- **ci-cd-pipeline** -- produced by the preceding skill in the lifecycle
+- **architecture-doc** -- produced by the preceding skill in the lifecycle
+- **service-alerts** -- produced by the preceding skill in the lifecycle
 ## Process
 
 ### Step 1: Confirm the Incident and Current Boundary
@@ -116,6 +121,11 @@ Blameless postmortem -- focus on systems, not people:
 - What went poorly
 - Action items with owners and deadlines
 
+## Outputs
+
+- **incident-playbook** -- produced by this skill
+- **incident-timeline** -- produced by this skill
+- **postmortem-report** -- produced by this skill
 ## Quality Gate
 
 - [ ] Severity and current user impact are explicit

@@ -24,6 +24,10 @@ This workflow starts only after `intake` is completed and the user approves the 
 
 Fast-track work can still use this workflow, but only if intake explicitly documents why a shortened path is appropriate.
 
+## Phase Sequence
+
+In agile sprints, phases do not execute sequentially — they operate concurrently as lenses applied throughout each sprint. Discovery is continuous user research; specification is story writing; architecture is just-in-time design. The sprint rhythm below describes how phases weave through each iteration.
+
 ## Sprint Rhythm
 
 A sprint follows a repeating cadence. The phases weave through this rhythm:

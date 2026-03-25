@@ -182,6 +182,28 @@ After launch:
 3. **Decide:** Double down on what works, cut what does not, experiment with unknowns.
 4. **Transition:** Move from this greenfield workflow to an ongoing workflow (agile-sprint or iterative-waterfall).
 
+## Quality Gates
+
+Gates in the greenfield workflow are lightweight but must not be skipped — each decision locks in foundations that are expensive to change later.
+
+### Discovery Gate
+
+- **Criteria:** Problem statement written. Target user defined. At least two existing alternatives identified. Initial MVP scope agreed.
+- **Approvers:** Founder or project lead.
+- **Type:** BLOCKING -- do not specify without validating the problem.
+
+### Architecture Gate
+
+- **Criteria:** Language, framework, data store, and hosting decided and written down with rationale. Monolith vs. services choice made. No critical unknowns blocking implementation.
+- **Approvers:** Tech lead (or solo developer self-review using the rationale log).
+- **Type:** BLOCKING -- do not implement without these decisions documented.
+
+### MVP Launch Gate
+
+- **Criteria:** Core user workflow works end-to-end. Automated CI pipeline passing. HTTPS, authentication, and dependency scanning clean. Error tracking and uptime monitoring active. Rollback procedure tested.
+- **Approvers:** Tech lead, QA (or solo self-review checklist).
+- **Type:** BLOCKING -- do not declare launch without all criteria met.
+
 ## Key Decision Points
 
 | Decision | When | Criteria | Hard to change later? |

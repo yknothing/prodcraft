@@ -1,6 +1,31 @@
 version: 1.0.0
 name: prodcraft
 description: Lifecycle-aware skills system for production-grade software development
+
+# Declared iterative feedback edges in the artifact_flow graph.
+# These are intentional backward flows (later-phase skill feeding earlier-phase skill)
+# that represent the review-and-revise loops inherent in software development.
+# The acyclicity validator skips these edges when checking for unintended cycles.
+iterative_feedback_edges:
+- from: code-review
+  to: feature-development
+  rationale: Review findings (review-report) feed back into the implementation cycle.
+- from: code-review
+  to: refactoring
+  rationale: Review findings trigger targeted refactoring before re-review.
+- from: security-audit
+  to: feature-development
+  rationale: Security findings (security-report) require implementation changes before re-audit.
+- from: tech-selection
+  to: system-design
+  rationale: Technology decisions (tech-decision-record) update the architecture iteratively.
+- from: tdd
+  to: feature-development
+  rationale: Test suite shapes the implementation loop within the same phase.
+- from: refactoring
+  to: feature-development
+  rationale: Refactored source re-enters the feature-development cycle for integration.
+
 phases:
 - id: 00-discovery
   name: Discovery
@@ -258,7 +283,13 @@ skills:
 - name: security-audit
   phase: 05-quality
   file: skills/05-quality/security-audit/SKILL.md
-  status: draft
+  status: review
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/05-quality/security-audit/evals/eval-strategy.md
+    security_check_path: eval/05-quality/security-audit/evals/security-check-evidence.md
+    findings_path: eval/05-quality/security-audit/findings.md
 - name: ci-cd
   phase: 06-delivery
   file: skills/06-delivery/ci-cd/SKILL.md

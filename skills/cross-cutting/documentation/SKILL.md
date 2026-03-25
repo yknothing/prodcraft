@@ -35,6 +35,9 @@ Organize documentation into four types:
 | **Reference** | Information-oriented | Technical descriptions (API docs) |
 | **Explanation** | Understanding-oriented | Background, context, decisions |
 
+## Inputs
+
+None required. This skill can begin from the project context alone.
 ## Process
 
 ### Step 1: Identify the Need
@@ -65,6 +68,9 @@ What documentation is needed? Common triggers:
 - Quarterly documentation audit: remove outdated content
 - Track documentation debt alongside tech debt
 
+## Outputs
+
+- **documentation-artifact** -- produced by this skill
 ## Quality Gate
 
 - [ ] Target audience can complete their task using only the documentation

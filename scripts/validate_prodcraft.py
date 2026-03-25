@@ -26,9 +26,16 @@ SKILL_METADATA_REQUIRED_FIELDS = [
     "inputs",
     "outputs",
     "prerequisites",
-    "quality_gate",
     "roles",
     "methodologies",
+]
+
+# quality_gate in frontmatter is optional: the body ## Quality Gate checklist
+# is the single authoritative source of truth (avoids dual-representation drift).
+# Skills may include a frontmatter quality_gate string as a pre-hydration hint,
+# but it is no longer required -- the body checklist alone is enforced.
+SKILL_METADATA_OPTIONAL_FIELDS = [
+    "quality_gate",
 ]
 
 WORKFLOW_REQUIRED_FIELDS = [
@@ -50,7 +57,17 @@ CHECKS = {
     "manifest-skill-status",
     "workflow-skill-refs",
     "artifact-flow",
+    "security-minimal",
 }
+
+# Zero-width and soft-hyphen characters that may hide injected content.
+_ZERO_WIDTH_CHARS = frozenset("\u200b\u200c\u200d\ufeff\u00ad")
+
+# Pipe followed by shell keywords that suggest command injection in a description.
+_PIPE_INJECTION_RE = re.compile(r"\|[^\w]*(?:rm|sudo|curl|wget|eval|exec|sh|bash)\b", re.IGNORECASE)
+
+# Cyrillic codepoint range (basic lookalike detection for otherwise ASCII text).
+_CYRILLIC_RE = re.compile(r"[\u0400-\u04ff]")
 
 SKILL_STATUSES = {
     "draft",
@@ -65,6 +82,16 @@ EVALUATION_MODES = {
     "discoverability",
     "routed",
 }
+
+REQUIRED_SKILL_BODY_HEADINGS = (
+    "Context",
+    "Inputs",
+    "Process",
+    "Outputs",
+    "Quality Gate",
+)
+
+QUALITY_GATE_CHECK_ITEM_RE = re.compile(r"^\s*-\s*\[\s*\]\s+.+$", re.MULTILINE)
 
 
 def load_frontmatter(path: Path) -> tuple[dict, str]:
@@ -168,6 +195,8 @@ def validate_skill_file(path: Path, errors: list[str]) -> None:
     for field in SKILL_METADATA_REQUIRED_FIELDS:
         if field not in metadata:
             errors.append(f"{path}: missing required skill metadata field `metadata.{field}`")
+            continue
+
 
     expected_phase = path.parents[1].name
     actual_phase = metadata.get("phase")
@@ -206,6 +235,54 @@ def validate_skill_file(path: Path, errors: list[str]) -> None:
         if gotchas_path.exists():
             validate_gotchas_block(path, gotchas_path.read_text(encoding="utf-8"), errors, source_label="gotchas reference")
 
+    # Verify that the skill body includes the contract headings and that quality gate is machine-checkable.
+    for heading in REQUIRED_SKILL_BODY_HEADINGS:
+        section = extract_markdown_section(body, heading)
+        if section is None:
+            errors.append(f"{path}: missing required section `## {heading}`")
+
+    quality_gate_section = extract_markdown_section(body, "Quality Gate")
+    if quality_gate_section is not None and not QUALITY_GATE_CHECK_ITEM_RE.search(quality_gate_section):
+        errors.append(f"{path}: `## Quality Gate` must contain at least one checklist item like `- [ ] ...`")
+
+
+def validate_skill_security_minimal(path: Path, errors: list[str]) -> None:
+    """Minimal automated security checks that produce falsifiable evidence.
+
+    Covers the highest-severity categories from _quality-assurance.md:
+    command safety (pipe injection) and basic encoding attacks (zero-width
+    chars, Cyrillic homoglyphs in otherwise ASCII descriptions).
+    """
+    try:
+        frontmatter, body = load_frontmatter(path)
+    except ValueError:
+        return  # structural errors already reported by validate_skill_file
+
+    description = frontmatter.get("description", "") or ""
+
+    # Check for zero-width / soft-hyphen characters in the description.
+    hidden = [hex(ord(c)) for c in description if c in _ZERO_WIDTH_CHARS]
+    if hidden:
+        errors.append(
+            f"{path}: `description` contains hidden zero-width or soft-hyphen characters {hidden} "
+            f"-- possible encoding-layer payload"
+        )
+
+    # Check for pipe-based command injection patterns in description.
+    if _PIPE_INJECTION_RE.search(description):
+        errors.append(
+            f"{path}: `description` contains a pipe followed by a shell keyword "
+            f"-- possible command injection pattern"
+        )
+
+    # Check for Cyrillic homoglyphs in an otherwise ASCII description.
+    ascii_chars = sum(1 for c in description if ord(c) < 128)
+    if _CYRILLIC_RE.search(description) and ascii_chars > len(description) * 0.8:
+        errors.append(
+            f"{path}: `description` mixes Cyrillic characters into predominantly ASCII text "
+            f"-- possible homoglyph substitution"
+        )
+
 
 def validate_workflow_file(path: Path, errors: list[str], selected_checks: set[str]) -> None:
     if path.name.startswith("_"):
@@ -236,6 +313,11 @@ def validate_workflow_file(path: Path, errors: list[str], selected_checks: set[s
         body_lower = body.lower()
         if "intake" not in body_lower or "intake-brief" not in body_lower:
             errors.append(f"{path}: entry gate must mention both `intake` and `intake-brief`")
+
+        required_sections = ("Overview", "Phase Sequence", "Quality Gates", "Adaptation Notes")
+        for section_name in required_sections:
+            if not re.search(rf"^##\s+{re.escape(section_name)}\s*$", body, re.MULTILINE):
+                errors.append(f"{path}: missing required workflow section `## {section_name}`")
 
 
 def manifest_skill_names(manifest: dict) -> set[str]:
@@ -362,6 +444,12 @@ def validate_artifact_flow(manifest: dict, errors: list[str]) -> None:
                         f"{path}: input artifact `{artifact}` appears in manifest artifact_flow and must list `{skill_name}` in consumed_by"
                     )
 
+    # Note: the prodcraft lifecycle is deliberately iterative — retrospective feeds back into discovery,
+    # code-review feeds back into implementation, and so on. Acyclicity cannot be enforced on the full
+    # artifact_flow graph. The manifest documents intentional feedback flows in `iterative_feedback_edges`
+    # for traceability. Cycle detection via Kahn's algorithm is intentionally omitted here because it
+    # produces only false positives on a correctly-designed iterative lifecycle.
+
 
 def extract_backtick_refs(text: str) -> set[str]:
     return set(re.findall(r"`([a-z0-9-]+)`", text))
@@ -446,6 +534,10 @@ def main() -> int:
     if "skill-frontmatter" in selected_checks:
         for path in sorted(SKILLS_DIR.rglob("*.md")):
             validate_skill_file(path, errors)
+
+    if "security-minimal" in selected_checks:
+        for path in sorted(SKILLS_DIR.rglob("SKILL.md")):
+            validate_skill_security_minimal(path, errors)
 
     for path in sorted(WORKFLOWS_DIR.glob("*.md")):
         validate_workflow_file(path, errors, selected_checks)

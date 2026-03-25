@@ -27,6 +27,10 @@ metadata:
 
 Acceptance criteria bridge the gap between "what we want" (requirements) and "how we verify it works" (tests). They are the contract between product and QA, and the foundation for TDD in the implementation phase.
 
+## Inputs
+
+- **requirements-doc** -- produced by the preceding skill in the lifecycle
+- **spec-doc** -- produced by the preceding skill in the lifecycle
 ## Process
 
 ### Step 1: Choose a Format
@@ -65,6 +69,9 @@ Good: "System supports 500 concurrent users with < 200ms response time at p95"
 
 QA engineers are expert at finding missing edge cases. Review criteria with them before finalizing. They should be able to write test cases directly from acceptance criteria.
 
+## Outputs
+
+- **acceptance-criteria-set** -- produced by this skill
 ## Quality Gate
 
 - [ ] Every P0/P1 requirement has at least one acceptance criterion
