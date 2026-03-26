@@ -105,6 +105,7 @@ skills:
   file: skills/00-discovery/intake/SKILL.md
   gateway: true
   status: review
+  qa_tier: critical
   evaluation_mode: discoverability
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
@@ -121,6 +122,7 @@ skills:
   phase: 00-discovery
   file: skills/00-discovery/problem-framing/SKILL.md
   status: review
+  qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
@@ -135,10 +137,12 @@ skills:
   phase: 00-discovery
   file: skills/00-discovery/market-analysis/SKILL.md
   status: draft
+  qa_tier: standard
 - name: user-research
   phase: 00-discovery
   file: skills/00-discovery/user-research/SKILL.md
   status: review
+  qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
@@ -152,10 +156,12 @@ skills:
   phase: 00-discovery
   file: skills/00-discovery/feasibility-study/SKILL.md
   status: draft
+  qa_tier: standard
 - name: requirements-engineering
   phase: 01-specification
   file: skills/01-specification/requirements-engineering/SKILL.md
   status: review
+  qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
@@ -174,18 +180,22 @@ skills:
   phase: 01-specification
   file: skills/01-specification/spec-writing/SKILL.md
   status: draft
+  qa_tier: standard
 - name: domain-modeling
   phase: 01-specification
   file: skills/01-specification/domain-modeling/SKILL.md
   status: draft
+  qa_tier: standard
 - name: acceptance-criteria
   phase: 01-specification
   file: skills/01-specification/acceptance-criteria/SKILL.md
   status: draft
+  qa_tier: standard
 - name: system-design
   phase: 02-architecture
   file: skills/02-architecture/system-design/SKILL.md
   status: review
+  qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
@@ -197,18 +207,22 @@ skills:
   phase: 02-architecture
   file: skills/02-architecture/data-modeling/SKILL.md
   status: draft
+  qa_tier: standard
 - name: security-design
   phase: 02-architecture
   file: skills/02-architecture/security-design/SKILL.md
   status: draft
+  qa_tier: standard
 - name: tech-selection
   phase: 02-architecture
   file: skills/02-architecture/tech-selection/SKILL.md
   status: draft
+  qa_tier: standard
 - name: api-design
   phase: 02-architecture
   file: skills/02-architecture/api-design/SKILL.md
   status: review
+  qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
@@ -220,6 +234,7 @@ skills:
   phase: 03-planning
   file: skills/03-planning/task-breakdown/SKILL.md
   status: review
+  qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
@@ -231,18 +246,22 @@ skills:
   phase: 03-planning
   file: skills/03-planning/estimation/SKILL.md
   status: draft
+  qa_tier: standard
 - name: risk-assessment
   phase: 03-planning
   file: skills/03-planning/risk-assessment/SKILL.md
   status: draft
+  qa_tier: standard
 - name: sprint-planning
   phase: 03-planning
   file: skills/03-planning/sprint-planning/SKILL.md
   status: draft
+  qa_tier: standard
 - name: tdd
   phase: 04-implementation
   file: skills/04-implementation/tdd/SKILL.md
   status: review
+  qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
@@ -254,14 +273,17 @@ skills:
   phase: 04-implementation
   file: skills/04-implementation/feature-development/SKILL.md
   status: draft
+  qa_tier: critical
 - name: refactoring
   phase: 04-implementation
   file: skills/04-implementation/refactoring/SKILL.md
   status: draft
+  qa_tier: standard
 - name: code-review
   phase: 05-quality
   file: skills/05-quality/code-review/SKILL.md
   status: review
+  qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
@@ -273,6 +295,7 @@ skills:
   phase: 05-quality
   file: skills/05-quality/testing-strategy/SKILL.md
   status: review
+  qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
@@ -284,6 +307,7 @@ skills:
   phase: 05-quality
   file: skills/05-quality/security-audit/SKILL.md
   status: review
+  qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
@@ -294,6 +318,7 @@ skills:
   phase: 06-delivery
   file: skills/06-delivery/ci-cd/SKILL.md
   status: review
+  qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
@@ -305,14 +330,17 @@ skills:
   phase: 06-delivery
   file: skills/06-delivery/deployment-strategy/SKILL.md
   status: draft
+  qa_tier: critical
 - name: release-management
   phase: 06-delivery
   file: skills/06-delivery/release-management/SKILL.md
   status: draft
+  qa_tier: standard
 - name: incident-response
   phase: 07-operations
   file: skills/07-operations/incident-response/SKILL.md
   status: review
+  qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
@@ -324,6 +352,7 @@ skills:
   phase: 07-operations
   file: skills/07-operations/monitoring-observability/SKILL.md
   status: review
+  qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
@@ -335,6 +364,7 @@ skills:
   phase: 07-operations
   file: skills/07-operations/runbooks/SKILL.md
   status: review
+  qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
@@ -346,6 +376,7 @@ skills:
   phase: 08-evolution
   file: skills/08-evolution/tech-debt-management/SKILL.md
   status: review
+  qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
@@ -357,6 +388,7 @@ skills:
   phase: 08-evolution
   file: skills/08-evolution/retrospective/SKILL.md
   status: review
+  qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
@@ -368,14 +400,32 @@ skills:
   phase: cross-cutting
   file: skills/cross-cutting/documentation/SKILL.md
   status: draft
+  qa_tier: standard
 - name: observability
   phase: cross-cutting
   file: skills/cross-cutting/observability/SKILL.md
   status: draft
+  qa_tier: critical
 - name: bug-history-retrieval
   phase: cross-cutting
   file: skills/cross-cutting/bug-history-retrieval/SKILL.md
   status: draft
+  qa_tier: standard
+- name: accessibility
+  phase: cross-cutting
+  file: skills/cross-cutting/accessibility/SKILL.md
+  status: draft
+  qa_tier: standard
+- name: internationalization
+  phase: cross-cutting
+  file: skills/cross-cutting/internationalization/SKILL.md
+  status: draft
+  qa_tier: standard
+- name: compliance
+  phase: cross-cutting
+  file: skills/cross-cutting/compliance/SKILL.md
+  status: draft
+  qa_tier: standard
 planned_skills:
 - name: pair-programming
   phase: 04-implementation
@@ -395,15 +445,6 @@ planned_skills:
 - name: deprecation
   phase: 08-evolution
   target_file: skills/08-evolution/deprecation/SKILL.md
-- name: accessibility
-  phase: cross-cutting
-  target_file: skills/cross-cutting/accessibility/SKILL.md
-- name: internationalization
-  phase: cross-cutting
-  target_file: skills/cross-cutting/internationalization/SKILL.md
-- name: compliance
-  phase: cross-cutting
-  target_file: skills/cross-cutting/compliance/SKILL.md
 workflows:
 - name: spec-driven
   file: workflows/spec-driven.md
@@ -550,6 +591,21 @@ artifact_flow:
   - user-research
   - feasibility-study
   - requirements-engineering
+- artifact: course-correction-note
+  produced_by:
+  - feature-development
+  - refactoring
+  - code-review
+  - testing-strategy
+  - security-audit
+  - incident-response
+  - monitoring-observability
+  - tech-debt-management
+  - retrospective
+  consumed_by:
+  - requirements-engineering
+  - system-design
+  - task-breakdown
 - artifact: phase-recommendation
   produced_by: intake
   consumed_by: []
@@ -813,4 +869,13 @@ artifact_flow:
   consumed_by: []
 - artifact: fix-lineage-brief
   produced_by: bug-history-retrieval
+  consumed_by: []
+- artifact: accessibility-guidance
+  produced_by: accessibility
+  consumed_by: []
+- artifact: localization-guidance
+  produced_by: internationalization
+  consumed_by: []
+- artifact: compliance-guidance
+  produced_by: compliance
   consumed_by: []

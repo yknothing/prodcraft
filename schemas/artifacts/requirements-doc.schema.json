@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prodcraft.dev/schemas/artifacts/requirements-doc.schema.json",
+  "title": "Prodcraft Requirements Document",
+  "type": "object",
+  "required": [
+    "artifact",
+    "schema_version",
+    "status",
+    "requirements",
+    "acceptance_summary"
+  ],
+  "properties": {
+    "artifact": { "const": "requirements-doc" },
+    "schema_version": { "const": "requirements-doc.v1" },
+    "status": { "enum": ["draft", "reviewed", "approved"] },
+    "requirements": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "acceptance_summary": { "type": "string" }
+  },
+  "additionalProperties": true
+}

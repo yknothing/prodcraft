@@ -1,7 +1,7 @@
 # ADR-001: Establish a Cross-Cutting Execution Observability Envelope
 
 **Date**: 2026-03-20
-**Status**: Proposed
+**Status**: Accepted
 **Deciders**: Tech lead, developer, devops engineer
 
 ## Context
@@ -74,5 +74,6 @@ Rejected for now because beta needs a stable contract first, not an immediate ba
 - `skills/cross-cutting/observability/SKILL.md`
 - `skills/07-operations/monitoring-observability/SKILL.md`
 - `docs/observability/execution-event-schema-v1.md`
+- `docs/observability/runtime-feedback-loop.md`
 - `scripts/run_explicit_skill_benchmark.py`
 - `tools/anthropic_trigger_eval/run_eval.py`

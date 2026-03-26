@@ -2,58 +2,60 @@
 
 Use this template whenever `intake` routes new work into a workflow.
 
-## Work Summary
-
-- **Request**:
-- **Why intake was used**:
-- **Work type**:
-- **Entry phase**:
-- **Recommended workflow**:
-- **Scope assessment**:
-- **Urgency**:
-
 ## Required Artifact
 
-- **Artifact name**: `intake-brief`
-- **Status**: draft / approved
-- **Approver**:
+- artifact: `intake-brief`
+- schema_version: `intake-brief.v1`
+- status:
+- approver:
+
+## Work Summary
+
+- request_summary:
+- intake_mode:
+- work_type:
+- entry_phase:
+- workflow_primary:
+- workflow_overlays:
+- scope_assessment:
+- urgency:
 
 ## Routing Decision
 
-1. **Recommended first skill**:
-   - Output:
-   - Why this is next:
-2. **Second skill**:
-   - Output:
-3. **Third skill**:
-   - Output:
+- recommended_next_skill:
+- routing_rationale:
+- why intake was used:
+- recommended first skill output:
+- second skill:
+- third skill:
 
 ## Question Budget
 
-- **Questions asked**:
-- **Did any answer change routing?** yes / no
-- **If more than 3 questions were needed, why?**
+- questions_asked:
+- routing_changed_by_answers:
+- if more than 3 questions were needed, why?
 
 ## Alternatives Considered
 
-- **Primary path chosen**:
-- **Alternative path considered**:
-- **Trade-off summary**:
+- primary path chosen:
+- alternative path considered:
+- trade-off summary:
 
 ## Key Risks
 
-1.
-2.
+- key_risks:
+  - 
+  - 
 
 ## Fast-Track or Skipped Gates
 
-- **Any shortcut taken?** yes / no
-- **If yes, why was it acceptable?**
-- **What debt does this create?**
+- any shortcut taken? yes / no
+- if yes, why was it acceptable?
+- what debt does this create?
 
 ## Notes for Handoff
 
-- Constraints:
-- Open questions:
-- Context that downstream skills must preserve:
-- Should `problem-framing` run next? yes / no
+- constraints:
+- open questions:
+- context that downstream skills must preserve:
+- should `problem-framing` run next? yes / no

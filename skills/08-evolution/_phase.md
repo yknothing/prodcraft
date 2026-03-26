@@ -24,6 +24,8 @@ Retrospective complete. Tech debt cataloged and prioritized. At least 3 actionab
 Improvement items should be small enough to route back through intake and planning instead of remaining as vague "we should do better" notes.
 Debt items should be prioritized by real recurrence cost and routed to the right next phase rather than left as an undifferentiated backlog.
 
+When evolution produces a concrete upstream correction, capture it as a `course-correction-note` and route directly to `01-specification`, `02-architecture`, or `03-planning`.
+
 ## Key Skills
 
 | Skill | Purpose | Effort |
@@ -46,3 +48,7 @@ Debt items should be prioritized by real recurrence cost and routed to the right
 - **Debt ignored until crisis** -- By then, remediation cost has multiplied.
 - **Big bang migration** -- Incremental migration reduces risk dramatically.
 - **Deprecation without communication** -- Surprising consumers with removed features destroys trust.
+
+## Cross-Cutting Matrix
+
+See `rules/cross-cutting-matrix.yml` for required and conditional cross-cutting skills at this phase.

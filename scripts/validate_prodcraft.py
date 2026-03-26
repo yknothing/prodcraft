@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from pathlib import Path
@@ -13,8 +14,13 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILLS_DIR = ROOT / "skills"
+CURATED_SKILLS_DIR = SKILLS_DIR / ".curated"
 WORKFLOWS_DIR = ROOT / "workflows"
 MANIFEST_PATH = ROOT / "manifest.yml"
+SCHEMAS_DIR = ROOT / "schemas"
+ARTIFACT_REGISTRY_PATH = SCHEMAS_DIR / "artifacts" / "registry.yml"
+DISTRIBUTION_REGISTRY_PATH = SCHEMAS_DIR / "distribution" / "public-skill-registry.json"
+MATRIX_PATH = ROOT / "rules" / "cross-cutting-matrix.yml"
 
 SKILL_REQUIRED_FIELDS = [
     "name",
@@ -42,6 +48,8 @@ WORKFLOW_REQUIRED_FIELDS = [
     "name",
     "description",
     "cadence",
+    "workflow_kind",
+    "composes_with",
     "entry_skill",
     "required_artifacts",
     "best_for",
@@ -57,6 +65,9 @@ CHECKS = {
     "manifest-skill-status",
     "workflow-skill-refs",
     "artifact-flow",
+    "artifact-schema-registry",
+    "cross-cutting-matrix",
+    "curated-surface",
     "security-minimal",
 }
 
@@ -81,6 +92,16 @@ SKILL_STATUSES = {
 EVALUATION_MODES = {
     "discoverability",
     "routed",
+}
+
+QA_TIERS = {
+    "critical",
+    "standard",
+}
+
+WORKFLOW_KINDS = {
+    "primary",
+    "overlay",
 }
 
 REQUIRED_SKILL_BODY_HEADINGS = (
@@ -132,6 +153,29 @@ def extract_markdown_section(text: str, heading: str) -> str | None:
     if next_heading:
         return remainder[: next_heading.start()].strip()
     return remainder.strip()
+
+
+def iter_lifecycle_skill_paths() -> list[Path]:
+    return sorted(
+        path
+        for path in SKILLS_DIR.rglob("SKILL.md")
+        if ".curated" not in path.parts
+    )
+
+
+def load_yaml_file(path: Path, errors: list[str]) -> dict:
+    try:
+        payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except FileNotFoundError:
+        errors.append(f"{path}: file does not exist")
+        return {}
+    except Exception as exc:
+        errors.append(f"{path}: failed to parse YAML: {exc}")
+        return {}
+    if not isinstance(payload, dict):
+        errors.append(f"{path}: expected a YAML mapping")
+        return {}
+    return payload
 
 
 def validate_gotchas_block(source: Path, text: str, errors: list[str], *, source_label: str) -> None:
@@ -298,6 +342,12 @@ def validate_workflow_file(path: Path, errors: list[str], selected_checks: set[s
         for field in WORKFLOW_REQUIRED_FIELDS:
             if field not in frontmatter:
                 errors.append(f"{path}: missing required workflow field `{field}`")
+        workflow_kind = frontmatter.get("workflow_kind")
+        if workflow_kind not in WORKFLOW_KINDS:
+            errors.append(f"{path}: `workflow_kind` must be one of {sorted(WORKFLOW_KINDS)}")
+        composes_with = frontmatter.get("composes_with")
+        if not isinstance(composes_with, list) or not composes_with:
+            errors.append(f"{path}: `composes_with` must be a non-empty list")
 
     if "workflow-entry-gate" in selected_checks:
         if frontmatter.get("entry_skill") != "intake":
@@ -348,9 +398,12 @@ def validate_manifest_skill_status(manifest: dict, errors: list[str]) -> None:
     for entry in manifest.get("skills", []):
         name = entry.get("name", "<unknown>")
         status = entry.get("status")
+        qa_tier = entry.get("qa_tier")
         if status not in SKILL_STATUSES:
             errors.append(f"{MANIFEST_PATH}: skill `{name}` has invalid or missing `status`")
             continue
+        if qa_tier not in QA_TIERS:
+            errors.append(f"{MANIFEST_PATH}: skill `{name}` has invalid or missing `qa_tier`")
 
         evaluation_mode = entry.get("evaluation_mode")
         if status != "draft" and evaluation_mode not in EVALUATION_MODES:
@@ -396,6 +449,20 @@ def validate_manifest_skill_status(manifest: dict, errors: list[str]) -> None:
                     f"{MANIFEST_PATH}: skill `{name}` with status `production` is missing QA artifacts {', '.join(missing)}"
                 )
 
+        if qa_tier == "critical" and status in {"tested", "secure", "production"}:
+            required_paths = {"benchmark_results_path", "integration_test_path", "findings_path"}
+            missing = sorted(required_paths - set(qa or {}))
+            if missing:
+                errors.append(
+                    f"{MANIFEST_PATH}: critical skill `{name}` with status `{status}` is missing QA artifacts {', '.join(missing)}"
+                )
+        if qa_tier == "critical" and status in {"secure", "production"}:
+            missing = sorted({"security_review_path"} - set(qa or {}))
+            if missing:
+                errors.append(
+                    f"{MANIFEST_PATH}: critical skill `{name}` with status `{status}` is missing QA artifacts {', '.join(missing)}"
+                )
+
 
 def validate_artifact_flow(manifest: dict, errors: list[str]) -> None:
     # Most artifacts have a single canonical producer, but implementation artifacts like
@@ -416,7 +483,7 @@ def validate_artifact_flow(manifest: dict, errors: list[str]) -> None:
         if isinstance(entry, dict) and "artifact" in entry
     }
 
-    for path in sorted(SKILLS_DIR.rglob("SKILL.md")):
+    for path in iter_lifecycle_skill_paths():
         try:
             frontmatter, _body = load_frontmatter(path)
         except ValueError as exc:
@@ -457,7 +524,7 @@ def extract_backtick_refs(text: str) -> set[str]:
 
 def load_skill_methodologies(errors: list[str]) -> dict[str, list[str]]:
     skill_methods: dict[str, list[str]] = {}
-    for path in sorted(SKILLS_DIR.rglob("SKILL.md")):
+    for path in iter_lifecycle_skill_paths():
         try:
             frontmatter, _body = load_frontmatter(path)
         except ValueError as exc:
@@ -489,11 +556,17 @@ def workflow_compatibility_tags(workflow_name: str) -> set[str]:
 def validate_workflow_skill_references(manifest: dict, errors: list[str]) -> None:
     skills = manifest_skill_names(manifest)
     skill_methods = load_skill_methodologies(errors)
+    workflow_names = {
+        entry.get("name")
+        for entry in manifest.get("workflows", [])
+        if isinstance(entry, dict) and isinstance(entry.get("name"), str)
+    }
     allowed_non_skill_tokens = {
         "all",
         "intake",
         "intake-brief",
     }
+    allowed_non_skill_tokens.update(workflow_names)
     for path in sorted(WORKFLOWS_DIR.glob("*.md")):
         if path.name.startswith("_"):
             continue
@@ -514,6 +587,176 @@ def validate_workflow_skill_references(manifest: dict, errors: list[str]) -> Non
                 )
 
 
+def validate_artifact_schema_registry(manifest: dict, errors: list[str]) -> None:
+    registry = load_yaml_file(ARTIFACT_REGISTRY_PATH, errors)
+    artifacts = registry.get("artifacts", {})
+    if not isinstance(artifacts, dict):
+        errors.append(f"{ARTIFACT_REGISTRY_PATH}: `artifacts` must be a mapping")
+        return
+
+    manifest_artifacts = {
+        entry.get("artifact")
+        for entry in manifest.get("artifact_flow", [])
+        if isinstance(entry, dict)
+    }
+
+    for artifact_name, entry in artifacts.items():
+        if artifact_name not in manifest_artifacts:
+            errors.append(f"{ARTIFACT_REGISTRY_PATH}: artifact `{artifact_name}` must appear in manifest artifact_flow")
+        if not isinstance(entry, dict):
+            errors.append(f"{ARTIFACT_REGISTRY_PATH}: artifact `{artifact_name}` must map to a metadata object")
+            continue
+        schema_rel = entry.get("schema_path")
+        if not isinstance(schema_rel, str):
+            errors.append(f"{ARTIFACT_REGISTRY_PATH}: artifact `{artifact_name}` is missing `schema_path`")
+            continue
+        schema_path = ROOT / schema_rel
+        if not schema_path.exists():
+            errors.append(f"{ARTIFACT_REGISTRY_PATH}: artifact `{artifact_name}` references missing schema `{schema_rel}`")
+            continue
+        try:
+            schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        except Exception as exc:
+            errors.append(f"{schema_path}: failed to parse JSON schema: {exc}")
+            continue
+        template_rel = entry.get("template_path")
+        if isinstance(template_rel, str):
+            template_path = ROOT / template_rel
+            if not template_path.exists():
+                errors.append(f"{ARTIFACT_REGISTRY_PATH}: artifact `{artifact_name}` references missing template `{template_rel}`")
+                continue
+            required_fields = schema.get("required", [])
+            if isinstance(required_fields, list):
+                template_text = template_path.read_text(encoding="utf-8")
+                missing = sorted(field for field in required_fields if field not in template_text)
+                if missing:
+                    errors.append(
+                        f"{template_path}: template is missing required schema field markers {', '.join(missing)}"
+                    )
+
+
+def validate_cross_cutting_matrix(manifest: dict, errors: list[str]) -> None:
+    matrix = load_yaml_file(MATRIX_PATH, errors)
+    entries = matrix.get("phases", [])
+    if not isinstance(entries, list):
+        errors.append(f"{MATRIX_PATH}: `phases` must be a list")
+        return
+
+    phase_ids = {entry.get("id") for entry in manifest.get("phases", []) if isinstance(entry, dict)}
+    skill_names = manifest_skill_names(manifest)
+    seen_phase_ids: set[str] = set()
+    for entry in entries:
+        if not isinstance(entry, dict):
+            errors.append(f"{MATRIX_PATH}: every matrix entry must be a mapping")
+            continue
+        phase_id = entry.get("phase_id")
+        if phase_id not in phase_ids:
+            errors.append(f"{MATRIX_PATH}: phase `{phase_id}` is not declared in manifest phases")
+            continue
+        seen_phase_ids.add(phase_id)
+        required = entry.get("required", [])
+        conditional = entry.get("conditional", [])
+        if not isinstance(required, list):
+            errors.append(f"{MATRIX_PATH}: phase `{phase_id}` field `required` must be a list")
+            required = []
+        if not isinstance(conditional, list):
+            errors.append(f"{MATRIX_PATH}: phase `{phase_id}` field `conditional` must be a list")
+            conditional = []
+        conditional_skill_names: set[str] = set()
+        for skill_name in required:
+            if skill_name not in skill_names:
+                errors.append(f"{MATRIX_PATH}: phase `{phase_id}` references unknown required skill `{skill_name}`")
+        for item in conditional:
+            if not isinstance(item, dict) or "skill" not in item or "when" not in item:
+                errors.append(f"{MATRIX_PATH}: phase `{phase_id}` conditional entries must include `skill` and `when`")
+                continue
+            skill_name = item["skill"]
+            conditional_skill_names.add(skill_name)
+            if skill_name not in skill_names:
+                errors.append(f"{MATRIX_PATH}: phase `{phase_id}` references unknown conditional skill `{skill_name}`")
+        overlap = set(required).intersection(conditional_skill_names)
+        if overlap:
+            errors.append(f"{MATRIX_PATH}: phase `{phase_id}` duplicates required and conditional skills {sorted(overlap)}")
+
+    if seen_phase_ids != phase_ids:
+        missing = sorted(phase_ids - seen_phase_ids)
+        errors.append(f"{MATRIX_PATH}: missing phase entries for {', '.join(missing)}")
+
+
+def validate_curated_surface(errors: list[str]) -> None:
+    try:
+        registry = json.loads(DISTRIBUTION_REGISTRY_PATH.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        errors.append(f"{DISTRIBUTION_REGISTRY_PATH}: file does not exist")
+        return
+    except Exception as exc:
+        errors.append(f"{DISTRIBUTION_REGISTRY_PATH}: failed to parse JSON: {exc}")
+        return
+
+    if not isinstance(registry, dict):
+        errors.append(f"{DISTRIBUTION_REGISTRY_PATH}: expected a JSON object")
+        return
+
+    public_skills = registry.get("public_skills", [])
+    if not isinstance(public_skills, list):
+        errors.append(f"{DISTRIBUTION_REGISTRY_PATH}: `public_skills` must be a list")
+        return
+
+    index_path = CURATED_SKILLS_DIR / "index.json"
+    if not index_path.exists():
+        errors.append(f"{index_path}: curated surface index is missing")
+        index = {}
+    else:
+        try:
+            index = json.loads(index_path.read_text(encoding="utf-8"))
+        except Exception as exc:
+            errors.append(f"{index_path}: failed to parse JSON: {exc}")
+            index = {}
+    index_names = {
+        entry.get("name")
+        for entry in index.get("skills", [])
+        if isinstance(entry, dict) and isinstance(entry.get("name"), str)
+    }
+    manifest = yaml.safe_load(MANIFEST_PATH.read_text(encoding="utf-8")) or {}
+    manifest_skills = {
+        entry["name"]: entry
+        for entry in manifest.get("skills", [])
+        if isinstance(entry, dict) and "name" in entry
+    }
+    names: set[str] = set()
+    for entry in public_skills:
+        if not isinstance(entry, dict) or "name" not in entry or "source" not in entry:
+            errors.append(f"{DISTRIBUTION_REGISTRY_PATH}: each public skill entry must include `name` and `source`")
+            continue
+        name = entry["name"]
+        if name in names:
+            errors.append(f"{DISTRIBUTION_REGISTRY_PATH}: duplicate public skill `{name}`")
+        names.add(name)
+        if name not in index_names:
+            errors.append(f"{index_path}: curated surface index is missing `{name}`")
+        skill_dir = CURATED_SKILLS_DIR / name
+        skill_file = skill_dir / "SKILL.md"
+        if not skill_file.exists():
+            errors.append(f"{skill_file}: curated skill file is missing")
+            continue
+        if name in manifest_skills:
+            skill_meta = manifest_skills[name]
+            manual_allowlist = bool(entry.get("manual_allowlist", False))
+            if skill_meta.get("qa_tier") == "standard" and not manual_allowlist:
+                errors.append(
+                    f"{DISTRIBUTION_REGISTRY_PATH}: standard skill `{name}` must set `manual_allowlist: true` for curated export"
+                )
+            if skill_meta.get("qa_tier") == "critical" and skill_meta.get("status") not in {"tested", "secure", "production"} and not manual_allowlist:
+                errors.append(
+                    f"{DISTRIBUTION_REGISTRY_PATH}: critical skill `{name}` is below tested status and must be manually allowlisted"
+                )
+        text = skill_file.read_text(encoding="utf-8")
+        for rel_target in re.findall(r"\((references|scripts|assets)/([^)]+)\)", text):
+            bundled_path = skill_dir / rel_target[0] / rel_target[1]
+            if not bundled_path.exists():
+                errors.append(f"{skill_file}: curated reference `{bundled_path.relative_to(ROOT)}` does not exist")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Validate Prodcraft structure.")
     parser.add_argument(
@@ -527,16 +770,28 @@ def main() -> int:
     selected_checks = set(args.check or CHECKS)
     errors: list[str] = []
 
+    _MANIFEST_DEPENDENT_CHECKS = {
+        "manifest-files",
+        "workflow-skill-refs",
+        "manifest-skill-status",
+        "artifact-flow",
+        "artifact-schema-registry",
+        "cross-cutting-matrix",
+    }
     manifest = {}
-    if "manifest-files" in selected_checks or "workflow-skill-refs" in selected_checks:
+    if selected_checks & _MANIFEST_DEPENDENT_CHECKS:
         manifest = validate_manifest(errors)
 
     if "skill-frontmatter" in selected_checks:
-        for path in sorted(SKILLS_DIR.rglob("*.md")):
+        for path in sorted(
+            path
+            for path in SKILLS_DIR.rglob("*.md")
+            if ".curated" not in path.parts
+        ):
             validate_skill_file(path, errors)
 
     if "security-minimal" in selected_checks:
-        for path in sorted(SKILLS_DIR.rglob("SKILL.md")):
+        for path in iter_lifecycle_skill_paths():
             validate_skill_security_minimal(path, errors)
 
     for path in sorted(WORKFLOWS_DIR.glob("*.md")):
@@ -550,6 +805,15 @@ def main() -> int:
 
     if "artifact-flow" in selected_checks and manifest:
         validate_artifact_flow(manifest, errors)
+
+    if "artifact-schema-registry" in selected_checks and manifest:
+        validate_artifact_schema_registry(manifest, errors)
+
+    if "cross-cutting-matrix" in selected_checks and manifest:
+        validate_cross_cutting_matrix(manifest, errors)
+
+    if "curated-surface" in selected_checks:
+        validate_curated_surface(errors)
 
     if errors:
         for error in errors:

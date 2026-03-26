@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prodcraft.dev/schemas/artifacts/course-correction-note.schema.json",
+  "title": "Prodcraft Course Correction Note",
+  "type": "object",
+  "required": [
+    "artifact",
+    "schema_version",
+    "status",
+    "source_phase",
+    "target_phase",
+    "trigger",
+    "evidence_refs",
+    "blocked_artifact",
+    "preserved_constraints",
+    "recommended_next_skill",
+    "severity",
+    "requires_user_reapproval"
+  ],
+  "properties": {
+    "artifact": { "const": "course-correction-note" },
+    "schema_version": { "const": "course-correction-note.v1" },
+    "status": { "enum": ["draft", "approved"] },
+    "source_phase": { "type": "string" },
+    "target_phase": { "type": "string" },
+    "trigger": { "type": "string" },
+    "evidence_refs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "blocked_artifact": { "type": "string" },
+    "preserved_constraints": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "recommended_next_skill": { "type": "string" },
+    "severity": { "enum": ["low", "medium", "high", "critical"] },
+    "requires_user_reapproval": { "type": "boolean" }
+  },
+  "additionalProperties": true
+}

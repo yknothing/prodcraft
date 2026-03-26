@@ -16,6 +16,8 @@ Design the system structure that satisfies the specification. Architecture decis
 - Domain model is documented when the system is complex enough to need explicit boundary modeling.
 - Non-functional requirements are quantified where known, and unresolved bounds are logged as open questions rather than hidden assumptions.
 
+Architecture may be re-entered directly from implementation, quality, operations, or evolution when a `course-correction-note` shows that the current structure cannot safely absorb new findings.
+
 ## Exit Criteria (Quality Gate)
 
 Architecture review passed. The review confirms: all functional requirements are addressable, non-functional requirements have a credible strategy, integration points are identified, and deployment topology is defined.
@@ -55,3 +57,7 @@ System design establishes the high-level structure. The remaining skills can pro
 - **Architecture without operators.** Designing systems without considering who runs them, how they are deployed, or how they fail. Include operations perspective early.
 - **Ignoring existing systems.** Designing in a vacuum without mapping integration points to the current landscape. Architecture lives in context.
 - **Big bang architecture.** Attempting to define everything upfront. Use iterative architecture: decide what must be decided now, defer what can be deferred.
+
+## Cross-Cutting Matrix
+
+See `rules/cross-cutting-matrix.yml` for required and conditional cross-cutting skills at this phase.

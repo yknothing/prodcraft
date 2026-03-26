@@ -2,6 +2,13 @@
 
 > Every skill in Prodcraft must pass quality assurance before being considered production-ready. This document defines the QA process, leveraging the `skill-creator` skill for evaluation, optimization, and benchmarking.
 
+Prodcraft follows the mainstream agent-platform guidance that matters operationally:
+
+- short trigger descriptions for discovery
+- concise top-level context with heavy material pushed into supporting files
+- explicit human approval at risky boundaries
+- evals and guardrails grounded in real observed failures
+
 ## Quality Assurance Pipeline
 
 Every new or modified skill goes through this pipeline:
@@ -86,7 +93,7 @@ Important: the official trigger eval is a **description-discoverability** test. 
 
 ### Checkpoint 3: Performance Benchmarking
 
-For critical skills (gateway, intake, TDD, code-review), run benchmarks:
+For critical skills (gateway, intake, TDD, code-review, observability, incident-response), run benchmarks:
 
 ```
 python3 scripts/run_explicit_skill_benchmark.py \
@@ -137,6 +144,7 @@ When editing descriptions, follow the platform guidance that governs real runtim
 - Anthropic: skill descriptions are loaded into context so Claude knows what is available, which means unnecessary verbosity creates avoidable context pressure across the whole skill set.
 - OpenAI: skills should define when to use a workflow, while the detailed steps and result format belong in the skill body and supporting files rather than being packed into metadata.
 - OpenAI: evaluation should explicitly cover edge cases such as input variability and contextual complexity, because real failures often live outside the happy path.
+- Cursor / Trae: reusable rules should stay version-controlled and scoped rather than being flattened into one giant root instruction file.
 
 ### Gotchas Coverage
 
@@ -204,6 +212,7 @@ Track these metrics for each skill over time:
 Prodcraft tracks QA state directly in [`manifest.yml`](../../manifest.yml):
 
 - Every active skill declares a `status`
+- Every active skill declares a `qa_tier`
 - Every non-draft skill declares an `evaluation_mode`
 - Non-draft skills declare a `qa` mapping with evidence paths
 - Paths in `qa` must resolve to checked-in artifacts or scripts
@@ -213,6 +222,7 @@ Use these conventions:
 | Field | Meaning |
 |-------|---------|
 | `status` | Lifecycle state for the skill (`draft`, `review`, `tested`, `secure`, `production`, `deprecated`) |
+| `qa_tier` | QA risk tier for the skill (`critical`, `standard`) |
 | `evaluation_mode` | QA posture for the skill (`discoverability` for metadata-first skills, `routed` for workflow/intake/handoff-driven skills) |
 | `qa.structure_validation_path` | Structural validator or script used to verify the skill package |
 | `qa.eval_strategy_path` | Human-readable evaluation strategy or rubric |
@@ -232,6 +242,11 @@ Additional `*_path` evidence keys are allowed for supplemental proof, for exampl
 - revalidation plans that explain what evidence must be regenerated before status can advance
 
 This keeps QA claims auditable. A skill is not "tested" because someone said so; it is tested because the manifest points to the evidence.
+
+Persona reminder:
+
+- `roles` / personas are advisory unless persona-specific evaluation proves a runtime difference.
+- Do not describe persona behavior as validated simply because a persona file exists.
 
 ### Evaluation Modes
 
@@ -277,6 +292,10 @@ After a skill has been in production:
 2. **Quarterly benchmark**: Run variance analysis to detect degradation
 3. **Incident-triggered review**: If a skill produces incorrect output, immediately re-evaluate
 4. **User feedback integration**: Collect and act on user feedback about skill effectiveness
+
+## Runtime Observability Loop
+
+When benchmark or eval paths emit `execution-observability.jsonl`, summarize those traces regularly and promote only repeated real failures into new gotchas, stronger checks, or schema changes.
 
 ## Integration with Prodcraft Workflows
 

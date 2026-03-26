@@ -10,10 +10,10 @@ This document defines how Prodcraft skills are discovered, selected, and compose
 
 Before generating any response -- even a clarifying question -- check if a Prodcraft skill applies. If one does, invoke it. If uncertain, default to `intake`.
 
-The intake hard gate is enforced in two layers:
+The intake decision gate is enforced in two layers:
 
 1. **Routing policy** -- default to `intake` for new work or ambiguity.
-2. **Workflow contract** -- every workflow requires an approved `intake-brief` before execution.
+2. **Workflow contract** -- every workflow requires an approved `intake-brief` before execution, even if the intake mode is `fast-track` or `resume`.
 
 When intake has identified the likely lifecycle path but the problem statement or solution direction is still fuzzy, route next to `problem-framing` before moving into research, specification, or architecture.
 
@@ -60,27 +60,38 @@ These can be invoked at any phase:
 
 ## Workflow Selection
 
-Once intake determines the work type, select the appropriate workflow:
+Once intake determines the work type, select the route in three layers:
 
 ```
 Is production on fire?
-  YES -> hotfix workflow
+  YES -> add hotfix overlay
   NO  -> continue
 
 Is this a brand new project?
-  YES -> greenfield workflow
+  YES -> add greenfield overlay
   NO  -> continue
 
 Is this modernizing a legacy system?
-  YES -> brownfield workflow
+  YES -> add brownfield overlay
   NO  -> continue
 
 What's the project methodology?
-  Formal specs required    -> spec-driven workflow
-  Sprint-based team        -> agile-sprint workflow
-  Phase-gated enterprise   -> iterative-waterfall workflow
-  Unknown/flexible         -> agile-sprint workflow (default)
+  Formal specs required    -> workflow_primary = spec-driven
+  Sprint-based team        -> workflow_primary = agile-sprint
+  Phase-gated enterprise   -> workflow_primary = iterative-waterfall
+  Unknown/flexible         -> workflow_primary = agile-sprint (default)
 ```
+
+The `intake-brief` should record:
+
+- `workflow_primary`
+- `workflow_overlays`
+
+Examples:
+
+- `workflow_primary=agile-sprint`, `workflow_overlays=[brownfield]`
+- `workflow_primary=agile-sprint`, `workflow_overlays=[brownfield, hotfix]`
+- `workflow_primary=spec-driven`, `workflow_overlays=[greenfield]`
 
 ## Skill Composition Patterns
 
@@ -120,7 +131,7 @@ IF multi_language THEN internationalization
 
 Prodcraft's entry stack has two layers:
 
-1. `intake` -- classify the work, choose the phase and workflow, and create the `intake-brief`
+1. `intake` -- classify the work, choose the phase and route, and create the `intake-brief`
 2. `problem-framing` -- only when the route is known but the problem or direction is still too fuzzy for clean downstream work
 
 Use `problem-framing` after intake when:
@@ -163,6 +174,29 @@ If exit criteria are not met:
 - **Option B**: Proceed with explicit acknowledgment of skipped gates (logged as tech debt)
 - **Option C**: Escalate to tech-lead for decision
 
+## Cross-Phase Course Corrections
+
+When a later phase discovers a cross-phase contract mismatch, do not force a full loop back through discovery by default. Use a `course-correction-note` and jump directly to the most relevant upstream phase.
+
+Approved direct jumps:
+
+- `04-implementation -> 01-specification`
+- `04-implementation -> 02-architecture`
+- `05-quality -> 02-architecture`
+- `07-operations -> 02-architecture`
+- `07-operations -> 03-planning`
+- `08-evolution -> 01-specification`
+- `08-evolution -> 02-architecture`
+- `08-evolution -> 03-planning`
+
+Each `course-correction-note` must capture:
+
+- the trigger and evidence
+- the blocked artifact
+- the constraints that still hold
+- the recommended next skill
+- whether the user must re-approve the route
+
 ## Fast-Track Rules
 
 Not every task needs the full lifecycle. Fast-track criteria:
@@ -176,9 +210,19 @@ Not every task needs the full lifecycle. Fast-track criteria:
 | Configuration change | Skip to implementation + deployment |
 
 Fast-track still requires:
-- The user explicitly confirms the fast-track
-- A brief rationale is documented
-- Quality gates for implementation and delivery still apply
+- an approved `intake-brief`
+- `intake_mode=fast-track`
+- a brief rationale documented
+- quality gates for implementation and delivery still apply
+
+## Cross-Cutting Injection
+
+Cross-cutting expectations are tracked in `rules/cross-cutting-matrix.yml`.
+
+Use the matrix to decide which skills are:
+
+- always required for a phase
+- conditionally required when UI, observability, historical failures, or compliance risk are in play
 
 ## Interaction Protocol
 

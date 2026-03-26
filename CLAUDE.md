@@ -14,7 +14,7 @@ If intake identifies the route but the problem statement or solution direction i
 
 The routing logic is defined in `skills/_gateway.md`, which maps user intent to skill sequences, handles workflow selection, and defines fast-track rules for trivial changes.
 
-Exceptions: if the user explicitly requests to skip intake for trivial work (typo fixes, comment updates), produce a 2-3 sentence intake summary and confirm.
+Trivial work does not skip intake. Use a lightweight `fast-track` intake decision (`intake_mode=fast-track`) instead of a full routing pass.
 
 For repository-local validation experiments that need Prodcraft to become the authoritative software-development entry system, use `scripts/install_prodcraft_global_skill.py` to install the global `prodcraft` gateway skill under `~/.agents/skills/prodcraft`, and `scripts/manage_brainstorming_gate.py` to temporarily disable or restore the global `brainstorming` skill. Both scripts write reversible state and JSONL event logs under `build/` so the experiment remains observable.
 
@@ -50,6 +50,13 @@ When producing user-facing skill outputs:
 - Use plain language, short sentences, and direct explanations rather than abstract or inflated wording
 - Keep checking current system shape and collaboration quality when they materially affect routing, scope, risk, or handoff
 
+When revising skills and workflows:
+- Keep `description` focused on **when to use** the skill
+- Keep heavyweight references in supporting files instead of overloading the main skill
+- Preserve explicit approval points for risky or side-effectful actions
+- Add new guardrails only when they map to real observed failure modes
+- Treat personas as advisory collaboration lenses unless explicit evaluation proves runtime differentiation
+
 When editing workflows:
 - Workflows compose skills, they do not duplicate skill content
 - Each workflow step references a skill by name
@@ -79,8 +86,18 @@ No build system. This is a documentation/configuration project. Validation is st
 - Every persona referenced in a skill must exist in `personas/`
 - Input/output chains must be acyclic (no circular dependencies between phases)
 - Every skill must pass the documented QA checks before production status
+- The public install surface in `skills/.curated/` must remain exportable for `npx skills add/update`
 
 For local QA/test/eval execution in this repository, prefer the installed `gemini` CLI. Do not use Claude CLI for routine reruns here. The exception is Anthropic-specific trigger-discoverability evaluation, which should run only through the vendored harness in `tools/anthropic_trigger_eval/` when official Claude trigger semantics are required.
+
+## Distribution Surface
+
+Prodcraft now maintains two layers:
+
+- **authoring source** -- lifecycle-organized source under `skills/00-discovery/` through `skills/cross-cutting/`
+- **public install surface** -- `skills/.curated/`, exported for `npx skills add/update`
+
+The lifecycle tree is the source of truth for design and QA. The curated tree is the stable install and upgrade contract.
 
 ## Style Guide
 

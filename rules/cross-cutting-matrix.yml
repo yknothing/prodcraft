@@ -1,0 +1,88 @@
+schema_version: cross-cutting-matrix.v1
+phases:
+  - phase_id: 00-discovery
+    required:
+      - documentation
+    conditional:
+      - skill: observability
+        when: discovery changes AI execution paths, eval runners, or workflow boundaries
+      - skill: bug-history-retrieval
+        when: repeated failures or regressions may already be known
+      - skill: compliance
+        when: regulated discovery constraints apply
+  - phase_id: 01-specification
+    required:
+      - documentation
+    conditional:
+      - skill: internationalization
+        when: new user-facing text or locale behavior is specified
+      - skill: accessibility
+        when: UI behavior or acceptance criteria are specified
+      - skill: compliance
+        when: regulatory requirements shape the spec
+  - phase_id: 02-architecture
+    required:
+      - documentation
+    conditional:
+      - skill: observability
+        when: the architecture adds or changes execution boundaries, workflows, or telemetry contracts
+      - skill: compliance
+        when: architecture must satisfy regulatory controls
+  - phase_id: 03-planning
+    required:
+      - documentation
+    conditional:
+      - skill: observability
+        when: planning changes benchmark or workflow execution paths
+      - skill: compliance
+        when: delivery sequencing includes regulatory sign-off
+  - phase_id: 04-implementation
+    required:
+      - documentation
+    conditional:
+      - skill: observability
+        when: code changes AI execution paths, workflow boundaries, or benchmark runners
+      - skill: accessibility
+        when: UI code is added or changed
+      - skill: internationalization
+        when: user-visible copy is added or changed
+      - skill: bug-history-retrieval
+        when: a failure may match historical incidents or regressions
+  - phase_id: 05-quality
+    required:
+      - documentation
+    conditional:
+      - skill: observability
+        when: verification depends on execution telemetry or route metadata
+      - skill: accessibility
+        when: UI behavior is under review
+      - skill: compliance
+        when: release evidence must satisfy regulatory checks
+  - phase_id: 06-delivery
+    required:
+      - documentation
+    conditional:
+      - skill: observability
+        when: release automation, rollout boundaries, or benchmark paths change
+      - skill: compliance
+        when: shipping requires regulatory evidence or approvals
+  - phase_id: 07-operations
+    required:
+      - documentation
+    conditional:
+      - skill: observability
+        when: runbooks, alerts, or incident telemetry boundaries change
+      - skill: bug-history-retrieval
+        when: operational failures may match known incidents
+      - skill: compliance
+        when: incident handling has regulatory reporting obligations
+  - phase_id: 08-evolution
+    required:
+      - documentation
+    conditional:
+      - skill: observability
+        when: retrospective findings rely on execution telemetry
+      - skill: bug-history-retrieval
+        when: repeated failures need historical comparison
+      - skill: compliance
+        when: improvement work changes regulated process obligations

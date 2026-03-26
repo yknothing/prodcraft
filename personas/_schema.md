@@ -61,3 +61,5 @@ Personas represent a point of view, not a set of instructions. They define *how 
 One person may embody multiple personas (a solo developer is PM + architect + developer + DevOps). A persona may be shared by multiple people (a review committee shares the reviewer persona).
 
 Personas help answer: "What lens should I apply right now?" not "What steps should I follow?"
+
+Personas are advisory collaboration lenses unless explicit evaluation evidence proves a runtime difference for a specific skill or workflow.

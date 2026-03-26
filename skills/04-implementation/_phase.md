@@ -51,6 +51,8 @@ Implementation skills are iterative and interwoven. TDD and feature development 
 
 In brownfield work, implementation should start with the smallest safe slice and the tests that protect coexistence or contract behavior before new code expands.
 
+If implementation discovers that requirements or architecture are materially wrong, produce a `course-correction-note` and jump directly to `01-specification` or `02-architecture` instead of silently patching around the mismatch.
+
 ## Anti-Patterns
 
 - **Big bang integration.** Building all components in isolation and integrating at the end. Integrate early and continuously.
@@ -58,3 +60,7 @@ In brownfield work, implementation should start with the smallest safe slice and
 - **Gold-plating in code.** Implementing features beyond the spec because "it would be nice." Build what is specified, propose additions through the backlog.
 - **Solo silos.** Each developer owns a component with no overlap. Rotate pairing partners and review across component boundaries.
 - **Ignoring the scout rule.** Leaving code worse than you found it. Each change is an opportunity to improve the codebase incrementally.
+
+## Cross-Cutting Matrix
+
+See `rules/cross-cutting-matrix.yml` for required and conditional cross-cutting skills at this phase.

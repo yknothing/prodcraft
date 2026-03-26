@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prodcraft.dev/schemas/artifacts/intake-brief.schema.json",
+  "title": "Prodcraft Intake Brief",
+  "type": "object",
+  "required": [
+    "artifact",
+    "schema_version",
+    "status",
+    "request_summary",
+    "intake_mode",
+    "work_type",
+    "entry_phase",
+    "workflow_primary",
+    "workflow_overlays",
+    "scope_assessment",
+    "recommended_next_skill",
+    "routing_rationale",
+    "key_risks",
+    "questions_asked",
+    "routing_changed_by_answers",
+    "approver"
+  ],
+  "properties": {
+    "artifact": { "const": "intake-brief" },
+    "schema_version": { "const": "intake-brief.v1" },
+    "status": { "enum": ["draft", "approved"] },
+    "request_summary": { "type": "string" },
+    "intake_mode": { "enum": ["full", "fast-track", "resume"] },
+    "work_type": { "type": "string" },
+    "entry_phase": { "type": "string" },
+    "workflow_primary": { "type": "string" },
+    "workflow_overlays": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "scope_assessment": { "enum": ["small", "medium", "large", "xlarge"] },
+    "recommended_next_skill": { "type": "string" },
+    "routing_rationale": { "type": "string" },
+    "key_risks": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "questions_asked": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "routing_changed_by_answers": { "type": "boolean" },
+    "approver": { "type": "string" }
+  },
+  "additionalProperties": true
+}

@@ -2,6 +2,8 @@
 name: spec-driven
 description: "Full specification upfront, phased delivery with formal quality gates"
 cadence: "milestone-based"
+workflow_kind: "primary"
+composes_with: ["greenfield", "brownfield", "hotfix"]
 entry_skill: "intake"
 required_artifacts: ["intake-brief"]
 best_for: ["regulated-industries", "safety-critical", "contractual", "large-teams"]
@@ -17,6 +19,8 @@ The spec-driven workflow is the most rigorous approach in the Prodcraft system. 
 This workflow is designed for contexts where the cost of getting it wrong is high: regulated industries, safety-critical systems, contractual obligations, and large teams where alignment is expensive to achieve after the fact. The upfront investment in specification and review pays dividends by catching defects early, when they are cheapest to fix.
 
 Choose this workflow when requirements are knowable upfront, when regulatory or contractual compliance demands traceability, or when the team is large enough that informal coordination breaks down.
+
+This workflow may be paired with overlays such as `greenfield`, `brownfield`, or `hotfix` when system state or urgency changes the route but formal governance remains primary.
 
 ## Entry Gate
 

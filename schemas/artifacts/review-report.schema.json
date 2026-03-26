@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prodcraft.dev/schemas/artifacts/review-report.schema.json",
+  "title": "Prodcraft Review Report",
+  "type": "object",
+  "required": [
+    "artifact",
+    "schema_version",
+    "status",
+    "findings",
+    "recommended_action"
+  ],
+  "properties": {
+    "artifact": { "const": "review-report" },
+    "schema_version": { "const": "review-report.v1" },
+    "status": { "enum": ["draft", "final"] },
+    "findings": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "recommended_action": { "type": "string" }
+  },
+  "additionalProperties": true
+}

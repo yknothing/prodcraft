@@ -52,6 +52,8 @@ Monitoring is foundational. Incident response depends on monitoring signals. Run
 In brownfield systems, incident response should preserve coexistence and fail-closed containment before any broader redesign work begins.
 Monitoring should expose the actual release boundaries that matter, and runbooks should turn incident learning into steps another responder can execute safely.
 
+If operations discovers an architectural or planning mismatch, produce a `course-correction-note` and jump directly to `02-architecture` or `03-planning`.
+
 ## Anti-Patterns
 
 - **Monitor everything, alert on nothing meaningful.** Thousands of metrics but no actionable alerts. Derive alerts from SLOs, not from raw metrics.
@@ -59,3 +61,7 @@ Monitoring should expose the actual release boundaries that matter, and runbooks
 - **Reactive only.** Waiting for incidents instead of proactively identifying degradation. Use SLO burn-rate alerts to catch problems before users notice.
 - **Toil acceptance.** Treating repetitive manual work as "just how operations works." Measure toil and automate systematically.
 - **Post-incident blame.** Focusing on who caused an incident rather than what system conditions allowed it. Practice blameless post-mortems.
+
+## Cross-Cutting Matrix
+
+See `rules/cross-cutting-matrix.yml` for required and conditional cross-cutting skills at this phase.

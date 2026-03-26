@@ -21,7 +21,7 @@ metadata:
 
 # Intake
 
-> The mandatory entry point for all work. No implementation without intake. No exceptions.
+> The mandatory entry point for all work. No downstream execution without an approved intake decision.
 
 ## Context
 
@@ -34,13 +34,13 @@ Intake is the control plane for all engineering work in Prodcraft. Every piece o
 
 ## Outputs
 
-- **intake-brief** -- structured routing record: work type, entry phase, workflow recommendation, key skills, scope assessment, key risks
+- **intake-brief** -- structured routing record: request summary, intake mode, work type, entry phase, `workflow_primary`, `workflow_overlays`, next skill, routing rationale, key risks
 - **phase-recommendation** -- the lifecycle phase where work should begin
 - **workflow-recommendation** -- the methodology best suited to the work
 
 ## Quality Gate
 
-- [ ] Intake brief produced and approved by the user, covering work type, entry phase, workflow recommendation, and key risks.
+- [ ] Intake brief produced and approved by the user, covering work type, entry phase, `workflow_primary`, `workflow_overlays`, and key risks.
 - [ ] Next skill to invoke is explicitly named in the brief (not a generic phase label).
 - [ ] Fast-track rationale documented if intake was shortened.
 
@@ -54,9 +54,15 @@ Intake is the **control plane** for entry, not the full discovery workshop. Its 
 
 ## Hard Gate
 
-No implementation, architecture, or planning work may begin until intake is complete and the user approves the proposed path.
+No implementation, architecture, or planning work may begin until an intake decision is complete and the user approves the proposed path.
 
-**Fast-track exception**: if the user explicitly states they want to skip intake for trivial work (typo fix, comment update), produce a 2-3 sentence intake summary and confirm before proceeding.
+Use one of these intake modes:
+
+- `full` -- new, ambiguous, risky, or high-impact work
+- `fast-track` -- small and clear work where the route is obvious
+- `resume` -- continuing an already approved route without changing the route
+
+Trivial work is not an exception to intake. It uses a lightweight `fast-track` intake decision instead of a full routing pass.
 
 ## Process
 
@@ -74,18 +80,20 @@ Do NOT output this exploration. Internalize it to inform your questions.
 
 ### Step 2: Classify Work Type
 
-| Type | Description | Entry Phase | Default Workflow |
+| Type | Description | Entry Phase | Default Primary Workflow | Likely Overlay |
 |------|-------------|-------------|------------------|
-| **New Product** | Building from scratch | 00-discovery | greenfield |
-| **New Feature** | Adding capability to existing system | 01-specification | agile-sprint |
-| **Enhancement** | Improving existing functionality | 03-planning | agile-sprint |
-| **Bug Fix** | Correcting incorrect behavior | 04-implementation | agile-sprint |
-| **Hotfix** | Critical production issue | 04-implementation | hotfix |
-| **Refactoring** | Structural improvement, no behavior change | 04-implementation | agile-sprint |
-| **Migration** | Moving to new platform/architecture | 00-discovery | brownfield |
-| **Tech Debt** | Paying down accumulated shortcuts | 03-planning | agile-sprint |
-| **Spike/Research** | Investigating unknowns | 00-discovery | agile-sprint |
-| **Documentation** | Creating or improving docs | cross-cutting | agile-sprint |
+| **New Product** | Building from scratch | 00-discovery | agile-sprint | greenfield |
+| **New Product (regulated/complex)** | Formal specs or contractual delivery required | 00-discovery | spec-driven | greenfield |
+| **New Feature** | Adding capability to existing system | 01-specification | agile-sprint | none |
+| **Enhancement** | Improving existing functionality | 03-planning | agile-sprint | none |
+| **Bug Fix** | Correcting incorrect behavior | 04-implementation | agile-sprint | none |
+| **Hotfix** | Critical production issue | 04-implementation | agile-sprint | hotfix |
+| **Refactoring** | Structural improvement, no behavior change | 04-implementation | agile-sprint | none |
+| **Migration** | Moving to new platform/architecture | 00-discovery | agile-sprint | brownfield |
+| **Migration (phase-gated enterprise)** | Formal stage gates or sign-off checkpoints required | 00-discovery | iterative-waterfall | brownfield |
+| **Tech Debt** | Paying down accumulated shortcuts | 03-planning | agile-sprint | brownfield |
+| **Spike/Research** | Investigating unknowns | 00-discovery | agile-sprint | none |
+| **Documentation** | Creating or improving docs | cross-cutting | agile-sprint | none |
 
 ### Step 3: Ask Clarifying Questions
 
@@ -117,9 +125,12 @@ Name concrete Prodcraft skills whenever the next step is already known. Avoid ge
 
 **Work type**: [classification from Step 2]
 **Entry phase**: [which lifecycle phase]
-**Recommended workflow**: [methodology]
+**Intake mode**: [full / fast-track / resume]
+**workflow_primary**: [primary governance workflow]
+**workflow_overlays**: [[overlay list]]
 **Key skills needed**: [3-7 concrete Prodcraft skills, or clearly marked open routing questions]
 **Scope assessment**: [small / medium / large / xlarge]
+**routing_rationale**: [why this route wins]
 **Key risks**: [1-2 biggest risks or unknowns]
 
 ### Proposed Path
@@ -138,7 +149,7 @@ Only include an alternative path when the trade-off is real and decision-relevan
 Wait for user confirmation. Accept:
 - **Approval** -> proceed with proposed path
 - **Adjustment** -> modify and re-present
-- **"Skip to X"** -> jump to specified phase (log skipped gates as tech debt)
+- **"Skip to X"** -> translate into a reviewed `fast-track` or `resume` intake decision, then log any skipped gates as tech debt
 
 ### Step 6: Handoff
 
@@ -151,8 +162,11 @@ If routing is clear but the problem or solution direction is still too fuzzy for
 Intake must leave behind a usable record of **why** the work entered the system this way.
 
 The `intake-brief` must capture:
-- why intake was invoked or fast-tracked
+- `request_summary`
+- why intake was invoked, fast-tracked, or resumed
+- `intake_mode`
 - the key questions asked and the answers that changed routing
+- `workflow_primary` and `workflow_overlays`
 - the recommended path and any meaningful alternative considered
 - the next skill to invoke and the reason it is next
 
@@ -160,7 +174,7 @@ This keeps routing decisions auditable without forcing downstream skills to reco
 
 ## Anti-Patterns
 
-1. **Skipping intake for "obvious" tasks** -- Even simple changes benefit from 30 seconds of context. The fast-track exists for truly trivial work.
+1. **Treating trivial work as "outside intake"** -- Even simple changes still need a lightweight `fast-track` intake decision.
 2. **Over-questioning** -- Intake should take 1-5 minutes, not 30. If you need 5+ questions, you're in discovery territory -- recommend moving there.
 3. **Guessing the methodology** -- Don't assume agile because it's popular. Match methodology to constraints and context.
 4. **Rigid phase assignment** -- The lifecycle is a guide, not a prison. A bug fix might need architecture review if it reveals a design flaw.

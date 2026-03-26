@@ -2,6 +2,12 @@
 
 Use this template when `problem-framing` shapes an approved intake route into a decision-ready direction.
 
+## Required Artifact
+
+- artifact: `problem-frame`
+- schema_version: `problem-frame.v1`
+- status:
+
 ## Source Context
 
 - **Input artifact**: `intake-brief`
@@ -16,7 +22,7 @@ Use this template when `problem-framing` shapes an approved intake route into a 
 
 ## Problem Frame
 
-- **Problem statement**:
+- **problem_statement**:
 - **Target user or operator**:
 - **Constraints**:
 - **Non-goals**:
@@ -42,12 +48,7 @@ Use this template when `problem-framing` shapes an approved intake route into a 
 
 ## Recommended Design Direction
 
-- **Recommended option**:
+- **recommended_option**:
 - **Why it wins**:
 - **What remains open for downstream skills**:
-- **Next skill to invoke**:
-
-## Approval
-
-- **Status**: draft / approved
-- **Approver**:
+- **next_skill_to_invoke**:

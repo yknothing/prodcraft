@@ -2,6 +2,8 @@
 name: hotfix
 description: "Emergency path for critical production issues"
 cadence: "on-demand, hours to 1 day"
+workflow_kind: "overlay"
+composes_with: ["*"]
 entry_skill: "intake"
 required_artifacts: ["intake-brief"]
 best_for: ["production-incidents", "security-vulnerabilities", "data-corruption"]
@@ -17,6 +19,8 @@ The hotfix workflow is a compressed, emergency path for resolving critical produ
 Speed is the priority, but not at the expense of safety. Every hotfix still requires code review, testing, and a deliberate deployment. The difference is that these steps are accelerated, not eliminated.
 
 This workflow activates when production is degraded or at risk: service outages, security vulnerabilities being actively exploited, data corruption, or critical business process failures. If it can wait until the next sprint, it is not a hotfix.
+
+Hotfix is an overlay. It compresses the normal route around urgency while preserving a primary governance workflow and any relevant system-state overlay such as `brownfield`.
 
 ## Entry Gate
 

@@ -2,6 +2,8 @@
 name: greenfield
 description: "New project bootstrap from idea through first deployment"
 cadence: "one-time, days to weeks"
+workflow_kind: "overlay"
+composes_with: ["*"]
 entry_skill: "intake"
 required_artifacts: ["intake-brief"]
 best_for: ["new-products", "proof-of-concept", "hackathon", "side-projects"]
@@ -17,6 +19,8 @@ The greenfield workflow guides a new project from initial idea through first pro
 Greenfield projects carry a unique mix of freedom and risk. Every decision is available, but early choices in language, framework, data store, and hosting are the hardest to change later. This workflow front-loads the decisions that matter most and defers the ones that can wait.
 
 The goal is not perfection -- it is a working system in production with solid foundations. You can iterate once you have something real. Choose this workflow for new products, proof-of-concept builds, hackathon projects, or any situation where you are starting from zero.
+
+Greenfield is an overlay. It adjusts assumptions about existing system constraints while leaving the primary governance workflow (`agile-sprint`, `spec-driven`, or `iterative-waterfall`) intact.
 
 ## Entry Gate
 

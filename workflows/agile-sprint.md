@@ -2,6 +2,8 @@
 name: agile-sprint
 description: "Iterative sprints with just-enough planning and continuous delivery"
 cadence: "1-2 week sprints"
+workflow_kind: "primary"
+composes_with: ["greenfield", "brownfield", "hotfix"]
 entry_skill: "intake"
 required_artifacts: ["intake-brief"]
 best_for: ["product-teams", "saas", "startups", "rapid-iteration"]
@@ -17,6 +19,8 @@ The agile sprint workflow organizes work into short, time-boxed iterations where
 This workflow is ideal for product teams operating in fast-moving markets where learning speed matters more than upfront completeness. Requirements emerge through iteration, architecture evolves incrementally, and working software is the primary measure of progress.
 
 All nine phases are present, but they manifest differently: discovery becomes continuous user research, specification becomes story writing, architecture happens as just-in-time design decisions. The phases become lenses applied throughout each sprint rather than sequential stages.
+
+This workflow may be paired with overlays such as `greenfield`, `brownfield`, or `hotfix` when system state or urgency changes the route but not the primary governance model.
 
 ## Entry Gate
 

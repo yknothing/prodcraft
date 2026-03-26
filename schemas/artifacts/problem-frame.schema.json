@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prodcraft.dev/schemas/artifacts/problem-frame.schema.json",
+  "title": "Prodcraft Problem Frame",
+  "type": "object",
+  "required": [
+    "artifact",
+    "schema_version",
+    "status",
+    "problem_statement",
+    "recommended_option",
+    "next_skill_to_invoke"
+  ],
+  "properties": {
+    "artifact": { "const": "problem-frame" },
+    "schema_version": { "const": "problem-frame.v1" },
+    "status": { "enum": ["draft", "approved"] },
+    "problem_statement": { "type": "string" },
+    "recommended_option": { "type": "string" },
+    "next_skill_to_invoke": { "type": "string" }
+  },
+  "additionalProperties": true
+}
