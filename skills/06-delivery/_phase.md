@@ -52,6 +52,8 @@ CI/CD is the foundation. Release management coordinates the human process and re
 
 In brownfield work, delivery must prove the release can fail closed and recover safely; CI/CD is part of that control surface, not just automation glue.
 
+Cross-cutting requirements for this phase are defined in `rules/cross-cutting-matrix.yml`.
+
 ## Anti-Patterns
 
 - **Manual deployment.** Deploying through SSH and manual commands. Every deployment step should be automated, versioned, and repeatable.

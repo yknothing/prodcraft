@@ -1,0 +1,20 @@
+{
+  "schema_version": "public-skill-registry.v1",
+  "public_skills": [
+    { "name": "prodcraft", "source": "generated:prodcraft", "stability": "beta", "manual_allowlist": true },
+    { "name": "intake", "source": "skills/00-discovery/intake", "stability": "beta", "manual_allowlist": true },
+    { "name": "problem-framing", "source": "skills/00-discovery/problem-framing", "stability": "beta", "manual_allowlist": true },
+    { "name": "requirements-engineering", "source": "skills/01-specification/requirements-engineering", "stability": "beta", "manual_allowlist": true },
+    { "name": "system-design", "source": "skills/02-architecture/system-design", "stability": "beta", "manual_allowlist": true },
+    { "name": "task-breakdown", "source": "skills/03-planning/task-breakdown", "stability": "beta", "manual_allowlist": true },
+    { "name": "tdd", "source": "skills/04-implementation/tdd", "stability": "beta", "manual_allowlist": true },
+    { "name": "feature-development", "source": "skills/04-implementation/feature-development", "stability": "beta", "manual_allowlist": true },
+    { "name": "code-review", "source": "skills/05-quality/code-review", "stability": "beta", "manual_allowlist": true },
+    { "name": "security-audit", "source": "skills/05-quality/security-audit", "stability": "beta", "manual_allowlist": true },
+    { "name": "ci-cd", "source": "skills/06-delivery/ci-cd", "stability": "beta", "manual_allowlist": true },
+    { "name": "deployment-strategy", "source": "skills/06-delivery/deployment-strategy", "stability": "beta", "manual_allowlist": true },
+    { "name": "observability", "source": "skills/cross-cutting/observability", "stability": "beta", "manual_allowlist": true },
+    { "name": "monitoring-observability", "source": "skills/07-operations/monitoring-observability", "stability": "beta", "manual_allowlist": true },
+    { "name": "incident-response", "source": "skills/07-operations/incident-response", "stability": "beta", "manual_allowlist": true }
+  ]
+}

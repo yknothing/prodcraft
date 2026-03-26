@@ -11,6 +11,11 @@ Every workflow file MUST begin with YAML frontmatter containing these fields:
 name: kebab-case-name           # Unique identifier, matches filename without extension
 description: "Short sentence"   # What this workflow does, in quotes
 cadence: "description"          # Timing pattern (e.g., "1-2 week sprints", "on-demand")
+workflow_kind: "primary"        # "primary" or "overlay"
+composes_with:                  # Which other workflows this one can layer with
+  - "greenfield"
+  - "brownfield"
+  - "hotfix"
 entry_skill: "intake"           # Mandatory lifecycle entry gate
 required_artifacts:             # Artifacts that must exist before the workflow starts
   - "intake-brief"
@@ -30,6 +35,8 @@ phases_included:                # Which phases this workflow uses
 | `name` | string | yes | Kebab-case identifier matching filename |
 | `description` | string | yes | One-line summary of the workflow approach |
 | `cadence` | string | yes | How time is structured in this workflow |
+| `workflow_kind` | string | yes | `primary` governance workflow or `overlay` modifier |
+| `composes_with` | list | yes | Names this workflow can legally layer with |
 | `entry_skill` | string | yes | Must be `intake`; workflows begin only after intake approval |
 | `required_artifacts` | list | yes | Must include `intake-brief` to enforce the hard gate |
 | `best_for` | list | yes | Scenarios where this workflow excels |
@@ -46,6 +53,8 @@ Every workflow MUST start with an explicit entry gate section that:
 - explains any fast-track rule or phase skip in terms of intake-approved routing
 
 This keeps the intake hard gate as a system rule, not a suggestion.
+
+The `intake-brief` should record `workflow_primary` and `workflow_overlays[]`, not only a single workflow string.
 
 ### Overview
 

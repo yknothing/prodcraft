@@ -5,11 +5,18 @@ from __future__ import annotations
 
 import argparse
 import json
-import shutil
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Optional
+
+import shutil
+
+_SCRIPTS_DIR = Path(__file__).resolve().parent
+if str(_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS_DIR))
+
+from prodcraft_gateway_skill import render_prodcraft_skill
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -42,46 +49,6 @@ def read_state(path: Path) -> Dict[str, object]:
 
 def skill_dir(target_root: Path) -> Path:
     return target_root / SKILL_NAME
-
-
-def render_skill(repo_root: Path) -> str:
-    intake_path = repo_root / "skills" / "00-discovery" / "intake" / "SKILL.md"
-    problem_framing_path = repo_root / "skills" / "00-discovery" / "problem-framing" / "SKILL.md"
-    gateway_path = repo_root / "skills" / "_gateway.md"
-    workflows_path = repo_root / "workflows"
-
-    return f"""---
-name: prodcraft
-description: Use when software-development work should follow the Prodcraft lifecycle-aware skills system, or when the user explicitly asks to use Prodcraft for routing, planning, implementation, quality gates, or workflow selection.
----
-
-# Prodcraft
-
-Use Prodcraft as the software-development entry system for this machine.
-
-## Entry Rule
-
-For new or unclear software-development work:
-
-1. Start with `{intake_path}`
-2. If the route is clear but the problem direction is still fuzzy, continue with `{problem_framing_path}`
-3. Use `{gateway_path}` to select downstream skills and `{workflows_path}` to pick the workflow
-
-## Priority
-
-- Prefer Prodcraft over generic brainstorming for software-development tasks when the user explicitly asks for Prodcraft or lifecycle-aware routing.
-- Keep obeying higher-priority system, developer, and repository instructions.
-- For non-software-development tasks, use other relevant skills instead of forcing Prodcraft.
-
-## Observability
-
-When Prodcraft is chosen, preserve routing observability:
-
-- why Prodcraft was invoked
-- which entry skill was chosen
-- what next skill or workflow was selected
-- whether any global skill override experiment is active
-"""
 
 
 def log_event(
@@ -154,7 +121,10 @@ def install_skill(
     status_before = get_status(target_root=target_root, state_path=state_path)
     target = skill_dir(target_root)
     target.mkdir(parents=True, exist_ok=True)
-    (target / "SKILL.md").write_text(render_skill(repo_root), encoding="utf-8")
+    (target / "SKILL.md").write_text(
+        render_prodcraft_skill(repo_root, install_surface="global"),
+        encoding="utf-8",
+    )
 
     status_after = get_status(target_root=target_root, state_path=state_path)
     log_event(

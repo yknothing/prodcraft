@@ -1,0 +1,20 @@
+schema_version: artifact-registry.v1
+artifacts:
+  intake-brief:
+    schema_version: intake-brief.v1
+    schema_path: schemas/artifacts/intake-brief.schema.json
+    template_path: templates/intake-brief.md
+  course-correction-note:
+    schema_version: course-correction-note.v1
+    schema_path: schemas/artifacts/course-correction-note.schema.json
+    template_path: templates/course-correction-note.md
+  problem-frame:
+    schema_version: problem-frame.v1
+    schema_path: schemas/artifacts/problem-frame.schema.json
+    template_path: templates/problem-frame.md
+  requirements-doc:
+    schema_version: requirements-doc.v1
+    schema_path: schemas/artifacts/requirements-doc.schema.json
+  review-report:
+    schema_version: review-report.v1
+    schema_path: schemas/artifacts/review-report.schema.json

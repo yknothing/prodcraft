@@ -36,6 +36,8 @@ This skill is intentionally distinct from [monitoring-observability](../../07-op
 - `observability` defines **what signals should exist and how they are structured**
 - `monitoring-observability` turns important production signals into **dashboards, alerts, and responder workflows**
 
+The repository's current execution contract uses append-only `execution-observability.jsonl` artifacts plus periodic summaries from `scripts/summarize_execution_observability.py`. That keeps the runtime loop concrete without committing to a heavier backend too early.
+
 ## Inputs
 
 - Current code or workflow entry points where behavior, failure, or cost must be visible
@@ -110,6 +112,15 @@ Before calling the design complete, verify that a reviewer can answer:
 
 If those questions still require ad hoc grep or guesswork, the instrumentation boundary is incomplete.
 
+### Step 6: Close the Runtime Feedback Loop
+
+Do not stop at event emission. Summarize recurring failures, missing usage data, and high-risk actions on a regular cadence, then feed the findings back into:
+
+- skill gotchas
+- benchmark plans
+- routing rules
+- approval points for risky actions
+
 ## Outputs
 
 - **observability-spec** -- The written boundary definition: what is instrumented, why it matters, and who consumes it
@@ -122,6 +133,7 @@ If those questions still require ad hoc grep or guesswork, the instrumentation b
 - [ ] Skill invocation, runner execution, and model usage are distinguishable event types
 - [ ] Model and token accounting fields use canonical names and never fabricate unavailable values
 - [ ] Ownership and downstream consumption path are documented
+- [ ] Runtime summaries can identify recurring failures, missing usage, and risky actions
 
 ## Anti-Patterns
 
@@ -136,3 +148,4 @@ If those questions still require ad hoc grep or guesswork, the instrumentation b
 - [monitoring-observability](../../07-operations/monitoring-observability/SKILL.md) -- turns important runtime signals into dashboards, alerts, and responder workflows
 - [documentation](../documentation/SKILL.md) -- records ADRs, schemas, and operational guidance for the observability layer
 - [ci-cd](../../06-delivery/ci-cd/SKILL.md) -- supplies release and rollout boundaries that should remain visible in telemetry
+- `docs/observability/runtime-feedback-loop.md` -- explains how execution JSONL evidence feeds back into the skills system

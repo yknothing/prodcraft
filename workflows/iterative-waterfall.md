@@ -2,6 +2,8 @@
 name: iterative-waterfall
 description: "Phase-gated development with iteration allowed within each phase"
 cadence: "phase-based, 2-6 weeks per phase"
+workflow_kind: "primary"
+composes_with: ["greenfield", "brownfield", "hotfix"]
 entry_skill: "intake"
 required_artifacts: ["intake-brief"]
 best_for: ["enterprise", "compliance-heavy", "large-scope", "distributed-teams"]
@@ -17,6 +19,8 @@ The iterative waterfall workflow preserves the structure and predictability of p
 This workflow suits organizations that need the auditability and clear handoffs of waterfall development but recognize that first drafts are never perfect. Within each phase, the team drafts, reviews, revises, and finalizes -- iterating until the phase deliverables meet quality standards. Between phases, formal reviews ensure alignment before work proceeds.
 
 Choose this workflow for enterprise projects with well-understood requirements, compliance obligations that demand phase documentation, large scope that benefits from structured decomposition, or distributed teams that need explicit handoff points.
+
+This workflow may be paired with overlays such as `greenfield`, `brownfield`, or `hotfix` when system state or urgency changes the route but phase-gated governance remains primary.
 
 ## Entry Gate
 

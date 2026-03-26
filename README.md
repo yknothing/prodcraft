@@ -72,6 +72,22 @@ python3 scripts/manage_brainstorming_gate.py enable --reason "restore global bra
 
 `build/` is gitignored so experiment traces stay local unless intentionally captured elsewhere.
 
+## `npx skills` Installation
+
+Prodcraft supports the public Agent Skills install flow:
+
+```bash
+npx skills add <repo-url>
+npx skills add <repo-url> --skill intake
+npx skills update
+```
+
+The stable public install surface is `skills/.curated/`.
+
+- `skills/00-discovery/` through `skills/cross-cutting/` remain the authoring source of truth
+- `skills/.curated/` is the install and upgrade contract consumed by `npx skills add/update`
+- regenerate the curated surface with `python3 scripts/export_curated_skills.py`
+
 ## Project Structure
 
 ```

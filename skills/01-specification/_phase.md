@@ -18,6 +18,8 @@ Define precisely what to build. Specification translates validated discovery ins
 
 For lighter or routed entry paths, a reviewed `problem-frame` and approved `design-direction` may substitute for a heavier discovery packet as long as the problem statement, scope boundary, and open questions are explicit.
 
+If implementation, quality, operations, or evolution discover that the current requirements are wrong or incomplete, route the fix back here with a `course-correction-note` instead of silently rewriting the spec.
+
 ## Exit Criteria (Quality Gate)
 
 Spec document reviewed and signed off by engineering lead and product owner. All P0/P1 requirements have acceptance criteria. Open questions list is empty or deferred with documented rationale.
@@ -57,3 +59,7 @@ Requirements come first. Domain modeling and spec writing can overlap. Acceptanc
 - **No non-functional requirements.** Specifying features but ignoring performance, security, and accessibility guarantees. These surface late and cost more to fix.
 - **Spec as contract, not communication.** The spec exists to create shared understanding. If engineers are confused, the spec failed regardless of its length.
 - **Gold-plating.** Specifying edge cases that affect 0.1% of users at the same depth as core flows. Prioritize specification effort by impact.
+
+## Cross-Cutting Matrix
+
+See `rules/cross-cutting-matrix.yml` for required and conditional cross-cutting skills at this phase.

@@ -51,6 +51,8 @@ Code review gates entry to broader testing. Security and performance audits can 
 
 In brownfield work, quality review must verify that coexistence and unsupported release-boundary behavior are still protected before broader QA sign-off proceeds.
 
+If quality review reveals a structural mismatch, produce a `course-correction-note` and route directly to `02-architecture` instead of forcing a full lifecycle restart.
+
 ## Anti-Patterns
 
 - **Quality as a phase, not a practice.** Testing only at the end rather than throughout implementation. Shift quality left by integrating testing into every phase.
@@ -58,3 +60,7 @@ In brownfield work, quality review must verify that coexistence and unsupported 
 - **Review rubber-stamping.** Approving code reviews without meaningful inspection. Reviews that do not find issues are not necessarily good reviews.
 - **Performance testing in production-unlike environments.** Benchmarking on a laptop and assuming production will behave the same. Test with production-representative data and infrastructure.
 - **Security as checkbox.** Running a scanner and declaring security complete. Security audit requires threat modeling and manual review of authentication, authorization, and data handling.
+
+## Cross-Cutting Matrix
+
+See `rules/cross-cutting-matrix.yml` for required and conditional cross-cutting skills at this phase.

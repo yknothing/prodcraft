@@ -20,7 +20,7 @@ metadata:
     - skill-name       # Reference to another skill's `name` field
   quality_gate: string # Measurable exit criterion -- must be verifiable
   roles:               # Personas best suited to execute this skill
-    - persona-name     # Reference to a persona's `name` field
+    - persona-name     # Advisory perspective / collaboration lens, not a default runtime guarantee
   methodologies:       # Which workflow families or explicit workflows include this skill
     - all              # Options: "all", family tags like "spec-driven"/"agile"/"waterfall", or workflow names like "greenfield"
   effort: string       # Relative effort: "small" (<1h), "medium" (1-4h), "large" (4h-2d), "xlarge" (2d+)
@@ -28,6 +28,13 @@ metadata:
 ```
 
 Keep frontmatter limited to discovery metadata. Do not pack edge cases, troubleshooting rules, or workflow caveats into `description` or `metadata`; use a `## Gotchas` section or `references/gotchas.md` instead so the runtime-discovery surface stays concise.
+
+Follow the runtime guidance shared across Anthropic, OpenAI, Cursor, and Trae:
+
+- keep `description` focused on **when to use** the skill
+- keep the main skill concise and move heavy material into supporting files
+- preserve explicit approval points for risky or side-effectful actions
+- add new guardrails only when they map to a real observed failure mode
 
 ## Required Frontmatter Fields
 
@@ -143,6 +150,13 @@ Artifacts (inputs/outputs) use a consistent naming scheme:
 - Explicit workflow names such as `greenfield`, `brownfield`, or `hotfix` -- Use when a skill belongs only to that routed workflow and not to the full methodology family
 
 Skills tagged `all` are the core skills that every methodology needs. Skills tagged with methodology-family values provide additional rigor appropriate to that family. Explicit workflow tags are for routed exceptions that should be validated against workflow references.
+
+Workflow routing now records:
+
+- one `workflow_primary`
+- zero or more `workflow_overlays`
+
+Do not collapse that composition back into a single workflow string in new artifacts or templates.
 
 ## Quality Gate Guidelines
 

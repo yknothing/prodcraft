@@ -2,6 +2,8 @@
 name: brownfield
 description: "Legacy system modernization and incremental improvement"
 cadence: "ongoing, months to years"
+workflow_kind: "overlay"
+composes_with: ["*"]
 entry_skill: "intake"
 required_artifacts: ["intake-brief"]
 best_for: ["legacy-modernization", "platform-migration", "tech-debt-reduction"]
@@ -17,6 +19,8 @@ The brownfield workflow guides the modernization of existing systems -- the care
 Brownfield work is fundamentally different from greenfield. The system has users, data, behavior (documented and undocumented), dependencies, and history. Changing one thing can break another. The goal is continuous improvement without disruption -- replacing the engine while the plane is flying.
 
 This workflow is long-running, measured in months or years. Progress is incremental. Success is measured by reduction in incidents, improvement in developer velocity, and expansion of capabilities -- not by a single launch date.
+
+Brownfield is an overlay. It modifies the route for coexistence, migration safety, and release-boundary discipline while keeping a primary governance workflow in place.
 
 Choose this workflow for legacy modernization, platform migrations, tech debt reduction campaigns, or any project where the existing system cannot be replaced all at once.
 

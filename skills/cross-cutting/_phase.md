@@ -33,6 +33,8 @@ Cross-cutting skills are incorporated into the Definition of Done for each phase
 - Sprint definition of done includes documentation updates
 - Release checklists include compliance verification
 
+The authoritative phase-by-phase injection contract lives in `rules/cross-cutting-matrix.yml`.
+
 Important distinction:
 
 - `observability` is the cross-cutting instrumentation contract
