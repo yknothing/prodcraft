@@ -16,4 +16,9 @@ At this stage, the skill appears to be:
 
 - a tactical wrapper around implementation skills, not a replacement for them
 - useful when a valid slice exists but execution discipline is weak
-- still awaiting routed benchmark evidence before moving beyond `review`
+- now supported by a first routed review
+- still awaiting isolated benchmark evidence before moving beyond `review`
+
+## Next QA Step
+
+Run the planned isolated benchmark on both feature and bug-fix slices, then compare the results against a generic execution baseline.

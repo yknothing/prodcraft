@@ -16,8 +16,9 @@ At this stage, the skill appears to be:
 
 - a core implementation discipline for bug-fix work
 - especially important for hotfixes after containment
-- still awaiting routed and isolated benchmark evidence before moving beyond `review`
+- now supported by a first routed review
+- still awaiting isolated benchmark evidence before moving beyond `review`
 
 ## Next QA Step
 
-Run the planned routed reviews and isolated benchmarks, then compare behavior against a generic bug-fix baseline.
+Run the planned isolated benchmarks, then compare behavior against a generic bug-fix baseline.

@@ -16,8 +16,9 @@ At this stage, the skill appears to be:
 
 - a cross-cutting honesty gate rather than a replacement for phase-local QA
 - valuable wherever completion language, PR readiness, release readiness, or incident resolution is asserted
-- still awaiting routed and isolated benchmark evidence before moving beyond `review`
+- now supported by a first routed review
+- still awaiting isolated benchmark evidence before moving beyond `review`
 
 ## Next QA Step
 
-Run the planned routed reviews and isolated benchmarks, then compare against a generic completion-claim baseline.
+Run the planned isolated benchmarks, then compare against a generic completion-claim baseline.

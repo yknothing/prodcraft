@@ -28,8 +28,14 @@ class DeliveryCompletionSkillTests(unittest.TestCase):
 
         entry = entries["delivery-completion"]
         self.assertEqual("06-delivery", entry["phase"])
-        self.assertEqual("draft", entry["status"])
+        self.assertEqual("review", entry["status"])
         self.assertEqual("critical", entry["qa_tier"])
+        self.assertEqual("routed", entry["evaluation_mode"])
+        self.assertIn("qa", entry)
+        self.assertIn("eval_strategy_path", entry["qa"])
+        self.assertIn("benchmark_plan_path", entry["qa"])
+        self.assertIn("findings_path", entry["qa"])
+        self.assertIn("integration_test_path", entry["qa"])
 
         self.assertIn("delivery-completion", artifact_flow["verification-record"]["consumed_by"])
         self.assertIn("delivery-completion", artifact_flow["execution-checkpoint"]["consumed_by"])

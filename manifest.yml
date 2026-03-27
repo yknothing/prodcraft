@@ -280,6 +280,7 @@ skills:
     eval_strategy_path: eval/04-implementation/systematic-debugging/evals/eval-strategy.md
     benchmark_plan_path: eval/04-implementation/systematic-debugging/isolated-benchmark-plan.md
     findings_path: eval/04-implementation/systematic-debugging/findings.md
+    integration_test_path: eval/04-implementation/systematic-debugging/bugfix-review.md
 - name: task-execution
   phase: 04-implementation
   file: skills/04-implementation/task-execution/SKILL.md
@@ -291,6 +292,7 @@ skills:
     eval_strategy_path: eval/04-implementation/task-execution/evals/eval-strategy.md
     benchmark_plan_path: eval/04-implementation/task-execution/isolated-benchmark-plan.md
     findings_path: eval/04-implementation/task-execution/findings.md
+    integration_test_path: eval/04-implementation/task-execution/tactical-batch-review.md
 - name: feature-development
   phase: 04-implementation
   file: skills/04-implementation/feature-development/SKILL.md
@@ -324,6 +326,7 @@ skills:
     eval_strategy_path: eval/05-quality/receiving-code-review/evals/eval-strategy.md
     benchmark_plan_path: eval/05-quality/receiving-code-review/isolated-benchmark-plan.md
     findings_path: eval/05-quality/receiving-code-review/findings.md
+    integration_test_path: eval/05-quality/receiving-code-review/feedback-response-review.md
 - name: testing-strategy
   phase: 05-quality
   file: skills/05-quality/testing-strategy/SKILL.md
@@ -362,8 +365,15 @@ skills:
 - name: delivery-completion
   phase: 06-delivery
   file: skills/06-delivery/delivery-completion/SKILL.md
-  status: draft
+  status: review
   qa_tier: critical
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/06-delivery/delivery-completion/evals/eval-strategy.md
+    benchmark_plan_path: eval/06-delivery/delivery-completion/isolated-benchmark-plan.md
+    findings_path: eval/06-delivery/delivery-completion/findings.md
+    integration_test_path: eval/06-delivery/delivery-completion/completion-handoff-review.md
 - name: deployment-strategy
   phase: 06-delivery
   file: skills/06-delivery/deployment-strategy/SKILL.md
@@ -460,6 +470,7 @@ skills:
     eval_strategy_path: eval/cross-cutting/verification-before-completion/evals/eval-strategy.md
     benchmark_plan_path: eval/cross-cutting/verification-before-completion/isolated-benchmark-plan.md
     findings_path: eval/cross-cutting/verification-before-completion/findings.md
+    integration_test_path: eval/cross-cutting/verification-before-completion/completion-claim-review.md
 - name: accessibility
   phase: cross-cutting
   file: skills/cross-cutting/accessibility/SKILL.md

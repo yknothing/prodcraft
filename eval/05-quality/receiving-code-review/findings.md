@@ -16,4 +16,9 @@ At this stage, the skill appears to be:
 
 - a role-separating complement to `code-review`
 - useful for mixed or ambiguous review bundles
-- still awaiting routed benchmark evidence before moving beyond `review`
+- now supported by a first routed review
+- still awaiting isolated benchmark evidence before moving beyond `review`
+
+## Next QA Step
+
+Run the planned isolated benchmark with a more adversarial mixed-feedback bundle, then compare behavior against a generic review-follow-up baseline.
