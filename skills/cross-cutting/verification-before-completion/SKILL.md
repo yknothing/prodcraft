@@ -66,6 +66,17 @@ For each claim, name the proof needed now:
 
 Do not rely on stale runs, partial checks, or "it should still be green."
 
+Use this quick reference before moving on:
+
+| Claim | Requires now | Not sufficient |
+|-------|--------------|----------------|
+| "the fix works" | current repro or regression evidence showing failing-then-passing behavior | an older passing run, "the patch is obvious", or a reviewer saying it looks right |
+| "all tests pass" | current command output and exit status for the intended test scope | a previous run, a subset proxy, or "they passed before the last change" |
+| "this phase is complete" | current phase quality gate plus required artifact and handoff checks | a summary from memory or a nearby but weaker check |
+| "the release is ready" | current release evidence, verification checkpoints, and artifact integrity | green CI alone or confidence that the rollout plan probably still applies |
+| "the handoff is safe" | accessible outputs, explicit next-step context, and any schema-backed artifact checks needed | "the next person can figure it out" |
+| "the incident is resolved" | current service checks, recovery evidence, and explicitly named remaining unknowns | lack of new alerts for a short period or rollback alone |
+
 ### Step 3: Run the Verification Now
 
 Execute the relevant verification in the current message or session:

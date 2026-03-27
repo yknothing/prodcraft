@@ -83,6 +83,22 @@ class P0ExecutionGapSkillTests(unittest.TestCase):
                 conditional_skills = {item["skill"] for item in entries[phase_id]["conditional"]}
                 self.assertIn("verification-before-completion", conditional_skills)
 
+    def test_p0_skills_include_quick_reference_discipline_tables(self):
+        systematic = (
+            REPO_ROOT / "skills" / "04-implementation" / "systematic-debugging" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+        verification = (
+            REPO_ROOT / "skills" / "cross-cutting" / "verification-before-completion" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("| Failed fix count | Required response |", systematic)
+        self.assertIn("## Rationalization Prevention", systematic)
+        self.assertIn("| Excuse | Required response |", systematic)
+
+        self.assertIn("| Claim | Requires now | Not sufficient |", verification)
+        self.assertIn('the release is ready', verification)
+        self.assertIn("green CI alone", verification)
+
 
 if __name__ == "__main__":
     unittest.main()

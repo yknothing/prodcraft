@@ -93,6 +93,14 @@ Use this escalation rule:
 - second failed fix attempt: challenge the current hypothesis explicitly
 - third failed fix attempt: assume a structural mismatch until disproven and prepare `course-correction-note`
 
+Make that escalation visible, not implicit:
+
+| Failed fix count | Required response |
+|------------------|-------------------|
+| first | gather better evidence before changing more code |
+| second | challenge the current hypothesis in writing and identify what evidence would falsify it |
+| third or more | stop local patching, assume a structural mismatch until disproven, and prepare `course-correction-note` |
+
 ### Step 5: Choose the Smallest Safe Fix Path
 
 Once root cause is clear, define the smallest safe change:
@@ -128,6 +136,23 @@ Produce a `bug-fix-report` that captures:
 - [ ] The chosen fix path is the smallest safe change for the verified root cause
 - [ ] Regression or characterization protection is defined before broader implementation proceeds
 - [ ] Structural mismatches are escalated through `course-correction-note` instead of patched around
+
+## Rationalization Prevention
+
+When one of these thoughts appears, treat it as a stop signal:
+
+| Excuse | Required response |
+|--------|-------------------|
+| "I'll try the obvious fix first and investigate if it fails" | Stop. Return to reproduction and evidence gathering before changing code. |
+| "I saw this bug before, so I know the cause" | Use history to narrow the search, then prove the current root cause anyway. |
+| "Rollback fixed it, so we know what happened" | Containment is not explanation; identify why the bad behavior existed. |
+| "The repro is flaky, but I can still patch around it" | Stabilize the failure boundary or instrument it before writing the fix. |
+| "This is probably just environment weirdness" | Name the environment difference and gather evidence that it explains the symptom. |
+| "I'll make the broad fix now and tighten it later" | Choose the smallest safe change for the evidenced root cause. |
+| "This is the third try, but I think this version will work" | Stop local patching and prepare `course-correction-note`. |
+| "The workaround is enough; we can find root cause later" | Record it explicitly as a workaround only after the current cause is still evidenced. |
+| "The failing path is too edge-casey to justify tests" | Edge cases still need regression or characterization coverage. |
+| "Another agent already investigated this" | Read the evidence yourself before accepting the conclusion. |
 
 ## Anti-Patterns
 
