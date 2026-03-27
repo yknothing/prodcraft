@@ -48,6 +48,8 @@ class InstallProdcraftGlobalSkillTests(unittest.TestCase):
         self.assertEqual("installed", result["status"])
         self.assertTrue(skill_dir.exists())
         self.assertTrue((skill_dir / "SKILL.md").exists())
+        self.assertEqual("enable prodcraft globally", result["reason"])
+        self.assertEqual("install", result["last_action"])
 
         content = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
         self.assertIn("name: prodcraft", content)
@@ -98,6 +100,8 @@ class InstallProdcraftGlobalSkillTests(unittest.TestCase):
         )
 
         self.assertEqual("removed", result["status"])
+        self.assertEqual("cleanup after experiment", result["reason"])
+        self.assertEqual("remove", result["last_action"])
         self.assertFalse((self.skills_root / "prodcraft").exists())
 
         events = self.read_events()

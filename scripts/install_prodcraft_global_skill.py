@@ -81,7 +81,7 @@ def persist_state(
     status_snapshot: Dict[str, object],
     action: str,
     reason: Optional[str],
-) -> None:
+) -> Dict[str, object]:
     payload = dict(status_snapshot)
     payload.update(
         {
@@ -92,6 +92,7 @@ def persist_state(
         }
     )
     write_state(state_path, payload)
+    return payload
 
 
 def get_status(*, target_root: Path, state_path: Path) -> Dict[str, object]:
@@ -135,13 +136,12 @@ def install_skill(
         target_root=target_root,
         reason=reason,
     )
-    persist_state(
+    return persist_state(
         state_path=state_path,
         status_snapshot=status_after,
         action="install",
         reason=reason,
     )
-    return status_after
 
 
 def remove_skill(
@@ -166,13 +166,12 @@ def remove_skill(
         target_root=target_root,
         reason=reason,
     )
-    persist_state(
+    return persist_state(
         state_path=state_path,
         status_snapshot=status_after,
         action="remove",
         reason=reason,
     )
-    return status_after
 
 
 def parse_args() -> argparse.Namespace:
