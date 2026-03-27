@@ -27,6 +27,7 @@ All planned features are code-complete. Unit and integration tests pass. Code me
 
 | Skill | Purpose | Effort |
 |---|---|---|
+| task-execution | Turn approved slices into short execution batches with checkpoints and stop conditions | medium |
 | systematic-debugging | Find root cause before code fixes and escalate structural mismatches cleanly | medium |
 | tdd | Write tests first to drive design and catch regressions | medium |
 | feature-development | Implement features incrementally and verifiably | large |
@@ -43,12 +44,12 @@ All planned features are code-complete. Unit and integration tests pass. Code me
 ## Skill Sequence
 
 ```
-systematic-debugging ──> tdd ←──→ feature-development ←──→ refactoring
-                                  ↑
-                           pair-programming
+task-execution ──> systematic-debugging ──> tdd ←──→ feature-development ←──→ refactoring
+                                                          ↑
+                                                   pair-programming
 ```
 
-Implementation skills are iterative and interwoven. `systematic-debugging` establishes the defect boundary before code fixes. TDD and feature development form a tight loop. Refactoring happens continuously. Pair programming applies to any of the above.
+Implementation skills are iterative and interwoven. `task-execution` turns approved slices into tactical batches. `systematic-debugging` establishes the defect boundary before code fixes. TDD and feature development form a tight loop. Refactoring happens continuously. Pair programming applies to any of the above.
 
 In brownfield work, implementation should start with the smallest safe slice and the tests that protect coexistence or contract behavior before new code expands.
 

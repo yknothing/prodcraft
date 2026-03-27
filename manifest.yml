@@ -280,6 +280,17 @@ skills:
     eval_strategy_path: eval/04-implementation/systematic-debugging/evals/eval-strategy.md
     benchmark_plan_path: eval/04-implementation/systematic-debugging/isolated-benchmark-plan.md
     findings_path: eval/04-implementation/systematic-debugging/findings.md
+- name: task-execution
+  phase: 04-implementation
+  file: skills/04-implementation/task-execution/SKILL.md
+  status: review
+  qa_tier: critical
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/04-implementation/task-execution/evals/eval-strategy.md
+    benchmark_plan_path: eval/04-implementation/task-execution/isolated-benchmark-plan.md
+    findings_path: eval/04-implementation/task-execution/findings.md
 - name: feature-development
   phase: 04-implementation
   file: skills/04-implementation/feature-development/SKILL.md
@@ -700,6 +711,7 @@ artifact_flow:
   - security-design
   - tech-selection
   - task-breakdown
+  - task-execution
   - risk-assessment
   - feature-development
   - security-audit
@@ -714,6 +726,7 @@ artifact_flow:
 - artifact: api-contract
   produced_by: api-design
   consumed_by:
+  - task-execution
   - feature-development
   - testing-strategy
   - task-breakdown
@@ -746,6 +759,7 @@ artifact_flow:
   - sprint-planning
   - estimation
   - risk-assessment
+  - task-execution
   - tdd
   - feature-development
   - code-review
@@ -754,6 +768,7 @@ artifact_flow:
 - artifact: dependency-graph
   produced_by: task-breakdown
   consumed_by:
+  - task-execution
   - risk-assessment
 - artifact: estimate-set
   produced_by: estimation
@@ -793,6 +808,17 @@ artifact_flow:
   - code-review
   - ci-cd
   - testing-strategy
+- artifact: execution-batch-plan
+  produced_by: task-execution
+  consumed_by:
+  - feature-development
+  - systematic-debugging
+  - verification-before-completion
+- artifact: execution-checkpoint
+  produced_by: task-execution
+  consumed_by:
+  - verification-before-completion
+  - receiving-code-review
 - artifact: bug-fix-report
   produced_by: systematic-debugging
   consumed_by:

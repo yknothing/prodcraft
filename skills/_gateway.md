@@ -43,7 +43,7 @@ Match based on what phase the work is currently in:
 | Defining requirements | 01-specification | requirements-engineering, spec-writing, domain-modeling |
 | Designing system structure | 02-architecture | system-design, api-design, data-modeling, security-design |
 | Breaking down work | 03-planning | task-breakdown, estimation, risk-assessment |
-| Writing code or debugging a local defect | 04-implementation | systematic-debugging, tdd, feature-development, refactoring |
+| Writing code or tactically executing an approved slice | 04-implementation | task-execution, systematic-debugging, tdd, feature-development, refactoring |
 | Reviewing/testing | 05-quality | code-review, receiving-code-review, testing-strategy, security-audit |
 | Deploying/releasing | 06-delivery | ci-cd, deployment-strategy, release-management |
 | Monitoring/responding | 07-operations | monitoring-observability, incident-response |
@@ -261,7 +261,7 @@ Prodcraft is designed to complement, not replace, existing skill systems. If you
 - `brainstorming` maps most closely to `intake` -> `problem-framing` -> discovery or specification skills
 - `systematic-debugging` maps directly to repo-local phase 04 implementation debugging
 - `writing-plans` maps to phase 03 planning skills
-- `executing-plans` maps to phase 04 implementation skills
+- `executing-plans` maps most closely to repo-local `task-execution` plus the downstream implementation skill for the current batch
 - `requesting-code-review` maps to phase 05 quality skills
 - `receiving-code-review` maps directly to repo-local phase 05 quality review follow-up
 - `verification-before-completion` remains as a repo-local cross-cutting gate
