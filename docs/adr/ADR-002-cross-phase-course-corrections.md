@@ -29,6 +29,8 @@ Approved direct jumps:
 - `08-evolution -> 02-architecture`
 - `08-evolution -> 03-planning`
 
+These eight pairs are the machine-enforced contract. The schema and validator must reject any pair outside this list.
+
 Every direct jump must preserve:
 
 - the evidence that triggered the jump

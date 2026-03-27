@@ -18,5 +18,6 @@ Prodcraft separates lifecycle authoring from public installation.
 ## Export Rules
 
 - `skills/.curated/` is generated, not edited manually.
+- `python3 scripts/validate_prodcraft.py --check curated-surface` re-exports the surface into a temporary directory and fails if the checked-in tree drifts from the exporter output.
 - Exported skills must keep valid frontmatter and bundle any referenced `references/`, `scripts/`, or `assets/` paths.
 - Generated gateway skills such as `prodcraft` must still point back to the canonical repository contract.

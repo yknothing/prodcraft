@@ -84,8 +84,8 @@ What's the project methodology?
 
 The `intake-brief` should record:
 
-- `workflow_primary`
-- `workflow_overlays`
+- `workflow_primary` when the approved route needs explicit primary governance
+- `workflow_overlays` when one or more overlays are active
 
 Examples:
 
@@ -189,6 +189,8 @@ Approved direct jumps:
 - `08-evolution -> 02-architecture`
 - `08-evolution -> 03-planning`
 
+These eight pairs are the full approved set. A `course-correction-note` outside this set is invalid and should fail schema/validator checks rather than relying on reviewer memory.
+
 Each `course-correction-note` must capture:
 
 - the trigger and evidence
@@ -221,8 +223,10 @@ Cross-cutting expectations are tracked in `rules/cross-cutting-matrix.yml`.
 
 Use the matrix to decide which skills are:
 
-- always required for a phase
-- conditionally required when UI, observability, historical failures, or compliance risk are in play
+- `must_consider` for a phase
+- `must_produce` as a durable output obligation
+- waived in `skip_when_fast_track` when the route is explicitly fast-tracked
+- `conditional` when UI, observability, historical failures, or compliance risk are in play
 
 ## Interaction Protocol
 

@@ -54,7 +54,10 @@ Every workflow MUST start with an explicit entry gate section that:
 
 This keeps the intake hard gate as a system rule, not a suggestion.
 
-The `intake-brief` should record `workflow_primary` and `workflow_overlays[]`, not only a single workflow string.
+The `intake-brief` should record explicit workflow composition rather than collapsing everything into a single workflow string:
+
+- record `workflow_primary` when the approved route needs explicit primary governance
+- record `workflow_overlays[]` only when one or more overlays are active
 
 ### Overview
 

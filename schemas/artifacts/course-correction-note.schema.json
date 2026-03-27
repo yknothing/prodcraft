@@ -21,8 +21,21 @@
     "artifact": { "const": "course-correction-note" },
     "schema_version": { "const": "course-correction-note.v1" },
     "status": { "enum": ["draft", "approved"] },
-    "source_phase": { "type": "string" },
-    "target_phase": { "type": "string" },
+    "source_phase": {
+      "enum": [
+        "04-implementation",
+        "05-quality",
+        "07-operations",
+        "08-evolution"
+      ]
+    },
+    "target_phase": {
+      "enum": [
+        "01-specification",
+        "02-architecture",
+        "03-planning"
+      ]
+    },
     "trigger": { "type": "string" },
     "evidence_refs": {
       "type": "array",
@@ -37,5 +50,55 @@
     "severity": { "enum": ["low", "medium", "high", "critical"] },
     "requires_user_reapproval": { "type": "boolean" }
   },
-  "additionalProperties": true
+  "anyOf": [
+    {
+      "properties": {
+        "source_phase": { "const": "04-implementation" },
+        "target_phase": { "const": "01-specification" }
+      }
+    },
+    {
+      "properties": {
+        "source_phase": { "const": "04-implementation" },
+        "target_phase": { "const": "02-architecture" }
+      }
+    },
+    {
+      "properties": {
+        "source_phase": { "const": "05-quality" },
+        "target_phase": { "const": "02-architecture" }
+      }
+    },
+    {
+      "properties": {
+        "source_phase": { "const": "07-operations" },
+        "target_phase": { "const": "02-architecture" }
+      }
+    },
+    {
+      "properties": {
+        "source_phase": { "const": "07-operations" },
+        "target_phase": { "const": "03-planning" }
+      }
+    },
+    {
+      "properties": {
+        "source_phase": { "const": "08-evolution" },
+        "target_phase": { "const": "01-specification" }
+      }
+    },
+    {
+      "properties": {
+        "source_phase": { "const": "08-evolution" },
+        "target_phase": { "const": "02-architecture" }
+      }
+    },
+    {
+      "properties": {
+        "source_phase": { "const": "08-evolution" },
+        "target_phase": { "const": "03-planning" }
+      }
+    }
+  ],
+  "additionalProperties": false
 }

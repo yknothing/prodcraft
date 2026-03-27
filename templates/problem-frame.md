@@ -7,6 +7,9 @@ Use this template when `problem-framing` shapes an approved intake route into a 
 - artifact: `problem-frame`
 - schema_version: `problem-frame.v1`
 - status:
+- source_language:
+- artifact_record_language: `en`
+- user_presentation_locale:
 
 ## Source Context
 

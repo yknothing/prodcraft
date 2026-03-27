@@ -52,7 +52,7 @@ CI/CD is the foundation. Release management coordinates the human process and re
 
 In brownfield work, delivery must prove the release can fail closed and recover safely; CI/CD is part of that control surface, not just automation glue.
 
-Cross-cutting requirements for this phase are defined in `rules/cross-cutting-matrix.yml`.
+Cross-cutting obligations for this phase are defined in `rules/cross-cutting-matrix.yml` via `must_consider`, `must_produce`, `skip_when_fast_track`, and `conditional`.
 
 ## Anti-Patterns
 

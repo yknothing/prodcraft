@@ -153,7 +153,7 @@ Skills tagged `all` are the core skills that every methodology needs. Skills tag
 
 Workflow routing now records:
 
-- one `workflow_primary`
+- zero or one explicit `workflow_primary` in the `intake-brief`
 - zero or more `workflow_overlays`
 
 Do not collapse that composition back into a single workflow string in new artifacts or templates.

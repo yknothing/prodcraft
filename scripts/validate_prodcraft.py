@@ -7,6 +7,7 @@ import argparse
 import json
 import re
 import sys
+import tempfile
 from pathlib import Path
 
 import yaml
@@ -21,6 +22,9 @@ SCHEMAS_DIR = ROOT / "schemas"
 ARTIFACT_REGISTRY_PATH = SCHEMAS_DIR / "artifacts" / "registry.yml"
 DISTRIBUTION_REGISTRY_PATH = SCHEMAS_DIR / "distribution" / "public-skill-registry.json"
 MATRIX_PATH = ROOT / "rules" / "cross-cutting-matrix.yml"
+INTAKE_SKILL_PATH = SKILLS_DIR / "00-discovery" / "intake" / "SKILL.md"
+GATEWAY_PATH = SKILLS_DIR / "_gateway.md"
+ADR_002_PATH = ROOT / "docs" / "adr" / "ADR-002-cross-phase-course-corrections.md"
 
 SKILL_REQUIRED_FIELDS = [
     "name",
@@ -97,6 +101,13 @@ EVALUATION_MODES = {
 QA_TIERS = {
     "critical",
     "standard",
+}
+
+CRITICAL_REVIEW_DEPTH_PATHS = {
+    "benchmark_plan_path",
+    "benchmark_results_path",
+    "security_check_path",
+    "trigger_eval_results_path",
 }
 
 WORKFLOW_KINDS = {
@@ -176,6 +187,296 @@ def load_yaml_file(path: Path, errors: list[str]) -> dict:
         errors.append(f"{path}: expected a YAML mapping")
         return {}
     return payload
+
+
+def schema_string_enum(schema: dict, field_name: str, schema_path: Path, errors: list[str]) -> set[str]:
+    properties = schema.get("properties", {})
+    if not isinstance(properties, dict):
+        errors.append(f"{schema_path}: `properties` must be a mapping")
+        return set()
+
+    field = properties.get(field_name)
+    if not isinstance(field, dict):
+        errors.append(f"{schema_path}: field `{field_name}` must be declared in `properties`")
+        return set()
+
+    values = field.get("enum")
+    if not isinstance(values, list) or not all(isinstance(item, str) for item in values):
+        errors.append(f"{schema_path}: field `{field_name}` must declare a string enum")
+        return set()
+
+    return set(values)
+
+
+def schema_nested_string_enum(schema: dict, path_parts: list[str], schema_path: Path, errors: list[str]) -> set[str]:
+    properties = schema.get("properties", {})
+    if not isinstance(properties, dict):
+        errors.append(f"{schema_path}: `properties` must be a mapping")
+        return set()
+
+    node: object = properties
+    for part in path_parts:
+        if not isinstance(node, dict):
+            errors.append(f"{schema_path}: `{'.'.join(path_parts)}` must resolve to a mapping before `{part}`")
+            return set()
+        node = node.get(part)
+
+    if not isinstance(node, dict):
+        errors.append(f"{schema_path}: `{'.'.join(path_parts)}` must be a mapping")
+        return set()
+
+    values = node.get("enum")
+    if not isinstance(values, list) or not all(isinstance(item, str) for item in values):
+        errors.append(f"{schema_path}: `{'.'.join(path_parts)}` must declare a string enum")
+        return set()
+
+    return set(values)
+
+
+def extract_intake_work_type_taxonomy(errors: list[str]) -> list[str]:
+    try:
+        _frontmatter, body = load_frontmatter(INTAKE_SKILL_PATH)
+    except ValueError as exc:
+        errors.append(str(exc))
+        return []
+
+    match = re.search(
+        r"### Step 2: Classify Work Type\s*(?P<section>.*?)\n### Step 3: Ask Clarifying Questions",
+        body,
+        re.DOTALL,
+    )
+    if not match:
+        errors.append(f"{INTAKE_SKILL_PATH}: could not locate the Step 2 work type table")
+        return []
+
+    work_types: list[str] = []
+    for line in match.group("section").splitlines():
+        stripped = line.strip()
+        if not stripped.startswith("|"):
+            continue
+        columns = [item.strip() for item in stripped.split("|")[1:-1]]
+        if len(columns) != 5 or columns[0] in {"Type", "------"}:
+            continue
+        work_type = columns[0].replace("**", "").strip()
+        if work_type and set(work_type) != {"-"}:
+            work_types.append(work_type)
+
+    if not work_types:
+        errors.append(f"{INTAKE_SKILL_PATH}: work type table did not yield any taxonomy rows")
+    return work_types
+
+
+def load_primary_workflow_names(errors: list[str]) -> set[str]:
+    primary_names: set[str] = set()
+    for path in sorted(WORKFLOWS_DIR.glob("*.md")):
+        if path.name.startswith("_"):
+            continue
+        try:
+            frontmatter, _body = load_frontmatter(path)
+        except ValueError as exc:
+            errors.append(str(exc))
+            continue
+        if frontmatter.get("workflow_kind") == "primary":
+            name = frontmatter.get("name")
+            if isinstance(name, str):
+                primary_names.add(name)
+    if not primary_names:
+        errors.append(f"{WORKFLOWS_DIR}: no primary workflows were discovered")
+    return primary_names
+
+
+def load_overlay_workflow_names(errors: list[str]) -> set[str]:
+    overlay_names: set[str] = set()
+    for path in sorted(WORKFLOWS_DIR.glob("*.md")):
+        if path.name.startswith("_"):
+            continue
+        try:
+            frontmatter, _body = load_frontmatter(path)
+        except ValueError as exc:
+            errors.append(str(exc))
+            continue
+        if frontmatter.get("workflow_kind") == "overlay":
+            name = frontmatter.get("name")
+            if isinstance(name, str):
+                overlay_names.add(name)
+    if not overlay_names:
+        errors.append(f"{WORKFLOWS_DIR}: no overlay workflows were discovered")
+    return overlay_names
+
+
+def validate_intake_brief_schema_contract(schema: dict, schema_path: Path, manifest: dict, errors: list[str]) -> None:
+    validate_language_boundary_schema_contract(schema, schema_path, errors)
+
+    expected_work_types = set(extract_intake_work_type_taxonomy(errors))
+    schema_work_types = schema_string_enum(schema, "work_type", schema_path, errors)
+    if schema_work_types and expected_work_types and schema_work_types != expected_work_types:
+        errors.append(
+            f"{schema_path}: `work_type` enum must match intake taxonomy {sorted(expected_work_types)}; found {sorted(schema_work_types)}"
+        )
+
+    manifest_phase_ids = {
+        phase.get("id")
+        for phase in manifest.get("phases", [])
+        if isinstance(phase, dict) and isinstance(phase.get("id"), str)
+    }
+    expected_entry_phases = manifest_phase_ids | {"cross-cutting"}
+    schema_entry_phases = schema_string_enum(schema, "entry_phase", schema_path, errors)
+    if schema_entry_phases and expected_entry_phases and schema_entry_phases != expected_entry_phases:
+        errors.append(
+            f"{schema_path}: `entry_phase` enum must match manifest phases plus `cross-cutting` {sorted(expected_entry_phases)}; found {sorted(schema_entry_phases)}"
+        )
+
+    expected_primary_workflows = load_primary_workflow_names(errors)
+    schema_primary_workflows = schema_string_enum(schema, "workflow_primary", schema_path, errors)
+    if schema_primary_workflows and expected_primary_workflows and schema_primary_workflows != expected_primary_workflows:
+        errors.append(
+            f"{schema_path}: `workflow_primary` enum must match declared primary workflows {sorted(expected_primary_workflows)}; found {sorted(schema_primary_workflows)}"
+        )
+
+    expected_overlay_workflows = load_overlay_workflow_names(errors)
+    schema_overlay_workflows = schema_nested_string_enum(
+        schema,
+        ["workflow_overlays", "items"],
+        schema_path,
+        errors,
+    )
+    if schema_overlay_workflows and expected_overlay_workflows and schema_overlay_workflows != expected_overlay_workflows:
+        errors.append(
+            f"{schema_path}: `workflow_overlays` enum must match declared overlay workflows {sorted(expected_overlay_workflows)}; found {sorted(schema_overlay_workflows)}"
+        )
+
+    properties = schema.get("properties", {})
+    workflow_overlays = properties.get("workflow_overlays", {}) if isinstance(properties, dict) else {}
+    if not isinstance(workflow_overlays, dict) or workflow_overlays.get("minItems") != 1:
+        errors.append(f"{schema_path}: `workflow_overlays` must use omission, not an empty array, to represent no active overlays")
+
+    if schema.get("additionalProperties") is not False:
+        errors.append(f"{schema_path}: `additionalProperties` must be `false` to keep the routing contract closed")
+
+
+def validate_language_boundary_schema_contract(schema: dict, schema_path: Path, errors: list[str]) -> None:
+    source_language_enum = schema_string_enum(schema, "source_language", schema_path, errors)
+    if source_language_enum and source_language_enum != {"en", "zh", "mixed"}:
+        errors.append(
+            f"{schema_path}: `source_language` enum must be ['en', 'mixed', 'zh']; found {sorted(source_language_enum)}"
+        )
+
+    presentation_locale_enum = schema_string_enum(schema, "user_presentation_locale", schema_path, errors)
+    if presentation_locale_enum and presentation_locale_enum != {"en", "zh"}:
+        errors.append(
+            f"{schema_path}: `user_presentation_locale` enum must be ['en', 'zh']; found {sorted(presentation_locale_enum)}"
+        )
+
+    properties = schema.get("properties", {})
+    artifact_record_language = properties.get("artifact_record_language", {}) if isinstance(properties, dict) else {}
+    if not isinstance(artifact_record_language, dict) or artifact_record_language.get("const") != "en":
+        errors.append(f"{schema_path}: `artifact_record_language` must be a const `en` under current repo policy")
+
+
+def extract_phase_jump_pairs_from_text(
+    path: Path,
+    *,
+    start_marker: str,
+    end_marker: str,
+    errors: list[str],
+) -> set[tuple[str, str]]:
+    text = path.read_text(encoding="utf-8")
+    match = re.search(
+        rf"{re.escape(start_marker)}\s*(?P<section>.*?){re.escape(end_marker)}",
+        text,
+        re.DOTALL,
+    )
+    if not match:
+        errors.append(f"{path}: could not locate course-correction pair section between `{start_marker}` and `{end_marker}`")
+        return set()
+
+    pairs: set[tuple[str, str]] = set()
+    for raw_pair in re.findall(r"-\s+`([^`]+)`", match.group("section")):
+        if " -> " not in raw_pair:
+            errors.append(f"{path}: malformed course-correction pair `{raw_pair}`")
+            continue
+        source_phase, target_phase = (part.strip() for part in raw_pair.split(" -> ", 1))
+        pairs.add((source_phase, target_phase))
+    if not pairs:
+        errors.append(f"{path}: no course-correction pairs were found in the approved jump section")
+    return pairs
+
+
+def extract_course_correction_schema_pairs(schema: dict, schema_path: Path, errors: list[str]) -> set[tuple[str, str]]:
+    any_of = schema.get("anyOf")
+    if not isinstance(any_of, list):
+        errors.append(f"{schema_path}: `anyOf` must encode the approved course-correction jump pairs")
+        return set()
+
+    pairs: set[tuple[str, str]] = set()
+    for index, entry in enumerate(any_of):
+        if not isinstance(entry, dict):
+            errors.append(f"{schema_path}: anyOf[{index}] must be a mapping")
+            continue
+        properties = entry.get("properties")
+        if not isinstance(properties, dict):
+            errors.append(f"{schema_path}: anyOf[{index}] must define `properties`")
+            continue
+        source = properties.get("source_phase", {})
+        target = properties.get("target_phase", {})
+        if not isinstance(source, dict) or not isinstance(target, dict):
+            errors.append(f"{schema_path}: anyOf[{index}] must constrain both `source_phase` and `target_phase`")
+            continue
+        source_value = source.get("const")
+        target_value = target.get("const")
+        if not isinstance(source_value, str) or not isinstance(target_value, str):
+            errors.append(f"{schema_path}: anyOf[{index}] must use `const` for both phase fields")
+            continue
+        pairs.add((source_value, target_value))
+    return pairs
+
+
+def validate_course_correction_schema_contract(schema: dict, schema_path: Path, errors: list[str]) -> None:
+    schema_pairs = extract_course_correction_schema_pairs(schema, schema_path, errors)
+    adr_pairs = extract_phase_jump_pairs_from_text(
+        ADR_002_PATH,
+        start_marker="Approved direct jumps:",
+        end_marker="Every direct jump must preserve:",
+        errors=errors,
+    )
+    gateway_pairs = extract_phase_jump_pairs_from_text(
+        GATEWAY_PATH,
+        start_marker="Approved direct jumps:",
+        end_marker="Each `course-correction-note` must capture:",
+        errors=errors,
+    )
+
+    if schema_pairs and adr_pairs and schema_pairs != adr_pairs:
+        errors.append(
+            f"{schema_path}: schema-approved course-correction pairs must match ADR-002 {sorted(adr_pairs)}; found {sorted(schema_pairs)}"
+        )
+    if schema_pairs and gateway_pairs and schema_pairs != gateway_pairs:
+        errors.append(
+            f"{schema_path}: schema-approved course-correction pairs must match gateway contract {sorted(gateway_pairs)}; found {sorted(schema_pairs)}"
+        )
+
+    expected_source_phases = {source for source, _target in schema_pairs}
+    expected_target_phases = {target for _source, target in schema_pairs}
+    source_enum = schema_string_enum(schema, "source_phase", schema_path, errors)
+    target_enum = schema_string_enum(schema, "target_phase", schema_path, errors)
+    if source_enum and expected_source_phases and source_enum != expected_source_phases:
+        errors.append(
+            f"{schema_path}: `source_phase` enum must match approved jump sources {sorted(expected_source_phases)}; found {sorted(source_enum)}"
+        )
+    if target_enum and expected_target_phases and target_enum != expected_target_phases:
+        errors.append(
+            f"{schema_path}: `target_phase` enum must match approved jump targets {sorted(expected_target_phases)}; found {sorted(target_enum)}"
+        )
+    if schema.get("additionalProperties") is not False:
+        errors.append(f"{schema_path}: `additionalProperties` must be `false` to keep the course-correction contract closed")
+
+
+def snapshot_file_tree(root: Path) -> dict[str, bytes]:
+    return {
+        str(path.relative_to(root)): path.read_bytes()
+        for path in sorted(root.rglob("*"))
+        if path.is_file()
+    }
 
 
 def validate_gotchas_block(source: Path, text: str, errors: list[str], *, source_label: str) -> None:
@@ -418,6 +719,12 @@ def validate_manifest_skill_status(manifest: dict, errors: list[str]) -> None:
             continue
 
         if isinstance(qa, dict):
+            if status != "draft":
+                missing = sorted({"structure_validation_path", "eval_strategy_path"} - set(qa))
+                if missing:
+                    errors.append(
+                        f"{MANIFEST_PATH}: skill `{name}` with status `{status}` is missing QA review artifacts {', '.join(missing)}"
+                    )
             for key, rel_path in qa.items():
                 if not key.endswith("_path"):
                     continue
@@ -455,6 +762,15 @@ def validate_manifest_skill_status(manifest: dict, errors: list[str]) -> None:
             if missing:
                 errors.append(
                     f"{MANIFEST_PATH}: critical skill `{name}` with status `{status}` is missing QA artifacts {', '.join(missing)}"
+                )
+        if qa_tier == "critical" and status == "review":
+            if "findings_path" not in (qa or {}):
+                errors.append(
+                    f"{MANIFEST_PATH}: critical skill `{name}` with status `review` must define `qa.findings_path`"
+                )
+            if not any(path in (qa or {}) for path in CRITICAL_REVIEW_DEPTH_PATHS):
+                errors.append(
+                    f"{MANIFEST_PATH}: critical skill `{name}` with status `review` must define one substantive review artifact from {sorted(CRITICAL_REVIEW_DEPTH_PATHS)}"
                 )
         if qa_tier == "critical" and status in {"secure", "production"}:
             missing = sorted({"security_review_path"} - set(qa or {}))
@@ -619,6 +935,12 @@ def validate_artifact_schema_registry(manifest: dict, errors: list[str]) -> None
         except Exception as exc:
             errors.append(f"{schema_path}: failed to parse JSON schema: {exc}")
             continue
+        if artifact_name == "intake-brief":
+            validate_intake_brief_schema_contract(schema, schema_path, manifest, errors)
+        if artifact_name in {"problem-frame", "requirements-doc"}:
+            validate_language_boundary_schema_contract(schema, schema_path, errors)
+        if artifact_name == "course-correction-note":
+            validate_course_correction_schema_contract(schema, schema_path, errors)
         template_rel = entry.get("template_path")
         if isinstance(template_rel, str):
             template_path = ROOT / template_rel
@@ -637,6 +959,8 @@ def validate_artifact_schema_registry(manifest: dict, errors: list[str]) -> None
 
 def validate_cross_cutting_matrix(manifest: dict, errors: list[str]) -> None:
     matrix = load_yaml_file(MATRIX_PATH, errors)
+    if matrix.get("schema_version") != "cross-cutting-matrix.v2":
+        errors.append(f"{MATRIX_PATH}: `schema_version` must be `cross-cutting-matrix.v2`")
     entries = matrix.get("phases", [])
     if not isinstance(entries, list):
         errors.append(f"{MATRIX_PATH}: `phases` must be a list")
@@ -654,18 +978,53 @@ def validate_cross_cutting_matrix(manifest: dict, errors: list[str]) -> None:
             errors.append(f"{MATRIX_PATH}: phase `{phase_id}` is not declared in manifest phases")
             continue
         seen_phase_ids.add(phase_id)
-        required = entry.get("required", [])
+        must_consider = entry.get("must_consider", [])
+        must_produce = entry.get("must_produce", [])
+        skip_when_fast_track = entry.get("skip_when_fast_track", [])
         conditional = entry.get("conditional", [])
-        if not isinstance(required, list):
-            errors.append(f"{MATRIX_PATH}: phase `{phase_id}` field `required` must be a list")
-            required = []
+
+        if not isinstance(must_consider, list):
+            errors.append(f"{MATRIX_PATH}: phase `{phase_id}` field `must_consider` must be a list")
+            must_consider = []
+        if not isinstance(must_produce, list):
+            errors.append(f"{MATRIX_PATH}: phase `{phase_id}` field `must_produce` must be a list")
+            must_produce = []
+        if not isinstance(skip_when_fast_track, list):
+            errors.append(f"{MATRIX_PATH}: phase `{phase_id}` field `skip_when_fast_track` must be a list")
+            skip_when_fast_track = []
         if not isinstance(conditional, list):
             errors.append(f"{MATRIX_PATH}: phase `{phase_id}` field `conditional` must be a list")
             conditional = []
-        conditional_skill_names: set[str] = set()
-        for skill_name in required:
+
+        must_consider_names: list[str] = []
+        for skill_name in must_consider:
+            if not isinstance(skill_name, str):
+                errors.append(f"{MATRIX_PATH}: phase `{phase_id}` `must_consider` entries must be skill names")
+                continue
+            must_consider_names.append(skill_name)
             if skill_name not in skill_names:
-                errors.append(f"{MATRIX_PATH}: phase `{phase_id}` references unknown required skill `{skill_name}`")
+                errors.append(f"{MATRIX_PATH}: phase `{phase_id}` references unknown `must_consider` skill `{skill_name}`")
+
+        must_produce_skill_names: set[str] = set()
+        for item in must_produce:
+            if not isinstance(item, dict) or "skill" not in item or "when" not in item:
+                errors.append(f"{MATRIX_PATH}: phase `{phase_id}` `must_produce` entries must include `skill` and `when`")
+                continue
+            skill_name = item["skill"]
+            must_produce_skill_names.add(skill_name)
+            if skill_name not in skill_names:
+                errors.append(f"{MATRIX_PATH}: phase `{phase_id}` references unknown `must_produce` skill `{skill_name}`")
+
+        skip_fast_track_names: list[str] = []
+        for skill_name in skip_when_fast_track:
+            if not isinstance(skill_name, str):
+                errors.append(f"{MATRIX_PATH}: phase `{phase_id}` `skip_when_fast_track` entries must be skill names")
+                continue
+            skip_fast_track_names.append(skill_name)
+            if skill_name not in skill_names:
+                errors.append(f"{MATRIX_PATH}: phase `{phase_id}` references unknown `skip_when_fast_track` skill `{skill_name}`")
+
+        conditional_skill_names: set[str] = set()
         for item in conditional:
             if not isinstance(item, dict) or "skill" not in item or "when" not in item:
                 errors.append(f"{MATRIX_PATH}: phase `{phase_id}` conditional entries must include `skill` and `when`")
@@ -674,9 +1033,28 @@ def validate_cross_cutting_matrix(manifest: dict, errors: list[str]) -> None:
             conditional_skill_names.add(skill_name)
             if skill_name not in skill_names:
                 errors.append(f"{MATRIX_PATH}: phase `{phase_id}` references unknown conditional skill `{skill_name}`")
-        overlap = set(required).intersection(conditional_skill_names)
+
+        if len(must_consider_names) != len(set(must_consider_names)):
+            errors.append(f"{MATRIX_PATH}: phase `{phase_id}` duplicates `must_consider` skills")
+        if len(skip_fast_track_names) != len(set(skip_fast_track_names)):
+            errors.append(f"{MATRIX_PATH}: phase `{phase_id}` duplicates `skip_when_fast_track` skills")
+        if len(conditional_skill_names) != len(conditional):
+            errors.append(f"{MATRIX_PATH}: phase `{phase_id}` duplicates conditional skills")
+        if len(must_produce_skill_names) != len(must_produce):
+            errors.append(f"{MATRIX_PATH}: phase `{phase_id}` duplicates `must_produce` skills")
+
+        must_consider_set = set(must_consider_names)
+        skip_fast_track_set = set(skip_fast_track_names)
+        overlap = must_consider_set.intersection(conditional_skill_names)
         if overlap:
-            errors.append(f"{MATRIX_PATH}: phase `{phase_id}` duplicates required and conditional skills {sorted(overlap)}")
+            errors.append(f"{MATRIX_PATH}: phase `{phase_id}` duplicates `must_consider` and conditional skills {sorted(overlap)}")
+        overlap = must_produce_skill_names.intersection(conditional_skill_names)
+        if overlap:
+            errors.append(f"{MATRIX_PATH}: phase `{phase_id}` duplicates `must_produce` and conditional skills {sorted(overlap)}")
+        if not skip_fast_track_set.issubset(must_consider_set | must_produce_skill_names):
+            errors.append(
+                f"{MATRIX_PATH}: phase `{phase_id}` `skip_when_fast_track` must be a subset of `must_consider` or `must_produce`"
+            )
 
     if seen_phase_ids != phase_ids:
         missing = sorted(phase_ids - seen_phase_ids)
@@ -755,6 +1133,32 @@ def validate_curated_surface(errors: list[str]) -> None:
             bundled_path = skill_dir / rel_target[0] / rel_target[1]
             if not bundled_path.exists():
                 errors.append(f"{skill_file}: curated reference `{bundled_path.relative_to(ROOT)}` does not exist")
+
+    try:
+        from export_curated_skills import export_curated_skills
+    except Exception as exc:
+        errors.append(f"{Path(__file__).resolve()}: failed to import curated exporter for parity validation: {exc}")
+        return
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        temp_root = Path(tmpdir)
+        export_curated_skills(repo_root=ROOT, output_root=temp_root)
+        actual_tree = snapshot_file_tree(CURATED_SKILLS_DIR)
+        exported_tree = snapshot_file_tree(temp_root)
+        if actual_tree != exported_tree:
+            missing = sorted(exported_tree.keys() - actual_tree.keys())
+            extra = sorted(actual_tree.keys() - exported_tree.keys())
+            changed = sorted(
+                rel_path
+                for rel_path in actual_tree.keys() & exported_tree.keys()
+                if actual_tree[rel_path] != exported_tree[rel_path]
+            )
+            if missing:
+                errors.append(f"{CURATED_SKILLS_DIR}: curated parity mismatch, missing exported files {missing[:10]}")
+            if extra:
+                errors.append(f"{CURATED_SKILLS_DIR}: curated parity mismatch, extra checked-in files {extra[:10]}")
+            if changed:
+                errors.append(f"{CURATED_SKILLS_DIR}: curated parity mismatch, changed files {changed[:10]}")
 
 
 def main() -> int:

@@ -248,6 +248,17 @@ Persona reminder:
 - `roles` / personas are advisory unless persona-specific evaluation proves a runtime difference.
 - Do not describe persona behavior as validated simply because a persona file exists.
 
+### QA Tier Policy
+
+`qa_tier` is a behavioral policy, not a decorative label. The validator and curated export rules treat the two tiers differently:
+
+| Tier | Use For | Review Gate | Tested Gate | Secure / Production Additions | Curated Export |
+|------|---------|-------------|-------------|-------------------------------|----------------|
+| `critical` | entry control plane, routing, implementation guardrails, security-sensitive delivery/operations skills | `structure_validation_path`, `eval_strategy_path`, `findings_path`, plus at least one substantive review artifact (`benchmark_plan_path`, `benchmark_results_path`, `security_check_path`, or `trigger_eval_results_path`) | `benchmark_results_path`, `integration_test_path`, and `findings_path` | `security_review_path` remains required for `secure` and `production`; `findings_path` carries the human review summary | eligible by default once the maturity bar is met |
+| `standard` | supporting, domain-specific, or narrower-scope skills | `structure_validation_path` and `eval_strategy_path` | follow the default `evaluation_mode`-specific gates | security review still applies before `secure` / `production` when the status advances | requires `manual_allowlist: true` in the distribution registry |
+
+This split keeps `critical` skills on a deeper evidence path without forcing the same review cost onto every supporting skill.
+
 ### Evaluation Modes
 
 Prodcraft uses two QA modes because not every Anthropic-native skill should be judged mainly by discoverability:

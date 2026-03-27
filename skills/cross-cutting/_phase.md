@@ -27,11 +27,11 @@ Cross-cutting skills are triggered by context, not by phase transitions:
 
 ## Integration Pattern
 
-Cross-cutting skills are incorporated into the Definition of Done for each phase:
-- Code review checks for observability (structured events, logs, metrics, usage accounting where relevant)
-- PR checklists include accessibility verification
-- Sprint definition of done includes documentation updates
-- Release checklists include compliance verification
+Cross-cutting skills are incorporated into the lifecycle through four obligation types:
+- `must_consider` means the phase owner must explicitly decide whether the concern changes the work
+- `must_produce` means durable output is required when the stated condition is met
+- `skip_when_fast_track` documents which otherwise-expected durable outputs may be waived on approved `intake_mode=fast-track` routes
+- `conditional` means the skill activates only when the listed trigger is true
 
 The authoritative phase-by-phase injection contract lives in `rules/cross-cutting-matrix.yml`.
 

@@ -8,11 +8,12 @@
     "schema_version",
     "status",
     "request_summary",
+    "source_language",
+    "artifact_record_language",
+    "user_presentation_locale",
     "intake_mode",
     "work_type",
     "entry_phase",
-    "workflow_primary",
-    "workflow_overlays",
     "scope_assessment",
     "recommended_next_skill",
     "routing_rationale",
@@ -26,15 +27,61 @@
     "schema_version": { "const": "intake-brief.v1" },
     "status": { "enum": ["draft", "approved"] },
     "request_summary": { "type": "string" },
+    "source_language": { "enum": ["en", "zh", "mixed"] },
+    "artifact_record_language": { "const": "en" },
+    "user_presentation_locale": { "enum": ["en", "zh"] },
     "intake_mode": { "enum": ["full", "fast-track", "resume"] },
-    "work_type": { "type": "string" },
-    "entry_phase": { "type": "string" },
-    "workflow_primary": { "type": "string" },
+    "work_type": {
+      "enum": [
+        "New Product",
+        "New Product (regulated/complex)",
+        "New Feature",
+        "Enhancement",
+        "Bug Fix",
+        "Hotfix",
+        "Refactoring",
+        "Migration",
+        "Migration (phase-gated enterprise)",
+        "Tech Debt",
+        "Spike/Research",
+        "Documentation"
+      ]
+    },
+    "entry_phase": {
+      "enum": [
+        "00-discovery",
+        "01-specification",
+        "02-architecture",
+        "03-planning",
+        "04-implementation",
+        "05-quality",
+        "06-delivery",
+        "07-operations",
+        "08-evolution",
+        "cross-cutting"
+      ]
+    },
+    "workflow_primary": {
+      "enum": [
+        "agile-sprint",
+        "iterative-waterfall",
+        "spec-driven"
+      ]
+    },
     "workflow_overlays": {
       "type": "array",
-      "items": { "type": "string" }
+      "items": {
+        "enum": [
+          "brownfield",
+          "greenfield",
+          "hotfix"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
     },
     "scope_assessment": { "enum": ["small", "medium", "large", "xlarge"] },
+    "urgency": { "type": "string" },
     "recommended_next_skill": { "type": "string" },
     "routing_rationale": { "type": "string" },
     "key_risks": {
@@ -48,5 +95,46 @@
     "routing_changed_by_answers": { "type": "boolean" },
     "approver": { "type": "string" }
   },
-  "additionalProperties": true
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "intake_mode": {
+            "enum": [
+              "full",
+              "resume"
+            ]
+          }
+        },
+        "required": [
+          "intake_mode"
+        ]
+      },
+      "then": {
+        "required": [
+          "workflow_primary"
+        ]
+      }
+    },
+    {
+      "if": {
+        "not": {
+          "required": [
+            "workflow_primary"
+          ]
+        }
+      },
+      "then": {
+        "properties": {
+          "intake_mode": {
+            "const": "fast-track"
+          }
+        },
+        "required": [
+          "intake_mode"
+        ]
+      }
+    }
+  ]
 }

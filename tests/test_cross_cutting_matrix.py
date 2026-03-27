@@ -14,6 +14,8 @@ class CrossCuttingMatrixTests(unittest.TestCase):
         manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
         matrix = yaml.safe_load((REPO_ROOT / "rules" / "cross-cutting-matrix.yml").read_text(encoding="utf-8"))
 
+        self.assertEqual("cross-cutting-matrix.v2", matrix["schema_version"])
+
         phase_ids = {phase["id"] for phase in manifest["phases"]}
         skill_names = {skill["name"] for skill in manifest["skills"]}
 
@@ -21,10 +23,15 @@ class CrossCuttingMatrixTests(unittest.TestCase):
         self.assertEqual(phase_ids, {entry["phase_id"] for entry in entries})
 
         for entry in entries:
-            required = set(entry.get("required", []))
+            must_consider = set(entry.get("must_consider", []))
+            must_produce = {item["skill"] for item in entry.get("must_produce", [])}
+            skip_when_fast_track = set(entry.get("skip_when_fast_track", []))
             conditional = {item["skill"] for item in entry.get("conditional", [])}
-            self.assertTrue(required.isdisjoint(conditional))
-            for skill_name in required | conditional:
+            self.assertIn("documentation", must_consider)
+            self.assertTrue(must_consider.isdisjoint(conditional))
+            self.assertTrue(must_produce.isdisjoint(conditional))
+            self.assertTrue(skip_when_fast_track.issubset(must_consider | must_produce))
+            for skill_name in must_consider | must_produce | skip_when_fast_track | conditional:
                 self.assertIn(skill_name, skill_names)
 
 

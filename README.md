@@ -87,6 +87,15 @@ The stable public install surface is `skills/.curated/`.
 - `skills/00-discovery/` through `skills/cross-cutting/` remain the authoring source of truth
 - `skills/.curated/` is the install and upgrade contract consumed by `npx skills add/update`
 - regenerate the curated surface with `python3 scripts/export_curated_skills.py`
+- validate curated parity with `python3 scripts/validate_prodcraft.py --check curated-surface`
+
+## Pressure-Test Protocol
+
+Prodcraft now treats subtractive governance as an evidence problem.
+
+- pressure-test scenarios live in `eval/meta/prodcraft-pressure-tests/`
+- use them to measure first-route correctness, clarification count, cross-cutting activation, unused artifacts, and course-correction frequency
+- only turn repeated friction into deletion or simplification candidates; do not add a new guardrail before the pressure-test evidence says the failure mode is real
 
 ## Project Structure
 

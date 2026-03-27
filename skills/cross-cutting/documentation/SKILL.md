@@ -24,6 +24,8 @@ metadata:
 
 Documentation is a cross-cutting concern that applies at every lifecycle phase. Good documentation reduces onboarding time, prevents knowledge loss, and enables async collaboration. The Diataxis framework provides a useful structure.
 
+In the phase matrix, `documentation` is always a `must_consider` concern. It only becomes a `must_produce` obligation when the change creates durable knowledge another person or later phase must rely on. Approved `intake_mode=fast-track` work may waive routine documentation updates, but it does not waive durable docs when the change would otherwise leave important knowledge implicit.
+
 ## Diataxis Framework
 
 Organize documentation into four types:
@@ -47,6 +49,11 @@ What documentation is needed? Common triggers:
 - Architecture decision made (ADR for future developers)
 - Incident resolved (runbook to prevent recurrence)
 - New team member joining (onboarding tutorial)
+
+Before writing, classify the need explicitly:
+- `must_consider` only: verify that no durable doc update is needed and record that decision in the surrounding artifact or handoff
+- `must_produce`: create or update the durable doc because downstream work, operators, or users would otherwise lose context
+- `skip_when_fast_track`: only use the waiver when the route is explicitly fast-tracked and the change does not create durable knowledge debt
 
 ### Step 2: Write for Your Audience
 

@@ -21,6 +21,13 @@ def load_module():
 
 
 class CuratedDistributionSurfaceTests(unittest.TestCase):
+    def snapshot_file_tree(self, root: Path) -> dict[str, bytes]:
+        return {
+            str(path.relative_to(root)): path.read_bytes()
+            for path in sorted(root.rglob("*"))
+            if path.is_file()
+        }
+
     def test_curated_surface_contains_core_public_skills(self):
         index = json.loads((CURATED_DIR / "index.json").read_text(encoding="utf-8"))
         exported_names = {entry["name"] for entry in index["skills"]}
@@ -43,6 +50,7 @@ class CuratedDistributionSurfaceTests(unittest.TestCase):
             self.assertIn("prodcraft", result["skills"])
             self.assertTrue((output_root / "prodcraft" / "SKILL.md").exists())
             self.assertTrue((output_root / "intake" / "SKILL.md").exists())
+            self.assertEqual(self.snapshot_file_tree(output_root), self.snapshot_file_tree(CURATED_DIR))
 
     def test_exported_skills_do_not_have_dangling_packaged_references(self):
         for skill_path in CURATED_DIR.glob("*/SKILL.md"):

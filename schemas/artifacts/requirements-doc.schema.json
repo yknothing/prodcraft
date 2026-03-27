@@ -7,6 +7,9 @@
     "artifact",
     "schema_version",
     "status",
+    "source_language",
+    "artifact_record_language",
+    "user_presentation_locale",
     "requirements",
     "acceptance_summary"
   ],
@@ -14,11 +17,14 @@
     "artifact": { "const": "requirements-doc" },
     "schema_version": { "const": "requirements-doc.v1" },
     "status": { "enum": ["draft", "reviewed", "approved"] },
+    "source_language": { "enum": ["en", "zh", "mixed"] },
+    "artifact_record_language": { "const": "en" },
+    "user_presentation_locale": { "enum": ["en", "zh"] },
     "requirements": {
       "type": "array",
       "items": { "type": "string" }
     },
     "acceptance_summary": { "type": "string" }
   },
-  "additionalProperties": true
+  "additionalProperties": false
 }

@@ -62,4 +62,4 @@ Requirements come first. Domain modeling and spec writing can overlap. Acceptanc
 
 ## Cross-Cutting Matrix
 
-See `rules/cross-cutting-matrix.yml` for required and conditional cross-cutting skills at this phase.
+See `rules/cross-cutting-matrix.yml` for `must_consider`, `must_produce`, `skip_when_fast_track`, and `conditional` cross-cutting obligations at this phase.

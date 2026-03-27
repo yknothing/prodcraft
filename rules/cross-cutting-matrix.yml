@@ -1,7 +1,12 @@
-schema_version: cross-cutting-matrix.v1
+schema_version: cross-cutting-matrix.v2
 phases:
   - phase_id: 00-discovery
-    required:
+    must_consider:
+      - documentation
+    must_produce:
+      - skill: documentation
+        when: discovery decisions create durable product, workflow, or architecture guidance that downstream work must reuse
+    skip_when_fast_track:
       - documentation
     conditional:
       - skill: observability
@@ -11,7 +16,12 @@ phases:
       - skill: compliance
         when: regulated discovery constraints apply
   - phase_id: 01-specification
-    required:
+    must_consider:
+      - documentation
+    must_produce:
+      - skill: documentation
+        when: specification decisions create durable product, interface, or acceptance guidance that downstream work must reuse
+    skip_when_fast_track:
       - documentation
     conditional:
       - skill: internationalization
@@ -21,7 +31,12 @@ phases:
       - skill: compliance
         when: regulatory requirements shape the spec
   - phase_id: 02-architecture
-    required:
+    must_consider:
+      - documentation
+    must_produce:
+      - skill: documentation
+        when: architecture decisions change durable diagrams, ADRs, interfaces, or operational guidance
+    skip_when_fast_track:
       - documentation
     conditional:
       - skill: observability
@@ -29,7 +44,12 @@ phases:
       - skill: compliance
         when: architecture must satisfy regulatory controls
   - phase_id: 03-planning
-    required:
+    must_consider:
+      - documentation
+    must_produce:
+      - skill: documentation
+        when: planning decisions create durable sequencing, ownership, or rollout guidance others must follow
+    skip_when_fast_track:
       - documentation
     conditional:
       - skill: observability
@@ -37,7 +57,12 @@ phases:
       - skill: compliance
         when: delivery sequencing includes regulatory sign-off
   - phase_id: 04-implementation
-    required:
+    must_consider:
+      - documentation
+    must_produce:
+      - skill: documentation
+        when: code changes require durable user, developer, operator, or migration-facing documentation
+    skip_when_fast_track:
       - documentation
     conditional:
       - skill: observability
@@ -49,7 +74,12 @@ phases:
       - skill: bug-history-retrieval
         when: a failure may match historical incidents or regressions
   - phase_id: 05-quality
-    required:
+    must_consider:
+      - documentation
+    must_produce:
+      - skill: documentation
+        when: verification creates durable release criteria, known limitations, audit notes, or recovery guidance
+    skip_when_fast_track:
       - documentation
     conditional:
       - skill: observability
@@ -59,7 +89,12 @@ phases:
       - skill: compliance
         when: release evidence must satisfy regulatory checks
   - phase_id: 06-delivery
-    required:
+    must_consider:
+      - documentation
+    must_produce:
+      - skill: documentation
+        when: shipping changes release, rollout, rollback, or operator instructions that others must follow
+    skip_when_fast_track:
       - documentation
     conditional:
       - skill: observability
@@ -67,7 +102,12 @@ phases:
       - skill: compliance
         when: shipping requires regulatory evidence or approvals
   - phase_id: 07-operations
-    required:
+    must_consider:
+      - documentation
+    must_produce:
+      - skill: documentation
+        when: incidents or operational changes modify runbooks, escalation paths, dashboards, or recovery guidance
+    skip_when_fast_track:
       - documentation
     conditional:
       - skill: observability
@@ -77,7 +117,12 @@ phases:
       - skill: compliance
         when: incident handling has regulatory reporting obligations
   - phase_id: 08-evolution
-    required:
+    must_consider:
+      - documentation
+    must_produce:
+      - skill: documentation
+        when: retrospective, migration, or deprecation work changes long-lived process or transition guidance
+    skip_when_fast_track:
       - documentation
     conditional:
       - skill: observability

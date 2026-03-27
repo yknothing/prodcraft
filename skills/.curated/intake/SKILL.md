@@ -37,13 +37,13 @@ Intake is the control plane for all engineering work in Prodcraft. Every piece o
 
 ## Outputs
 
-- **intake-brief** -- structured routing record: request summary, intake mode, work type, entry phase, `workflow_primary`, `workflow_overlays`, next skill, routing rationale, key risks
+- **intake-brief** -- structured routing record: request summary, `source_language`, `artifact_record_language`, `user_presentation_locale`, intake mode, work type, entry phase, workflow metadata (`workflow_primary` when governance is explicit, `workflow_overlays` when an overlay is active), next skill, routing rationale, key risks
 - **phase-recommendation** -- the lifecycle phase where work should begin
 - **workflow-recommendation** -- the methodology best suited to the work
 
 ## Quality Gate
 
-- [ ] Intake brief produced and approved by the user, covering work type, entry phase, `workflow_primary`, `workflow_overlays`, and key risks.
+- [ ] Intake brief produced and approved by the user, covering work type, entry phase, any explicit workflow metadata needed for the route, and key risks.
 - [ ] Next skill to invoke is explicitly named in the brief (not a generic phase label).
 - [ ] Fast-track rationale documented if intake was shortened.
 
@@ -98,6 +98,16 @@ Do NOT output this exploration. Internalize it to inform your questions.
 | **Spike/Research** | Investigating unknowns | 00-discovery | agile-sprint | none |
 | **Documentation** | Creating or improving docs | cross-cutting | agile-sprint | none |
 
+Use the **Type** labels above verbatim when recording `work_type`.
+
+For new-work routing, use the **Entry Phase** tokens above verbatim. `cross-cutting` is the only non-lifecycle special value and is reserved for documentation-only routing. For `resume`, `entry_phase` may point to any already-active lifecycle phase that needs to continue.
+
+Use the declared primary workflow name verbatim when recording `workflow_primary` (`agile-sprint`, `spec-driven`, or `iterative-waterfall`).
+
+For `fast-track`, omit `workflow_primary` when the route stays direct enough that the primary workflow does not materially change the handoff. Keep it explicit for `full` and `resume`.
+
+Record `workflow_overlays` only when one or more overlays are active. Omit the field instead of emitting an empty list.
+
 ### Step 3: Ask Clarifying Questions
 
 Ask questions **one at a time**, adapting based on answers. Start with the most important unknown.
@@ -129,8 +139,8 @@ Name concrete Prodcraft skills whenever the next step is already known. Avoid ge
 **Work type**: [classification from Step 2]
 **Entry phase**: [which lifecycle phase]
 **Intake mode**: [full / fast-track / resume]
-**workflow_primary**: [primary governance workflow]
-**workflow_overlays**: [[overlay list]]
+**workflow_primary**: [primary governance workflow, if explicit for this route]
+**workflow_overlays**: [[overlay list], omit when none]
 **Key skills needed**: [3-7 concrete Prodcraft skills, or clearly marked open routing questions]
 **Scope assessment**: [small / medium / large / xlarge]
 **routing_rationale**: [why this route wins]
@@ -166,10 +176,13 @@ Intake must leave behind a usable record of **why** the work entered the system 
 
 The `intake-brief` must capture:
 - `request_summary`
+- `source_language` (`en`, `zh`, or `mixed`) for the incoming request
+- `artifact_record_language` for the canonical artifact record (`en` under current repo policy)
+- `user_presentation_locale` for the language used when presenting the intake result to the user
 - why intake was invoked, fast-tracked, or resumed
 - `intake_mode`
 - the key questions asked and the answers that changed routing
-- `workflow_primary` and `workflow_overlays`
+- `workflow_primary` when the route depends on explicit primary governance, and `workflow_overlays` when overlays are active
 - the recommended path and any meaningful alternative considered
 - the next skill to invoke and the reason it is next
 

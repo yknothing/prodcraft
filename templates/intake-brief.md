@@ -12,11 +12,14 @@ Use this template whenever `intake` routes new work into a workflow.
 ## Work Summary
 
 - request_summary:
+- source_language:
+- artifact_record_language: `en`
+- user_presentation_locale:
 - intake_mode:
 - work_type:
 - entry_phase:
-- workflow_primary:
-- workflow_overlays:
+- workflow_primary: `required for full/resume; omit when fast-track routing keeps the primary workflow implicit`
+- workflow_overlays: `omit when no overlay is active`
 - scope_assessment:
 - urgency:
 

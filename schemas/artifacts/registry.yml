@@ -15,6 +15,7 @@ artifacts:
   requirements-doc:
     schema_version: requirements-doc.v1
     schema_path: schemas/artifacts/requirements-doc.schema.json
+    template_path: templates/requirements-doc.md
   review-report:
     schema_version: review-report.v1
     schema_path: schemas/artifacts/review-report.schema.json
