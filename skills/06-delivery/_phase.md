@@ -29,6 +29,7 @@ Code is deployed to production and verified. Smoke tests pass in production. Mon
 | Skill | Purpose | Effort |
 |---|---|---|
 | ci-cd | Automate build, test, and deployment pipelines | medium |
+| delivery-completion | Turn verified work into an explicit merge/PR/keep/discard outcome | small |
 | release-management | Coordinate the release process across teams | medium |
 | deployment-strategy | Choose and execute the right deployment pattern | medium |
 | feature-flags | Control feature rollout independently from deployment | small |
@@ -43,12 +44,12 @@ Code is deployed to production and verified. Smoke tests pass in production. Mon
 ## Skill Sequence
 
 ```
-ci-cd ──> release-management ──> deployment-strategy
-                                  │
-                            feature-flags
+ci-cd ──> delivery-completion ──> release-management ──> deployment-strategy
+                                                         │
+                                                   feature-flags
 ```
 
-CI/CD is the foundation. Release management coordinates the human process and readiness decision. Deployment strategy turns that plan into a concrete rollout and rollback path. Feature flags decouple deployment from release.
+CI/CD is the foundation. Delivery completion makes the verified branch or PR outcome explicit. Release management coordinates the human process and readiness decision. Deployment strategy turns that plan into a concrete rollout and rollback path. Feature flags decouple deployment from release.
 
 In brownfield work, delivery must prove the release can fail closed and recover safely; CI/CD is part of that control surface, not just automation glue.
 

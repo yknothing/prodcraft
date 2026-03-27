@@ -4,6 +4,7 @@ description: Use when a tested release candidate needs a coordinated go/no-go de
 metadata:
   phase: 06-delivery
   inputs:
+  - delivery-decision-record
   - test-report
   - security-report
   - performance-report
@@ -33,6 +34,7 @@ Use this skill when a release has external coordination cost, meaningful risk, o
 
 ## Inputs
 
+- **delivery-decision-record** -- Optional but preferred handoff when `delivery-completion` already decided the branch outcome and preserved the exact verification evidence used.
 - **test-report** -- Functional readiness and known quality gaps.
 - **security-report** -- Security findings and any accepted release risk.
 - **performance-report** -- Performance readiness and capacity-sensitive concerns when one exists.
@@ -41,7 +43,7 @@ Use this skill when a release has external coordination cost, meaningful risk, o
 
 ### Step 1: Decide the Release Scope
 
-Confirm what is in, what is out, which findings are accepted, and which conditions would block the release. Do not carry unresolved scope ambiguity into the deployment window.
+Confirm what is in, what is out, which findings are accepted, and which conditions would block the release. If a `delivery-decision-record` exists, anchor the release scope to that recorded branch or PR outcome instead of reconstructing the completion state from memory. Do not carry unresolved scope ambiguity into the deployment window.
 
 ### Step 2: Make the Go/No-Go Explicit
 

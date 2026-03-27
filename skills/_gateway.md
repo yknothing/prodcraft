@@ -45,7 +45,7 @@ Match based on what phase the work is currently in:
 | Breaking down work | 03-planning | task-breakdown, estimation, risk-assessment |
 | Writing code or tactically executing an approved slice | 04-implementation | task-execution, systematic-debugging, tdd, feature-development, refactoring |
 | Reviewing/testing | 05-quality | code-review, receiving-code-review, testing-strategy, security-audit |
-| Deploying/releasing | 06-delivery | ci-cd, deployment-strategy, release-management |
+| Deploying/releasing | 06-delivery | ci-cd, delivery-completion, deployment-strategy, release-management |
 | Monitoring/responding | 07-operations | monitoring-observability, incident-response |
 | Improving/modernizing | 08-evolution | tech-debt-management, migration-strategy, retrospective |
 
@@ -265,6 +265,7 @@ Prodcraft is designed to complement, not replace, existing skill systems. If you
 - `requesting-code-review` maps to phase 05 quality skills
 - `receiving-code-review` maps directly to repo-local phase 05 quality review follow-up
 - `verification-before-completion` remains as a repo-local cross-cutting gate
+- `finishing-a-development-branch` maps most closely to repo-local `delivery-completion`, with `release-management` and `deployment-strategy` added only when the work continues toward shipping
 
 Use whichever skill system is more appropriate for the context. Prodcraft adds lifecycle awareness; existing skills may have deeper domain-specific guidance.
 

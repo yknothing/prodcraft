@@ -359,6 +359,11 @@ skills:
     benchmark_plan_path: eval/06-delivery/ci-cd/isolated-benchmark-plan.md
     findings_path: eval/06-delivery/ci-cd/findings.md
     integration_test_path: eval/06-delivery/ci-cd/pipeline-review.md
+- name: delivery-completion
+  phase: 06-delivery
+  file: skills/06-delivery/delivery-completion/SKILL.md
+  status: draft
+  qa_tier: critical
 - name: deployment-strategy
   phase: 06-delivery
   file: skills/06-delivery/deployment-strategy/SKILL.md
@@ -819,6 +824,7 @@ artifact_flow:
   consumed_by:
   - verification-before-completion
   - receiving-code-review
+  - delivery-completion
 - artifact: bug-fix-report
   produced_by: systematic-debugging
   consumed_by:
@@ -873,6 +879,10 @@ artifact_flow:
   produced_by: release-management
   consumed_by:
   - deployment-strategy
+- artifact: delivery-decision-record
+  produced_by: delivery-completion
+  consumed_by:
+  - release-management
 - artifact: deployment-runbook
   produced_by: deployment-strategy
   consumed_by:
@@ -952,6 +962,7 @@ artifact_flow:
 - artifact: verification-record
   produced_by: verification-before-completion
   consumed_by:
+  - delivery-completion
   - release-management
   - deployment-strategy
   - incident-response
