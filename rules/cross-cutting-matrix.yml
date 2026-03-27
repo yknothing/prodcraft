@@ -65,6 +65,8 @@ phases:
     skip_when_fast_track:
       - documentation
     conditional:
+      - skill: verification-before-completion
+        when: the team is about to claim an implementation fix, task slice, or fast-track change is complete or ready for handoff
       - skill: observability
         when: code changes AI execution paths, workflow boundaries, or benchmark runners
       - skill: accessibility
@@ -82,6 +84,8 @@ phases:
     skip_when_fast_track:
       - documentation
     conditional:
+      - skill: verification-before-completion
+        when: the team is about to claim review, testing, or audit work is complete or release-ready
       - skill: observability
         when: verification depends on execution telemetry or route metadata
       - skill: accessibility
@@ -97,6 +101,8 @@ phases:
     skip_when_fast_track:
       - documentation
     conditional:
+      - skill: verification-before-completion
+        when: the team is about to claim a release, rollout, or deployment handoff is complete
       - skill: observability
         when: release automation, rollout boundaries, or benchmark paths change
       - skill: compliance
@@ -110,6 +116,8 @@ phases:
     skip_when_fast_track:
       - documentation
     conditional:
+      - skill: verification-before-completion
+        when: the team is about to claim an incident is resolved, a mitigation is sufficient, or an operational handoff is complete
       - skill: observability
         when: runbooks, alerts, or incident telemetry boundaries change
       - skill: bug-history-retrieval
@@ -125,6 +133,8 @@ phases:
     skip_when_fast_track:
       - documentation
     conditional:
+      - skill: verification-before-completion
+        when: the team is about to claim retrospective, migration, or debt follow-up work is complete
       - skill: observability
         when: retrospective findings rely on execution telemetry
       - skill: bug-history-retrieval

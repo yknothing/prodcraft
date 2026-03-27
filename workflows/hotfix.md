@@ -7,7 +7,7 @@ composes_with: ["*"]
 entry_skill: "intake"
 required_artifacts: ["intake-brief"]
 best_for: ["production-incidents", "security-vulnerabilities", "data-corruption"]
-phases_included: ["04-implementation", "05-quality", "06-delivery"]
+phases_included: ["07-operations", "04-implementation", "05-quality", "06-delivery"]
 ---
 
 # Hotfix Workflow
@@ -44,7 +44,7 @@ If none of these apply, use the standard workflow. Not everything urgent is a ho
 
 **Purpose:** Understand the impact, confirm the hotfix path, assign ownership.
 
-**Skills:** Apply `incident-response` and `documentation`.
+**Skills:** Apply `incident-response`, `bug-history-retrieval` when the failure may have lineage, and `documentation`.
 
 **Actions:**
 1. Assess severity: who is affected, how many, what is the business impact.
@@ -58,29 +58,31 @@ If none of these apply, use the standard workflow. Not everything urgent is a ho
 
 **Purpose:** Identify the root cause with enough precision to fix it safely.
 
-**Skills:** Apply `incident-response` and `documentation`.
+**Skills:** Apply `incident-response`, `bug-history-retrieval` when historical lineage may matter, `systematic-debugging` after containment, and `documentation`.
 
 **Actions:**
-1. Reproduce the issue or confirm it from production data.
-2. Identify the code path involved.
-3. Determine the minimal change required to resolve the issue.
-4. Assess blast radius: what else could this change affect?
+1. Confirm the current containment path and whether user impact is still active.
+2. Reproduce the issue or confirm it from production data.
+3. Check for historical incident or regression lineage before inventing a new theory.
+4. Identify the code path and root cause with enough evidence to justify the fix path.
+5. Assess blast radius: what else could this change affect?
 
-**Output:** Root cause identified, proposed fix scoped, blast radius assessed.
+**Output:** Root cause identified, bug-fix-report drafted, proposed fix scoped, blast radius assessed.
 
-**Key principle:** Fix the symptom now, fix the root cause properly later. If the root cause fix is complex, apply the minimum change that stops the bleeding.
+**Key principle:** Contain user impact first. Once impact is contained, identify root cause before writing the code fix. If the permanent fix is too large for the hotfix window, ship the smallest safe workaround and log the follow-up debt explicitly.
 
 ### Phase 4: Implementation (30 minutes - 4 hours)
 
 **Purpose:** Write the minimal, surgical fix.
 
-**Skills:** Apply `tdd` and `feature-development`.
+**Skills:** Apply `systematic-debugging`, `tdd`, and `feature-development`.
 
 **Actions:**
 1. Create a hotfix branch from the production release tag or branch.
-2. Write the fix -- minimal code change only. No refactoring, no cleanup, no "while I'm here" changes.
-3. Write a test that reproduces the original issue and verifies the fix.
-4. Self-review the change: is it the smallest possible fix? Could it introduce new issues?
+2. Confirm the bug-fix-report still matches the change being made.
+3. Write the fix -- minimal code change only. No refactoring, no cleanup, no "while I'm here" changes.
+4. Write a test that reproduces the original issue and verifies the fix.
+5. Self-review the change: is it the smallest possible fix? Could it introduce new issues?
 
 **Output:** Hotfix branch with fix and test.
 
@@ -94,7 +96,7 @@ If none of these apply, use the standard workflow. Not everything urgent is a ho
 
 **Purpose:** Verify the fix resolves the issue without introducing regressions.
 
-**Skills:** Apply `testing-strategy`, `code-review`, and `security-audit` when the hotfix addresses a vulnerability or trust-boundary failure.
+**Skills:** Apply `testing-strategy`, `code-review`, `verification-before-completion`, and `security-audit` when the hotfix addresses a vulnerability or trust-boundary failure.
 
 **Actions:**
 1. Run the automated test suite. All existing tests must pass.
@@ -115,7 +117,7 @@ If none of these apply, use the standard workflow. Not everything urgent is a ho
 
 **Purpose:** Deploy the fix to production with verification.
 
-**Skills:** Apply `ci-cd`, `deployment-strategy`, and `documentation`.
+**Skills:** Apply `ci-cd`, `deployment-strategy`, `verification-before-completion`, and `documentation`.
 
 **Actions:**
 1. Deploy to production using the standard deployment pipeline (do not bypass it).

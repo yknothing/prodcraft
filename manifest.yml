@@ -269,6 +269,17 @@ skills:
     benchmark_plan_path: eval/04-implementation/tdd/isolated-benchmark-plan.md
     findings_path: eval/04-implementation/tdd/findings.md
     integration_test_path: eval/04-implementation/tdd/task-handoff-review.md
+- name: systematic-debugging
+  phase: 04-implementation
+  file: skills/04-implementation/systematic-debugging/SKILL.md
+  status: review
+  qa_tier: critical
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/04-implementation/systematic-debugging/evals/eval-strategy.md
+    benchmark_plan_path: eval/04-implementation/systematic-debugging/isolated-benchmark-plan.md
+    findings_path: eval/04-implementation/systematic-debugging/findings.md
 - name: feature-development
   phase: 04-implementation
   file: skills/04-implementation/feature-development/SKILL.md
@@ -291,6 +302,17 @@ skills:
     benchmark_plan_path: eval/05-quality/code-review/isolated-benchmark-plan.md
     findings_path: eval/05-quality/code-review/findings.md
     integration_test_path: eval/05-quality/code-review/changeset-review.md
+- name: receiving-code-review
+  phase: 05-quality
+  file: skills/05-quality/receiving-code-review/SKILL.md
+  status: review
+  qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/05-quality/receiving-code-review/evals/eval-strategy.md
+    benchmark_plan_path: eval/05-quality/receiving-code-review/isolated-benchmark-plan.md
+    findings_path: eval/05-quality/receiving-code-review/findings.md
 - name: testing-strategy
   phase: 05-quality
   file: skills/05-quality/testing-strategy/SKILL.md
@@ -411,6 +433,17 @@ skills:
   file: skills/cross-cutting/bug-history-retrieval/SKILL.md
   status: draft
   qa_tier: standard
+- name: verification-before-completion
+  phase: cross-cutting
+  file: skills/cross-cutting/verification-before-completion/SKILL.md
+  status: review
+  qa_tier: critical
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/cross-cutting/verification-before-completion/evals/eval-strategy.md
+    benchmark_plan_path: eval/cross-cutting/verification-before-completion/isolated-benchmark-plan.md
+    findings_path: eval/cross-cutting/verification-before-completion/findings.md
 - name: accessibility
   phase: cross-cutting
   file: skills/cross-cutting/accessibility/SKILL.md
@@ -593,6 +626,7 @@ artifact_flow:
   - requirements-engineering
 - artifact: course-correction-note
   produced_by:
+  - systematic-debugging
   - feature-development
   - refactoring
   - code-review
@@ -741,6 +775,8 @@ artifact_flow:
   - feature-development
   - refactoring
   consumed_by:
+  - receiving-code-review
+  - systematic-debugging
   - refactoring
   - code-review
   - testing-strategy
@@ -750,18 +786,33 @@ artifact_flow:
 - artifact: test-suite
   produced_by: tdd
   consumed_by:
+  - receiving-code-review
+  - systematic-debugging
   - feature-development
   - refactoring
   - code-review
   - ci-cd
   - testing-strategy
+- artifact: bug-fix-report
+  produced_by: systematic-debugging
+  consumed_by:
+  - code-review
+  - verification-before-completion
+  - incident-response
+  - retrospective
 - artifact: review-report
   produced_by: code-review
   consumed_by:
+  - receiving-code-review
   - feature-development
   - refactoring
   - retrospective
   - tech-debt-management
+- artifact: review-response-record
+  produced_by: receiving-code-review
+  consumed_by:
+  - code-review
+  - verification-before-completion
 - artifact: test-report
   produced_by: testing-strategy
   consumed_by:
@@ -866,10 +917,18 @@ artifact_flow:
   - monitoring-observability
 - artifact: historical-defect-context
   produced_by: bug-history-retrieval
-  consumed_by: []
+  consumed_by:
+  - systematic-debugging
 - artifact: fix-lineage-brief
   produced_by: bug-history-retrieval
-  consumed_by: []
+  consumed_by:
+  - systematic-debugging
+- artifact: verification-record
+  produced_by: verification-before-completion
+  consumed_by:
+  - release-management
+  - deployment-strategy
+  - incident-response
 - artifact: accessibility-guidance
   produced_by: accessibility
   consumed_by: []

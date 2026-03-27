@@ -27,6 +27,7 @@ QA sign-off granted. All P0/P1 acceptance criteria pass. Code review completed w
 | Skill | Purpose | Effort |
 |---|---|---|
 | code-review | Ensure code quality, correctness, and maintainability | medium |
+| receiving-code-review | Verify and respond to review feedback with technical rigor | small |
 | testing-strategy | Design and execute comprehensive test plans | large |
 | security-audit | Identify and remediate security vulnerabilities | medium |
 | performance-audit | Validate performance against specified thresholds | medium |
@@ -41,13 +42,13 @@ QA sign-off granted. All P0/P1 acceptance criteria pass. Code review completed w
 ## Skill Sequence
 
 ```
-code-review ──> testing-strategy ──┐
-                                   ├──> QA sign-off
-security-audit ────────────────────┤
-performance-audit ─────────────────┘
+code-review <──> receiving-code-review ──> testing-strategy ──┐
+                                                               ├──> QA sign-off
+security-audit ────────────────────────────────────────────────┤
+performance-audit ─────────────────────────────────────────────┘
 ```
 
-Code review gates entry to broader testing. Security and performance audits can run in parallel with functional testing. All must pass for QA sign-off.
+Code review establishes the reviewer-side findings. `receiving-code-review` governs the author-side follow-up on those findings before broader testing closes out the phase. Security and performance audits can run in parallel with functional testing. All must pass for QA sign-off.
 
 In brownfield work, quality review must verify that coexistence and unsupported release-boundary behavior are still protected before broader QA sign-off proceeds.
 

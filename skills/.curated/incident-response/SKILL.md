@@ -102,7 +102,8 @@ Once mitigated, investigate root cause with less time pressure:
 - Build timeline (what happened, in what order)
 - Identify root cause (not just the symptom)
 - Compare observed behavior against the reviewed contract or release boundary
-- Implement proper fix
+- Hand off code-level root-cause work to `systematic-debugging` when the next step is a real code fix rather than an operational mitigation
+- Implement the proper fix only after the root-cause path is evidenced
 - Deploy fix with extra monitoring
 
 Do not invent precision under pressure. If sync semantics, tenancy rules, or rollout intent remain uncertain, record them as open incident questions and keep the system in the safer mode.
@@ -150,6 +151,7 @@ Blameless postmortem -- focus on systems, not people:
 
 - [ci-cd](../../06-delivery/ci-cd/SKILL.md) -- provides rollout, rollback, and release-boundary context
 - [monitoring-observability](../monitoring-observability/SKILL.md) -- provides the alerting that triggers response
+- [systematic-debugging](../../04-implementation/systematic-debugging/SKILL.md) -- takes over after containment when the next move is a code-level fix
 - [runbooks](../runbooks/SKILL.md) -- provides step-by-step response procedures
 - [retrospective](../../08-evolution/retrospective/SKILL.md) -- broader process improvement from incident patterns
 

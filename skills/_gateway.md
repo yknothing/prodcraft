@@ -28,6 +28,7 @@ These skills MUST be invoked before any work begins:
 | Trigger | Skill | Why |
 |---------|-------|-----|
 | New work of any kind | `intake` | Triage and route |
+| Bug, failing test, or unexpected behavior before a fix | `systematic-debugging` | Root cause before code change |
 | Implementation about to start | `tdd` | Tests before code |
 | Code complete, ready for merge | `code-review` | Quality gate |
 | About to claim "done" | `verification-before-completion` | Verify claims |
@@ -42,8 +43,8 @@ Match based on what phase the work is currently in:
 | Defining requirements | 01-specification | requirements-engineering, spec-writing, domain-modeling |
 | Designing system structure | 02-architecture | system-design, api-design, data-modeling, security-design |
 | Breaking down work | 03-planning | task-breakdown, estimation, risk-assessment |
-| Writing code | 04-implementation | tdd, feature-development, refactoring |
-| Reviewing/testing | 05-quality | code-review, testing-strategy, security-audit |
+| Writing code or debugging a local defect | 04-implementation | systematic-debugging, tdd, feature-development, refactoring |
+| Reviewing/testing | 05-quality | code-review, receiving-code-review, testing-strategy, security-audit |
 | Deploying/releasing | 06-delivery | ci-cd, deployment-strategy, release-management |
 | Monitoring/responding | 07-operations | monitoring-observability, incident-response |
 | Improving/modernizing | 08-evolution | tech-debt-management, migration-strategy, retrospective |
@@ -206,7 +207,7 @@ Not every task needs the full lifecycle. Fast-track criteria:
 | Condition | Allowed Shortcut |
 |-----------|-----------------|
 | Typo fix, comment update | Skip directly to implementation, minimal review |
-| Single-file bug fix with clear root cause | Skip to implementation with TDD |
+| Single-file bug fix with clear root cause | Skip to implementation with systematic-debugging + TDD |
 | Documentation-only change | Skip to cross-cutting/documentation |
 | Dependency update (patch) | Skip to implementation + quality |
 | Configuration change | Skip to implementation + deployment |
@@ -258,11 +259,12 @@ Do not enter a workflow unless the `intake-brief` exists and the user has approv
 Prodcraft is designed to complement, not replace, existing skill systems. If your environment has skills like `brainstorming`, `systematic-debugging`, or `writing-plans`:
 
 - `brainstorming` maps most closely to `intake` -> `problem-framing` -> discovery or specification skills
-- `systematic-debugging` maps to phase 04 implementation (debugging variant)
+- `systematic-debugging` maps directly to repo-local phase 04 implementation debugging
 - `writing-plans` maps to phase 03 planning skills
 - `executing-plans` maps to phase 04 implementation skills
 - `requesting-code-review` maps to phase 05 quality skills
-- `verification-before-completion` remains as a cross-cutting gate
+- `receiving-code-review` maps directly to repo-local phase 05 quality review follow-up
+- `verification-before-completion` remains as a repo-local cross-cutting gate
 
 Use whichever skill system is more appropriate for the context. Prodcraft adds lifecycle awareness; existing skills may have deeper domain-specific guidance.
 

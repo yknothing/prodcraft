@@ -27,6 +27,7 @@ All planned features are code-complete. Unit and integration tests pass. Code me
 
 | Skill | Purpose | Effort |
 |---|---|---|
+| systematic-debugging | Find root cause before code fixes and escalate structural mismatches cleanly | medium |
 | tdd | Write tests first to drive design and catch regressions | medium |
 | feature-development | Implement features incrementally and verifiably | large |
 | refactoring | Improve code structure without changing behavior | medium |
@@ -42,14 +43,16 @@ All planned features are code-complete. Unit and integration tests pass. Code me
 ## Skill Sequence
 
 ```
-tdd ←──→ feature-development ←──→ refactoring
-              ↑
-       pair-programming
+systematic-debugging ──> tdd ←──→ feature-development ←──→ refactoring
+                                  ↑
+                           pair-programming
 ```
 
-Implementation skills are iterative and interwoven. TDD and feature development form a tight loop. Refactoring happens continuously. Pair programming applies to any of the above.
+Implementation skills are iterative and interwoven. `systematic-debugging` establishes the defect boundary before code fixes. TDD and feature development form a tight loop. Refactoring happens continuously. Pair programming applies to any of the above.
 
 In brownfield work, implementation should start with the smallest safe slice and the tests that protect coexistence or contract behavior before new code expands.
+
+When the work starts from a bug, failing test, or regression, `systematic-debugging` should run before implementation code changes unless the root cause is already evidenced and recorded.
 
 If implementation discovers that requirements or architecture are materially wrong, produce a `course-correction-note` and jump directly to `01-specification` or `02-architecture` instead of silently patching around the mismatch.
 
