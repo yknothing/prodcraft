@@ -1,0 +1,8 @@
+recurring_failures:
+  min_occurrences: 2
+
+missing_usage:
+  max_count: 0
+
+high_risk_actions:
+  max_count: 0

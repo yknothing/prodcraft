@@ -1,0 +1,54 @@
+name: Runtime Feedback Loop
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 1 * *'
+  pull_request:
+    paths:
+      - '.github/workflows/runtime-feedback-loop.yml'
+      - 'scripts/summarize_execution_observability.py'
+      - 'rules/execution-observability-thresholds.yml'
+      - 'docs/observability/runtime-feedback-loop.md'
+      - '**/*observability*.jsonl'
+
+jobs:
+  summarize-observability:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install script dependencies
+        run: python -m pip install pyyaml
+
+      - name: Collect observability inputs
+        id: collect
+        run: |
+          mapfile -t files < <(find . -type f \( -name '*observability*.jsonl' -o -name 'execution-observability.jsonl' \) | sort)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "has_inputs=false" >> "$GITHUB_OUTPUT"
+            echo "No observability JSONL inputs found. Leaving the run as a no-op."
+            exit 0
+          fi
+
+          printf '%s\n' "${files[@]}" > observability-inputs.txt
+          echo "has_inputs=true" >> "$GITHUB_OUTPUT"
+
+      - name: Summarize execution observability
+        if: steps.collect.outputs.has_inputs == 'true'
+        run: |
+          mkdir -p build
+          python scripts/summarize_execution_observability.py \
+            $(cat observability-inputs.txt) \
+            --thresholds rules/execution-observability-thresholds.yml \
+            --output build/execution-observability-summary.json \
+            --fail-on-breach
+
+      - name: Upload summary artifact
+        if: steps.collect.outputs.has_inputs == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: execution-observability-summary
+          path: build/execution-observability-summary.json

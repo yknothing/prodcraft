@@ -17,6 +17,7 @@ Prodcraft now treats execution observability as a closed loop, not only a schema
 ## Monthly Review
 
 1. Run `python3 scripts/summarize_execution_observability.py <path-to-jsonl>`
+   - The script now accepts one or more JSONL files or directories, can write a machine-readable summary via `--output`, and can apply threshold checks via `--thresholds rules/execution-observability-thresholds.yml --fail-on-breach`
 2. Review three summary buckets:
    - recurring failures
    - missing usage data
@@ -37,6 +38,13 @@ Prodcraft now treats execution observability as a closed loop, not only a schema
    - course-correction jumps taken
    - friction that added cost without changing the outcome
 3. Convert repeated low-value friction into subtraction candidates rather than adding a new rule by default
+
+## Automation
+
+- GitHub Actions now includes `.github/workflows/runtime-feedback-loop.yml`
+- The workflow runs on manual dispatch, monthly schedule, and PRs that change observability inputs or the loop contract
+- If checked-out observability JSONL files exist, the workflow summarizes them into `build/execution-observability-summary.json` and fails when thresholds in `rules/execution-observability-thresholds.yml` are breached
+- If no observability JSONL inputs are present, the workflow exits as an explicit no-op instead of pretending review happened
 
 ## Principles
 
