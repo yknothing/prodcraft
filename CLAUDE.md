@@ -45,6 +45,12 @@ When editing skills:
 - Ensure quality gates are measurable and verifiable
 - Cross-reference related skills using canonical `SKILL.md` links; from a skill body, same-phase links look like `[skill-name](../skill-name/SKILL.md)` and cross-phase links look like `[skill-name](../../phase/skill-name/SKILL.md)`
 
+When integrating ideas from external skill systems:
+- Prodcraft may absorb methods, guardrails, and structural patterns from external skills or skills projects
+- Prodcraft may extend or embed external capability through explicit plugin, wrapper, adapter, or delegation boundaries
+- Do not directly reference external skills at the source-code level or make them implicit runtime dependencies for this repository
+- Re-express imported ideas as local Prodcraft contracts, artifacts, or skills so validation and QA remain repository-owned
+
 When producing user-facing skill outputs:
 - User-facing responses default to Chinese unless the user explicitly asks for another language
 - Use plain language, short sentences, and direct explanations rather than abstract or inflated wording

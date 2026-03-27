@@ -89,6 +89,16 @@ The stable public install surface is `skills/.curated/`.
 - regenerate the curated surface with `python3 scripts/export_curated_skills.py`
 - validate curated parity with `python3 scripts/validate_prodcraft.py --check curated-surface`
 
+## External Skill Integration Boundary
+
+Prodcraft can absorb ideas from other skill systems, and it can extend itself through plugin-like or delegation-style boundaries.
+
+- absorb methods, guardrails, and workflow patterns from external skills or skills projects when they improve Prodcraft
+- integrate external capability through explicit plugin, wrapper, adapter, or delegation boundaries
+- do not directly reference external skills at the source-code level
+- do not make external skills an implicit runtime dependency of this repository
+- when importing an idea, restate it as a local Prodcraft contract, artifact, workflow rule, or skill so validation and QA remain owned here
+
 ## Pressure-Test Protocol
 
 Prodcraft now treats subtractive governance as an evidence problem.
