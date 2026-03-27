@@ -18,6 +18,8 @@ class PressureTestProtocolTests(unittest.TestCase):
         self.assertTrue((PRESSURE_TEST_ROOT / "runs").exists())
         self.assertTrue((PRESSURE_TEST_ROOT / "2026-03-26-live-cycle-1-summary.md").exists())
         self.assertTrue((PRESSURE_TEST_ROOT / "2026-03-27-live-cycle-2-summary.md").exists())
+        self.assertTrue((PRESSURE_TEST_ROOT / "2026-03-27-live-cycle-3-summary.md").exists())
+        self.assertTrue((PRESSURE_TEST_ROOT / "2026-03-27-live-cycle-4-summary.md").exists())
 
     def test_every_scenario_has_a_prompt_pack(self):
         matrix_text = (PRESSURE_TEST_ROOT / "scenario-matrix.md").read_text(encoding="utf-8")

@@ -48,3 +48,4 @@ Use this package to measure whether Prodcraft hides lifecycle complexity in prac
 - `2026-03-26-live-cycle-1-summary.md` summarizes the first three live runs and identifies the first repeated subtraction candidate.
 - `2026-03-27-live-cycle-2-summary.md` records the first post-change verification pass after that subtraction candidate was implemented.
 - `2026-03-27-live-cycle-3-summary.md` verifies that overlay-bearing routes still need explicit workflow metadata after the direct-route cleanup.
+- `2026-03-27-live-cycle-4-summary.md` verifies that the new execution-discipline skills now appear in the live routing path and that the machine-installed `prodcraft` gateway matches the repo-local gateway contract.
