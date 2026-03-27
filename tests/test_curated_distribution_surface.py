@@ -59,6 +59,12 @@ class CuratedDistributionSurfaceTests(unittest.TestCase):
                 for fragment in [part.split(")", 1)[0] for part in text.split(f"({marker}")[1:]]:
                     self.assertTrue((skill_path.parent / marker / fragment).exists(), f"{skill_path} -> {marker}{fragment}")
 
+    def test_curated_prodcraft_skill_marks_default_software_entry_behavior(self):
+        content = (CURATED_DIR / "prodcraft" / "SKILL.md").read_text(encoding="utf-8")
+
+        self.assertIn("default entry system for software-development tasks", content)
+        self.assertIn("skipping Prodcraft preserves the same lifecycle guarantees", content)
+
 
 if __name__ == "__main__":
     unittest.main()

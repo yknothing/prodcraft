@@ -52,6 +52,9 @@ class InstallProdcraftGlobalSkillTests(unittest.TestCase):
         content = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
         self.assertIn("name: prodcraft", content)
         self.assertIn(str(REPO_ROOT / "skills" / "00-discovery" / "intake" / "SKILL.md"), content)
+        self.assertIn("default entry system for software-development tasks", content)
+        self.assertIn("user explicitly chooses it", content)
+        self.assertIn("skipping Prodcraft preserves the same lifecycle guarantees", content)
 
         state = json.loads(self.state_path.read_text(encoding="utf-8"))
         self.assertEqual("installed", state["status"])

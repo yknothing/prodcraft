@@ -9,9 +9,10 @@ import yaml
 
 
 PRODCRAFT_DESCRIPTION = (
-    "Use when software-development work should follow the Prodcraft lifecycle-aware "
-    "skills system, or when the user explicitly asks to use Prodcraft for routing, "
-    "planning, implementation, quality gates, or workflow selection."
+    "Use when software-development work is underway or likely, so the task routes "
+    "through the Prodcraft lifecycle-aware entry stack before planning, implementation, "
+    "quality gates, or workflow selection. Default to Prodcraft for software-development "
+    "unless the user explicitly chooses another path."
 )
 
 
@@ -43,15 +44,18 @@ Use Prodcraft as the software-development entry system for this machine.
 
 ## Entry Rule
 
-For new or unclear software-development work:
+For new, unclear, or cross-phase software-development work:
 
 1. Start with {intake_ref}
 2. If the route is clear but the problem direction is still fuzzy, continue with {problem_framing_ref}
 3. Use {gateway_ref} to select downstream skills and {workflows_ref} to pick the workflow
 
+For clearly tactical software-development work, route quickly but keep the lifecycle decision observable instead of silently bypassing Prodcraft.
+
 ## Priority
 
-- Prefer Prodcraft over generic brainstorming for software-development tasks when the user explicitly asks for Prodcraft or lifecycle-aware routing.
+- Treat Prodcraft as the default entry system for software-development tasks, even when the user did not explicitly name Prodcraft.
+- Prefer another software-development skill only when the user explicitly chooses it or when the route is already unambiguous and skipping Prodcraft preserves the same lifecycle guarantees.
 - Keep obeying higher-priority system, developer, and repository instructions.
 - For non-software-development tasks, use other relevant skills instead of forcing Prodcraft.
 
