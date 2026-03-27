@@ -53,24 +53,24 @@ python scripts/validate_prodcraft.py \
 
 For local QA/test/eval runs in this repository, prefer the locally installed `gemini` CLI. Do not use Claude CLI for routine reruns here; its cost is too high for this project. The one exception is Anthropic-specific trigger-discoverability evaluation, which should run only through the vendored harness in `tools/anthropic_trigger_eval/` when you explicitly need official Claude trigger behavior.
 
-### Experimental Entry Override
+### Global Entry Cutover
 
-For real-environment validation where Prodcraft should temporarily become the default software-development entry system, use:
+For gray-rollout or production cutovers where Prodcraft should become the default software-development entry system, use:
 
 ```bash
 python3 scripts/install_prodcraft_global_skill.py status
-python3 scripts/install_prodcraft_global_skill.py install --reason "enable prodcraft globally for entry-stack experiment"
-python3 scripts/manage_brainstorming_gate.py status
-python3 scripts/manage_brainstorming_gate.py disable --reason "prodcraft entry-stack experiment"
+python3 scripts/install_prodcraft_global_skill.py install --reason "enable prodcraft globally for gray-rollout cutover"
+python3 scripts/archive_superpowers_skills.py status
+python3 scripts/archive_superpowers_skills.py archive --reason "archive conflicting superpowers skills for prodcraft cutover"
 python3 scripts/install_prodcraft_global_skill.py remove --reason "remove prodcraft global gateway"
-python3 scripts/manage_brainstorming_gate.py enable --reason "restore global brainstorming"
+python3 scripts/archive_superpowers_skills.py restore --reason "restore archived superpowers skills after prodcraft rollback"
 ```
 
 `scripts/install_prodcraft_global_skill.py` manages the global `~/.agents/skills/prodcraft` gateway skill, writing state to `build/prodcraft-global-skill-state.json` and event logs to `build/prodcraft-global-skill-events.jsonl`. The installed skill is authoritative for software-development tasks by default, but it still respects higher-priority instructions and user-explicit alternate routing.
 
-`scripts/manage_brainstorming_gate.py` targets `~/.agents/skills/brainstorming`, writes reversible state to `build/brainstorming-gate-state.json`, and appends event logs to `build/brainstorming-gate-events.jsonl`.
+`scripts/archive_superpowers_skills.py` backs up and moves the conflicting global superpowers skill directories from `~/.agents/skills` into `~/.agents/skills-archive/prodcraft-superpowers`, writes reversible state to `build/superpowers-archive-state.json`, and appends event logs to `build/superpowers-archive-events.jsonl`.
 
-`build/` is gitignored so experiment traces stay local unless intentionally captured elsewhere.
+`build/` is gitignored so cutover traces stay local unless intentionally captured elsewhere.
 
 ## `npx skills` Installation
 

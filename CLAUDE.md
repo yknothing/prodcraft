@@ -16,7 +16,7 @@ The routing logic is defined in `skills/_gateway.md`, which maps user intent to 
 
 Trivial work does not skip intake. Use a lightweight `fast-track` intake decision (`intake_mode=fast-track`) instead of a full routing pass.
 
-For repository-local validation experiments that need Prodcraft to become the authoritative software-development entry system, use `scripts/install_prodcraft_global_skill.py` to install the global `prodcraft` gateway skill under `~/.agents/skills/prodcraft`, and `scripts/manage_brainstorming_gate.py` to temporarily disable or restore the global `brainstorming` skill. Both scripts write reversible state and JSONL event logs under `build/` so the experiment remains observable.
+For gray-rollout or production cutovers that need Prodcraft to become the authoritative software-development entry system, use `scripts/install_prodcraft_global_skill.py` to install the global `prodcraft` gateway skill under `~/.agents/skills/prodcraft`, and `scripts/archive_superpowers_skills.py` to back up and move conflicting global superpowers skill directories out of `~/.agents/skills`. Both scripts write reversible state and JSONL event logs under `build/` so the cutover remains observable and reversible.
 
 ## Key Concepts
 
