@@ -29,6 +29,7 @@ QA sign-off granted. All P0/P1 acceptance criteria pass. Code review completed w
 | code-review | Ensure code quality, correctness, and maintainability | medium |
 | receiving-code-review | Verify and respond to review feedback with technical rigor | small |
 | testing-strategy | Design and execute comprehensive test plans | large |
+| e2e-scenario-design | Design deep, stateful E2E scenarios from user journeys across any platform or language | large |
 | security-audit | Identify and remediate security vulnerabilities | medium |
 | performance-audit | Validate performance against specified thresholds | medium |
 

@@ -1,0 +1,44 @@
+{
+  "skill_name": "e2e-scenario-design",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我们的 React SPA 电商网站有一套 Playwright E2E 测试，所有测试都能通过，但生产环境每个月还是会出一到两个严重 bug。看了一下测试，每个测试大概是：打开商品页 → 加购物车 → 断言购物车 badge 变成 1。或者：打开结账页 → 填地址 → 断言订单成功提示。总共 30 个测试，2 分钟跑完。我怀疑问题出在测试本身，但不知道怎么改进。帮我分析问题，并给出改进这套 E2E 测试的具体方案。",
+      "expected_output": "分析出 shallow test 的根本问题，并给出具体的场景测试设计方案",
+      "files": [],
+      "assertions": [
+        "diagnoses the shallow test root cause: each test is 1-2 steps and doesn't accumulate state",
+        "explicitly uses the concept of state accumulation (状态积累) across multiple steps as a missing pattern",
+        "distinguishes in-memory state (tab/page switch) from genuine server-side persistence (navigate away + return)",
+        "provides at least one concrete multi-step scenario for the e-commerce context",
+        "includes edge case coverage from at least two categories: input boundaries, navigation, lifecycle, or concurrency"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I'm building E2E tests for a Flutter mobile app (Android + iOS). We have tests for individual features but QA keeps finding bugs at the seams — things that break when users do multiple things in sequence, or when they leave the app and come back. I need to design tests that simulate realistic, extended usage. The app is a project management tool: users create projects, add tasks, assign team members, and switch between views frequently. How do I approach designing these scenario tests?",
+      "expected_output": "Platform-agnostic scenario design methodology applied to mobile context",
+      "files": [],
+      "assertions": [
+        "recommends starting from user personas or user journeys rather than a feature list",
+        "addresses state verification after cross-view navigation",
+        "explicitly distinguishes app backgrounding/re-entry from in-memory state",
+        "mentions at least one mobile-specific platform gotcha",
+        "provides a structured process that the developer can follow"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "我在用 Cypress 给一个多人协作的 SaaS 写 E2E 测试。主要功能是：用户 A 创建文档 → 邀请用户 B → B 编辑 → A 看到实时更新。现在只有基础的单用户流程测试。我需要设计完整的测试套件，覆盖多步骤流程、状态一致性、以及各种边界情况。应该怎么组织这个测试套件，具体要写哪些测试？",
+      "expected_output": "四层套件架构 + 具体测试用例设计",
+      "files": [],
+      "assertions": [
+        "recommends organizing tests into multiple distinct layers",
+        "designs at least one multi-user collaboration scenario",
+        "provides concrete test case names or descriptions",
+        "addresses the challenge of asserting real-time state updates deterministically",
+        "response is primarily in Chinese"
+      ]
+    }
+  ]
+}

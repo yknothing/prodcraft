@@ -23,6 +23,7 @@ dist/
 build/
 
 # Local benchmark/debug artifacts that are not part of the checked-in QA evidence
+eval/**/skill-creator-run-*/
 eval/01-specification/requirements-engineering/explicit-benchmark-run-2026-03-16a/
 eval/01-specification/requirements-engineering/explicit-benchmark-run-2026-03-16b/
 eval/01-specification/requirements-engineering/explicit-benchmark-timeout-smoke-*/
