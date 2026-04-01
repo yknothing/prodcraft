@@ -1,5 +1,5 @@
 I will write a detailed, multi-quarter migration plan for moving the legacy permissions model to the new access-review system, making reasonable assumptions as requested.
-I have drafted a multi-quarter implementation plan for moving the legacy permissions model to a new access-review system. The plan has been saved to `/Users/whatsup/.gemini/tmp/baseline-7/b1416e51-2d9b-4566-8649-2ee9d3c589e7/plans/legacy_permissions_migration.md`. 
+I have drafted a multi-quarter implementation plan for moving the legacy permissions model to a new access-review system. The plan has been saved to `<gemini-temp-workspace>/plans/legacy_permissions_migration.md`. 
 
 The strategy focuses on a zero-downtime, phased rollout across four quarters:
 - **Q1:** Infrastructure setup, schema mapping, and dual writing.

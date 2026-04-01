@@ -1,8 +1,0 @@
-{
-  "benchmark": "eval/04-implementation/tdd/isolated-benchmark.json",
-  "skill_path": "skills/04-implementation/tdd",
-  "runner": "gemini",
-  "model": null,
-  "run_started_at": "2026-03-31T16:29:10",
-  "scenario_count": 1
-}

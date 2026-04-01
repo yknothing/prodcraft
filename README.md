@@ -119,6 +119,8 @@ Prodcraft now treats subtractive governance as an evidence problem.
 - pressure-test scenarios live in `eval/meta/prodcraft-pressure-tests/`
 - use them to measure first-route correctness, clarification count, cross-cutting activation, unused artifacts, and course-correction frequency
 - only turn repeated friction into deletion or simplification candidates; do not add a new guardrail before the pressure-test evidence says the failure mode is real
+- checked-in QA evidence should prefer findings notes, eval strategies, benchmark definitions, structured result files, and targeted review summaries
+- raw scratch directories such as `isolated-benchmark-run-*` should stay local unless a findings document explicitly promotes them as durable evidence
 
 ## Project Structure
 

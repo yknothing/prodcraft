@@ -24,7 +24,7 @@ Observed behavior:
 
 Command shape:
 
-- `python3 scripts/run_explicit_skill_benchmark.py --benchmark eval/04-implementation/tdd/isolated-benchmark.json --skill-path skills/04-implementation/tdd --output-dir eval/04-implementation/tdd/isolated-benchmark-run-2026-03-31-smoke --scenario-id forward-feature-slice`
+- `python3 scripts/run_explicit_skill_benchmark.py --benchmark eval/04-implementation/tdd/isolated-benchmark.json --skill-path skills/04-implementation/tdd --output-dir <local-benchmark-output-dir> --scenario-id forward-feature-slice`
 
 Observed artifacts:
 
@@ -33,6 +33,10 @@ Observed artifacts:
 - `progress.log`
 - per-branch `prompt.txt`
 - per-branch `error.txt`
+
+Repository note:
+
+- the raw local output directory was later pruned from version control because it did not produce a usable baseline/with-skill control pair
 
 Missing artifacts:
 
@@ -43,13 +47,13 @@ Missing artifacts:
 
 Command shape:
 
-- `TOPBRAINS_ORCH_DIR=/tmp/topbrains-orch TOPBRAINS_WORKER_TIMEOUT_S=90 python3 <topbrains-root>/scripts/launch_worker_async.py --model gemini-3.1-pro --task-type documentation --work-dir <prodcraft-root> --prompt "Reply only OK."`
+- `TOPBRAINS_ORCH_DIR=<topbrains-orch-dir> TOPBRAINS_WORKER_TIMEOUT_S=90 python3 <topbrains-root>/scripts/launch_worker_async.py --model gemini-3.1-pro --task-type documentation --work-dir <prodcraft-root> --prompt "Reply only OK."`
 
 Observed artifacts:
 
-- `/tmp/topbrains-orch/worker_runs/tasks/W1774959950_95414.json`
-- `/tmp/topbrains-orch/worker_runs/status/W1774959950_95414.json`
-- `/tmp/topbrains-orch/worker_runs/results/W1774959950_95414.md`
+- `<topbrains-orch-dir>/worker_runs/tasks/<worker-run-id>.json`
+- `<topbrains-orch-dir>/worker_runs/status/<worker-run-id>.json`
+- `<topbrains-orch-dir>/worker_runs/results/<worker-run-id>.md`
 
 Observed status:
 
@@ -83,7 +87,8 @@ Observed status:
 
 ### Copilot fallback benchmark lane
 
-- a repository-owned fallback run exists at `eval/04-implementation/tdd/isolated-benchmark-run-2026-03-31-copilot`
+- a repository-owned fallback attempt was executed on `2026-03-31`
+- the raw local output directory was later pruned from version control because it did not yield a valid comparable control pair
 - both baseline branches timed out after `120s`
 - only one with-skill branch produced a `response.md`
 - this is not a clean enough control pair to count as benchmark evidence

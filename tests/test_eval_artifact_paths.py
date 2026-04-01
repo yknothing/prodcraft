@@ -12,6 +12,12 @@ LEGACY_PATH_FRAGMENTS = (
 )
 ABSOLUTE_REPO_PREFIX = '"/Users/whatsup/workspace/2026/prodcraft/'
 EPHEMERAL_PATH_FRAGMENTS = ('"/var/folders/', '"/tmp/')
+MACHINE_SPECIFIC_TEXT_PATH_FRAGMENTS = (
+    "/Users/whatsup/",
+    "/tmp/topbrains-orch/",
+    "/var/folders/",
+)
+TEXT_ARTIFACT_SUFFIXES = {".json", ".jsonl", ".log", ".md", ".txt"}
 
 
 class EvalArtifactPathTests(unittest.TestCase):
@@ -44,6 +50,17 @@ class EvalArtifactPathTests(unittest.TestCase):
             text = path.read_text(encoding="utf-8")
             if any(fragment in text for fragment in EPHEMERAL_PATH_FRAGMENTS):
                 offenders.append(str(path.relative_to(REPO_ROOT)))
+        self.assertEqual([], offenders)
+
+    def test_eval_text_artifacts_do_not_store_machine_specific_temp_paths(self):
+        offenders: list[str] = []
+        for path in EVAL_ROOT.rglob("*"):
+            if not path.is_file() or path.suffix not in TEXT_ARTIFACT_SUFFIXES:
+                continue
+            text = path.read_text(encoding="utf-8")
+            for fragment in MACHINE_SPECIFIC_TEXT_PATH_FRAGMENTS:
+                if fragment in text:
+                    offenders.append(f"{path.relative_to(REPO_ROOT)} -> {fragment}")
         self.assertEqual([], offenders)
 
     def test_run_metadata_records_runner(self):

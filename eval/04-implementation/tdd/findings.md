@@ -26,9 +26,12 @@ At this stage, `tdd` appears to be:
 
 ## 2026-03-31 Benchmark Smoke Attempt
 
-A repository-owned isolated benchmark smoke run now exists at:
+A repository-owned isolated benchmark smoke attempt was executed for the forward feature slice.
 
-- `isolated-benchmark-run-2026-03-31-smoke`
+Retained evidence for that attempt:
+
+- this findings note
+- `eval/meta/prodcraft-pressure-tests/2026-03-31-gemini-benchmark-lane-status.md`
 
 Current interpretation of that run:
 
@@ -41,9 +44,12 @@ This means the current blocker is the Gemini execution lane, not the benchmark c
 
 ## 2026-03-31 Copilot Fallback Attempt
 
-A second repository-owned fallback run now exists at:
+A second repository-owned fallback attempt was executed on the same benchmark set.
 
-- `isolated-benchmark-run-2026-03-31-copilot`
+Retained evidence for that attempt:
+
+- this findings note
+- `eval/meta/prodcraft-pressure-tests/2026-03-31-gemini-benchmark-lane-status.md`
 
 Current interpretation of that run:
 
