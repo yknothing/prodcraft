@@ -52,7 +52,7 @@ class EvalArtifactPathTests(unittest.TestCase):
         offenders: list[str] = []
         for path in EVAL_ROOT.rglob("run_metadata.json"):
             data = json.loads(path.read_text(encoding="utf-8"))
-            if data.get("runner") not in {"gemini", "claude"}:
+            if data.get("runner") not in {"gemini", "claude", "copilot"}:
                 offenders.append(str(path.relative_to(REPO_ROOT)))
         self.assertEqual([], offenders)
 

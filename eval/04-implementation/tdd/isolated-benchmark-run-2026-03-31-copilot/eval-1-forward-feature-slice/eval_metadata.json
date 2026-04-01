@@ -1,0 +1,23 @@
+{
+  "id": "forward-feature-slice",
+  "title": "Forward Feature Slice",
+  "prompt": "Work only from the material below. Do not ask follow-up questions. If you need assumptions, state them briefly and continue.\n\nYou are implementing a reviewed slice for approval reminders. Use test-driven development.\n\nTask slice:\n- Add reminder notifications for purchase requests that remain pending for more than 24 hours.\n- The first release only needs email reminders.\n- Send at most one reminder every 24 hours for the same request.\n- Do not add SMS, push, or escalation chains in this slice.\n- Existing request status logic must remain unchanged.\n\nAcceptance targets:\n- A pending request older than 24 hours triggers an email reminder job.\n- Requests already approved, rejected, or sent back do not trigger reminders.\n- Duplicate reminder jobs for the same request within 24 hours are prevented.\n- Existing approval flows continue to pass.\n\nPlease produce a TDD-first implementation plan. Start with failing tests, keep implementation minimal, and stay inside this slice.",
+  "assertions": [
+    {
+      "name": "starts-with-failing-test",
+      "description": "Begins with explicit failing tests or clear RED-phase ordering"
+    },
+    {
+      "name": "keeps-implementation-minimal",
+      "description": "Keeps implementation scoped to satisfying the current tests rather than building future reminder features"
+    },
+    {
+      "name": "protects-existing-flows",
+      "description": "Keeps existing approval flow behavior protected by regression or characterization tests"
+    },
+    {
+      "name": "stays-within-slice",
+      "description": "Does not expand into SMS, push, escalation chains, or unrelated refactoring"
+    }
+  ]
+}

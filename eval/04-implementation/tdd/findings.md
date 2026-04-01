@@ -24,6 +24,36 @@ At this stage, `tdd` appears to be:
 - stronger as a routed workflow skill than as a discoverability-first skill
 - still in need of isolated benchmark evidence before it can leave `review`
 
+## 2026-03-31 Benchmark Smoke Attempt
+
+A repository-owned isolated benchmark smoke run now exists at:
+
+- `isolated-benchmark-run-2026-03-31-smoke`
+
+Current interpretation of that run:
+
+- the benchmark dataset and runner wiring are now in place
+- the run did **not** yet produce usable baseline/with-skill content for judgment
+- baseline timed out after `120s`
+- the with-skill branch failed in Gemini runtime startup with `loadCodeAssist` / `fetchAdminControls` `ECONNRESET` failures after MCP startup noise
+
+This means the current blocker is the Gemini execution lane, not the benchmark contract itself.
+
+## 2026-03-31 Copilot Fallback Attempt
+
+A second repository-owned fallback run now exists at:
+
+- `isolated-benchmark-run-2026-03-31-copilot`
+
+Current interpretation of that run:
+
+- the runner itself completed and wrote observability artifacts
+- both baseline branches still timed out after `120s`
+- only one with-skill branch produced a `response.md`
+- the surviving response still showed repo exploration and broad assumption-making, so it is not a clean controlled comparison against baseline
+
+This means `copilot` is not yet a valid replacement benchmark lane for `tdd`.
+
 ## Next QA Step
 
-Run an isolated benchmark for the same brownfield slice, then add a non-brownfield feature slice to verify the skill does not overfit to compatibility-heavy work.
+Stabilize or replace the current benchmark runner with a lane that can produce comparable baseline and with-skill `response.md` artifacts, then rerun the isolated benchmark for both the forward feature slice and the brownfield regression slice.

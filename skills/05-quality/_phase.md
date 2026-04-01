@@ -43,13 +43,13 @@ QA sign-off granted. All P0/P1 acceptance criteria pass. Code review completed w
 ## Skill Sequence
 
 ```
-code-review <──> receiving-code-review ──> testing-strategy ──┐
-                                                               ├──> QA sign-off
-security-audit ────────────────────────────────────────────────┤
-performance-audit ─────────────────────────────────────────────┘
+code-review <──> receiving-code-review ──> testing-strategy ──> e2e-scenario-design ──┐
+                                                                                        ├──> QA sign-off
+security-audit ─────────────────────────────────────────────────────────────────────────┤
+performance-audit ──────────────────────────────────────────────────────────────────────┘
 ```
 
-Code review establishes the reviewer-side findings. `receiving-code-review` governs the author-side follow-up on those findings before broader testing closes out the phase. Security and performance audits can run in parallel with functional testing. All must pass for QA sign-off.
+Code review establishes the reviewer-side findings. `receiving-code-review` governs the author-side follow-up on those findings before broader testing closes out the phase. `testing-strategy` decides the layered plan; `e2e-scenario-design` deepens the scenario and edge-case layers when shallow E2E coverage would otherwise hide release risk. Security and performance audits can run in parallel with functional testing. All must pass for QA sign-off.
 
 In brownfield work, quality review must verify that coexistence and unsupported release-boundary behavior are still protected before broader QA sign-off proceeds.
 

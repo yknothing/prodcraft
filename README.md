@@ -53,6 +53,19 @@ python scripts/validate_prodcraft.py \
 
 For local QA/test/eval runs in this repository, prefer the locally installed `gemini` CLI. Do not use Claude CLI for routine reruns here; its cost is too high for this project. The one exception is Anthropic-specific trigger-discoverability evaluation, which should run only through the vendored harness in `tools/anthropic_trigger_eval/` when you explicitly need official Claude trigger behavior.
 
+## Routed vs Discoverability
+
+Prodcraft does **not** assume every skill should be found from metadata alone.
+
+- **discoverability-first** skills are the small control-plane set whose value depends on being surfaced directly from a user request
+- **routed** skills are the majority of the lifecycle spine and are usually invoked by `intake`, workflow selection, or explicit handoff from an upstream skill
+
+This means:
+
+- the public install surface in `skills/.curated/` is an install and upgrade contract, not a promise that every skill should auto-trigger in a crowded environment
+- review or benchmark evidence for routed skills matters more than raw trigger recall
+- if a deeper lifecycle skill adds value mainly after handoff, Prodcraft treats routed invocation as the primary contract
+
 ### Global Entry Cutover
 
 For gray-rollout or production cutovers where Prodcraft should become the default software-development entry system, use:

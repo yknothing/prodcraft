@@ -35,6 +35,7 @@ class TaskExecutionSkillTests(unittest.TestCase):
         artifact_flow = {entry["artifact"]: entry for entry in self.manifest["artifact_flow"]}
         skill_text = (REPO_ROOT / "skills" / "04-implementation" / "task-execution" / "SKILL.md").read_text(encoding="utf-8")
         gateway = (REPO_ROOT / "skills" / "_gateway.md").read_text(encoding="utf-8")
+        implementation_phase = (REPO_ROOT / "skills" / "04-implementation" / "_phase.md").read_text(encoding="utf-8")
 
         self.assertIn("task-execution", artifact_flow["task-list"]["consumed_by"])
         self.assertIn("task-execution", artifact_flow["dependency-graph"]["consumed_by"])
@@ -46,7 +47,10 @@ class TaskExecutionSkillTests(unittest.TestCase):
 
         self.assertIn("It does **not** replace `feature-development`, `systematic-debugging`, or `tdd`", skill_text)
         self.assertIn("2-5 minute", skill_text)
-        self.assertIn("task-execution", gateway)
+        self.assertIn("### Implementation Routing Quick Map", gateway)
+        self.assertIn("optional tactical wrapper", gateway)
+        self.assertIn("### Implementation Routing Quick Map", implementation_phase)
+        self.assertIn("use `task-execution` only when the batch itself needs explicit checkpoints", implementation_phase)
 
 
 if __name__ == "__main__":

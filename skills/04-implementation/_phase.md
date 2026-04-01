@@ -51,6 +51,16 @@ task-execution ──> systematic-debugging ──> tdd ←──→ feature-dev
 
 Implementation skills are iterative and interwoven. `task-execution` turns approved slices into tactical batches. `systematic-debugging` establishes the defect boundary before code fixes. TDD and feature development form a tight loop. Refactoring happens continuously. Pair programming applies to any of the above.
 
+### Implementation Routing Quick Map
+
+- use `task-execution` only when the batch itself needs explicit checkpoints, stop conditions, or handoff-friendly execution records
+- use `systematic-debugging` when the next move depends on proving root cause before changing code
+- use `tdd` when behavior is changing and the next proof should be a failing test
+- use `feature-development` when the tested slice is ready to become a small reviewable diff
+- use `refactoring` when behavior is already protected and the next goal is structural cleanup
+
+If two of these seem equally primary, prefer the skill that changes the verification boundary next, not the one that merely sounds more general.
+
 In brownfield work, implementation should start with the smallest safe slice and the tests that protect coexistence or contract behavior before new code expands.
 
 When the work starts from a bug, failing test, or regression, `systematic-debugging` should run before implementation code changes unless the root cause is already evidenced and recorded.

@@ -49,6 +49,18 @@ Match based on what phase the work is currently in:
 | Monitoring/responding | 07-operations | monitoring-observability, incident-response |
 | Improving/modernizing | 08-evolution | tech-debt-management, migration-strategy, retrospective |
 
+### Implementation Routing Quick Map
+
+When the work is already in `04-implementation`, choose the primary skill like this:
+
+- need a short 2-5 minute tactical batch with checkpoints or stop conditions -> `task-execution`
+- need root cause before any code fix -> `systematic-debugging`
+- need a failing test first for new or changed behavior -> `tdd`
+- need to land the already-tested slice as code -> `feature-development`
+- need structural cleanup with protected behavior -> `refactoring`
+
+Do **not** start with `task-execution` when the primary implementation discipline is already obvious and no tactical batching problem exists. It is an optional tactical wrapper, not the default producer of code.
+
 ### Priority 3: Cross-Cutting Skills (always applicable)
 
 These can be invoked at any phase:

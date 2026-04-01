@@ -24,7 +24,7 @@ if str(REPO_ROOT) not in sys.path:
 from tools.execution_observability import ExecutionTrace, infer_skill_identity, new_span_id
 
 
-SUPPORTED_RUNNERS = {"claude", "gemini"}
+SUPPORTED_RUNNERS = {"claude", "copilot", "gemini"}
 GEMINI_PREAMBLE_LINE_PREFIXES = (
     "Loaded cached credentials.",
     "Loading extension:",
@@ -47,6 +47,7 @@ GEMINI_INLINE_PREAMBLE_PATTERNS = (
     re.compile(r'^Tool with name ".*?" is already registered\. Overwriting\.'),
     re.compile(r'^Skill conflict detected: .*?\.md"\.', re.DOTALL),
 )
+COPILOT_FOOTER_RE = re.compile(r"\n+Total usage est:.*\Z", re.DOTALL)
 
 
 def build_prompt_command(runner: str, prompt: str, model: str | None) -> list[str]:
@@ -72,6 +73,18 @@ def build_prompt_command(runner: str, prompt: str, model: str | None) -> list[st
             "--tools",
             "Read",
         ]
+    elif runner == "copilot":
+        cmd = [
+            "copilot",
+            "-p",
+            prompt,
+            "--allow-all-tools",
+            "--allow-all-paths",
+            "--disable-builtin-mcps",
+            "--stream",
+            "off",
+            "--no-custom-instructions",
+        ]
     else:
         raise ValueError(f"Unsupported runner: {runner}")
 
@@ -96,7 +109,14 @@ def resolve_context_file(item: str, benchmark_path: Path) -> Path:
 
 def sanitize_runner_output(runner: str, output: str) -> str:
     text = output.strip()
-    if runner != "gemini" or not text:
+    if not text:
+        return text
+
+    if runner == "copilot":
+        text = COPILOT_FOOTER_RE.sub("", text).strip()
+        return text
+
+    if runner != "gemini":
         return text
 
     lines = text.splitlines()

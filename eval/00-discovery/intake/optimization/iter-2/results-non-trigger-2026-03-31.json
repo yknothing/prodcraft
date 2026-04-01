@@ -1,0 +1,91 @@
+{
+  "skill_name": "intake",
+  "description": "Route new engineering work before execution. Use when a user wants to build a new product, app, or internal tool, start from scratch, plan a migration, run a multi-sprint tech-debt or documentation effort, or says they are not sure where to start. Also use when a feature, refactor, or hotfix needs scope triage before implementation. Do not use for ongoing work, concrete debugging, trivial edits, direct commands, PR review, or pure questions.",
+  "results": [
+    {
+      "query": "\u8fd9\u6bb5\u4ee3\u7801\u6709\u4e2a typo\uff0c\u7b2c 15 \u884c\u7684 recieve \u5e94\u8be5\u662f receive\uff0c\u5e2e\u6211\u6539\u4e00\u4e0b",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 1,
+      "pass": true
+    },
+    {
+      "query": "Review this PR for me: https://github.com/our-org/api/pull/847. Focus on the error handling changes in the middleware",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 1,
+      "pass": true
+    },
+    {
+      "query": "\u5e2e\u6211\u8dd1\u4e00\u4e0b npm test \u770b\u770b\u54ea\u4e9b case fail \u4e86",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 1,
+      "pass": true
+    },
+    {
+      "query": "\u5e2e\u6211\u628a\u8fd9\u4e2a\u51fd\u6570\u7684\u53d8\u91cf\u540d\u4ece x, y, z \u6539\u6210\u66f4\u6709\u610f\u4e49\u7684\u540d\u5b57\uff0c\u5c31\u8fd9\u4e00\u4e2a\u51fd\u6570\uff0c\u5927\u6982 20 \u884c\u4ee3\u7801",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 1,
+      "pass": true
+    },
+    {
+      "query": "git rebase main onto my feature branch and resolve the conflicts in package.json please",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 1,
+      "pass": true
+    },
+    {
+      "query": "can you explain how kubernetes horizontal pod autoscaling works? I'm trying to understand the algorithm behind it",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 1,
+      "pass": true
+    },
+    {
+      "query": "\u5e2e\u6211 debug \u8fd9\u4e2a\u62a5\u9519\uff1aTypeError: Cannot read properties of undefined (reading 'map')\u3002stack trace \u6307\u5411 src/components/UserList.tsx:23",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 1,
+      "pass": true
+    },
+    {
+      "query": "write unit tests for the calculateDiscount function in src/pricing/discount.ts. Cover edge cases like negative prices, zero quantity, and expired coupons",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 1,
+      "pass": true
+    },
+    {
+      "query": "REST \u548c GraphQL \u5230\u5e95\u9009\u54ea\u4e2a\u597d\uff1f\u6211\u4e0b\u4e2a project \u60f3\u7528\uff0c\u4f46\u662f team \u91cc\u9762\u6ca1\u4eba\u7528\u8fc7 GraphQL\uff0c\u4e0d\u786e\u5b9a learning curve \u4f1a\u4e0d\u4f1a\u592a\u9661",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 1,
+      "pass": true
+    },
+    {
+      "query": "\u628a README \u91cc\u9762 Redis cache \u90a3\u6bb5 env variables \u7684\u914d\u7f6e\u8bf4\u660e\u66f4\u65b0\u4e00\u4e0b\uff0c\u52a0\u4e0a\u6211\u4eec\u65b0\u589e\u7684 REDIS_CLUSTER_MODE \u548c REDIS_SENTINEL_HOSTS \u4e24\u4e2a\u53d8\u91cf",
+      "should_trigger": false,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 1,
+      "pass": true
+    }
+  ],
+  "summary": {
+    "total": 10,
+    "passed": 10,
+    "failed": 0
+  }
+}

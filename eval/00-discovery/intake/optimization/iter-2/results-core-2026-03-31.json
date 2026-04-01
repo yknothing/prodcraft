@@ -1,0 +1,51 @@
+{
+  "skill_name": "intake",
+  "description": "Route new engineering work before execution. Use when a user wants to build a new product, app, or internal tool, start from scratch, plan a migration, run a multi-sprint tech-debt or documentation effort, or says they are not sure where to start. Also use when a feature, refactor, or hotfix needs scope triage before implementation. Do not use for ongoing work, concrete debugging, trivial edits, direct commands, PR review, or pure questions.",
+  "results": [
+    {
+      "query": "I want to build a personal finance tracker app from scratch. It should have expense categorization, budget alerts, and bank API integration via Plaid. I'm a solo dev, thinking React + Node",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 1,
+      "pass": false
+    },
+    {
+      "query": "\u521a\u52a0\u5165\u8fd9\u4e2a team\uff0c\u53d1\u73b0\u6574\u4e2a codebase 200k lines \u5b8c\u5168\u6ca1\u6709 documentation\uff0cREADME \u662f\u7a7a\u7684\uff0carchitecture docs \u4e5f\u6ca1\u6709\u3002\u6211\u60f3\u5148\u628a docs \u641e\u8d77\u6765\u518d\u5f00\u59cb contribute code",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 1,
+      "pass": false
+    },
+    {
+      "query": "\u5e2e\u6211\u641e\u4e00\u4e0b\u8fd9\u4e2a\u9879\u76ee\uff0c\u6211\u4e5f\u4e0d\u592a\u786e\u5b9a\u4ece\u54ea\u5f00\u59cb\u3002\u5927\u6982\u662f\u60f3\u505a\u4e00\u4e2a\u5185\u90e8\u5de5\u5177\uff0c\u8ba9\u8fd0\u8425\u56e2\u961f\u53ef\u4ee5\u81ea\u5df1\u914d\u7f6e\u63a8\u9001\u89c4\u5219\u800c\u4e0d\u7528\u6bcf\u6b21\u627e\u5f00\u53d1\u6539\u4ee3\u7801",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 1,
+      "pass": false
+    },
+    {
+      "query": "\u60f3\u82b1\u4e24\u4e2a sprint \u4e13\u95e8\u641e tech debt\uff0cCI pipeline \u8dd1\u4e86 45 \u5206\u949f\uff0ctest coverage \u624d 30%\uff0c\u4e00\u5806 deprecated API calls \u8981\u6e05\u7406\u3002team lead \u5df2\u7ecf approve \u4e86 capacity",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 1,
+      "pass": false
+    },
+    {
+      "query": "\u6211\u4eec\u7684\u8001\u7cfb\u7edf\u662f PHP 5.6 \u5199\u7684\u5355\u4f53\u5e94\u7528\uff0c\u73b0\u5728\u8981\u9010\u6b65\u8fc1\u79fb\u5230 Go \u5fae\u670d\u52a1\u67b6\u6784\u3002\u6570\u636e\u5e93\u4ece MySQL \u8fc1\u5230 PostgreSQL\u3002\u56e2\u961f\u6709 8 \u4e2a\u4eba\uff0c\u9884\u8ba1\u8017\u65f6 6 \u4e2a\u6708",
+      "should_trigger": true,
+      "trigger_rate": 0.0,
+      "triggers": 0,
+      "runs": 1,
+      "pass": false
+    }
+  ],
+  "summary": {
+    "total": 5,
+    "passed": 0,
+    "failed": 5
+  }
+}

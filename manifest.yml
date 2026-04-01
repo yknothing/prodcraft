@@ -296,8 +296,15 @@ skills:
 - name: feature-development
   phase: 04-implementation
   file: skills/04-implementation/feature-development/SKILL.md
-  status: draft
+  status: review
   qa_tier: critical
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/04-implementation/feature-development/evals/eval-strategy.md
+    benchmark_plan_path: eval/04-implementation/feature-development/isolated-benchmark-plan.md
+    findings_path: eval/04-implementation/feature-development/findings.md
+    integration_test_path: eval/04-implementation/feature-development/tdd-handoff-review.md
 - name: refactoring
   phase: 04-implementation
   file: skills/04-implementation/refactoring/SKILL.md
@@ -339,6 +346,17 @@ skills:
     benchmark_plan_path: eval/05-quality/testing-strategy/isolated-benchmark-plan.md
     findings_path: eval/05-quality/testing-strategy/findings.md
     integration_test_path: eval/05-quality/testing-strategy/strategy-review.md
+- name: e2e-scenario-design
+  phase: 05-quality
+  file: skills/05-quality/e2e-scenario-design/SKILL.md
+  status: review
+  qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/05-quality/e2e-scenario-design/evals/eval-strategy.md
+    benchmark_results_path: eval/05-quality/e2e-scenario-design/skill-creator-run-2026-03-30/benchmark.json
+    findings_path: eval/05-quality/e2e-scenario-design/findings.md
 - name: security-audit
   phase: 05-quality
   file: skills/05-quality/security-audit/SKILL.md
@@ -377,8 +395,15 @@ skills:
 - name: deployment-strategy
   phase: 06-delivery
   file: skills/06-delivery/deployment-strategy/SKILL.md
-  status: draft
+  status: review
   qa_tier: critical
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/06-delivery/deployment-strategy/evals/eval-strategy.md
+    benchmark_plan_path: eval/06-delivery/deployment-strategy/isolated-benchmark-plan.md
+    findings_path: eval/06-delivery/deployment-strategy/findings.md
+    integration_test_path: eval/06-delivery/deployment-strategy/pipeline-handoff-review.md
 - name: release-management
   phase: 06-delivery
   file: skills/06-delivery/release-management/SKILL.md
@@ -780,6 +805,7 @@ artifact_flow:
   - feature-development
   - code-review
   - testing-strategy
+  - e2e-scenario-design
   - ci-cd
 - artifact: dependency-graph
   produced_by: task-breakdown
@@ -811,11 +837,14 @@ artifact_flow:
   - refactoring
   - code-review
   - testing-strategy
+  - e2e-scenario-design
   - security-audit
   - performance-audit
   - ci-cd
 - artifact: test-suite
-  produced_by: tdd
+  produced_by:
+  - tdd
+  - e2e-scenario-design
   consumed_by:
   - receiving-code-review
   - systematic-debugging
@@ -857,13 +886,16 @@ artifact_flow:
   - code-review
   - verification-before-completion
 - artifact: test-report
-  produced_by: testing-strategy
+  produced_by:
+  - testing-strategy
+  - e2e-scenario-design
   consumed_by:
   - release-management
 - artifact: test-strategy-doc
   produced_by: testing-strategy
   consumed_by:
   - ci-cd
+  - e2e-scenario-design
 - artifact: security-report
   produced_by: security-audit
   consumed_by:

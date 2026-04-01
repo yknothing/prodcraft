@@ -1,0 +1,20 @@
+First read ./skill-under-test/SKILL.md, then answer the request below using that skill. Do not read any other local files or rely on repository instructions beyond the copied skill. If you need assumptions, state them briefly and continue.
+
+Work only from the material below. Do not ask follow-up questions. If you need assumptions, state them briefly and continue.
+
+You are implementing a reviewed slice for approval reminders. Use test-driven development.
+
+Task slice:
+- Add reminder notifications for purchase requests that remain pending for more than 24 hours.
+- The first release only needs email reminders.
+- Send at most one reminder every 24 hours for the same request.
+- Do not add SMS, push, or escalation chains in this slice.
+- Existing request status logic must remain unchanged.
+
+Acceptance targets:
+- A pending request older than 24 hours triggers an email reminder job.
+- Requests already approved, rejected, or sent back do not trigger reminders.
+- Duplicate reminder jobs for the same request within 24 hours are prevented.
+- Existing approval flows continue to pass.
+
+Please produce a TDD-first implementation plan. Start with failing tests, keep implementation minimal, and stay inside this slice.

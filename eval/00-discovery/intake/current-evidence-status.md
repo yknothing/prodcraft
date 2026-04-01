@@ -40,8 +40,6 @@ After reviewing those results, the description was revised again to restore high
 - multi-sprint tech-debt or documentation effort
 - "not sure where to start"
 
-That newer description has **not** been validly rerun yet.
-
 ## New Evidence From 2026-03-19
 
 A clean isolated Gemini benchmark was completed after fixing runner-side Gemini startup-noise contamination.
@@ -67,13 +65,42 @@ Current integration conclusion:
 - the generated `intake-brief` now usually preserves enough context for downstream use
 - the remaining quality gap is mostly later-stage route specificity, not missing routing context or first-hop handoff ambiguity
 
+## New Evidence From 2026-03-31
+
+A new post-reset rerun was completed for the **current** description revision.
+
+Fresh runtime checks:
+
+- direct `claude -p "say only OK" --output-format text` returned `OK`
+- `eval/00-discovery/intake/scripts/preflight_claude_eval.py` also returned `OK`
+
+Fresh bucket artifacts:
+
+- `optimization/iter-2/results-core-2026-03-31.json`
+- `optimization/iter-2/results-non-trigger-2026-03-31.json`
+
+Current results for the current description:
+
+- core recall: `0/5`
+- non-trigger precision: `10/10`
+
+Interpretation:
+
+- the current description is no longer pending rerun
+- the same high-precision, low-recall pattern still holds on the strongest entry prompts
+- the blocker is now description discoverability and skill-ecosystem competition, not quota or harness reachability
+
 ## Current Blocker
 
-An immediate rerun of the updated description on **2026-03-18** was blocked by Claude quota:
+The main blocker is no longer Claude quota.
 
-- message: `You're out of extra usage · resets Mar 20, 6pm (Asia/Singapore)`
+The current description still fails to surface `intake` on its strongest entry prompts even after a fresh valid rerun, while still correctly avoiding trivial or already-scoped work.
 
-Treat the latest metadata revision as pending evaluation until a post-reset rerun completes.
+The unresolved evidence gap is now qualitative:
+
+- whether overlap prompts improved
+- whether the mixed continuity set changed materially
+- whether the description should be widened again or whether Prodcraft should lean harder on routed invocation rather than metadata recall
 
 ## What No Longer Counts as Current Proof
 
@@ -110,7 +137,8 @@ Before `intake` can move beyond `review`, regenerate:
 The trigger-eval requirement now splits into two sub-parts:
 
 1. keep the valid 2026-03-18 rerun as evidence that one tightened description regressed on core discoverability
-2. rerun the current high-signal description after quota resets on **2026-03-20 18:00 Asia/Singapore**
+2. treat the 2026-03-31 core/non-trigger rerun as current evidence for the latest description revision
+3. rerun overlap and mixed continuity only if we need a fuller routing-competition picture before another description rewrite
 
 ## Repository Convention
 

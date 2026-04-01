@@ -1,0 +1,48 @@
+[
+  {
+    "id": "forward-feature-slice",
+    "title": "Forward Feature Slice",
+    "prompt": "Work only from the material below. Do not ask follow-up questions. If you need assumptions, state them briefly and continue.\n\nYou are implementing a reviewed slice for approval reminders. Use test-driven development.\n\nTask slice:\n- Add reminder notifications for purchase requests that remain pending for more than 24 hours.\n- The first release only needs email reminders.\n- Send at most one reminder every 24 hours for the same request.\n- Do not add SMS, push, or escalation chains in this slice.\n- Existing request status logic must remain unchanged.\n\nAcceptance targets:\n- A pending request older than 24 hours triggers an email reminder job.\n- Requests already approved, rejected, or sent back do not trigger reminders.\n- Duplicate reminder jobs for the same request within 24 hours are prevented.\n- Existing approval flows continue to pass.\n\nPlease produce a TDD-first implementation plan. Start with failing tests, keep implementation minimal, and stay inside this slice.",
+    "assertions": [
+      {
+        "name": "starts-with-failing-test",
+        "description": "Begins with explicit failing tests or clear RED-phase ordering"
+      },
+      {
+        "name": "keeps-implementation-minimal",
+        "description": "Keeps implementation scoped to satisfying the current tests rather than building future reminder features"
+      },
+      {
+        "name": "protects-existing-flows",
+        "description": "Keeps existing approval flow behavior protected by regression or characterization tests"
+      },
+      {
+        "name": "stays-within-slice",
+        "description": "Does not expand into SMS, push, escalation chains, or unrelated refactoring"
+      }
+    ]
+  },
+  {
+    "id": "brownfield-regression-fix",
+    "title": "Brownfield Regression Fix",
+    "prompt": "Work only from the material below. Do not ask follow-up questions. If you need assumptions, state them briefly and continue.\n\nUsers hit a known bug in legacy access review assignment. Apply the reviewed fix using TDD without widening scope.\n\nBug summary:\n- In the legacy facade path, reassigned reviews sometimes remain visible to the previous approver for up to one page refresh.\n- The new implementation must preserve the existing API contract and response shape.\n- The fix must work while both the legacy and new assignment paths coexist.\n- Do not redesign the assignment subsystem in this slice.\n\nAcceptance targets:\n- A reassigned review is no longer listed for the previous approver after reassignment.\n- The new approver sees the review in their pending list.\n- Existing API response shape remains unchanged.\n- Legacy-path and new-path coexistence remains covered.\n\nPlease produce a TDD-first implementation plan. Start with the regression test that captures the bug, keep the fix surgical, and call out any compatibility protections.",
+    "assertions": [
+      {
+        "name": "writes-regression-test-first",
+        "description": "Starts by capturing the bug with a failing regression test"
+      },
+      {
+        "name": "preserves-backward-compatibility",
+        "description": "Keeps the API contract and coexistence requirements explicit"
+      },
+      {
+        "name": "avoids-scope-widening",
+        "description": "Does not turn the bug fix into subsystem redesign or broad cleanup"
+      },
+      {
+        "name": "leaves-recurrence-protection",
+        "description": "Leaves behind tests that would catch the bug if it returns"
+      }
+    ]
+  }
+]

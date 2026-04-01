@@ -67,6 +67,27 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
 
         self.assertEqual(module.sanitize_runner_output("gemini", clean_output), clean_output)
         self.assertEqual(module.sanitize_runner_output("claude", clean_output), clean_output)
+        self.assertEqual(module.sanitize_runner_output("copilot", clean_output), clean_output)
+
+    def test_sanitize_runner_output_strips_copilot_footer(self):
+        module = load_module()
+        noisy_output = "\n".join(
+            [
+                "## TDD Plan",
+                "",
+                "- Write the failing test first",
+                "",
+                "Total usage est:       1 Premium request",
+                "Total duration (API):  3.6s",
+                "Usage by model:",
+                "    Claude Sonnet 4.5    7.0k input, 4 output, 0 cache read, 0 cache write (Est. 1 Premium request)",
+            ]
+        )
+
+        self.assertEqual(
+            module.sanitize_runner_output("copilot", noisy_output),
+            "## TDD Plan\n\n- Write the failing test first",
+        )
 
     def test_display_path_prefers_repo_relative_paths(self):
         module = load_module()
@@ -114,6 +135,31 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
         self.assertIn("--approval-mode", cmd)
         self.assertIn("plan", cmd)
         self.assertNotIn("claude", cmd)
+
+    def test_run_prompt_uses_copilot_noninteractive_defaults(self):
+        module = load_module()
+        fake_process = FakeProcess(stdout="● OK\n\nTotal usage est:       1 Premium request\n")
+
+        with mock.patch.object(module.subprocess, "Popen", return_value=fake_process) as popen:
+            output = module.run_prompt(
+                prompt="say only OK",
+                runner="copilot",
+                model=None,
+                cwd=Path("/tmp"),
+                timeout_seconds=5,
+            )
+
+        self.assertEqual(output, "● OK")
+        cmd = popen.call_args.args[0]
+        self.assertEqual(cmd[0], "copilot")
+        self.assertIn("-p", cmd)
+        self.assertIn("--allow-all-tools", cmd)
+        self.assertIn("--allow-all-paths", cmd)
+        self.assertIn("--disable-builtin-mcps", cmd)
+        self.assertIn("--stream", cmd)
+        self.assertIn("off", cmd)
+        self.assertIn("--no-custom-instructions", cmd)
+        self.assertNotIn("gemini", cmd)
 
     def test_main_records_default_runner_and_writes_outputs(self):
         module = load_module()
@@ -276,6 +322,101 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
             self.assertEqual(runtime_context["baseline_workspace"], "baseline")
             self.assertEqual(runtime_context["with_skill_workspace"], "with-skill")
             self.assertEqual(runtime_context["copied_skill_path"], "with-skill/skill-under-test/SKILL.md")
+            self.assertEqual(
+                (scenario_dir / "without_skill" / "response.md").read_text(encoding="utf-8").strip(),
+                "baseline cli output",
+            )
+            self.assertEqual(
+                (scenario_dir / "with_skill" / "response.md").read_text(encoding="utf-8").strip(),
+                "skill cli output",
+            )
+
+    def test_script_runs_end_to_end_with_fake_copilot_cli(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            temp_root = Path(tmpdir)
+            bin_dir = temp_root / "bin"
+            bin_dir.mkdir()
+
+            fake_copilot = bin_dir / "copilot"
+            fake_copilot.write_text(
+                "\n".join(
+                    [
+                        "#!/bin/sh",
+                        "prompt=''",
+                        "while [ \"$#\" -gt 0 ]; do",
+                        "  case \"$1\" in",
+                        "    -p|--prompt)",
+                        "      shift",
+                        "      prompt=\"$1\"",
+                        "      ;;",
+                        "    --stream|--model)",
+                        "      shift",
+                        "      ;;",
+                        "  esac",
+                        "  shift",
+                        "done",
+                        "case \"$prompt\" in",
+                        "  *\"First read ./skill-under-test/SKILL.md\"*) printf 'skill cli output\\n\\nTotal usage est:       1 Premium request\\n' ;;",
+                        "  *) printf 'baseline cli output\\n\\nTotal usage est:       1 Premium request\\n' ;;",
+                        "esac",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            fake_copilot.chmod(0o755)
+
+            benchmark_path = temp_root / "benchmark.json"
+            skill_path = temp_root / "skill"
+            skill_path.mkdir()
+            (skill_path / "SKILL.md").write_text("# placeholder skill\n", encoding="utf-8")
+
+            context_file = temp_root / "brief.md"
+            context_file.write_text("brief context\n", encoding="utf-8")
+            benchmark_path.write_text(
+                json.dumps(
+                    [
+                        {
+                            "id": "demo-scenario",
+                            "title": "Demo Scenario",
+                            "prompt": "Summarize the copied context.",
+                            "context_files": [str(context_file)],
+                            "assertions": [],
+                        }
+                    ]
+                ),
+                encoding="utf-8",
+            )
+
+            output_dir = temp_root / "results"
+            env = os.environ.copy()
+            env["PATH"] = f"{bin_dir}{os.pathsep}{env['PATH']}"
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT_PATH),
+                    "--benchmark",
+                    str(benchmark_path),
+                    "--skill-path",
+                    str(skill_path),
+                    "--output-dir",
+                    str(output_dir),
+                    "--runner",
+                    "copilot",
+                ],
+                cwd=REPO_ROOT,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr or result.stdout)
+            run_metadata = json.loads((output_dir / "run_metadata.json").read_text(encoding="utf-8"))
+            self.assertEqual(run_metadata["runner"], "copilot")
+
+            scenario_dir = output_dir / "eval-1-demo-scenario"
             self.assertEqual(
                 (scenario_dir / "without_skill" / "response.md").read_text(encoding="utf-8").strip(),
                 "baseline cli output",

@@ -1,0 +1,19 @@
+Work only from the request below. Do not read any local files or rely on repository instructions. If you need assumptions, state them briefly and continue.
+
+Work only from the material below. Do not ask follow-up questions. If you need assumptions, state them briefly and continue.
+
+Users hit a known bug in legacy access review assignment. Apply the reviewed fix using TDD without widening scope.
+
+Bug summary:
+- In the legacy facade path, reassigned reviews sometimes remain visible to the previous approver for up to one page refresh.
+- The new implementation must preserve the existing API contract and response shape.
+- The fix must work while both the legacy and new assignment paths coexist.
+- Do not redesign the assignment subsystem in this slice.
+
+Acceptance targets:
+- A reassigned review is no longer listed for the previous approver after reassignment.
+- The new approver sees the review in their pending list.
+- Existing API response shape remains unchanged.
+- Legacy-path and new-path coexistence remains covered.
+
+Please produce a TDD-first implementation plan. Start with the regression test that captures the bug, keep the fix surgical, and call out any compatibility protections.

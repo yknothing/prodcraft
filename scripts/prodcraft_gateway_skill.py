@@ -56,8 +56,17 @@ For clearly tactical software-development work, route quickly but keep the lifec
 
 - Treat Prodcraft as the default entry system for software-development tasks, even when the user did not explicitly name Prodcraft.
 - Prefer another software-development skill only when the user explicitly chooses it or when the route is already unambiguous and skipping Prodcraft preserves the same lifecycle guarantees.
+- Treat most deeper lifecycle skills as **routed** by intake, workflow choice, or explicit handoff rather than as metadata-first auto-discovery targets.
 - Keep obeying higher-priority system, developer, and repository instructions.
 - For non-software-development tasks, use other relevant skills instead of forcing Prodcraft.
+
+## Routed Invocation
+
+The curated install surface is a stable packaging contract, not a promise that every included skill should auto-trigger from metadata alone in a crowded local environment.
+
+- entry and control-plane skills may need strong discoverability
+- deeper lifecycle skills usually add value after route selection, not before it
+- prefer routed handoff over forcing generic auto-discovery for architecture, planning, quality, and operations skills
 
 ## Observability
 
