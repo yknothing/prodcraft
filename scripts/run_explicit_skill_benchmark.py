@@ -153,36 +153,65 @@ def run_prompt(prompt: str, runner: str, model: str | None, cwd: Path, timeout_s
     if runner == "claude":
         env.pop("CLAUDECODE", None)
 
-    process = subprocess.Popen(
-        cmd,
-        cwd=cwd,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        start_new_session=True,
-        env=env,
-    )
-    try:
-        stdout, stderr = process.communicate(timeout=timeout_seconds)
-    except subprocess.TimeoutExpired as exc:
-        os.killpg(process.pid, signal.SIGKILL)
-        process.wait()
-        raise subprocess.TimeoutExpired(
-            cmd=exc.cmd,
-            timeout=timeout_seconds,
-            output=exc.output,
-            stderr=exc.stderr,
-        ) from exc
-
-    if process.returncode != 0:
-        raise subprocess.CalledProcessError(
-            returncode=process.returncode,
-            cmd=cmd,
-            output=stdout,
-            stderr=stderr,
+    max_attempts = 4
+    base_delay = 5.0
+    
+    for attempt in range(1, max_attempts + 1):
+        process = subprocess.Popen(
+            cmd,
+            cwd=cwd,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            start_new_session=True,
+            env=env,
         )
+        try:
+            stdout, stderr = process.communicate(timeout=timeout_seconds)
+            if process.returncode == 0:
+                return sanitize_runner_output(runner, stdout)
+                
+            combined_output = stdout + "\n" + stderr
+            is_transient = (
+                "429" in combined_output or 
+                "RESOURCE_EXHAUSTED" in combined_output or 
+                "ECONNRESET" in combined_output or
+                "worker_failed" in combined_output or
+                "Premature close" in combined_output or
+                "socket hang up" in combined_output or
+                "ERR_STREAM_PREMATURE_CLOSE" in combined_output
+            )
+            
+            if is_transient and attempt < max_attempts:
+                print(f"Attempt {attempt} failed with transient error, retrying in {base_delay}s...", file=sys.stderr)
+                time.sleep(base_delay)
+                base_delay *= 2
+                continue
+                
+            raise subprocess.CalledProcessError(
+                returncode=process.returncode,
+                cmd=cmd,
+                output=stdout,
+                stderr=stderr,
+            )
+            
+        except subprocess.TimeoutExpired as exc:
+            os.killpg(process.pid, signal.SIGKILL)
+            process.wait()
+            if attempt < max_attempts:
+                print(f"Attempt {attempt} timed out, retrying in {base_delay}s...", file=sys.stderr)
+                time.sleep(base_delay)
+                base_delay *= 2
+                continue
+            raise subprocess.TimeoutExpired(
+                cmd=exc.cmd,
+                timeout=timeout_seconds,
+                output=exc.output,
+                stderr=exc.stderr,
+            ) from exc
 
-    return sanitize_runner_output(runner, stdout)
+    # Should not reach here
+    raise RuntimeError("Retry loop exhausted without returning or raising.")
 
 
 def write_text(path: Path, content: str) -> None:
