@@ -34,7 +34,7 @@ This workflow begins only after `intake` confirms that the work is modernization
 
 **Purpose:** Understand the existing system before proposing changes.
 
-**Skills:** Apply `documentation`, `user-research`, and `feasibility-study`.
+**Skills:** Apply `documentation` (experimental), `user-research`, and `feasibility-study` (experimental).
 
 This is the most critical phase in brownfield work. Resist the temptation to start fixing things immediately. Instead:
 
@@ -53,7 +53,7 @@ This is the most critical phase in brownfield work. Resist the temptation to sta
 
 **Purpose:** Establish a behavioral baseline before changing anything.
 
-**Skills:** Apply `spec-writing`, `acceptance-criteria`, `documentation`, and `tdd` (characterization tests).
+**Skills:** Apply `spec-writing` (experimental), `acceptance-criteria` (experimental), `documentation` (experimental), and `tdd` (characterization tests).
 
 Before you modernize, you must document what the system currently does -- including its quirks and bugs that users depend on.
 
@@ -75,7 +75,7 @@ Before you modernize, you must document what the system currently does -- includ
 
 **Purpose:** Design the modernization approach -- how to get from current state to target state incrementally.
 
-**Skills:** Apply `system-design`, `api-design`, `data-modeling`, `security-design`, and `tech-selection`.
+**Skills:** Apply `system-design`, `api-design`, `data-modeling` (experimental), `security-design` (experimental), and `tech-selection` (experimental).
 
 The default pattern is the strangler fig: build new functionality alongside the old, gradually routing traffic to the new system, and eventually decommissioning the old.
 
@@ -93,7 +93,7 @@ The default pattern is the strangler fig: build new functionality alongside the 
 
 **Purpose:** Sequence the modernization into increments that each deliver value and reduce risk.
 
-**Skills:** Apply `task-breakdown`, `risk-assessment`, and `estimation`.
+**Skills:** Apply `task-breakdown`, `risk-assessment` (experimental), and `estimation` (experimental).
 
 Break the modernization into increments where each one:
 - Is independently deployable and reversible.
@@ -113,7 +113,7 @@ Break the modernization into increments where each one:
 
 **Purpose:** Execute each modernization increment safely.
 
-**Skills:** Apply `tdd`, `feature-development`, `refactoring`, `code-review`, `documentation`, and `ci-cd`.
+**Skills:** Apply `tdd`, `feature-development`, `refactoring` (experimental), `code-review`, `documentation` (experimental), and `ci-cd`.
 
 The implementation cycle for each increment:
 
@@ -138,7 +138,7 @@ The implementation cycle for each increment:
 
 **Purpose:** Verify that each increment preserves existing behavior and delivers the intended improvement.
 
-**Skills:** Apply `testing-strategy`, `code-review`, `security-audit`, and `documentation`.
+**Skills:** Apply `testing-strategy`, `code-review`, `security-audit`, and `documentation` (experimental).
 
 1. **Regression testing:** Run the full characterization test suite. No regressions allowed.
 2. **Performance comparison:** Benchmark old vs. new. The new implementation must not degrade performance.
@@ -152,7 +152,7 @@ The implementation cycle for each increment:
 
 **Purpose:** Deploy the new component alongside the old with controlled traffic routing.
 
-**Skills:** Apply `ci-cd`, `release-management`, `deployment-strategy`, and `documentation`.
+**Skills:** Apply `ci-cd`, `release-management` (experimental), `deployment-strategy`, and `documentation` (experimental).
 
 1. Deploy the new component to production with traffic routing set to 0%.
 2. Route 1-5% of traffic to the new component. Monitor for errors.
@@ -167,7 +167,7 @@ The implementation cycle for each increment:
 
 **Purpose:** Maintain visibility into both old and new systems during transition.
 
-**Skills:** Apply `incident-response` and `documentation`.
+**Skills:** Apply `incident-response` and `documentation` (experimental).
 
 During the migration period, you are operating two systems. Monitoring must cover both:
 - Error rates in old and new components.
@@ -182,7 +182,7 @@ During the migration period, you are operating two systems. Monitoring must cove
 
 **Purpose:** Measure modernization progress, celebrate milestones, adjust the plan.
 
-**Skills:** Apply `retrospective`, `tech-debt-management`, and `market-analysis`.
+**Skills:** Apply `retrospective`, `tech-debt-management`, and `market-analysis` (experimental).
 
 1. **Track progress visually:** A migration dashboard showing percentage complete, components modernized, components remaining.
 2. **Measure improvement:** Compare current metrics (incident rate, deployment frequency, developer velocity) to the baseline from discovery.

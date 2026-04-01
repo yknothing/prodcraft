@@ -44,7 +44,7 @@ If none of these apply, use the standard workflow. Not everything urgent is a ho
 
 **Purpose:** Understand the impact, confirm the hotfix path, assign ownership.
 
-**Skills:** Apply `incident-response`, `bug-history-retrieval` when the failure may have lineage, and `documentation`.
+**Skills:** Apply `incident-response`, `bug-history-retrieval` (experimental) when the failure may have lineage, and `documentation` (experimental).
 
 **Actions:**
 1. Assess severity: who is affected, how many, what is the business impact.
@@ -58,7 +58,7 @@ If none of these apply, use the standard workflow. Not everything urgent is a ho
 
 **Purpose:** Identify the root cause with enough precision to fix it safely.
 
-**Skills:** Apply `incident-response`, `bug-history-retrieval` when historical lineage may matter, `systematic-debugging` after containment, and `documentation`.
+**Skills:** Apply `incident-response`, `bug-history-retrieval` (experimental) when historical lineage may matter, `systematic-debugging` after containment, and `documentation` (experimental).
 
 **Actions:**
 1. Confirm the current containment path and whether user impact is still active.
@@ -117,7 +117,7 @@ If none of these apply, use the standard workflow. Not everything urgent is a ho
 
 **Purpose:** Deploy the fix to production with verification.
 
-**Skills:** Apply `ci-cd`, `deployment-strategy`, `verification-before-completion`, and `documentation`.
+**Skills:** Apply `ci-cd`, `deployment-strategy`, `verification-before-completion`, and `documentation` (experimental).
 
 **Actions:**
 1. Deploy to production using the standard deployment pipeline (do not bypass it).

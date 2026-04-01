@@ -13,7 +13,7 @@ Prodcraft separates lifecycle authoring from public installation.
 - A public skill keeps a stable canonical `name`.
 - A rename must use `deprecated alias -> new canonical name -> old alias removal`.
 - Removal requires at least one full release cycle of overlap or an explicit migration note.
-- `manual_allowlist: true` is the escape hatch for curated export while a skill is still below the default maturity bar.
+- `manual_allowlist: true` is the escape hatch for curated export while a skill is still below the default maturity bar. It signals that a skill is part of the public beta surface even if its repository evidence does not yet support a full production status.
 
 ## Export Rules
 

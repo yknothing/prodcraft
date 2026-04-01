@@ -34,7 +34,7 @@ If any earlier gate is skipped, the intake brief must document that decision exp
 
 **Purpose:** Exhaustive problem analysis and stakeholder alignment.
 
-**Skills:** Apply `user-research`, `market-analysis`, and `feasibility-study`.
+**Skills:** Apply `user-research`, `market-analysis` (experimental), and `feasibility-study` (experimental).
 
 **Inputs:** Business case, market data, regulatory requirements, stakeholder access.
 **Outputs:** Discovery report, stakeholder map, problem statement, initial risk register.
@@ -52,7 +52,7 @@ All stakeholders must be identified and interviewed. The problem space must be d
 
 **Purpose:** Complete, unambiguous requirements documentation.
 
-**Skills:** Apply `requirements-engineering`, `spec-writing`, `domain-modeling`, and `acceptance-criteria`.
+**Skills:** Apply `requirements-engineering`, `spec-writing` (experimental), `domain-modeling` (experimental), and `acceptance-criteria` (experimental).
 
 **Inputs:** Discovery report, stakeholder map, regulatory constraints.
 **Outputs:** Product Requirements Document (PRD), functional specification, non-functional requirements, acceptance criteria for every requirement.
@@ -70,7 +70,7 @@ Every requirement gets a unique identifier for traceability. Acceptance criteria
 
 **Purpose:** System design that satisfies all specified requirements.
 
-**Skills:** Apply `system-design`, `api-design`, `data-modeling`, `security-design`, and `tech-selection`.
+**Skills:** Apply `system-design`, `api-design`, `data-modeling` (experimental), `security-design` (experimental), and `tech-selection` (experimental).
 
 **Inputs:** PRD, functional specification, non-functional requirements, existing system documentation.
 **Outputs:** Technical Design Document (TDD), Architecture Decision Records (ADRs), API specifications, data model diagrams, infrastructure plan.
@@ -88,7 +88,7 @@ Every architectural decision is recorded as an ADR with full rationale and alter
 
 **Purpose:** Detailed work breakdown, scheduling, and resource allocation.
 
-**Skills:** Apply `task-breakdown`, `risk-assessment`, and `estimation`.
+**Skills:** Apply `task-breakdown`, `risk-assessment` (experimental), and `estimation` (experimental).
 
 **Inputs:** TDD, ADRs, team capacity, external dependencies.
 **Outputs:** Work breakdown structure, project schedule, resource allocation, dependency map, risk mitigation plan.
@@ -106,7 +106,7 @@ Tasks are traced back to requirements. Every task has an estimate, an owner, and
 
 **Purpose:** Build the system according to specification and architecture.
 
-**Skills:** Apply `tdd`, `feature-development`, `refactoring`, `code-review`, and `documentation`.
+**Skills:** Apply `tdd`, `feature-development`, `refactoring` (experimental), `code-review`, and `documentation` (experimental).
 
 **Inputs:** TDD, task breakdown, coding standards, test strategy.
 **Outputs:** Working software, unit tests, integration tests, code documentation, implementation notes.
@@ -124,7 +124,7 @@ Code is written against the specification -- deviations require a formal change 
 
 **Purpose:** Comprehensive verification against specification.
 
-**Skills:** Apply `testing-strategy`, `code-review`, `security-audit`, and `documentation`.
+**Skills:** Apply `testing-strategy`, `code-review`, `security-audit`, and `documentation` (experimental).
 
 **Inputs:** Working software, specification, acceptance criteria, test plan.
 **Outputs:** Test results, defect reports, performance benchmarks, security scan results, release readiness assessment.
@@ -142,7 +142,7 @@ Every acceptance criterion is verified. Performance is benchmarked against non-f
 
 **Purpose:** Controlled release to production.
 
-**Skills:** Apply `ci-cd`, `release-management`, `deployment-strategy`, and `documentation`.
+**Skills:** Apply `ci-cd`, `release-management` (experimental), `deployment-strategy`, and `documentation` (experimental).
 
 **Inputs:** Release-ready software, deployment plan, rollback plan, stakeholder communication plan.
 **Outputs:** Production deployment, release notes, stakeholder notification, deployment verification.
@@ -154,7 +154,7 @@ Deployment follows a documented, rehearsed plan. Rollback procedures are tested 
 
 **Purpose:** Monitor, maintain, and support the production system.
 
-**Skills:** Apply `incident-response` and `documentation`.
+**Skills:** Apply `incident-response` and `documentation` (experimental).
 
 **Inputs:** Production system, monitoring configuration, runbooks, SLAs.
 **Outputs:** Operational metrics, incident reports, postmortems, maintenance logs.
@@ -166,7 +166,7 @@ Monitoring covers all SLAs. Incident response follows documented procedures. Eve
 
 **Purpose:** Continuous improvement based on operational data and changing needs.
 
-**Skills:** Apply `retrospective`, `tech-debt-management`, and `market-analysis`.
+**Skills:** Apply `retrospective`, `tech-debt-management`, and `market-analysis` (experimental).
 
 **Inputs:** Operational metrics, user feedback, market changes, tech debt inventory.
 **Outputs:** Evolution plan, updated roadmap, improvement tickets, process adjustments.

@@ -32,7 +32,7 @@ This workflow starts only after `intake` classifies the request as new-product o
 
 **Purpose:** Validate the problem is worth solving and define the minimum viable product.
 
-**Skills:** Apply `feasibility-study`, `user-research` (lightweight), and `market-analysis` (quick scan).
+**Skills:** Apply `feasibility-study` (experimental), `user-research` (lightweight), and `market-analysis` (experimental) (quick scan).
 
 This is not a months-long market research phase. The goal is to answer three questions:
 1. **Who** has this problem? Can you name specific people or segments?
@@ -48,7 +48,7 @@ Skip this phase only if you have strong prior evidence (e.g., you are the user, 
 
 **Purpose:** Define what the MVP does -- and crucially, what it does not do.
 
-**Skills:** Apply `requirements-engineering`, `spec-writing` (lightweight), and `acceptance-criteria`.
+**Skills:** Apply `requirements-engineering`, `spec-writing` (experimental) (lightweight), and `acceptance-criteria` (experimental).
 
 Write user stories for the MVP. Be ruthless about scope. For each proposed feature, ask: "Can we launch without this?" If yes, cut it. The specification is a short document, not a comprehensive PRD.
 
@@ -61,7 +61,7 @@ Write user stories for the MVP. Be ruthless about scope. For each proposed featu
 
 **Purpose:** Make the foundational technical decisions that are expensive to change later.
 
-**Skills:** Apply `system-design`, `api-design`, `data-modeling`, `security-design`, and `tech-selection`.
+**Skills:** Apply `system-design`, `api-design`, `data-modeling` (experimental), `security-design` (experimental), and `tech-selection` (experimental).
 
 This is the highest-leverage phase in a greenfield project. Focus decisions on:
 
@@ -88,7 +88,7 @@ This is the highest-leverage phase in a greenfield project. Focus decisions on:
 
 **Purpose:** Sequence the MVP build for maximum learning with minimum waste.
 
-**Skills:** Apply `task-breakdown`, `risk-assessment`, and `estimation`.
+**Skills:** Apply `task-breakdown`, `risk-assessment` (experimental), and `estimation` (experimental).
 
 Break the MVP into vertical slices -- each slice delivers a working user flow end-to-end. Prioritize slices that validate the riskiest assumptions first.
 
@@ -101,7 +101,7 @@ Break the MVP into vertical slices -- each slice delivers a working user flow en
 
 **Purpose:** Build the MVP in vertical slices, deployed incrementally.
 
-**Skills:** Apply `tdd`, `feature-development`, `refactoring`, `code-review`, `documentation`, and `ci-cd`.
+**Skills:** Apply `tdd`, `feature-development`, `refactoring` (experimental), `code-review`, `documentation` (experimental), and `ci-cd`.
 
 **Week 1 priorities:**
 1. Repository setup (version control, branching strategy, CI pipeline).
@@ -128,7 +128,7 @@ Break the MVP into vertical slices -- each slice delivers a working user flow en
 
 **Purpose:** Establish the quality baseline that all future work builds on.
 
-**Skills:** Apply `testing-strategy`, `code-review`, `security-audit`, and `documentation` (baseline scan).
+**Skills:** Apply `testing-strategy`, `code-review`, `security-audit`, and `documentation` (experimental) (baseline scan).
 
 For a greenfield project, quality is about establishing patterns, not exhaustive testing:
 
@@ -144,7 +144,7 @@ For a greenfield project, quality is about establishing patterns, not exhaustive
 
 **Purpose:** Ensure the deployment pipeline is robust and repeatable.
 
-**Skills:** Apply `ci-cd`, `release-management`, `deployment-strategy`, and `documentation`.
+**Skills:** Apply `ci-cd`, `release-management` (experimental), `deployment-strategy`, and `documentation` (experimental).
 
 If you deployed incrementally during implementation (as recommended), this phase is about hardening what you already have:
 
@@ -162,7 +162,7 @@ Invest here. The deployment pipeline is used every day for the life of the proje
 
 **Purpose:** Observe the system in production and respond to issues.
 
-**Skills:** Apply `incident-response` and `documentation`.
+**Skills:** Apply `incident-response` and `documentation` (experimental).
 
 Basic operational readiness from day one:
 
@@ -178,7 +178,7 @@ Basic operational readiness from day one:
 
 **Purpose:** Learn from real usage and plan the next iteration.
 
-**Skills:** Apply `retrospective`, `tech-debt-management`, and `market-analysis`.
+**Skills:** Apply `retrospective`, `tech-debt-management`, and `market-analysis` (experimental).
 
 After launch:
 1. **Measure:** Are users doing what you expected? Where do they get stuck?

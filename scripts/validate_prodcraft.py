@@ -872,6 +872,11 @@ def workflow_compatibility_tags(workflow_name: str) -> set[str]:
 def validate_workflow_skill_references(manifest: dict, errors: list[str]) -> None:
     skills = manifest_skill_names(manifest)
     skill_methods = load_skill_methodologies(errors)
+    manifest_skills = {
+        entry["name"]: entry
+        for entry in manifest.get("skills", [])
+        if isinstance(entry, dict) and "name" in entry
+    }
     workflow_names = {
         entry.get("name")
         for entry in manifest.get("workflows", [])
@@ -887,13 +892,21 @@ def validate_workflow_skill_references(manifest: dict, errors: list[str]) -> Non
         if path.name.startswith("_"):
             continue
         frontmatter, body = load_frontmatter(path)
-        refs = extract_backtick_refs(body)
-        missing = sorted(ref for ref in refs if ref not in skills and ref not in allowed_non_skill_tokens)
-        if missing:
-            errors.append(
-                f"{path}: references undefined skills/tokens {', '.join('`' + item + '`' for item in missing)}"
-            )
+        
+        for line in body.splitlines():
+            refs = extract_backtick_refs(line)
+            for ref in refs:
+                if ref not in skills and ref not in allowed_non_skill_tokens:
+                    errors.append(
+                        f"{path}: references undefined skills/tokens `{ref}`"
+                    )
+                elif ref in skills:
+                    skill_status = manifest_skills.get(ref, {}).get("status")
+                    if skill_status == "draft":
+                        if not re.search(rf"`{re.escape(ref)}`\s*\((?:experimental|planned)\)", line, re.IGNORECASE):
+                            errors.append(f"{path}: draft skill `{ref}` is referenced without being explicitly marked as (experimental) or (planned)")
 
+        refs = extract_backtick_refs(body)
         compatibility_tags = workflow_compatibility_tags(frontmatter.get("name", ""))
         for ref in sorted(ref for ref in refs if ref in skills):
             methods = skill_methods.get(ref, [])
@@ -968,6 +981,12 @@ def validate_cross_cutting_matrix(manifest: dict, errors: list[str]) -> None:
 
     phase_ids = {entry.get("id") for entry in manifest.get("phases", []) if isinstance(entry, dict)}
     skill_names = manifest_skill_names(manifest)
+    manifest_skills = {
+        entry["name"]: entry
+        for entry in manifest.get("skills", [])
+        if isinstance(entry, dict) and "name" in entry
+    }
+    
     seen_phase_ids: set[str] = set()
     for entry in entries:
         if not isinstance(entry, dict):
@@ -1004,6 +1023,8 @@ def validate_cross_cutting_matrix(manifest: dict, errors: list[str]) -> None:
             must_consider_names.append(skill_name)
             if skill_name not in skill_names:
                 errors.append(f"{MATRIX_PATH}: phase `{phase_id}` references unknown `must_consider` skill `{skill_name}`")
+            elif manifest_skills.get(skill_name, {}).get("status") == "draft":
+                errors.append(f"{MATRIX_PATH}: phase `{phase_id}` `must_consider` dependency `{skill_name}` must not be draft")
 
         must_produce_skill_names: set[str] = set()
         for item in must_produce:
@@ -1014,6 +1035,8 @@ def validate_cross_cutting_matrix(manifest: dict, errors: list[str]) -> None:
             must_produce_skill_names.add(skill_name)
             if skill_name not in skill_names:
                 errors.append(f"{MATRIX_PATH}: phase `{phase_id}` references unknown `must_produce` skill `{skill_name}`")
+            elif manifest_skills.get(skill_name, {}).get("status") == "draft":
+                errors.append(f"{MATRIX_PATH}: phase `{phase_id}` `must_produce` dependency `{skill_name}` must not be draft")
 
         skip_fast_track_names: list[str] = []
         for skill_name in skip_when_fast_track:
@@ -1059,6 +1082,7 @@ def validate_cross_cutting_matrix(manifest: dict, errors: list[str]) -> None:
     if seen_phase_ids != phase_ids:
         missing = sorted(phase_ids - seen_phase_ids)
         errors.append(f"{MATRIX_PATH}: missing phase entries for {', '.join(missing)}")
+
 
 
 def validate_curated_surface(errors: list[str]) -> None:

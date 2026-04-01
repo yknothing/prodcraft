@@ -32,7 +32,7 @@ This workflow starts only after `intake` is completed and approved. The required
 
 **Purpose:** Define the problem space, stakeholders, and constraints.
 
-**Skills:** Apply `user-research`, `market-analysis`, and `feasibility-study`.
+**Skills:** Apply `user-research`, `market-analysis` (experimental), and `feasibility-study` (experimental).
 
 **Iteration within phase:** Conduct initial research, synthesize findings, review with stakeholders, refine understanding. Expect 2-3 iteration cycles.
 
@@ -51,7 +51,7 @@ This workflow starts only after `intake` is completed and approved. The required
 
 **Purpose:** Translate discovery into detailed, verifiable requirements.
 
-**Skills:** Apply `requirements-engineering`, `spec-writing`, `domain-modeling`, and `acceptance-criteria`.
+**Skills:** Apply `requirements-engineering`, `spec-writing` (experimental), `domain-modeling` (experimental), and `acceptance-criteria` (experimental).
 
 **Iteration within phase:** Draft requirements, review with stakeholders and architects for feasibility, revise for clarity and completeness. Each requirement goes through at least one review cycle.
 
@@ -70,7 +70,7 @@ Requirements are versioned. Each revision is tracked with change rationale. The 
 
 **Purpose:** Design a system that fulfills all specified requirements.
 
-**Skills:** Apply `system-design`, `api-design`, `data-modeling`, `security-design`, and `tech-selection`.
+**Skills:** Apply `system-design`, `api-design`, `data-modeling` (experimental), `security-design` (experimental), and `tech-selection` (experimental).
 
 **Iteration within phase:** Propose architecture, review against requirements and quality attributes, revise. Prototype high-risk components if needed. Expect 2-3 design iterations.
 
@@ -89,7 +89,7 @@ Requirements are versioned. Each revision is tracked with change rationale. The 
 
 **Purpose:** Break the architecture into implementable work units and schedule delivery.
 
-**Skills:** Apply `task-breakdown`, `risk-assessment`, and `estimation`.
+**Skills:** Apply `task-breakdown`, `risk-assessment` (experimental), and `estimation` (experimental).
 
 **Iteration within phase:** Create initial work breakdown, validate estimates with implementers, adjust sequencing based on dependencies and risk, finalize.
 
@@ -108,7 +108,7 @@ Requirements are versioned. Each revision is tracked with change rationale. The 
 
 **Purpose:** Build the software according to the architecture and plan.
 
-**Skills:** Apply `tdd`, `feature-development`, `refactoring`, `code-review`, `documentation`, and `ci-cd`.
+**Skills:** Apply `tdd`, `feature-development`, `refactoring` (experimental), `code-review`, `documentation` (experimental), and `ci-cd`.
 
 **Iteration within phase:** Implement in increments aligned to the WBS. Each increment includes coding, unit testing, code review, and integration. Weekly progress reviews allow course correction.
 
@@ -127,7 +127,7 @@ Deviations from the architecture or specification are logged and escalated throu
 
 **Purpose:** Verify the implementation against the specification.
 
-**Skills:** Apply `testing-strategy`, `code-review`, `security-audit`, and `documentation`.
+**Skills:** Apply `testing-strategy`, `code-review`, `security-audit`, and `documentation` (experimental).
 
 **Iteration within phase:** Execute test plan, report defects, fix defects, re-test. Iterate until exit criteria met.
 
@@ -144,7 +144,7 @@ Deviations from the architecture or specification are logged and escalated throu
 
 **Purpose:** Deploy to production with controlled risk.
 
-**Skills:** Apply `ci-cd`, `release-management`, `deployment-strategy`, and `documentation`.
+**Skills:** Apply `ci-cd`, `release-management` (experimental), `deployment-strategy`, and `documentation` (experimental).
 
 **Inputs:** Release-ready software, deployment plan, rollback plan, communication plan.
 **Outputs:** Production deployment, release notes, deployment verification report.
@@ -155,7 +155,7 @@ Deployment follows a rehearsed plan. Rollback is tested before go-live. Stakehol
 
 **Purpose:** Maintain system health and respond to incidents.
 
-**Skills:** Apply `incident-response` and `documentation`.
+**Skills:** Apply `incident-response` and `documentation` (experimental).
 
 **Inputs:** Production system, monitoring configuration, runbooks, SLAs.
 **Outputs:** Operational dashboards, incident reports, postmortems, maintenance log.
@@ -164,7 +164,7 @@ Deployment follows a rehearsed plan. Rollback is tested before go-live. Stakehol
 
 **Purpose:** Assess system health and plan improvements.
 
-**Skills:** Apply `retrospective`, `tech-debt-management`, and `market-analysis`.
+**Skills:** Apply `retrospective`, `tech-debt-management`, and `market-analysis` (experimental).
 
 **Inputs:** Operational data, user feedback, market changes, tech debt inventory.
 **Outputs:** Evolution plan, updated roadmap, process improvements.

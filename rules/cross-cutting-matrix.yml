@@ -1,143 +1,140 @@
 schema_version: cross-cutting-matrix.v2
 phases:
-  - phase_id: 00-discovery
-    must_consider:
-      - documentation
-    must_produce:
-      - skill: documentation
-        when: discovery decisions create durable product, workflow, or architecture guidance that downstream work must reuse
-    skip_when_fast_track:
-      - documentation
-    conditional:
-      - skill: observability
-        when: discovery changes AI execution paths, eval runners, or workflow boundaries
-      - skill: bug-history-retrieval
-        when: repeated failures or regressions may already be known
-      - skill: compliance
-        when: regulated discovery constraints apply
-  - phase_id: 01-specification
-    must_consider:
-      - documentation
-    must_produce:
-      - skill: documentation
-        when: specification decisions create durable product, interface, or acceptance guidance that downstream work must reuse
-    skip_when_fast_track:
-      - documentation
-    conditional:
-      - skill: internationalization
-        when: new user-facing text or locale behavior is specified
-      - skill: accessibility
-        when: UI behavior or acceptance criteria are specified
-      - skill: compliance
-        when: regulatory requirements shape the spec
-  - phase_id: 02-architecture
-    must_consider:
-      - documentation
-    must_produce:
-      - skill: documentation
-        when: architecture decisions change durable diagrams, ADRs, interfaces, or operational guidance
-    skip_when_fast_track:
-      - documentation
-    conditional:
-      - skill: observability
-        when: the architecture adds or changes execution boundaries, workflows, or telemetry contracts
-      - skill: compliance
-        when: architecture must satisfy regulatory controls
-  - phase_id: 03-planning
-    must_consider:
-      - documentation
-    must_produce:
-      - skill: documentation
-        when: planning decisions create durable sequencing, ownership, or rollout guidance others must follow
-    skip_when_fast_track:
-      - documentation
-    conditional:
-      - skill: observability
-        when: planning changes benchmark or workflow execution paths
-      - skill: compliance
-        when: delivery sequencing includes regulatory sign-off
-  - phase_id: 04-implementation
-    must_consider:
-      - documentation
-    must_produce:
-      - skill: documentation
-        when: code changes require durable user, developer, operator, or migration-facing documentation
-    skip_when_fast_track:
-      - documentation
-    conditional:
-      - skill: verification-before-completion
-        when: the team is about to claim an implementation fix, task slice, or fast-track change is complete or ready for handoff
-      - skill: observability
-        when: code changes AI execution paths, workflow boundaries, or benchmark runners
-      - skill: accessibility
-        when: UI code is added or changed
-      - skill: internationalization
-        when: user-visible copy is added or changed
-      - skill: bug-history-retrieval
-        when: a failure may match historical incidents or regressions
-  - phase_id: 05-quality
-    must_consider:
-      - documentation
-    must_produce:
-      - skill: documentation
-        when: verification creates durable release criteria, known limitations, audit notes, or recovery guidance
-    skip_when_fast_track:
-      - documentation
-    conditional:
-      - skill: verification-before-completion
-        when: the team is about to claim review, testing, or audit work is complete or release-ready
-      - skill: observability
-        when: verification depends on execution telemetry or route metadata
-      - skill: accessibility
-        when: UI behavior is under review
-      - skill: compliance
-        when: release evidence must satisfy regulatory checks
-  - phase_id: 06-delivery
-    must_consider:
-      - documentation
-    must_produce:
-      - skill: documentation
-        when: shipping changes release, rollout, rollback, or operator instructions that others must follow
-    skip_when_fast_track:
-      - documentation
-    conditional:
-      - skill: verification-before-completion
-        when: the team is about to claim a release, rollout, or deployment handoff is complete
-      - skill: observability
-        when: release automation, rollout boundaries, or benchmark paths change
-      - skill: compliance
-        when: shipping requires regulatory evidence or approvals
-  - phase_id: 07-operations
-    must_consider:
-      - documentation
-    must_produce:
-      - skill: documentation
-        when: incidents or operational changes modify runbooks, escalation paths, dashboards, or recovery guidance
-    skip_when_fast_track:
-      - documentation
-    conditional:
-      - skill: verification-before-completion
-        when: the team is about to claim an incident is resolved, a mitigation is sufficient, or an operational handoff is complete
-      - skill: observability
-        when: runbooks, alerts, or incident telemetry boundaries change
-      - skill: bug-history-retrieval
-        when: operational failures may match known incidents
-      - skill: compliance
-        when: incident handling has regulatory reporting obligations
-  - phase_id: 08-evolution
-    must_consider:
-      - documentation
-    must_produce:
-      - skill: documentation
-        when: retrospective, migration, or deprecation work changes long-lived process or transition guidance
-    skip_when_fast_track:
-      - documentation
-    conditional:
-      - skill: verification-before-completion
-        when: the team is about to claim retrospective, migration, or debt follow-up work is complete
-      - skill: observability
-        when: retrospective findings rely on execution telemetry
-      - skill: bug-history-retrieval
-        when: repeated failures need historical comparison
-      - skill: compliance
-        when: improvement work changes regulated process obligations
+- phase_id: 00-discovery
+  must_consider: []
+  must_produce: []
+  skip_when_fast_track: []
+  conditional:
+  - skill: observability
+    when: discovery changes AI execution paths, eval runners, or workflow boundaries
+  - skill: bug-history-retrieval
+    when: repeated failures or regressions may already be known
+  - skill: compliance
+    when: regulated discovery constraints apply
+  - skill: documentation
+    when: discovery decisions create durable product, workflow, or architecture guidance
+      that downstream work must reuse
+- phase_id: 01-specification
+  must_consider: []
+  must_produce: []
+  skip_when_fast_track: []
+  conditional:
+  - skill: internationalization
+    when: new user-facing text or locale behavior is specified
+  - skill: accessibility
+    when: UI behavior or acceptance criteria are specified
+  - skill: compliance
+    when: regulatory requirements shape the spec
+  - skill: documentation
+    when: specification decisions create durable product, interface, or acceptance
+      guidance that downstream work must reuse
+- phase_id: 02-architecture
+  must_consider: []
+  must_produce: []
+  skip_when_fast_track: []
+  conditional:
+  - skill: observability
+    when: the architecture adds or changes execution boundaries, workflows, or telemetry
+      contracts
+  - skill: compliance
+    when: architecture must satisfy regulatory controls
+  - skill: documentation
+    when: architecture decisions change durable diagrams, ADRs, interfaces, or operational
+      guidance
+- phase_id: 03-planning
+  must_consider: []
+  must_produce: []
+  skip_when_fast_track: []
+  conditional:
+  - skill: observability
+    when: planning changes benchmark or workflow execution paths
+  - skill: compliance
+    when: delivery sequencing includes regulatory sign-off
+  - skill: documentation
+    when: planning decisions create durable sequencing, ownership, or rollout guidance
+      others must follow
+- phase_id: 04-implementation
+  must_consider: []
+  must_produce: []
+  skip_when_fast_track: []
+  conditional:
+  - skill: verification-before-completion
+    when: the team is about to claim an implementation fix, task slice, or fast-track
+      change is complete or ready for handoff
+  - skill: observability
+    when: code changes AI execution paths, workflow boundaries, or benchmark runners
+  - skill: accessibility
+    when: UI code is added or changed
+  - skill: internationalization
+    when: user-visible copy is added or changed
+  - skill: bug-history-retrieval
+    when: a failure may match historical incidents or regressions
+  - skill: documentation
+    when: code changes require durable user, developer, operator, or migration-facing
+      documentation
+- phase_id: 05-quality
+  must_consider: []
+  must_produce: []
+  skip_when_fast_track: []
+  conditional:
+  - skill: verification-before-completion
+    when: the team is about to claim review, testing, or audit work is complete or
+      release-ready
+  - skill: observability
+    when: verification depends on execution telemetry or route metadata
+  - skill: accessibility
+    when: UI behavior is under review
+  - skill: compliance
+    when: release evidence must satisfy regulatory checks
+  - skill: documentation
+    when: verification creates durable release criteria, known limitations, audit
+      notes, or recovery guidance
+- phase_id: 06-delivery
+  must_consider: []
+  must_produce: []
+  skip_when_fast_track: []
+  conditional:
+  - skill: verification-before-completion
+    when: the team is about to claim a release, rollout, or deployment handoff is
+      complete
+  - skill: observability
+    when: release automation, rollout boundaries, or benchmark paths change
+  - skill: compliance
+    when: shipping requires regulatory evidence or approvals
+  - skill: documentation
+    when: shipping changes release, rollout, rollback, or operator instructions that
+      others must follow
+- phase_id: 07-operations
+  must_consider: []
+  must_produce: []
+  skip_when_fast_track: []
+  conditional:
+  - skill: verification-before-completion
+    when: the team is about to claim an incident is resolved, a mitigation is sufficient,
+      or an operational handoff is complete
+  - skill: observability
+    when: runbooks, alerts, or incident telemetry boundaries change
+  - skill: bug-history-retrieval
+    when: operational failures may match known incidents
+  - skill: compliance
+    when: incident handling has regulatory reporting obligations
+  - skill: documentation
+    when: incidents or operational changes modify runbooks, escalation paths, dashboards,
+      or recovery guidance
+- phase_id: 08-evolution
+  must_consider: []
+  must_produce: []
+  skip_when_fast_track: []
+  conditional:
+  - skill: verification-before-completion
+    when: the team is about to claim retrospective, migration, or debt follow-up work
+      is complete
+  - skill: observability
+    when: retrospective findings rely on execution telemetry
+  - skill: bug-history-retrieval
+    when: repeated failures need historical comparison
+  - skill: compliance
+    when: improvement work changes regulated process obligations
+  - skill: documentation
+    when: retrospective, migration, or deprecation work changes long-lived process
+      or transition guidance

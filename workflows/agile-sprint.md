@@ -40,7 +40,7 @@ A sprint follows a repeating cadence. The phases weave through this rhythm:
 
 **Phases active:** Discovery, Specification, Architecture, Planning.
 
-**Skills:** Apply `requirements-engineering` (lightweight), `acceptance-criteria`, `task-breakdown`, `risk-assessment`, `estimation`, and `sprint-planning`.
+**Skills:** Apply `requirements-engineering` (lightweight), `acceptance-criteria` (experimental), `task-breakdown`, `risk-assessment` (experimental), `estimation` (experimental), and `sprint-planning` (experimental).
 
 The product manager brings a prioritized backlog. The team selects work for the sprint based on capacity. Stories are refined just enough to begin work -- detailed design happens during implementation. Architecture decisions are made at the story level, with the architect advising on system-wide implications.
 
@@ -57,7 +57,7 @@ Quick synchronization. Each team member shares progress, plans, and blockers. Th
 
 **Phases active:** Implementation, Quality.
 
-**Skills:** Apply `tdd`, `feature-development`, `refactoring`, `code-review`, and `documentation`.
+**Skills:** Apply `tdd`, `feature-development`, `refactoring` (experimental), `code-review`, and `documentation` (experimental).
 
 Development and testing happen together, not sequentially. Test-driven development is the default. Code review happens on every pull request. The definition of done includes tests, documentation, and review approval.
 
@@ -78,7 +78,7 @@ Quality is not a phase gate -- it is woven into every day. Automated tests run o
 
 **Phases active:** Delivery.
 
-**Skills:** Apply `ci-cd`, `deployment-strategy`, and `documentation`.
+**Skills:** Apply `ci-cd`, `deployment-strategy`, and `documentation` (experimental).
 
 Features ship to production behind feature flags as soon as they pass review and automated testing. Canary releases expose new code to a small percentage of users first. The deployment pipeline is fully automated -- a merge to main triggers the release process.
 

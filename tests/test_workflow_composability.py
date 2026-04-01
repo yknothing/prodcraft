@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import unittest
 from pathlib import Path
+import re
 
 import yaml
 
@@ -47,6 +48,23 @@ class WorkflowComposabilityTests(unittest.TestCase):
         self.assertIn("workflow_overlays", intake_template)
         self.assertIn("workflow_primary", intake_skill)
         self.assertIn("workflow_overlays", intake_skill)
+
+    def test_workflow_no_silent_draft_dependencies(self):
+        manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
+        draft_skills = {skill["name"] for skill in manifest.get("skills", []) if skill.get("status") == "draft"}
+        
+        for path in sorted(WORKFLOWS_DIR.glob("*.md")):
+            if path.name.startswith("_"):
+                continue
+            body = path.read_text(encoding="utf-8")
+            for line in body.splitlines():
+                refs = re.findall(r"`([a-z0-9-]+)`", line)
+                for ref in refs:
+                    if ref in draft_skills:
+                        self.assertTrue(
+                            re.search(rf"`{re.escape(ref)}`\s*\((?:experimental|planned)\)", line, re.IGNORECASE) is not None,
+                            f"Workflow {path.name} references draft skill `{ref}` without marking it as experimental or planned on line: {line}"
+                        )
 
 
 if __name__ == "__main__":
