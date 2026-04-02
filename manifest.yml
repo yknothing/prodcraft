@@ -104,9 +104,9 @@ skills:
   phase: 00-discovery
   file: skills/00-discovery/intake/SKILL.md
   gateway: true
-  status: review
+  status: tested
   qa_tier: critical
-  evaluation_mode: discoverability
+  evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/00-discovery/intake/evals/eval-strategy.md
@@ -233,13 +233,14 @@ skills:
 - name: task-breakdown
   phase: 03-planning
   file: skills/03-planning/task-breakdown/SKILL.md
-  status: review
+  status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/03-planning/task-breakdown/evals/eval-strategy.md
     benchmark_plan_path: eval/03-planning/task-breakdown/isolated-benchmark-plan.md
+    benchmark_results_path: eval/03-planning/task-breakdown/isolated-benchmark-review.md
     findings_path: eval/03-planning/task-breakdown/findings.md
     integration_test_path: eval/03-planning/task-breakdown/architecture-handoff-review.md
 - name: estimation
@@ -488,13 +489,14 @@ skills:
 - name: verification-before-completion
   phase: cross-cutting
   file: skills/cross-cutting/verification-before-completion/SKILL.md
-  status: review
+  status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/cross-cutting/verification-before-completion/evals/eval-strategy.md
     benchmark_plan_path: eval/cross-cutting/verification-before-completion/isolated-benchmark-plan.md
+    benchmark_results_path: eval/cross-cutting/verification-before-completion/isolated-benchmark-review.md
     findings_path: eval/cross-cutting/verification-before-completion/findings.md
     integration_test_path: eval/cross-cutting/verification-before-completion/completion-claim-review.md
 - name: accessibility

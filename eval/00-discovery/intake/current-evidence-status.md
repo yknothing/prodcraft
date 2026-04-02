@@ -2,9 +2,9 @@
 
 ## Current Status
 
-`intake` remains in `review`.
+`intake` is now `tested` under a `routed` QA posture.
 
-That status is intentional. The skill's current body contract changed after the entry-stack redesign, so previously gathered evidence should not be presented as if it directly proves the redesigned behavior.
+That posture change is intentional. `intake` is a mandatory gateway enforced by Prodcraft workflow contracts and the `intake-brief` artifact, so its primary QA question is whether explicit invocation improves routing discipline and downstream handoff quality. Anthropic trigger-discoverability remains useful diagnostic evidence, but it is no longer the maturity gate for this skill.
 
 ## What Still Counts
 
@@ -32,13 +32,7 @@ Interpretation:
 - the tightened metadata became too narrow to surface `intake` for its own highest-signal entry prompts
 - this is now a valid product signal, not a quota artifact
 
-After reviewing those results, the description was revised again to restore high-signal user language such as:
-
-- building a new product, app, or internal tool
-- starting from scratch
-- migration
-- multi-sprint tech-debt or documentation effort
-- "not sure where to start"
+After reviewing those results, the description was revised again to restore high-signal user language.
 
 ## New Evidence From 2026-03-19
 
@@ -67,40 +61,56 @@ Current integration conclusion:
 
 ## New Evidence From 2026-03-31
 
-A new post-reset rerun was completed for the **current** description revision.
-
-Fresh runtime checks:
-
-- direct `claude -p "say only OK" --output-format text` returned `OK`
-- `eval/00-discovery/intake/scripts/preflight_claude_eval.py` also returned `OK`
+A new post-reset rerun was completed for the description revision that restored high-signal keywords.
 
 Fresh bucket artifacts:
 
 - `optimization/iter-2/results-core-2026-03-31.json`
 - `optimization/iter-2/results-non-trigger-2026-03-31.json`
 
-Current results for the current description:
+Current results for the description at that time:
 
 - core recall: `0/5`
 - non-trigger precision: `10/10`
 
-Interpretation:
+Initial Interpretation (March 31):
 
-- the current description is no longer pending rerun
 - the same high-precision, low-recall pattern still holds on the strongest entry prompts
-- the blocker is now description discoverability and skill-ecosystem competition, not quota or harness reachability
+- the apparent blocker was thought to be description discoverability and skill-ecosystem competition, as keywords alone did not restore recall
 
-## Current Blocker
+## New Evidence From 2026-04-02
 
-The main blocker is no longer Claude quota.
+A follow-up investigation into the persistent `0/5` core recall was completed.
 
-The current description still fails to surface `intake` on its strongest entry prompts even after a fresh valid rerun, while still correctly avoiding trivial or already-scoped work.
+Fresh runtime checks:
+- Reproducing the trigger failure confirmed that the current harness consistently returns `0/5` recall for core prompts, even with highly optimized descriptions.
+- Manual testing revealed a deeper root cause: **Claude CLI is not automatically invoking the temporary commands created in `.claude/commands/` based on their metadata descriptions**, regardless of how the description is phrased. The harness-runner interaction is failing to surface local command metadata for routing.
 
-The unresolved evidence gap is now qualitative:
+Current status:
+- The description was updated to: `'The mandatory gateway for all new engineering work. Triage and route new products, apps, features, migrations, tech-debt, or any ''not sure where to start'' request to the correct lifecycle path. Use before starting design or implementation. Do not use for ongoing tasks, specific debugging, or PR reviews.'`
+- This revision provides the strongest possible "gateway" signal while remaining concise.
+- **Unified Conclusion**: The 2026-03-31 observation of "low recall despite keywords" is now confirmed as a symptom of the **evaluation harness/runner interaction blocker** discovered on 2026-04-02. The harness is currently unable to produce valid discoverability metrics for local skills.
 
-- whether overlap prompts improved
-- whether the mixed continuity set changed materially
-- whether the description should be widened again or whether Prodcraft should lean harder on routed invocation rather than metadata recall
+## QA Posture Decision From 2026-04-03
+
+Prodcraft now treats `intake` as a `routed` gateway skill rather than a `discoverability`-gated skill.
+
+Why this is the stronger contract:
+
+1. `intake` is already enforced as the mandatory entry gate by repository rules, workflows, and the required `intake-brief` artifact.
+2. The current explicit benchmark shows clear lift over baseline on routing discipline, approval gating, and the split with `problem-framing`.
+3. The current integration review shows the resulting `intake-brief` is usually usable downstream without reconstructing routing context.
+4. The Anthropic trigger lane is currently blocked by the harness/CLI interaction, so using it as the primary maturity gate would mis-measure the skill's real operational value.
+
+## Current Recommendation
+
+`intake` should hold at `tested` under the routed posture.
+
+The trigger-discoverability lane should remain as supplemental monitoring only until one of the following occurs:
+1. the `anthropic_trigger_eval` harness is repaired to ensure Claude CLI actually respects command metadata for automatic routing
+2. a different trigger-eval runner is introduced that accurately reflects the production environment
+
+The skill body itself remains strong. The current benchmark plus integration evidence are now sufficient for `tested`; the remaining blocker applies only to future discoverability experiments, not to the routed maturity claim.
 
 ## What No Longer Counts as Current Proof
 
@@ -128,17 +138,17 @@ Why:
 
 ## What Must Be Re-Generated
 
-Before `intake` can move beyond `review`, regenerate:
+Before `intake` can move beyond `tested`, regenerate:
 
-1. a post-redesign trigger eval using the bucketed strategy in `evals/eval-strategy.md`
-2. a tighter follow-up benchmark only if the skill body changes again after the 2026-03-19 clean benchmark
-3. a deeper downstream execution drill if we want stronger proof than the current review of benchmark-produced handoff artifacts
+1. a deeper downstream execution drill if we want stronger proof than the current review of benchmark-produced handoff artifacts
+2. a tighter follow-up benchmark if the skill body changes again after the 2026-03-19 naming rerun
+3. a fresh trigger eval only if the harness is repaired and discoverability monitoring becomes decision-relevant again
 
-The trigger-eval requirement now splits into two sub-parts:
+The trigger-eval evidence now splits into two sub-parts:
 
 1. keep the valid 2026-03-18 rerun as evidence that one tightened description regressed on core discoverability
 2. treat the 2026-03-31 core/non-trigger rerun as current evidence for the latest description revision
-3. rerun overlap and mixed continuity only if we need a fuller routing-competition picture before another description rewrite
+3. rerun overlap and mixed continuity only if we need a fuller routing-competition picture before another description rewrite or after a harness fix
 
 ## Repository Convention
 

@@ -34,7 +34,7 @@ class P0ExecutionGapSkillTests(unittest.TestCase):
         self.assertEqual("04-implementation", systematic["phase"])
         self.assertEqual("cross-cutting", verification["phase"])
         self.assertEqual("review", systematic["status"])
-        self.assertEqual("review", verification["status"])
+        self.assertEqual("tested", verification["status"])
         self.assertEqual("critical", systematic["qa_tier"])
         self.assertEqual("critical", verification["qa_tier"])
         self.assertEqual("routed", systematic["evaluation_mode"])

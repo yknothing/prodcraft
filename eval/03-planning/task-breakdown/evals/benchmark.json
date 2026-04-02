@@ -1,0 +1,24 @@
+[
+  {
+    "id": "greenfield-vertical-slices",
+    "name": "Greenfield Vertical Slices",
+    "prompt": "Break this reviewed architecture and API contract into implementation-ready tasks for a first-release approvals workflow. Architecture: We are building a new document approval system. There is a Document service, an Approval service, and a Notification service. API Contract: POST /documents (create), POST /approvals (approve/reject), GET /documents/{id}/approvals (status). We need to build this from scratch and ship the first version.",
+    "assertions": [
+      "tasks are small enough to complete in 1-3 days",
+      "slices remain vertical rather than backend-first chunks",
+      "dependencies are explicit",
+      "no orphan tasks appear without upstream rationale"
+    ]
+  },
+  {
+    "id": "brownfield-increment-plan",
+    "name": "Brownfield Increment Plan",
+    "prompt": "Break this brownfield modernization design into reversible increments that preserve release boundaries and rollback safety. Architecture: We are migrating from a legacy monolith access-review system to a new microservice. The legacy system writes directly to the DB. The new system will use an event-driven approach. API Contract: We need to dual-write for a while and eventually switch reads.",
+    "assertions": [
+      "tasks preserve coexistence and rollback constraints",
+      "sequencing favors low-risk, high-signal increments",
+      "characterization / regression safety work appears before behavioral changes",
+      "migration tasks do not imply a big-bang cutover"
+    ]
+  }
+]

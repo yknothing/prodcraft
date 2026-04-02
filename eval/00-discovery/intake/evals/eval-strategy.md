@@ -1,6 +1,18 @@
-# Intake Trigger Eval Strategy
+# Intake QA Strategy
 
-## Why split the eval set
+## Current QA Posture
+
+`intake` is now evaluated as a `routed` gateway skill.
+
+That means:
+
+- explicit benchmark and integration evidence are the primary gates before `tested`
+- Anthropic trigger eval remains a supplemental diagnostic lane for metadata discoverability only
+- trigger results should not override stronger routed evidence while the current harness/CLI interaction remains unreliable for local skills
+
+The bucketed trigger eval still matters, but it now answers a narrower question: "if we ask Claude to auto-route from metadata alone, does the current description surface on the strongest entry prompts?"
+
+## Why split the trigger eval set
 
 `intake` is a routing skill. That makes trigger evaluation structurally different from evaluating a leaf skill like `code-review` or `tdd`.
 
@@ -61,15 +73,16 @@ Keep the original `trigger-eval.json` as a continuity benchmark only.
 
 Use it to compare against earlier iterations, but do not let its single blended score override the bucketed interpretation above.
 
-## Interpretation rules
+## Interpretation rules for the supplemental trigger lane
 
-- **Core recall** is the most important trigger metric for `intake`.
+- **Core recall** is the most important discoverability metric for `intake`.
 - **Non-trigger precision** must remain high.
 - **Overlap cases** should be analyzed qualitatively, not collapsed into the same meaning as core misses.
+- trigger misses do not block routed maturity claims when explicit benchmark and integration evidence are already stronger and the harness lane is known to be unreliable
 
 ## Practical rule
 
-When reporting intake trigger quality, use:
+When reporting optional intake trigger quality, use:
 
 1. Core trigger recall
 2. Non-trigger precision
@@ -78,7 +91,7 @@ When reporting intake trigger quality, use:
 
 Do not treat all positive misses as equivalent.
 
-## Success thresholds for iteration 2
+## Success thresholds for the supplemental trigger lane
 
 - **Core recall target**: at least 4/5 core prompts should trigger.
 - **Non-trigger precision target**: 10/10 non-trigger prompts should stay non-trigger.
@@ -96,7 +109,7 @@ Because the body contract changed, the old trigger and benchmark evidence should
 
 The next intake QA pass should verify:
 
-1. **Core discoverability still holds** for the strongest entry prompts.
-2. **Question load remains low** after the tighter routing-only positioning.
-3. **Observability improves** because the `intake-brief` now records why intake was used, which answers changed routing, and what skill is next.
-4. **Handoff discipline improves** by routing fuzzy post-intake cases to `problem-framing` instead of stretching intake into a full design conversation.
+1. **Question load remains low** after the tighter routing-only positioning.
+2. **Observability improves** because the `intake-brief` now records why intake was used, which answers changed routing, and what skill is next.
+3. **Handoff discipline improves** by routing fuzzy post-intake cases to `problem-framing` instead of stretching intake into a full design conversation.
+4. **Core discoverability is monitored** only after the trigger harness becomes trustworthy again.

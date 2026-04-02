@@ -1,6 +1,6 @@
 ---
 name: intake
-description: Route new engineering work before execution. Use when a user wants to build a new product, app, or internal tool, start from scratch, plan a migration, run a multi-sprint tech-debt or documentation effort, or says they are not sure where to start. Also use when a feature, refactor, or hotfix needs scope triage before implementation. Do not use for ongoing work, concrete debugging, trivial edits, direct commands, PR review, or pure questions.
+description: The mandatory gateway for all new engineering work. Triage and route new products, apps, features, migrations, tech-debt, or any 'not sure where to start' request to the correct lifecycle path. Use before starting design or implementation. Do not use for ongoing tasks, specific debugging, or PR reviews.
 metadata:
   phase: 00-discovery
   inputs: []

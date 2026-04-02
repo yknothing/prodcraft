@@ -87,7 +87,7 @@ Execute the relevant verification in the current message or session:
 - confirm the current phase gate is satisfied
 - note any unverified areas explicitly
 
-For `fast-track` work, run the narrowest command set that still proves the claim. "Fast" changes the scope of proof, not the need for proof.
+For `fast-track` work, run the narrowest command set that still proves the claim. "Fast" changes the scope of proof, not the need for proof. NEVER assume a file was modified or a task was completed based on context or conversational history. If you cannot see the change via a diff, `cat`, or directory listing, the evidence is missing and the verification MUST fail. Proof cannot be hallucinated or waived just because a fix is small.
 
 ### Step 4: Check Artifact and Handoff Integrity
 

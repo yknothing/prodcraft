@@ -102,14 +102,20 @@ This benchmark also validates the intended split with `problem-framing`: when th
 
 ## Status Implication
 
-`intake` should remain in `review` because:
+This benchmark now supports `intake` holding `tested` under a `routed` QA posture because:
 
-1. the current high-signal metadata description still lacks a post-redesign trigger rerun after the 2026-03-18 quota block
-2. some later-stage path labels remain provisional when the first discovery handoff may still change the route
-3. the integration review remains the supporting check for whether the generated `intake-brief` is directly usable downstream
+1. the current explicit benchmark shows repeatable lift on the behaviors that matter most for a gateway skill: route selection, approval gating, and handoff observability
+2. the supporting integration review confirms the first downstream handoff is usable without reconstructing context
+3. the discoverability lane is currently blocked by the Anthropic harness/CLI interaction, so it is tracked as supplemental diagnostic evidence rather than as the primary maturity gate
+
+What this benchmark does **not** prove yet:
+
+1. that `intake` should advance beyond `tested`
+2. that the optional discoverability lane is healthy
+3. that every later-stage path label is fully final before the first downstream discovery handoff
 
 ## Next Required Evidence
 
-1. rerun the current high-signal description through the bucketed Anthropic trigger eval after quota reset
-2. preserve the rule that the first downstream handoff should be a concrete Prodcraft skill whenever the route is already known
-3. preserve this benchmark as the current explicit benchmark reference until a newer body revision supersedes it
+1. preserve the rule that the first downstream handoff should be a concrete Prodcraft skill whenever the route is already known
+2. run a deeper downstream execution drill before considering `secure` or `production`
+3. rerun the bucketed Anthropic trigger eval only after the harness/CLI interaction is repaired
