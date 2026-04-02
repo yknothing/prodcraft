@@ -2,7 +2,7 @@
 
 ## Summary
 
-`tdd` has moved to `review` status.
+`tdd` has moved to `tested` status.
 
 ## What Changed
 
@@ -22,7 +22,8 @@ At this stage, `tdd` appears to be:
 
 - a core implementation skill on the lifecycle spine
 - stronger as a routed workflow skill than as a discoverability-first skill
-- still in need of isolated benchmark evidence before it can leave `review`
+- now backed by enough isolated benchmark evidence to leave `review`
+- not yet supported by security-review evidence, so it should stop at `tested`
 
 ## 2026-03-31 Benchmark Smoke Attempt
 
@@ -60,6 +61,56 @@ Current interpretation of that run:
 
 This means `copilot` is not yet a valid replacement benchmark lane for `tdd`.
 
+## 2026-04-01 Gemini Partial Rerun
+
+A second Gemini-owned isolated rerun was executed on the same benchmark set.
+
+Retained evidence for that rerun:
+
+- this findings note
+- `eval/04-implementation/tdd/isolated-benchmark-rerun-2026-04-01.md`
+
+Current interpretation of that rerun:
+
+- `forward-feature-slice` did complete with both baseline and with-skill branches
+- the with-skill branch clearly outperformed baseline on unsupported-flow precision, explicit brownfield safety, and scope discipline
+- `brownfield-regression-fix` did **not** complete, so the overall benchmark set still lacks a full two-scenario control pair
+- the raw runner output was not yet self-contained because `response.md` pointed to external Gemini temp files instead of storing the plan body directly
+
+This rerun improved confidence in the benchmark contract, but on its own it still was not enough to move `tdd` beyond `review`.
+
+## 2026-04-02 Gemini Rerun
+
+A follow-up Gemini rerun was executed after the benchmark runner gained self-capture support for external temp-file outputs.
+
+Retained evidence for that rerun:
+
+- this findings note
+- `eval/04-implementation/tdd/isolated-benchmark-rerun-2026-04-02.md`
+
+Current interpretation of that rerun:
+
+- no scenario produced a comparable baseline/with-skill `response.md` pair
+- the rerun failed through a mixed blocker set rather than a single failure mode
+- observed blockers included `429 QUOTA_EXHAUSTED`, `fetchAdminControls` `ECONNRESET`, and branch-level timeout exhaustion
+- because no successful plan output was retained, the self-capture improvement was not meaningfully exercised on a real Gemini completion
+
+This means the repository can now separate "artifact capture" from "runtime lane health" more cleanly, but the Gemini lane alone still was not enough to promote `tdd`.
+
+## 2026-04-02 Copilot Fallback Review
+
+The decisive current benchmark judgment comes from the isolated fallback review recorded in:
+
+- `eval/04-implementation/tdd/isolated-benchmark-review.md`
+
+Current interpretation of that review:
+
+- a forward feature slice produced a clear baseline vs with-skill comparison
+- a clean brownfield regression slice comparison also completed through the fallback lane
+- in both scenarios, the with-skill branch stayed closer to the requested artifact shape and showed better regression discipline, scope control, and coexistence protection than baseline
+
+This is enough to justify moving `tdd` to `tested`.
+
 ## Next QA Step
 
-Stabilize or replace the current benchmark runner with a lane that can produce comparable baseline and with-skill `response.md` artifacts, then rerun the isolated benchmark for both the forward feature slice and the brownfield regression slice.
+Hold `tdd` at `tested` until a security review artifact exists. Revalidate later on the primary Gemini lane when it becomes stable enough to serve as a comparable benchmark runner again.

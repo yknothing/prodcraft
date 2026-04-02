@@ -48,6 +48,25 @@ GEMINI_INLINE_PREAMBLE_PATTERNS = (
     re.compile(r'^Skill conflict detected: .*?\.md"\.', re.DOTALL),
 )
 COPILOT_FOOTER_RE = re.compile(r"\n+Total usage est:.*\Z", re.DOTALL)
+LOCAL_ARTIFACT_REFERENCE_RE = re.compile(
+    r"(?P<path>/(?:Users|tmp|var/folders)[^\s`]+?\.(?:md|txt))"
+)
+LOCAL_ARTIFACT_POINTER_CUES = (
+    "plan has been saved",
+    "plan is available",
+    "plan saved in",
+    "plan saved to",
+    "saved it to",
+    "find the plan saved in",
+    "find the plan saved to",
+    "saved to `",
+    "saved in `",
+)
+GEMINI_TEMP_PATH_RE = re.compile(
+    r"/Users/[^/\s`]+/.gemini/tmp/[^/\s`]+/[^/\s`]+(?P<tail>/[^\s`]+)"
+)
+MACOS_TEMP_PATH_RE = re.compile(r"/var/folders/[^\s`]+")
+TMP_PATH_RE = re.compile(r"/tmp/[^\s`]+")
 
 
 def build_prompt_command(runner: str, prompt: str, model: str | None) -> list[str]:
@@ -145,6 +164,55 @@ def sanitize_runner_output(runner: str, output: str) -> str:
         cleaned.append(candidate)
 
     return "\n".join(cleaned).strip()
+
+
+def sanitize_machine_specific_paths(text: str) -> str:
+    text = GEMINI_TEMP_PATH_RE.sub(r"<gemini-temp-workspace>\g<tail>", text)
+    text = MACOS_TEMP_PATH_RE.sub("<macos-temp-path>", text)
+    text = TMP_PATH_RE.sub("<tmp-path>", text)
+    return text
+
+
+def is_allowed_local_artifact_path(path: Path) -> bool:
+    allowed_roots = (
+        Path.home() / ".gemini" / "tmp",
+        Path("/tmp"),
+        Path("/private/tmp"),
+        Path("/var/folders"),
+        Path("/private/var/folders"),
+    )
+    for root in allowed_roots:
+        try:
+            path.relative_to(root)
+            return True
+        except ValueError:
+            continue
+    return False
+
+
+def maybe_materialize_local_artifact(output: str) -> str:
+    normalized = output.strip()
+    if not normalized:
+        return normalized
+
+    lowered = normalized.lower()
+    if not any(cue in lowered for cue in LOCAL_ARTIFACT_POINTER_CUES):
+        return sanitize_machine_specific_paths(normalized)
+
+    for match in LOCAL_ARTIFACT_REFERENCE_RE.finditer(normalized):
+        candidate = Path(match.group("path"))
+        if candidate.suffix.lower() not in {".md", ".txt"}:
+            continue
+        if not candidate.exists() or not candidate.is_file():
+            continue
+        resolved = candidate.resolve()
+        if not is_allowed_local_artifact_path(resolved):
+            continue
+        materialized = candidate.read_text(encoding="utf-8").strip()
+        if materialized:
+            return sanitize_machine_specific_paths(materialized)
+
+    return sanitize_machine_specific_paths(normalized)
 
 
 def run_prompt(prompt: str, runner: str, model: str | None, cwd: Path, timeout_seconds: int) -> str:
@@ -274,6 +342,7 @@ def run_case(
             cwd=cwd,
             timeout_seconds=timeout_seconds,
         )
+        output = maybe_materialize_local_artifact(output)
         response_path = result_dir / "response.md"
         write_text(response_path, output)
         duration_ms = int((time.monotonic() - start_time) * 1000)

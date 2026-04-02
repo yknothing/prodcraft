@@ -89,6 +89,38 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
             "## TDD Plan\n\n- Write the failing test first",
         )
 
+    def test_maybe_materialize_local_artifact_reads_temp_plan_file(self):
+        module = load_module()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            temp_root = Path(tmpdir)
+            plan_path = temp_root / "plans" / "approval-reminders.md"
+            plan_path.parent.mkdir(parents=True)
+            plan_path.write_text("# TDD Plan\n\n- Write failing tests first\n", encoding="utf-8")
+
+            output = (
+                "I drafted the implementation plan and saved it to "
+                f"`{plan_path}`.\nPlease review it."
+            )
+
+            self.assertEqual(
+                module.maybe_materialize_local_artifact(output),
+                "# TDD Plan\n\n- Write failing tests first",
+            )
+
+    def test_maybe_materialize_local_artifact_sanitizes_missing_temp_path(self):
+        module = load_module()
+        output = (
+            "I drafted the implementation plan and saved it to "
+            "`/Users/whatsup/.gemini/tmp/baseline-16/uuid-123/plans/demo.md`."
+        )
+
+        self.assertEqual(
+            module.maybe_materialize_local_artifact(output),
+            "I drafted the implementation plan and saved it to "
+            "`<gemini-temp-workspace>/plans/demo.md`.",
+        )
+
     def test_display_path_prefers_repo_relative_paths(self):
         module = load_module()
         repo_path = REPO_ROOT / "eval" / "01-specification" / "requirements-engineering" / "explicit-benchmark.json"
@@ -228,6 +260,61 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
             self.assertEqual(
                 (scenario_dir / "with_skill" / "response.md").read_text(encoding="utf-8").strip(),
                 "skill output",
+            )
+
+    def test_main_materializes_external_plan_references_into_response_artifacts(self):
+        module = load_module()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            temp_root = Path(tmpdir)
+            benchmark_path = temp_root / "benchmark.json"
+            skill_path = temp_root / "skill"
+            skill_path.mkdir()
+            (skill_path / "SKILL.md").write_text("# placeholder skill\n", encoding="utf-8")
+
+            plan_path = temp_root / "plans" / "captured-plan.md"
+            plan_path.parent.mkdir(parents=True)
+            plan_path.write_text("# Captured Plan\n\n- RED first\n", encoding="utf-8")
+
+            benchmark_path.write_text(
+                json.dumps(
+                    [
+                        {
+                            "id": "demo-scenario",
+                            "title": "Demo Scenario",
+                            "prompt": "Summarize the copied context.",
+                            "assertions": [],
+                        }
+                    ]
+                ),
+                encoding="utf-8",
+            )
+
+            output_dir = temp_root / "results"
+            argv = [
+                "run_explicit_skill_benchmark.py",
+                "--benchmark",
+                str(benchmark_path),
+                "--skill-path",
+                str(skill_path),
+                "--output-dir",
+                str(output_dir),
+            ]
+            pointer_output = f"The plan is available for review at:\n`{plan_path}`"
+
+            with mock.patch.object(module, "run_prompt", side_effect=[pointer_output, pointer_output]):
+                with mock.patch.object(sys, "argv", argv):
+                    exit_code = module.main()
+
+            self.assertEqual(exit_code, 0)
+            scenario_dir = output_dir / "eval-1-demo-scenario"
+            self.assertEqual(
+                (scenario_dir / "without_skill" / "response.md").read_text(encoding="utf-8").strip(),
+                "# Captured Plan\n\n- RED first",
+            )
+            self.assertEqual(
+                (scenario_dir / "with_skill" / "response.md").read_text(encoding="utf-8").strip(),
+                "# Captured Plan\n\n- RED first",
             )
 
     def test_script_runs_end_to_end_with_fake_gemini_cli(self):

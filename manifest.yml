@@ -260,13 +260,14 @@ skills:
 - name: tdd
   phase: 04-implementation
   file: skills/04-implementation/tdd/SKILL.md
-  status: review
+  status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/04-implementation/tdd/evals/eval-strategy.md
     benchmark_plan_path: eval/04-implementation/tdd/isolated-benchmark-plan.md
+    benchmark_results_path: eval/04-implementation/tdd/isolated-benchmark-review.md
     findings_path: eval/04-implementation/tdd/findings.md
     integration_test_path: eval/04-implementation/tdd/task-handoff-review.md
 - name: systematic-debugging
