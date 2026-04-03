@@ -193,6 +193,29 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
         self.assertIn("--no-custom-instructions", cmd)
         self.assertNotIn("gemini", cmd)
 
+    def test_run_prompt_retries_copilot_connection_error_as_transient(self):
+        module = load_module()
+        failed = FakeProcess(
+            stdout="",
+            stderr='Model call failed: "Connection error."\nExecution failed: Connection error.\n',
+            returncode=1,
+        )
+        succeeded = FakeProcess(stdout="● OK\n", stderr="", returncode=0)
+
+        with mock.patch.object(module.subprocess, "Popen", side_effect=[failed, succeeded]) as popen:
+            with mock.patch.object(module.time, "sleep") as sleep:
+                output = module.run_prompt(
+                    prompt="say only OK",
+                    runner="copilot",
+                    model=None,
+                    cwd=Path("/tmp"),
+                    timeout_seconds=5,
+                )
+
+        self.assertEqual(output, "● OK")
+        self.assertEqual(popen.call_count, 2)
+        sleep.assert_called_once()
+
     def test_main_records_default_runner_and_writes_outputs(self):
         module = load_module()
 

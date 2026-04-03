@@ -244,6 +244,8 @@ def run_prompt(prompt: str, runner: str, model: str | None, cwd: Path, timeout_s
                 "429" in combined_output or 
                 "RESOURCE_EXHAUSTED" in combined_output or 
                 "ECONNRESET" in combined_output or
+                "Connection error." in combined_output or
+                "Connection error" in combined_output or
                 "worker_failed" in combined_output or
                 "Premature close" in combined_output or
                 "socket hang up" in combined_output or
