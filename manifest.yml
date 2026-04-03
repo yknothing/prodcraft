@@ -216,8 +216,15 @@ skills:
 - name: tech-selection
   phase: 02-architecture
   file: skills/02-architecture/tech-selection/SKILL.md
-  status: draft
+  status: review
   qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/02-architecture/tech-selection/evals/eval-strategy.md
+    benchmark_plan_path: eval/02-architecture/tech-selection/isolated-benchmark-plan.md
+    findings_path: eval/02-architecture/tech-selection/findings.md
+    integration_test_path: eval/02-architecture/tech-selection/system-design-handoff-review.md
 - name: api-design
   phase: 02-architecture
   file: skills/02-architecture/api-design/SKILL.md
@@ -251,8 +258,15 @@ skills:
 - name: risk-assessment
   phase: 03-planning
   file: skills/03-planning/risk-assessment/SKILL.md
-  status: draft
+  status: review
   qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/03-planning/risk-assessment/evals/eval-strategy.md
+    benchmark_plan_path: eval/03-planning/risk-assessment/isolated-benchmark-plan.md
+    findings_path: eval/03-planning/risk-assessment/findings.md
+    integration_test_path: eval/03-planning/risk-assessment/task-breakdown-handoff-review.md
 - name: sprint-planning
   phase: 03-planning
   file: skills/03-planning/sprint-planning/SKILL.md
