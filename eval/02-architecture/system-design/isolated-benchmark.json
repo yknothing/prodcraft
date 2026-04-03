@@ -1,0 +1,32 @@
+[
+  {
+    "id": "access-review-modernization-requirements-handoff",
+    "title": "Brownfield Access Review Architecture from Reviewed Requirements",
+    "context_files": [
+      "fixtures/access-review-modernization-requirements.md"
+    ],
+    "prompt": "Read `./access-review-modernization-requirements.md`. Work only from that file. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce a system-design artifact for release 1 that preserves brownfield coexistence with the legacy module, keeps unresolved questions visible, and stays in the architecture layer rather than jumping into implementation, cutover, schema, or service decomposition details.",
+    "assertions": [
+      {
+        "name": "stays-in-architecture-phase",
+        "description": "Keeps the output in architecture and does not collapse into implementation, cutover sequencing, schema design, or service decomposition"
+      },
+      {
+        "name": "preserves-brownfield-coexistence",
+        "description": "Preserves the release-1 coexistence boundary with the legacy module instead of assuming a full rewrite or same-day cutover"
+      },
+      {
+        "name": "preserves-upstream-open-questions",
+        "description": "Keeps unresolved tenant, historical-data, and synchronization questions visible rather than silently deciding them"
+      },
+      {
+        "name": "maps-drivers-to-structure",
+        "description": "Names architectural drivers before choosing structure and ties decisions back to those drivers"
+      },
+      {
+        "name": "prepares-downstream-handoff",
+        "description": "Produces an artifact shaped for downstream `api-design`, `data-modeling`, or `task-breakdown` work"
+      }
+    ]
+  }
+]

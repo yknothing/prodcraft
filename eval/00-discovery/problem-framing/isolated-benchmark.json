@@ -1,0 +1,29 @@
+[
+  {
+    "id": "access-review-direction",
+    "title": "Brownfield Access Review Direction from Approved Intake",
+    "prompt": "Work only from the approved intake brief reproduced below. Do not ask follow-up questions. If you need assumptions, state them briefly and continue.\n\nWe already have an approved lifecycle route. Your job is to do problem framing only.\n\nProduce:\n- a short invocation reason\n- a `problem-frame`\n- 2-3 plausible release-1 directions with trade-offs\n- a recommended direction\n- explicit non-goals and open questions\n- the next lifecycle skill and why it is next\n\nStay pre-requirements and pre-architecture. Do not silently choose migration sequencing or sync semantics.\n\nApproved intake brief:\n# Intake Brief: Access Review Modernization Direction\n\n## Work Summary\n- Request: Modernize the quarterly access-review workflow, but release 1 must coexist with the legacy module during audit season and the team is not yet aligned on the narrowest viable direction.\n- Why intake was used: This is brownfield modernization work with a known lifecycle route but unresolved release-1 direction and scope boundaries.\n- Work type: Migration\n- Entry phase: 00-discovery\n- Recommended workflow: brownfield\n- Scope assessment: large\n- Urgency: elevated but not an incident\n\n## Required Artifact\n- Artifact name: intake-brief\n- Status: approved\n- Approver: user\n\n## Routing Decision\n1. Recommended first skill: problem-framing\n   - Output: problem-frame, options-brief, design-direction\n   - Why this is next: The modernization route is clear, but the release-1 direction still needs trade-off framing before requirements or research can proceed cleanly.\n2. Second skill: requirements-engineering\n   - Output: requirements-doc\n3. Third skill: system-design\n   - Output: architecture-doc\n\n## Question Budget\n- Questions asked: 3\n- Did any answer change routing? yes\n\n## Alternatives Considered\n- Primary path chosen: problem-framing -> requirements-engineering -> system-design\n- Alternative path considered: go directly to system-design\n- Trade-off summary: Jumping to architecture would move faster, but the team still lacks agreement on the release-1 boundary and coexistence direction.\n\n## Key Risks\n1. Architecture work could hard-code a migration or synchronization choice before the release-1 boundary is agreed.\n2. Stakeholders may conflate modernization with full legacy replacement, causing hidden scope expansion.\n\n## Notes for Handoff\n- Constraints: release 1 must coexist with the legacy module during audit season; tenant-specific rules are only partially inventoried.\n- Open questions:\n  - Should release 1 focus on campaign management and evidence packaging first, or include reassignment/correction flows immediately?\n  - Can historical campaigns remain read-only in the legacy module for release 1?\n  - What consistency level is actually required between legacy and new workflows during coexistence?\n- Context that downstream skills must preserve: do not silently decide rewrite-vs-coexistence or real-time-vs-batch sync inside the framing step.\n- Should problem-framing run next? yes",
+    "assertions": [
+      {
+        "name": "does-not-repeat-intake",
+        "description": "Starts from the approved intake brief rather than re-triaging the work or redoing intake"
+      },
+      {
+        "name": "keeps-question-load-low",
+        "description": "Keeps the additional question burden low when the intake brief is already sufficient"
+      },
+      {
+        "name": "preserves-non-goals-and-open-questions",
+        "description": "Carries forward brownfield constraints, non-goals, and unresolved questions instead of silently deciding them"
+      },
+      {
+        "name": "compares-release-1-directions",
+        "description": "Compares multiple viable release-1 directions with clear trade-offs rather than jumping to one implicit answer"
+      },
+      {
+        "name": "hands-off-cleanly-to-requirements-engineering",
+        "description": "Names `requirements-engineering` as the next skill and explains why architecture should wait"
+      }
+    ]
+  }
+]

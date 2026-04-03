@@ -2,7 +2,7 @@
 
 ## Summary
 
-`problem-framing` has moved from `draft` to `review`.
+`problem-framing` has moved from `review` to `tested`.
 
 ## Why This Skill Exists
 
@@ -57,6 +57,19 @@ Interpretation:
 - the with-skill delta is strongest on observability, anti-goal preservation, and handoff discipline
 - that is the right value shape for an entry-stack routed skill
 
+## Isolated Benchmark Signal
+
+A current isolated benchmark review now exists at:
+
+- `isolated-benchmark-review.md`
+
+Interpretation:
+
+- the decisive isolated lane used the strongest brownfield access-review scenario
+- baseline remained useful, which makes the comparison meaningful rather than trivial
+- the with-skill branch was materially stronger on invocation observability, explicit non-goals, unresolved-question preservation, and handoff readiness
+- this closes the main evidence-quality gap that had kept the skill at `review`
+
 ## Downstream Consumption Signal
 
 Downstream-consumer reviews now exist at:
@@ -72,4 +85,7 @@ Interpretation:
 
 ## Next QA Step
 
-Run one true isolated benchmark or cross-reviewer execution drill on one of the reviewed downstream scenarios so the current semi-isolated and downstream-consumption signals can be checked against cleaner evidence.
+Do not push beyond `tested` until one of the following is added:
+
+- security-review evidence for the skill package, and/or
+- broader isolated rerun coverage on a second scenario such as the non-brownfield team-invite path

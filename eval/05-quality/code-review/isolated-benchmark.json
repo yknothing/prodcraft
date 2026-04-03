@@ -1,0 +1,35 @@
+[
+  {
+    "id": "access-review-modernization-code-review",
+    "title": "Brownfield Access Review Changeset Review",
+    "context_files": [
+      "fixtures/access-review-modernization-task-slice.md",
+      "fixtures/access-review-modernization-api-contract.md",
+      "fixtures/reassignments.py",
+      "fixtures/test_reassignments.py"
+    ],
+    "prompt": "Read `./access-review-modernization-task-slice.md`, `./access-review-modernization-api-contract.md`, `./reassignments.py`, and `./test_reassignments.py`. Work only from those files. Do not propose implementation or redesign. Review the changeset and return concise, prioritized review feedback that identifies blocking contract violations, brownfield coexistence risks, missing test coverage, and any distracting nit-level issues only if they materially affect the merge decision.",
+    "assertions": [
+      {
+        "name": "finds-blocking-contract-violations",
+        "description": "Surfaces contract-breaking behavior and other merge-blocking correctness issues explicitly"
+      },
+      {
+        "name": "preserves-brownfield-safety",
+        "description": "Calls out coexistence, compatibility, rollback, or release-boundary risks instead of assuming a clean rewrite"
+      },
+      {
+        "name": "checks-test-adequacy",
+        "description": "Identifies missing negative-path, unauthorized-path, or unsupported-flow tests when they matter"
+      },
+      {
+        "name": "prioritizes-findings",
+        "description": "Orders review feedback by severity and avoids burying blockers under low-value commentary"
+      },
+      {
+        "name": "stays-review-focused",
+        "description": "Produces review feedback rather than implementation advice, redesign, or approval-style commentary"
+      }
+    ]
+  }
+]

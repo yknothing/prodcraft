@@ -2,7 +2,7 @@
 
 ## Summary
 
-`requirements-engineering` remains in `review` status.
+`requirements-engineering` has moved from `review` to `tested`.
 
 Three trigger-eval iterations were run on **2026-03-16**:
 
@@ -30,6 +30,9 @@ Three trigger-eval iterations were run on **2026-03-16**:
 14. A downstream review from evidence-backed `user-research` fixtures into `requirements-engineering` now exists for the classic B2B/SaaS `seat-and-guest-management` scenario. The skill is stronger than baseline at preserving release-1 non-goals, segment-sensitive traceability, and guest-first coexistence boundaries.
 15. The same `seat-and-guest-management` downstream path now has semi-isolated manual benchmark evidence, which is stronger than plain branch-pair review and includes an explicit contamination check.
 16. A non-brownfield `team-invite` downstream benchmark scenario now exists as a comparison case. The same core lift appears there too: stronger preservation of release-1 boundaries, clearer non-goals, and more explicit evidence traceability.
+17. A clean isolated routed benchmark now exists for the strongest public default chain: `problem-framing -> requirements-engineering` on the access-review modernization scenario.
+18. In that clean routed benchmark, baseline remained competent, but the with-skill branch was materially stronger on preserving the approved direction boundary, keeping coexistence as a P0 requirement, labeling unsupported bounds as assumptions, and shaping the artifact for downstream `system-design`.
+19. This closes the main contamination gap that had kept the skill at `review`.
 
 ## Implication for Prodcraft
 
@@ -51,4 +54,7 @@ For explicit-invocation QA:
 
 ## Next QA Step
 
-Run a true isolated benchmark or cross-reviewer execution drill for one of the two strongest routed chains: `problem-framing -> requirements-engineering` or `user-research -> requirements-engineering`.
+Do not push beyond `tested` until at least one of the following is added:
+
+- security-review evidence for the skill package, and/or
+- broader isolated rerun coverage on a second routed chain such as `user-research -> requirements-engineering`

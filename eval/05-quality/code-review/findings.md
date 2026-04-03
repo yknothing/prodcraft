@@ -2,19 +2,21 @@
 
 ## Summary
 
-`code-review` has moved to `review` status.
+`code-review` remains at `review`.
+
+A usable isolated benchmark result now exists, but the current primary run directory contains appended rerun history and the latest completed output still shows review-discipline issues that block `tested`.
 
 ## What Changed
 
-1. The skill description and body were tightened to reflect lifecycle-aware review instead of generic code-quality commentary.
-2. Task/contract context and brownfield boundary preservation are now explicit parts of the review process.
-3. A first manual changeset review was added using a brownfield reassignment-flow slice.
+1. A usable isolated benchmark result now exists for `access-review-modernization-code-review`.
+2. The benchmark confirms that both baseline and with-skill branches surface the core contract and brownfield blockers on the same fixture.
+3. The with-skill branch also shows a concrete quality defect: it drifts into implementation advice, approval-style closure, and duplicate checklist noise.
 
 ## What We Learned
 
-1. Generic review feedback tends to comment on tests and style without surfacing the actual merge blockers.
-2. The skill improves prioritization of contract violations, unsupported-flow handling, and unresolved coexistence decisions.
-3. The skill appears most valuable as a routed workflow skill downstream of `tdd` and implementation work.
+1. On a strong brownfield fixture, the skill's lift is not just "finds blockers" but "keeps blocker ordering and boundary awareness sharper than baseline."
+2. The skill reliably keeps contract violations, unsupported-flow handling, and coexistence risks visible.
+3. The current skill wording still over-activates checklist enforcement and remediation language, which makes the output noisier than the benchmark plan allows.
 
 ## Current Interpretation
 
@@ -22,8 +24,11 @@ At this stage, `code-review` appears to be:
 
 - a core quality skill on the lifecycle spine
 - stronger as a routed workflow skill than as a discoverability-first skill
-- still in need of isolated benchmark evidence before it can leave `review`
+- now backed by one usable isolated brownfield benchmark
+- still too noisy and approval-shaped to leave `review`
 
 ## Next QA Step
 
-Run an isolated benchmark for the same brownfield changeset, then add a non-brownfield feature changeset to verify the skill does not overfit to compatibility-heavy review.
+Tighten the review-output discipline on the skill and rerun the same isolated brownfield scenario.
+
+After a cleaner rerun exists, add a non-brownfield feature changeset to verify the skill does not overfit to compatibility-heavy review.

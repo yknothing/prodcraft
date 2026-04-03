@@ -1,0 +1,33 @@
+[
+  {
+    "id": "brownfield-compatibility-slice",
+    "title": "Brownfield Compatibility Slice",
+    "context_files": [
+      "../tdd/fixtures/access-review-modernization-task-slice.md",
+      "../tdd/fixtures/access-review-modernization-api-contract.md"
+    ],
+    "prompt": "Read `./access-review-modernization-task-slice.md` and `./access-review-modernization-api-contract.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce a small mergeable implementation increment for the reviewed access-review modernization slice. Keep the change behind the existing contract, preserve compatibility seams, make unsupported release-1 variants fail explicitly, and avoid broad cleanup or architecture redesign.",
+    "assertions": [
+      {
+        "name": "picks-smallest-reviewable-slice",
+        "description": "Narrows to one concrete increment rather than bundling adjacent work or broad cleanup"
+      },
+      {
+        "name": "implements-behind-tests",
+        "description": "Keeps the implementation visibly anchored to the reviewed tests and contract boundary"
+      },
+      {
+        "name": "preserves-scope-and-contract",
+        "description": "Keeps compatibility seams, unsupported flows, and contract boundaries explicit"
+      },
+      {
+        "name": "stays-implementation-focused",
+        "description": "Stays at the implementation increment level instead of turning into planning or architecture redesign"
+      },
+      {
+        "name": "prepares-review-handoff",
+        "description": "Leaves a clean, understandable diff shape ready for code review"
+      }
+    ]
+  }
+]

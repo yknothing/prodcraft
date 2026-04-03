@@ -1,0 +1,3 @@
+Work only from the request below. Do not read any local files or rely on repository instructions. If you need assumptions, state them briefly and continue.
+
+Read `./access-review-modernization-problem-framing.md`. Work only from that file. Do not ask follow-up questions. If you need assumptions, label them clearly and continue. Produce a first-release requirements set that preserves the chosen campaign-and-evidence-first coexistence direction, keeps the work in the requirements layer, preserves non-goals and unresolved questions, and shapes the result for downstream system-design or acceptance-criteria work.

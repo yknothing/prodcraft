@@ -1,0 +1,32 @@
+[
+  {
+    "id": "access-review-modernization-problem-framing-handoff",
+    "title": "Brownfield Requirements from Problem-Framing Handoff",
+    "context_files": [
+      "handoff-fixtures/access-review-modernization-problem-framing.md"
+    ],
+    "prompt": "Read `./access-review-modernization-problem-framing.md`. Work only from that file. Do not ask follow-up questions. If you need assumptions, label them clearly and continue. Produce a first-release requirements set that preserves the approved campaign-and-evidence-first coexistence direction, keeps the work in the requirements layer, preserves non-goals and unresolved questions, and prepares a clean downstream handoff to system-design.",
+    "assertions": [
+      {
+        "name": "stays-in-specification-phase",
+        "description": "Output remains in the requirements layer and does not jump into architecture, migration sequencing, or implementation design"
+      },
+      {
+        "name": "preserves-design-direction-boundary",
+        "description": "Keeps the approved campaign-and-evidence-first coexistence direction explicit instead of collapsing it into generic modernization language"
+      },
+      {
+        "name": "preserves-non-goals-and-open-questions",
+        "description": "Carries forward release-1 non-goals and unresolved sync, tenant, and historical-data questions instead of silently deciding them"
+      },
+      {
+        "name": "respects-no-invented-precision",
+        "description": "Does not convert unsupported qualitative or unresolved bounds into hard quantitative requirements without labeling them as assumptions or open questions"
+      },
+      {
+        "name": "prepares-downstream-handoff",
+        "description": "Produces a structured requirements artifact shaped for downstream system-design and acceptance-criteria work"
+      }
+    ]
+  }
+]

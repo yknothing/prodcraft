@@ -1,0 +1,12 @@
+{
+  "baseline_workspace": "baseline",
+  "with_skill_workspace": "with-skill",
+  "copied_skill_path": "with-skill/skill-under-test/SKILL.md",
+  "baseline_context_files": [
+    "baseline/access-review-modernization-problem-framing.md"
+  ],
+  "with_skill_context_files": [
+    "with-skill/access-review-modernization-problem-framing.md"
+  ],
+  "isolation_mode": "tempdir-outside-repo"
+}

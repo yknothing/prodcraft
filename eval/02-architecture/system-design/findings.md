@@ -18,6 +18,12 @@
 2. Brownfield and agile paths need architecture to start from reviewed requirements plus visible open questions; they cannot wait for a heavyweight spec package every time.
 3. The first manual handoff review suggests the skill improves architecture discipline around coexistence boundaries, unresolved-question handling, and downstream handoff clarity.
 4. The skill needed stronger decision depth around measurable quality attributes, reversibility, exit cost, and fitness functions so architecture reviews do not collapse into prose-only trade-off discussions.
+5. A true isolated benchmark asset now exists for the brownfield access-review scenario.
+6. The isolated baseline branch completes cleanly and is strong enough to serve as a real control artifact.
+7. The current blocker is no longer "missing benchmark design." The blocker is runner instability on the with-skill branch:
+   - first `copilot` fallback run timed out at `300s`
+   - second `copilot` rerun at `600s` failed with `Connection error.` after loading the skill and fixture
+8. Because the with-skill branch has not yet produced a clean response artifact, `system-design` still lacks the tested-grade benchmark result needed for promotion.
 
 ## Current Interpretation
 
@@ -30,4 +36,6 @@ At this stage, `system-design` appears to be:
 
 ## Next QA Step
 
-Run an isolated benchmark for the same brownfield scenario, then add one spec-driven scenario that includes a reviewed `spec-doc` and `domain-model`.
+Rerun the same isolated brownfield benchmark once the with-skill runner lane is stable.
+
+Do not widen to the spec-driven second scenario until the current brownfield with-skill branch completes cleanly.

@@ -121,7 +121,7 @@ skills:
 - name: problem-framing
   phase: 00-discovery
   file: skills/00-discovery/problem-framing/SKILL.md
-  status: review
+  status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -129,7 +129,7 @@ skills:
     eval_strategy_path: eval/00-discovery/problem-framing/evals/eval-strategy.md
     findings_path: eval/00-discovery/problem-framing/findings.md
     explicit_invocation_plan_path: eval/00-discovery/problem-framing/explicit-invocation-benchmark.md
-    benchmark_results_path: eval/00-discovery/problem-framing/explicit-benchmark-review.md
+    benchmark_results_path: eval/00-discovery/problem-framing/isolated-benchmark-review.md
     integration_test_path: eval/00-discovery/problem-framing/intake-handoff-review.md
     downstream_integration_test_path: eval/01-specification/requirements-engineering/problem-framing-handoff-review.md
     secondary_downstream_integration_test_path: eval/00-discovery/user-research/problem-framing-handoff-review.md
@@ -160,7 +160,7 @@ skills:
 - name: requirements-engineering
   phase: 01-specification
   file: skills/01-specification/requirements-engineering/SKILL.md
-  status: review
+  status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -170,7 +170,7 @@ skills:
     trigger_eval_results_path: eval/01-specification/requirements-engineering/results-trigger-iter3.json
     findings_path: eval/01-specification/requirements-engineering/findings.md
     explicit_invocation_plan_path: eval/01-specification/requirements-engineering/explicit-invocation-benchmark.md
-    benchmark_results_path: eval/01-specification/requirements-engineering/explicit-benchmark-review.md
+    benchmark_results_path: eval/01-specification/requirements-engineering/problem-framing-routed-benchmark-review.md
     integration_test_path: eval/01-specification/requirements-engineering/intake-handoff-review.md
     framing_integration_test_path: eval/01-specification/requirements-engineering/problem-framing-handoff-review.md
     user_research_integration_test_path: eval/01-specification/requirements-engineering/user-research-handoff-review.md
@@ -322,6 +322,7 @@ skills:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/05-quality/code-review/evals/eval-strategy.md
     benchmark_plan_path: eval/05-quality/code-review/isolated-benchmark-plan.md
+    benchmark_results_path: eval/05-quality/code-review/isolated-benchmark-review.md
     findings_path: eval/05-quality/code-review/findings.md
     integration_test_path: eval/05-quality/code-review/changeset-review.md
 - name: receiving-code-review
