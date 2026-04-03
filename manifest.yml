@@ -417,8 +417,15 @@ skills:
 - name: release-management
   phase: 06-delivery
   file: skills/06-delivery/release-management/SKILL.md
-  status: draft
+  status: review
   qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/06-delivery/release-management/evals/eval-strategy.md
+    benchmark_plan_path: eval/06-delivery/release-management/isolated-benchmark-plan.md
+    findings_path: eval/06-delivery/release-management/findings.md
+    integration_test_path: eval/06-delivery/release-management/delivery-completion-handoff-review.md
 - name: incident-response
   phase: 07-operations
   file: skills/07-operations/incident-response/SKILL.md
