@@ -20,7 +20,7 @@ metadata:
   distribution_surface: curated
   source_path: skills/cross-cutting/observability/SKILL.md
   public_stability: beta
-  public_readiness: experimental
+  public_readiness: beta
 ---
 
 # Observability
@@ -161,4 +161,4 @@ Do not stop at event emission. Summarize recurring failures, missing usage data,
 - Canonical authoring source: `skills/cross-cutting/observability/SKILL.md`
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
-- Capability readiness: `experimental`
+- Capability readiness: `beta`

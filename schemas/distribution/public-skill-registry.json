@@ -13,7 +13,7 @@
     { "name": "security-audit", "source": "skills/05-quality/security-audit", "stability": "beta", "readiness": "beta", "manual_allowlist": true },
     { "name": "ci-cd", "source": "skills/06-delivery/ci-cd", "stability": "beta", "readiness": "beta", "manual_allowlist": true },
     { "name": "deployment-strategy", "source": "skills/06-delivery/deployment-strategy", "stability": "beta", "readiness": "beta", "manual_allowlist": true },
-    { "name": "observability", "source": "skills/cross-cutting/observability", "stability": "beta", "readiness": "experimental", "manual_allowlist": true },
+    { "name": "observability", "source": "skills/cross-cutting/observability", "stability": "beta", "readiness": "beta", "manual_allowlist": true },
     { "name": "monitoring-observability", "source": "skills/07-operations/monitoring-observability", "stability": "beta", "readiness": "beta", "manual_allowlist": true },
     { "name": "incident-response", "source": "skills/07-operations/incident-response", "stability": "beta", "readiness": "beta", "manual_allowlist": true }
   ]

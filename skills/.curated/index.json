@@ -89,7 +89,7 @@
       "name": "observability",
       "source": "skills/cross-cutting/observability",
       "stability": "beta",
-      "readiness": "experimental",
+      "readiness": "beta",
       "manual_allowlist": true
     },
     {

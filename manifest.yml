@@ -480,8 +480,15 @@ skills:
 - name: observability
   phase: cross-cutting
   file: skills/cross-cutting/observability/SKILL.md
-  status: draft
+  status: review
   qa_tier: critical
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/cross-cutting/observability/evals/eval-strategy.md
+    benchmark_plan_path: eval/cross-cutting/observability/isolated-benchmark-plan.md
+    findings_path: eval/cross-cutting/observability/findings.md
+    manual_review_path: eval/cross-cutting/observability/runtime-contract-review.md
 - name: bug-history-retrieval
   phase: cross-cutting
   file: skills/cross-cutting/bug-history-retrieval/SKILL.md
