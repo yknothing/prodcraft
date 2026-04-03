@@ -103,6 +103,17 @@ QA_TIERS = {
     "standard",
 }
 
+PUBLIC_SURFACE_STABILITIES = {
+    "beta",
+    "stable",
+}
+
+PUBLIC_SURFACE_READINESS = {
+    "core",
+    "beta",
+    "experimental",
+}
+
 CRITICAL_REVIEW_DEPTH_PATHS = {
     "benchmark_plan_path",
     "benchmark_results_path",
@@ -1114,11 +1125,12 @@ def validate_curated_surface(errors: list[str]) -> None:
         except Exception as exc:
             errors.append(f"{index_path}: failed to parse JSON: {exc}")
             index = {}
-    index_names = {
-        entry.get("name")
+    index_entries = {
+        entry.get("name"): entry
         for entry in index.get("skills", [])
         if isinstance(entry, dict) and isinstance(entry.get("name"), str)
     }
+    index_names = set(index_entries)
     manifest = yaml.safe_load(MANIFEST_PATH.read_text(encoding="utf-8")) or {}
     manifest_skills = {
         entry["name"]: entry
@@ -1127,15 +1139,31 @@ def validate_curated_surface(errors: list[str]) -> None:
     }
     names: set[str] = set()
     for entry in public_skills:
-        if not isinstance(entry, dict) or "name" not in entry or "source" not in entry:
-            errors.append(f"{DISTRIBUTION_REGISTRY_PATH}: each public skill entry must include `name` and `source`")
+        if not isinstance(entry, dict) or "name" not in entry or "source" not in entry or "stability" not in entry or "readiness" not in entry:
+            errors.append(f"{DISTRIBUTION_REGISTRY_PATH}: each public skill entry must include `name`, `source`, `stability`, and `readiness`")
             continue
         name = entry["name"]
+        stability = entry["stability"]
+        readiness = entry["readiness"]
         if name in names:
             errors.append(f"{DISTRIBUTION_REGISTRY_PATH}: duplicate public skill `{name}`")
         names.add(name)
+        if stability not in PUBLIC_SURFACE_STABILITIES:
+            errors.append(
+                f"{DISTRIBUTION_REGISTRY_PATH}: public skill `{name}` has invalid `stability` `{stability}`; expected one of {sorted(PUBLIC_SURFACE_STABILITIES)}"
+            )
+        if readiness not in PUBLIC_SURFACE_READINESS:
+            errors.append(
+                f"{DISTRIBUTION_REGISTRY_PATH}: public skill `{name}` has invalid `readiness` `{readiness}`; expected one of {sorted(PUBLIC_SURFACE_READINESS)}"
+            )
         if name not in index_names:
             errors.append(f"{index_path}: curated surface index is missing `{name}`")
+        else:
+            index_entry = index_entries[name]
+            if index_entry.get("stability") != stability:
+                errors.append(f"{index_path}: curated surface index entry `{name}` has mismatched `stability`")
+            if index_entry.get("readiness") != readiness:
+                errors.append(f"{index_path}: curated surface index entry `{name}` has mismatched `readiness`")
         skill_dir = CURATED_SKILLS_DIR / name
         skill_file = skill_dir / "SKILL.md"
         if not skill_file.exists():
@@ -1151,6 +1179,19 @@ def validate_curated_surface(errors: list[str]) -> None:
             if skill_meta.get("qa_tier") == "critical" and skill_meta.get("status") not in {"tested", "secure", "production"} and not manual_allowlist:
                 errors.append(
                     f"{DISTRIBUTION_REGISTRY_PATH}: critical skill `{name}` is below tested status and must be manually allowlisted"
+                )
+            status = skill_meta.get("status")
+            if readiness == "core" and status not in {"tested", "secure", "production"}:
+                errors.append(
+                    f"{DISTRIBUTION_REGISTRY_PATH}: public skill `{name}` is marked `core` but manifest status is `{status}`"
+                )
+            if readiness == "beta" and status == "draft":
+                errors.append(
+                    f"{DISTRIBUTION_REGISTRY_PATH}: public skill `{name}` is marked `beta` but manifest status is still `draft`; use `experimental` or graduate the skill first"
+                )
+            if readiness == "experimental" and not manual_allowlist:
+                errors.append(
+                    f"{DISTRIBUTION_REGISTRY_PATH}: experimental public skill `{name}` must set `manual_allowlist: true`"
                 )
         text = skill_file.read_text(encoding="utf-8")
         for rel_target in re.findall(r"\((references|scripts|assets)/([^)]+)\)", text):

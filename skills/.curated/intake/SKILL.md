@@ -20,6 +20,8 @@ metadata:
   internal: false
   distribution_surface: curated
   source_path: skills/00-discovery/intake/SKILL.md
+  public_stability: beta
+  public_readiness: core
 ---
 
 # Intake
@@ -208,3 +210,5 @@ For edge cases that commonly derail intake routing under pressure, see [Gotchas]
 - Public install surface: `skills/.curated`
 - Canonical authoring source: `skills/00-discovery/intake/SKILL.md`
 - This package is exported for `npx skills add/update` compatibility.
+- Packaging stability: `beta`
+- Capability readiness: `core`

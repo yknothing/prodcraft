@@ -24,6 +24,8 @@ metadata:
   internal: false
   distribution_surface: curated
   source_path: skills/01-specification/requirements-engineering/SKILL.md
+  public_stability: beta
+  public_readiness: core
 ---
 
 # Requirements Engineering
@@ -141,3 +143,5 @@ If a metric, SLA, or retention bound is not directly supported by the source mat
 - Public install surface: `skills/.curated`
 - Canonical authoring source: `skills/01-specification/requirements-engineering/SKILL.md`
 - This package is exported for `npx skills add/update` compatibility.
+- Packaging stability: `beta`
+- Capability readiness: `core`

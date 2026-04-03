@@ -22,6 +22,8 @@ metadata:
   internal: false
   distribution_surface: curated
   source_path: skills/03-planning/task-breakdown/SKILL.md
+  public_stability: beta
+  public_readiness: core
 ---
 
 # Task Breakdown
@@ -137,3 +139,5 @@ When the work is modernization or migration:
 - Public install surface: `skills/.curated`
 - Canonical authoring source: `skills/03-planning/task-breakdown/SKILL.md`
 - This package is exported for `npx skills add/update` compatibility.
+- Packaging stability: `beta`
+- Capability readiness: `core`

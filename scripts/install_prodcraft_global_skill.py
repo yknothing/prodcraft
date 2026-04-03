@@ -123,7 +123,12 @@ def install_skill(
     target = skill_dir(target_root)
     target.mkdir(parents=True, exist_ok=True)
     (target / "SKILL.md").write_text(
-        render_prodcraft_skill(repo_root, install_surface="global"),
+        render_prodcraft_skill(
+            repo_root,
+            install_surface="global",
+            public_stability="beta",
+            public_readiness="core",
+        ),
         encoding="utf-8",
     )
 

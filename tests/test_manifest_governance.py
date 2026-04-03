@@ -11,6 +11,15 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 class ManifestGovernanceTests(unittest.TestCase):
+    def test_distribution_registry_declares_public_readiness(self):
+        registry = json.loads((REPO_ROOT / "schemas" / "distribution" / "public-skill-registry.json").read_text(encoding="utf-8"))
+
+        for entry in registry["public_skills"]:
+            self.assertIn("stability", entry, entry["name"])
+            self.assertIn(entry["stability"], {"beta", "stable"}, entry["name"])
+            self.assertIn("readiness", entry, entry["name"])
+            self.assertIn(entry["readiness"], {"core", "beta", "experimental"}, entry["name"])
+
     def test_every_skill_declares_qa_tier(self):
         manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
         for skill in manifest["skills"]:

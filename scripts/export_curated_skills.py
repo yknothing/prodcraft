@@ -65,7 +65,12 @@ def export_entry(entry: dict, *, repo_root: Path, output_root: Path) -> None:
     if entry["source"] == "generated:prodcraft":
         destination_dir.mkdir(parents=True, exist_ok=True)
         (destination_dir / "SKILL.md").write_text(
-            render_prodcraft_skill(repo_root, install_surface="curated"),
+            render_prodcraft_skill(
+                repo_root,
+                install_surface="curated",
+                public_stability=entry["stability"],
+                public_readiness=entry["readiness"],
+            ),
             encoding="utf-8",
         )
         return
@@ -76,11 +81,18 @@ def export_entry(entry: dict, *, repo_root: Path, output_root: Path) -> None:
     metadata["internal"] = bool(entry.get("internal", False))
     metadata["distribution_surface"] = "curated"
     metadata["source_path"] = str((source_dir / "SKILL.md").relative_to(repo_root))
+    metadata["public_stability"] = entry["stability"]
+    metadata["public_readiness"] = entry["readiness"]
 
     write_skill(
         destination_dir,
         frontmatter,
-        f"{body.strip()}\n\n{curated_note(metadata['source_path'])}",
+        (
+            f"{body.strip()}\n\n"
+            f"{curated_note(metadata['source_path'])}"
+            f"- Packaging stability: `{entry['stability']}`\n"
+            f"- Capability readiness: `{entry['readiness']}`\n"
+        ),
     )
     copy_resources(source_dir, destination_dir)
 
@@ -105,6 +117,7 @@ def export_curated_skills(*, repo_root: Path = REPO_ROOT, output_root: Path = DE
                 "name": entry["name"],
                 "source": entry["source"],
                 "stability": entry["stability"],
+                "readiness": entry["readiness"],
                 "manual_allowlist": bool(entry.get("manual_allowlist", False)),
             }
         )

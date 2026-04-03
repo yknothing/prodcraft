@@ -5,6 +5,8 @@ metadata:
   internal: false
   distribution_surface: curated
   source_path: skills/_gateway.md
+  public_stability: beta
+  public_readiness: core
 ---
 
 # Prodcraft
@@ -49,5 +51,7 @@ When Prodcraft is chosen, preserve routing observability:
 ## Distribution
 
 - Install surface: `curated`
+- Packaging stability: `beta`
+- Capability readiness: `core`
 - Canonical repo source: see the source repository
 - Gateway contract: `skills/_gateway.md` in the source repository

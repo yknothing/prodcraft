@@ -16,7 +16,13 @@ PRODCRAFT_DESCRIPTION = (
 )
 
 
-def render_prodcraft_skill(repo_root: Path, *, install_surface: str) -> str:
+def render_prodcraft_skill(
+    repo_root: Path,
+    *,
+    install_surface: str,
+    public_stability: str = "beta",
+    public_readiness: str = "core",
+) -> str:
     if install_surface == "curated":
         intake_ref = "`intake`"
         problem_framing_ref = "`problem-framing`"
@@ -35,6 +41,8 @@ def render_prodcraft_skill(repo_root: Path, *, install_surface: str) -> str:
             "internal": False,
             "distribution_surface": install_surface,
             "source_path": "skills/_gateway.md",
+            "public_stability": public_stability,
+            "public_readiness": public_readiness,
         },
     }
 
@@ -80,6 +88,8 @@ When Prodcraft is chosen, preserve routing observability:
 ## Distribution
 
 - Install surface: `{install_surface}`
+- Packaging stability: `{public_stability}`
+- Capability readiness: `{public_readiness}`
 {f"- Canonical repo source: `{repo_root}`" if install_surface != "curated" else "- Canonical repo source: see the source repository"}
 - Gateway contract: {gateway_ref}
 """

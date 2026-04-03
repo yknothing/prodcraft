@@ -23,6 +23,8 @@ metadata:
   internal: false
   distribution_surface: curated
   source_path: skills/05-quality/code-review/SKILL.md
+  public_stability: beta
+  public_readiness: beta
 ---
 
 # Code Review
@@ -176,3 +178,5 @@ See [Gotchas](references/gotchas.md) before debating scanner noise, approving on
 - Public install surface: `skills/.curated`
 - Canonical authoring source: `skills/05-quality/code-review/SKILL.md`
 - This package is exported for `npx skills add/update` compatibility.
+- Packaging stability: `beta`
+- Capability readiness: `beta`

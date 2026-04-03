@@ -95,10 +95,12 @@ npx skills add <repo-url> --skill intake
 npx skills update
 ```
 
-The stable public install surface is `skills/.curated/`. This curated surface represents a **beta capability set** and a stable packaging contract, not a blanket production-readiness claim for all skills.
+The stable public install surface is `skills/.curated/`. This curated surface is a stable packaging contract, not a blanket production-readiness claim for all skills.
 
 - `skills/00-discovery/` through `skills/cross-cutting/` remain the authoring source of truth
 - `skills/.curated/` is the install and upgrade contract consumed by `npx skills add/update`. Skills here are manually allowlisted while they graduate toward production maturity.
+- public registry entries now separate **packaging stability** from **capability readiness**
+- `stability` answers whether install and update semantics are stable; `readiness` answers how much repository-backed evidence supports public use (`core`, `beta`, or `experimental`)
 - regenerate the curated surface with `python3 scripts/export_curated_skills.py`
 - validate curated parity with `python3 scripts/validate_prodcraft.py --check curated-surface`
 

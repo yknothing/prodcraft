@@ -22,6 +22,8 @@ metadata:
   internal: false
   distribution_surface: curated
   source_path: skills/04-implementation/feature-development/SKILL.md
+  public_stability: beta
+  public_readiness: beta
 ---
 
 # Feature Development
@@ -99,3 +101,5 @@ Clean up obvious naming, dead code, and accidental noise that would distract rev
 - Public install surface: `skills/.curated`
 - Canonical authoring source: `skills/04-implementation/feature-development/SKILL.md`
 - This package is exported for `npx skills add/update` compatibility.
+- Packaging stability: `beta`
+- Capability readiness: `beta`

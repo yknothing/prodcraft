@@ -40,6 +40,10 @@ class CuratedDistributionSurfaceTests(unittest.TestCase):
         for skill_name in exported_names:
             self.assertTrue((CURATED_DIR / skill_name / "SKILL.md").exists())
 
+        for entry in index["skills"]:
+            self.assertIn("stability", entry, entry["name"])
+            self.assertIn("readiness", entry, entry["name"])
+
     def test_export_script_can_materialize_surface_into_temp_directory(self):
         module = load_module()
 

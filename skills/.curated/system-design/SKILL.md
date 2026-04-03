@@ -22,6 +22,8 @@ metadata:
   internal: false
   distribution_surface: curated
   source_path: skills/02-architecture/system-design/SKILL.md
+  public_stability: beta
+  public_readiness: beta
 ---
 
 # System Design
@@ -204,3 +206,5 @@ For worked architecture-style comparisons and an ADR example, see [decision-exam
 - Public install surface: `skills/.curated`
 - Canonical authoring source: `skills/02-architecture/system-design/SKILL.md`
 - This package is exported for `npx skills add/update` compatibility.
+- Packaging stability: `beta`
+- Capability readiness: `beta`

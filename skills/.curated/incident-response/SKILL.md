@@ -24,6 +24,8 @@ metadata:
   internal: false
   distribution_surface: curated
   source_path: skills/07-operations/incident-response/SKILL.md
+  public_stability: beta
+  public_readiness: beta
 ---
 
 # Incident Response
@@ -160,3 +162,5 @@ Blameless postmortem -- focus on systems, not people:
 - Public install surface: `skills/.curated`
 - Canonical authoring source: `skills/07-operations/incident-response/SKILL.md`
 - This package is exported for `npx skills add/update` compatibility.
+- Packaging stability: `beta`
+- Capability readiness: `beta`

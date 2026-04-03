@@ -16,7 +16,12 @@ Prodcraft supports the de facto Agent Skills installation flow:
 The lifecycle source tree is optimized for authoring, review, and repository-local validation.
 The `.curated` tree is optimized for stable installation and upgrade contracts across agent runtimes.
 
-This separation lets Prodcraft preserve rich lifecycle structure internally without forcing that structure onto installers. **Note that the curated surface currently represents a beta capability set.** Inclusion in the curated tree means a skill's installation boundary is stable, not necessarily that the skill itself has reached production maturity.
+This separation lets Prodcraft preserve rich lifecycle structure internally without forcing that structure onto installers. Inclusion in the curated tree means a skill's installation boundary is stable, not necessarily that the skill itself has reached full public maturity.
+
+Public registry entries expose two different release signals:
+
+- `stability`: install/update contract stability for the packaged skill
+- `readiness`: current public capability maturity (`core`, `beta`, or `experimental`)
 
 ## Export Contract
 

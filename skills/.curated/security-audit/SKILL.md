@@ -22,6 +22,8 @@ metadata:
   internal: false
   distribution_surface: curated
   source_path: skills/05-quality/security-audit/SKILL.md
+  public_stability: beta
+  public_readiness: beta
 ---
 
 # Security Audit
@@ -95,3 +97,5 @@ Every finding should point to the affected boundary, evidence, and expected reme
 - Public install surface: `skills/.curated`
 - Canonical authoring source: `skills/05-quality/security-audit/SKILL.md`
 - This package is exported for `npx skills add/update` compatibility.
+- Packaging stability: `beta`
+- Capability readiness: `beta`

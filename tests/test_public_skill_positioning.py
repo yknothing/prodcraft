@@ -15,6 +15,8 @@ class PublicSkillPositioningTests(unittest.TestCase):
         self.assertIn("discoverability-first", readme)
         self.assertIn("routed", readme)
         self.assertIn("not a promise that every skill should auto-trigger", readme)
+        self.assertIn("packaging stability", readme)
+        self.assertIn("capability readiness", readme)
 
     def test_curated_prodcraft_skill_sets_routed_expectation(self):
         prodcraft_skill = (REPO_ROOT / "skills" / ".curated" / "prodcraft" / "SKILL.md").read_text(encoding="utf-8")
@@ -22,6 +24,8 @@ class PublicSkillPositioningTests(unittest.TestCase):
         self.assertIn("## Routed Invocation", prodcraft_skill)
         self.assertIn("stable packaging contract", prodcraft_skill)
         self.assertIn("deeper lifecycle skills", prodcraft_skill)
+        self.assertIn("Packaging stability", prodcraft_skill)
+        self.assertIn("Capability readiness", prodcraft_skill)
 
 
 if __name__ == "__main__":

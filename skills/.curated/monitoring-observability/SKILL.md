@@ -24,6 +24,8 @@ metadata:
   internal: false
   distribution_surface: curated
   source_path: skills/07-operations/monitoring-observability/SKILL.md
+  public_stability: beta
+  public_readiness: beta
 ---
 
 # Monitoring and Observability
@@ -122,3 +124,5 @@ Before relying on the setup:
 - Public install surface: `skills/.curated`
 - Canonical authoring source: `skills/07-operations/monitoring-observability/SKILL.md`
 - This package is exported for `npx skills add/update` compatibility.
+- Packaging stability: `beta`
+- Capability readiness: `beta`

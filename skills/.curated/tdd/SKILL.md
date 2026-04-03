@@ -20,6 +20,8 @@ metadata:
   internal: false
   distribution_surface: curated
   source_path: skills/04-implementation/tdd/SKILL.md
+  public_stability: beta
+  public_readiness: core
 ---
 
 # Test-Driven Development
@@ -189,3 +191,5 @@ If an exception is used, state it explicitly. "We'll add tests later" without a 
 - Public install surface: `skills/.curated`
 - Canonical authoring source: `skills/04-implementation/tdd/SKILL.md`
 - This package is exported for `npx skills add/update` compatibility.
+- Packaging stability: `beta`
+- Capability readiness: `core`

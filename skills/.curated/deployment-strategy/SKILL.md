@@ -21,6 +21,8 @@ metadata:
   internal: false
   distribution_surface: curated
   source_path: skills/06-delivery/deployment-strategy/SKILL.md
+  public_stability: beta
+  public_readiness: beta
 ---
 
 # Deployment Strategy
@@ -103,3 +105,5 @@ Document the exact release sequence, rollback trigger conditions, rollback comma
 - Public install surface: `skills/.curated`
 - Canonical authoring source: `skills/06-delivery/deployment-strategy/SKILL.md`
 - This package is exported for `npx skills add/update` compatibility.
+- Packaging stability: `beta`
+- Capability readiness: `beta`

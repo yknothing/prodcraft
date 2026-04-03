@@ -22,6 +22,8 @@ metadata:
   internal: false
   distribution_surface: curated
   source_path: skills/00-discovery/problem-framing/SKILL.md
+  public_stability: beta
+  public_readiness: core
 ---
 
 # Problem Framing
@@ -150,3 +152,5 @@ After approval, hand off the framing artifacts to the next skill named in the `d
 - Public install surface: `skills/.curated`
 - Canonical authoring source: `skills/00-discovery/problem-framing/SKILL.md`
 - This package is exported for `npx skills add/update` compatibility.
+- Packaging stability: `beta`
+- Capability readiness: `core`

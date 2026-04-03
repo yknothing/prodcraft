@@ -23,6 +23,8 @@ metadata:
   internal: false
   distribution_surface: curated
   source_path: skills/06-delivery/ci-cd/SKILL.md
+  public_stability: beta
+  public_readiness: beta
 ---
 
 # CI/CD
@@ -125,3 +127,5 @@ If release boundaries or sync semantics remain constrained, use staging and gate
 - Public install surface: `skills/.curated`
 - Canonical authoring source: `skills/06-delivery/ci-cd/SKILL.md`
 - This package is exported for `npx skills add/update` compatibility.
+- Packaging stability: `beta`
+- Capability readiness: `beta`
