@@ -23,6 +23,7 @@
 7. The current blocker is no longer "missing benchmark design." The blocker is runner instability on the with-skill branch:
    - first `copilot` fallback run timed out at `300s`
    - second `copilot` rerun at `600s` failed with `Connection error.` after loading the skill and fixture
+   - a later 2026-04-05 rerun attempt became operationally invalid because concurrent benchmark processes wrote into the same output lane
 8. Because the with-skill branch has not yet produced a clean response artifact, `system-design` still lacks the tested-grade benchmark result needed for promotion.
 
 ## Current Interpretation

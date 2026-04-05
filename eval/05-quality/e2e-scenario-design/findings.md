@@ -1,8 +1,17 @@
 # E2E Scenario Design QA Findings
 
-## Summary
+## Status
 
-`e2e-scenario-design` is now tracked in `review` status.
+- Current status: `tested`
+- Evidence type:
+  - explicit benchmark packet
+  - routed handoff review from `testing-strategy`
+  - consumer review for CI / implementation reuse
+- Scope covered:
+  - shallow SPA test diagnosis
+  - mobile scenario design
+  - collaboration scenario design
+  - downstream handoff into repository-local quality workflow
 
 ## What Changed
 
@@ -14,7 +23,7 @@
 
 1. The strongest observed lift is structural: the skill is good at diagnosing shallow E2E suites and replacing them with persona-driven, stateful scenarios.
 2. The skill is weaker on assertion guidance than on scenario architecture, so the body now makes business-state assertions explicit instead of outsourcing that entirely to references.
-3. The benchmark evidence is good enough for review-stage value judgment, but not yet enough for `tested`.
+3. The benchmark packet is not uniformly differentiating, but it is strong enough for a narrow `tested` judgment once routed handoff and consumer evidence are added.
 
 ## Current Interpretation
 
@@ -22,8 +31,14 @@ At this stage, `e2e-scenario-design` appears to be:
 
 - a routed quality skill downstream of `testing-strategy`
 - useful when the suite needs deeper scenario discipline rather than more generic pyramid advice
-- still awaiting cleaner integration evidence before it should move beyond `review`
+- strong enough for a narrow `tested` posture because the repo now shows both benchmark lift and downstream artifact usability
+
+## Current Limits
+
+- one benchmark scenario is non-discriminating
+- the benchmark packet is stronger on scenario architecture than on detailed assertion mechanics
+- the stale `benchmark.md` summary should not be used as the source of truth
 
 ## Next QA Step
 
-Run one routed handoff review from `testing-strategy` into `e2e-scenario-design`, then add at least one implementation-facing or CI-facing consumer check to prove the artifact shape is useful downstream.
+Add a fresh runner-backed benchmark summary and at least one follow-on implementation artifact that consumes the scenario design directly.

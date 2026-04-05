@@ -1,0 +1,30 @@
+[
+  {
+    "id": "failing-test-bugfix",
+    "title": "Failing Test Root Cause Loop",
+    "context_files": [
+      "fixtures/failing-test-regression.md",
+      "fixtures/failing-test-history.md",
+      "fixtures/failing-test-stop-conditions.md"
+    ],
+    "prompt": "Read `./failing-test-regression.md`, `./failing-test-history.md`, and `./failing-test-stop-conditions.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the debugging approach before any code change. Keep the response rooted in evidence gathering, incident-boundary awareness, and structural escalation when needed.",
+    "assertions": [
+      {
+        "name": "root-cause-before-fix",
+        "description": "The response insists on characterizing the failure before proposing a fix."
+      },
+      {
+        "name": "history-used-as-context",
+        "description": "Past defect history informs hypotheses without replacing current evidence."
+      },
+      {
+        "name": "structural-escalation-present",
+        "description": "The output states when to escalate beyond local debugging."
+      },
+      {
+        "name": "stays-debugging-shaped",
+        "description": "The response remains a debugging loop, not a patch plan."
+      }
+    ]
+  }
+]

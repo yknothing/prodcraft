@@ -2,7 +2,7 @@
 
 ## Summary
 
-`user-research` moves from `draft` to `review`.
+`user-research` moves from `review` to `tested`.
 
 The skill is now treated as a **routed discovery skill** whose current evidence comes from a staged handoff review from `problem-framing`.
 
@@ -19,7 +19,7 @@ The skill is now treated as a **routed discovery skill** whose current evidence 
 2. The correct early output in this situation is often a **research plan**, not a pretend persona set.
 3. The skill's value is strongest when the team already has a candidate direction but still needs user evidence before requirements should start.
 4. The first signal no longer comes from a single product-direction scenario only; it now also appears in a classic B2B/SaaS brownfield admin-modernization case.
-5. The preferred brownfield scenario now has semi-isolated manual benchmark evidence, which is stronger than plain handoff review but still weaker than a true isolated benchmark.
+5. The preferred brownfield scenario now has semi-isolated manual benchmark evidence, which is stronger than plain handoff review and is enough for a narrow tested posture, even though it is still weaker than a true isolated benchmark.
 6. A downstream specification-consumption review now exists for the same brownfield scenario, showing that evidence-backed user-research artifacts improve later requirements work rather than just producing cleaner discovery documents.
 7. That downstream specification-consumption path now also has semi-isolated manual benchmark evidence, so the value of `user-research` is no longer supported only by discovery-local reviews.
 8. A non-brownfield downstream comparison scenario now exists as well, which reduces the risk that the observed downstream lift is only a brownfield artifact.
@@ -42,6 +42,13 @@ The new downstream review follows that rule: it uses evidence-shaped persona and
 - judged on evidence quality and handoff discipline
 - not primarily judged on discoverability in a crowded skill ecosystem
 
+## Current Status
+
+`user-research` is now `tested` under a narrow routed-evidence posture:
+
+- semi-isolated benchmark evidence exists for the preferred brownfield scenario
+- downstream specification-consumption evidence exists for both brownfield and non-brownfield follow-through
+
 ## Next QA Step
 
-Run a true isolated benchmark or cross-reviewer execution drill on `seat-guest-management-problem-framing-handoff`, then show how the resulting research outputs improve a downstream skill such as `requirements-engineering`.
+Run a true isolated benchmark or cross-reviewer execution drill on `seat-guest-management-problem-framing-handoff`, then replace the current semi-isolated tested evidence with a cleaner isolated lane.

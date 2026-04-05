@@ -1,0 +1,34 @@
+[
+  {
+    "id": "access-review-modernization-risk-register",
+    "title": "Brownfield Planning Risk Register",
+    "context_files": [
+      "fixtures/access-review-modernization-task-list.md",
+      "fixtures/access-review-modernization-dependency-graph.md",
+      "fixtures/access-review-modernization-architecture-risk-context.md"
+    ],
+    "prompt": "Read `./access-review-modernization-task-list.md`, `./access-review-modernization-dependency-graph.md`, and `./access-review-modernization-architecture-risk-context.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce a risk-assessment artifact that focuses on material delivery and dependency risk, ties each major risk to mitigation or ownership, changes planning or gating where needed, keeps brownfield coexistence and rollback risks explicit, and does not collapse into effort sizing.",
+    "assertions": [
+      {
+        "name": "risks-are-material",
+        "description": "Filters out trivial concerns and focuses on risks that can change sequence, scope, or release posture"
+      },
+      {
+        "name": "mitigation-is-explicit",
+        "description": "Pairs each major risk with mitigation, contingency, or explicit ownership"
+      },
+      {
+        "name": "plan-changes-when-risk-matters",
+        "description": "Changes sequencing, gating, or scope in response to meaningful risk instead of documenting risk passively"
+      },
+      {
+        "name": "brownfield-risks-stay-visible",
+        "description": "Keeps coexistence, rollback, and dependency risks explicit"
+      },
+      {
+        "name": "does-not-turn-into-sizing",
+        "description": "Stays a risk register rather than turning into estimation commentary"
+      }
+    ]
+  }
+]

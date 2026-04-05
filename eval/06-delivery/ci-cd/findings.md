@@ -1,14 +1,21 @@
 # CI/CD QA Findings
 
-## Summary
+## Status
 
-`ci-cd` has moved to `review` status.
+- Current status: `tested`
+- Evidence type:
+  - manual routed pipeline review
+  - two clean isolated benchmark scenarios
+- Scope covered:
+  - one brownfield release-boundary pipeline scenario
+  - one low-risk service pipeline scenario
 
 ## What Changed
 
 1. The skill description and body were tightened to reflect lifecycle-aware delivery rather than generic pipeline setup advice.
 2. Brownfield rollback, coexistence, and release-boundary gates are now explicit parts of the skill.
 3. A first manual pipeline review was added using the access-review modernization release slice.
+4. Runner-backed benchmark evidence now exists for both a brownfield and a low-risk pipeline slice.
 
 ## What We Learned
 
@@ -22,8 +29,14 @@ At this stage, `ci-cd` appears to be:
 
 - a core delivery skill on the lifecycle spine
 - stronger as a routed workflow skill than as a discoverability-first skill
-- still in need of isolated benchmark evidence before it can leave `review`
+- strong enough for a narrow `tested` posture because the benchmark packet now covers both brownfield safety and low-risk anti-overengineering behavior
+
+## Current Limits
+
+- the observed lift is moderate because the baseline was already competent
+- the current evidence is still benchmark-only rather than exercised in a real delivery rehearsal
+- the brownfield lane needed one rerun after a shorter-timeout attempt timed out
 
 ## Next QA Step
 
-Run an isolated benchmark for the same brownfield slice, then add a non-brownfield delivery scenario to verify the skill does not overfit to migration-heavy releases.
+Run one real or rehearsal delivery flow that consumes the resulting pipeline artifact, then add another scenario with a different deployment platform or approval topology.

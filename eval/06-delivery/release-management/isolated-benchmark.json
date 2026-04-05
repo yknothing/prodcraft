@@ -1,0 +1,32 @@
+[
+  {
+    "id": "access-review-modernization-release-plan",
+    "title": "Brownfield Release Coordination Plan",
+    "context_files": [
+      "fixtures/access-review-modernization-delivery-decision-record.md",
+      "fixtures/access-review-modernization-pipeline-summary.md",
+      "fixtures/access-review-modernization-test-report.md",
+      "fixtures/access-review-modernization-security-report.md",
+      "fixtures/access-review-modernization-performance-report.md"
+    ],
+    "prompt": "Read `./access-review-modernization-delivery-decision-record.md`, `./access-review-modernization-pipeline-summary.md`, `./access-review-modernization-test-report.md`, `./access-review-modernization-security-report.md`, and `./access-review-modernization-performance-report.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the release-management artifact for this brownfield release candidate. Keep release scope and exclusions explicit, make go/no-go conditions and evidence gaps visible, name owners and communication checkpoints, and do not swallow downstream rollout-shape decisions.",
+    "assertions": [
+      {
+        "name": "scope-is-bounded",
+        "description": "States what is in scope, what is out of scope, and what remains conditional"
+      },
+      {
+        "name": "go-no-go-is-explicit",
+        "description": "Names concrete release conditions instead of inferring them from green checks"
+      },
+      {
+        "name": "ownership-and-comms-exist",
+        "description": "Names owners, approvers, escalation points, and communication moments"
+      },
+      {
+        "name": "missing-evidence-stays-visible",
+        "description": "Missing or conditional evidence remains visible rather than silently cleared"
+      }
+    ]
+  }
+]

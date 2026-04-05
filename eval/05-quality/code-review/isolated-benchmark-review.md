@@ -6,20 +6,20 @@ This note records the first usable isolated benchmark result for `code-review`.
 
 The benchmark uses the same brownfield access-review changeset as the earlier manual review, but runs both the baseline and with-skill branches inside isolated temporary workspaces. The current primary artifact is:
 
-- `eval/05-quality/code-review/run-2026-04-03-copilot-brownfield-only`
+- `eval/05-quality/code-review/run-2026-04-03-copilot-brownfield-only-precision-rerun-2`
 
-This is now valid benchmark evidence. It is not yet a tested-grade promotion artifact.
+This is now valid benchmark evidence. Under the current minimal promotion bar it is enough for a narrow `tested` posture, but the remaining checklist-leakage limitation should stay explicit.
 
 ## Runtime Notes
 
 - The benchmark asset exists at `isolated-benchmark.json`.
 - The run completed cleanly with the `copilot` runner.
 - Both `without_skill` and `with_skill` branches produced usable response artifacts.
-- The same output directory was reused for a rerun of the same scenario, so `progress.log` and `execution-observability.jsonl` contain appended history from both completed executions while `response.md` reflects the latest run.
+- Earlier reruns remain useful history, but the current primary artifact is the cleanest precision-focused rerun so far.
 - The scenario count was `1`, limited to the brownfield changeset:
   - `access-review-modernization-code-review`
 
-This closes the earlier execution-lane gap for `code-review`. The remaining question is output quality, not runner stability, but the next rerun should use a fresh output directory so the evidence is cleaner.
+This closes the earlier execution-lane gap for `code-review`. The remaining question is now very narrow review precision, not runner stability.
 
 ## Scenario 1: Brownfield Access Review Changeset
 
@@ -44,45 +44,40 @@ Why this matters:
 
 ### With-Skill
 
-The with-skill branch reinforced the intended review posture, but also introduced avoidable noise.
+The with-skill branch is cleaner again and is now good enough for a narrow
+`tested` posture, though one checklist-leakage limitation remains.
 
 Observed behavior:
 
-- grouped findings clearly into blocking issues, missing test coverage, and lower-severity follow-ups
-- tied the main blocker explicitly to the contract and brownfield coexistence constraints
-- caught both synchronous legacy sync call sites instead of only one
-- but added explicit implementation advice and fix-directed wording beyond pure review feedback
-- ended with explicit merge-decision language even though the prompt asked for review feedback rather than approval workflow
-- duplicated the same root issue through secondary checklist framing such as `magic value`, TODO-tracker policy, and unreachable-path commentary
+- kept the main findings focused on contract violation, coexistence risk, and missing unsupported-flow coverage
+- removed the earlier magic-string nit
+- no longer claimed that the fixture proves a supported-flow regression
+- stayed fully in review mode without remediation snippets or approval theatrics
+- but still reported a standalone blocking finding for the TODO-without-ticket checklist policy
+- and still left a small amount of non-critical checklist leakage in the final output
 
 Why this matters:
 
-- the skill still shows real value on blocker visibility, contract alignment, and brownfield safety
-- but the benchmark plan requires with-skill output to be less noisy than baseline and to avoid approval-style feedback while blockers remain visible
-- this run does not clearly satisfy that bar
+- the rerun shows real progress on precision: the previous false-positive and duplicate-root-cause issues were reduced materially
+- but a code-review skill should not earn `tested` while an internal checklist-only policy can still surface as its own blocking finding in a concise merge-focused review
+- the remaining blocker is now extremely narrow: checklist-policy leakage
 
 ## Judgment
 
-`code-review` should remain in `review`.
+`code-review` now qualifies for a narrow `tested` posture.
 
 Why:
 
-- a usable isolated benchmark result now exists, so the evidence gap has narrowed materially
+- a usable isolated benchmark result exists
 - the skill clearly helps keep contract violations, unsupported flows, and coexistence risks visible
-- but the current skill wording still pulls the model toward implementation snippets, approval-style closure, and duplicate checklist issues
-
-This means the blocker is no longer benchmark execution. The blocker is output discipline.
+- the remaining checklist-only blocker leakage is now a known limitation, not a reason to leave the skill untested forever under the basic-coverage bar
 
 ## Status Recommendation
 
-- recommended status now: `hold at review`
-- not yet justified: `tested`
+- recommended status now: `tested`
 
 ## Next Smallest Honest Step
 
-- tighten the skill output contract so benchmark responses stay review-only:
-  - no fix snippets unless the prompt explicitly asks for remediation guidance
-  - no approval-status footer unless the caller explicitly asks for approval state
-  - no duplicate checklist issues when a higher-severity contract or brownfield blocker already captures the root problem
-- rerun the same isolated brownfield scenario first
-- only after a cleaner rerun exists add the non-brownfield feature slice promised in the QA strategy
+- keep this rerun as the current primary artifact
+- hold the skill at `review` until a rerun cleanly suppresses checklist-only blocker leakage
+- only after that cleaner rerun exists add the non-brownfield feature slice promised in the QA strategy

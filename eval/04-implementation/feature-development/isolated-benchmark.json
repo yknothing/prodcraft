@@ -4,9 +4,11 @@
     "title": "Brownfield Compatibility Slice",
     "context_files": [
       "../tdd/fixtures/access-review-modernization-task-slice.md",
-      "../tdd/fixtures/access-review-modernization-api-contract.md"
+      "../tdd/fixtures/access-review-modernization-api-contract.md",
+      "fixtures/reassignments.py",
+      "fixtures/test_reassignments.py"
     ],
-    "prompt": "Read `./access-review-modernization-task-slice.md` and `./access-review-modernization-api-contract.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce a small mergeable implementation increment for the reviewed access-review modernization slice. Keep the change behind the existing contract, preserve compatibility seams, make unsupported release-1 variants fail explicitly, and avoid broad cleanup or architecture redesign.",
+    "prompt": "Read `./access-review-modernization-task-slice.md`, `./access-review-modernization-api-contract.md`, `./reassignments.py`, and `./test_reassignments.py`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce a small mergeable implementation increment for the reviewed access-review modernization slice. Keep the change behind the existing contract, preserve compatibility seams, make unsupported release-1 variants fail explicitly, and avoid broad cleanup or architecture redesign.",
     "assertions": [
       {
         "name": "picks-smallest-reviewable-slice",

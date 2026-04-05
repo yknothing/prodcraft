@@ -1,0 +1,29 @@
+[
+  {
+    "id": "brownfield-staged-rollout",
+    "title": "Brownfield Staged Rollout Strategy",
+    "context_files": [
+      "fixtures/ci-cd-release-summary.md",
+      "fixtures/brownfield-staged-rollout.md"
+    ],
+    "prompt": "Read `./ci-cd-release-summary.md` and `./brownfield-staged-rollout.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Choose the deployment strategy for this brownfield release, including rollout pattern, verification checkpoints, stop conditions, ownership, and rollback path. Keep the answer specific to the supplied release and avoid defaulting to a full cutover.",
+    "assertions": [
+      {
+        "name": "classifies-brownfield-risk",
+        "description": "Recognizes the release as staged-risk or similarly constrained brownfield delivery"
+      },
+      {
+        "name": "chooses-staged-rollout",
+        "description": "Selects canary or staged expansion instead of a direct full cutover"
+      },
+      {
+        "name": "defines-stop-gates",
+        "description": "Adds explicit verification and stop/continue gates before expanding traffic"
+      },
+      {
+        "name": "preserves-rollback-readiness",
+        "description": "Keeps rollback speed and ownership explicit in the rollout plan"
+      }
+    ]
+  }
+]

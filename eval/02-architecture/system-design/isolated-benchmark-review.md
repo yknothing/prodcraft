@@ -13,6 +13,7 @@ The purpose of this note is to make the current blocker auditable and specific s
 - The benchmark asset now exists at `isolated-benchmark.json`.
 - The first `copilot` fallback run at `300s` completed the baseline branch, but the with-skill branch timed out.
 - A second `copilot` rerun at `600s` again completed the baseline branch, but the with-skill branch failed with `Connection error.` after reading both the fixture and `skill-under-test/SKILL.md`.
+- A 2026-04-05 rerun attempt was invalidated before review because multiple benchmark processes wrote into the same output lane at once. Treat that run directory as contaminated operational evidence, not as a promote-grade result.
 - This means the current blocker is runner-lane instability on the with-skill branch, not a missing benchmark design.
 
 ## Scenario 1: Brownfield Access Review Architecture

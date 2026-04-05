@@ -9,7 +9,7 @@ GOTCHAS_PATH = REPO_ROOT / "skills" / "cross-cutting" / "bug-history-retrieval" 
 
 BUG_HISTORY_SKILL_NAME = "bug-history-retrieval"
 EXPECTED_PHASE = "cross-cutting"
-EXPECTED_STATUS = "draft"
+EXPECTED_STATUS = "review"
 MANIFEST_ENTRY_PREFIX = "- name: "
 SKILL_FIELD_INDENT = "  "
 
@@ -70,6 +70,12 @@ class BugHistoryRetrievalSkillTests(unittest.TestCase):
             entry_block,
         )
         self.assertIn(f"status: {EXPECTED_STATUS}", entry_block)
+        self.assertIn("evaluation_mode: routed", entry_block)
+        self.assertIn("structure_validation_path: scripts/validate_prodcraft.py", entry_block)
+        self.assertIn(
+            "eval_strategy_path: eval/cross-cutting/bug-history-retrieval/evals/eval-strategy.md",
+            entry_block,
+        )
 
     def test_skill_references_single_file_gotchas(self):
         content = SKILL_PATH.read_text(encoding="utf-8")

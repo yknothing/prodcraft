@@ -1,0 +1,3 @@
+First read ./skill-under-test/SKILL.md, then answer the request below using that skill. Do not read any other local files or rely on repository instructions beyond the copied skill. If you need assumptions, state them briefly and continue.
+
+Read `./access-review-modernization-task-list.md` and `./access-review-modernization-risk-register.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the estimate set for this slice. Use one consistent estimation unit, size the tasks individually, make uncertainty explicit, and reflect coordination or brownfield risk where it changes the estimate.

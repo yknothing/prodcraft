@@ -1,0 +1,30 @@
+[
+  {
+    "id": "access-review-modernization-observability",
+    "title": "Brownfield Access Review Observability Plan",
+    "context_files": [
+      "fixtures/access-review-modernization-architecture-summary.md",
+      "fixtures/access-review-modernization-pipeline-summary.md",
+      "fixtures/access-review-modernization-risk-summary.md"
+    ],
+    "prompt": "Read `./access-review-modernization-architecture-summary.md`, `./access-review-modernization-pipeline-summary.md`, and `./access-review-modernization-risk-summary.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the monitoring-observability artifact for this brownfield release. Focus on user-impactful signals, actionable alerts, brownfield safety visibility, and rollback health. Avoid generic dashboard sprawl.",
+    "assertions": [
+      {
+        "name": "maps-signals-to-real-boundaries",
+        "description": "Signals are tied to real service and release boundaries rather than generic metric collections"
+      },
+      {
+        "name": "avoids-noisy-monitoring",
+        "description": "Avoids generic noisy dashboards that blur old and new behavior together"
+      },
+      {
+        "name": "preserves-brownfield-safety-visibility",
+        "description": "Makes coexistence and unsupported-flow safety visible"
+      },
+      {
+        "name": "supports-incident-and-release-handoff",
+        "description": "Leaves an artifact operations can act on during release verification or incident triage"
+      }
+    ]
+  }
+]

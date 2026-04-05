@@ -25,7 +25,7 @@ class P0ExecutionGapSkillTests(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertTrue(path.exists(), path)
 
-    def test_manifest_registers_both_p0_skills_as_critical_review_routed(self):
+    def test_manifest_registers_both_p0_skills_as_critical_tested_or_better_routed(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
 
         systematic = entries["systematic-debugging"]
@@ -33,7 +33,7 @@ class P0ExecutionGapSkillTests(unittest.TestCase):
 
         self.assertEqual("04-implementation", systematic["phase"])
         self.assertEqual("cross-cutting", verification["phase"])
-        self.assertEqual("review", systematic["status"])
+        self.assertEqual("tested", systematic["status"])
         self.assertEqual("tested", verification["status"])
         self.assertEqual("critical", systematic["qa_tier"])
         self.assertEqual("critical", verification["qa_tier"])
@@ -46,6 +46,7 @@ class P0ExecutionGapSkillTests(unittest.TestCase):
             self.assertIn("eval_strategy_path", qa)
             self.assertIn("benchmark_plan_path", qa)
             self.assertIn("findings_path", qa)
+        self.assertIn("benchmark_results_path", systematic["qa"])
 
     def test_artifact_flow_tracks_debugging_and_verification_outputs(self):
         artifact_flow = {entry["artifact"]: entry for entry in self.manifest["artifact_flow"]}

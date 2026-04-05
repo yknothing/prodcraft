@@ -13,7 +13,7 @@ class FeatureAndDeploymentStrategyReviewStatusTests(unittest.TestCase):
     def setUp(self):
         self.manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
 
-    def test_manifest_registers_feature_development_and_deployment_strategy_as_critical_review_routed(self):
+    def test_manifest_registers_feature_development_and_deployment_strategy_as_critical_tested_routed(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
 
         feature = entries["feature-development"]
@@ -21,8 +21,8 @@ class FeatureAndDeploymentStrategyReviewStatusTests(unittest.TestCase):
 
         self.assertEqual("04-implementation", feature["phase"])
         self.assertEqual("06-delivery", deployment["phase"])
-        self.assertEqual("review", feature["status"])
-        self.assertEqual("review", deployment["status"])
+        self.assertEqual("tested", feature["status"])
+        self.assertEqual("tested", deployment["status"])
         self.assertEqual("critical", feature["qa_tier"])
         self.assertEqual("critical", deployment["qa_tier"])
         self.assertEqual("routed", feature["evaluation_mode"])
@@ -35,16 +35,19 @@ class FeatureAndDeploymentStrategyReviewStatusTests(unittest.TestCase):
             self.assertIn("benchmark_plan_path", qa)
             self.assertIn("findings_path", qa)
             self.assertIn("integration_test_path", qa)
+            self.assertIn("benchmark_results_path", qa)
 
-    def test_review_artifacts_exist_for_both_skills(self):
+    def test_tested_artifacts_exist_for_both_skills(self):
         targets = [
             REPO_ROOT / "eval" / "04-implementation" / "feature-development" / "findings.md",
             REPO_ROOT / "eval" / "04-implementation" / "feature-development" / "evals" / "eval-strategy.md",
             REPO_ROOT / "eval" / "04-implementation" / "feature-development" / "isolated-benchmark-plan.md",
+            REPO_ROOT / "eval" / "04-implementation" / "feature-development" / "isolated-benchmark-review.md",
             REPO_ROOT / "eval" / "04-implementation" / "feature-development" / "tdd-handoff-review.md",
             REPO_ROOT / "eval" / "06-delivery" / "deployment-strategy" / "findings.md",
             REPO_ROOT / "eval" / "06-delivery" / "deployment-strategy" / "evals" / "eval-strategy.md",
             REPO_ROOT / "eval" / "06-delivery" / "deployment-strategy" / "isolated-benchmark-plan.md",
+            REPO_ROOT / "eval" / "06-delivery" / "deployment-strategy" / "isolated-benchmark-review.md",
             REPO_ROOT / "eval" / "06-delivery" / "deployment-strategy" / "pipeline-handoff-review.md",
         ]
 
@@ -61,6 +64,17 @@ class FeatureAndDeploymentStrategyReviewStatusTests(unittest.TestCase):
         self.assertIn("deployment-strategy", gateway)
         self.assertIn("feature-development", implementation_phase)
         self.assertIn("deployment-strategy", delivery_phase)
+
+    def test_findings_record_tested_status(self):
+        feature_findings = (
+            REPO_ROOT / "eval" / "04-implementation" / "feature-development" / "findings.md"
+        ).read_text(encoding="utf-8")
+        deployment_findings = (
+            REPO_ROOT / "eval" / "06-delivery" / "deployment-strategy" / "findings.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("Current status: `tested`", feature_findings)
+        self.assertIn("Current status: `tested`", deployment_findings)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "mixed-review-bundle-response",
+    "title": "Mixed Review Bundle Response",
+    "context_files": [
+      "fixtures/mixed-review-bundle.md",
+      "fixtures/reassignment-change-summary.md",
+      "fixtures/reassignment-test-summary.md"
+    ],
+    "prompt": "Read `./mixed-review-bundle.md`, `./reassignment-change-summary.md`, and `./reassignment-test-summary.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the author-side review response record for this feedback bundle. Be explicit about what to accept, what to clarify, and what to push back on technically.",
+    "assertions": [
+      {
+        "name": "clarifies-ambiguous-feedback",
+        "description": "Ambiguous feedback is not partially implemented without clarification."
+      },
+      {
+        "name": "verifies-against-scope",
+        "description": "Accepted and rejected items are tied to current code and scope."
+      },
+      {
+        "name": "pushback-is-technical",
+        "description": "Incorrect or scope-breaking feedback receives evidence-based pushback."
+      },
+      {
+        "name": "response-record-is-explicit",
+        "description": "The output keeps an item-by-item response trail."
+      }
+    ]
+  }
+]

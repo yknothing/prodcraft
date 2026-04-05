@@ -1,0 +1,29 @@
+[
+  {
+    "id": "access-review-modernization-runbook",
+    "title": "Brownfield Access Review Fallback Runbook",
+    "context_files": [
+      "fixtures/access-review-modernization-incident-summary.md",
+      "fixtures/access-review-modernization-observability-summary.md"
+    ],
+    "prompt": "Read `./access-review-modernization-incident-summary.md` and `./access-review-modernization-observability-summary.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Write the runbook for rolling traffic back from the new brownfield facade to the legacy path if alerts fire. Make the procedure executable, preserve fail-closed and coexistence-safe behavior, include verification and rollback steps, and keep communication and evidence capture explicit.",
+    "assertions": [
+      {
+        "name": "provides-executable-ordered-steps",
+        "description": "Provides an ordered procedure another responder can execute safely"
+      },
+      {
+        "name": "preserves-rollback-and-fail-closed-safety",
+        "description": "Includes explicit fallback, fail-closed behavior, and rollback safety"
+      },
+      {
+        "name": "includes-communication-and-escalation",
+        "description": "Includes communication cadence, owner, and escalation steps"
+      },
+      {
+        "name": "includes-verification-and-evidence-capture",
+        "description": "Includes verification checks and evidence capture rather than only theory"
+      }
+    ]
+  }
+]

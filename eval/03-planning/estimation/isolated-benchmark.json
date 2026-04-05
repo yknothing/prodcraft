@@ -1,0 +1,33 @@
+[
+  {
+    "id": "access-review-modernization-estimation",
+    "title": "Brownfield Access Review Estimate Set",
+    "context_files": [
+      "fixtures/access-review-modernization-task-list.md",
+      "fixtures/access-review-modernization-risk-register.md"
+    ],
+    "prompt": "Read `./access-review-modernization-task-list.md` and `./access-review-modernization-risk-register.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the estimate set for this slice. Use one consistent estimation unit, size the tasks individually, make uncertainty explicit, and reflect coordination or brownfield risk where it changes the estimate.",
+    "assertions": [
+      {
+        "name": "uses-consistent-estimation-unit",
+        "description": "The estimate set uses one coherent unit instead of mixing incompatible sizing styles."
+      },
+      {
+        "name": "estimates-task-by-task",
+        "description": "Each planned task receives an explicit size rather than being left implicit."
+      },
+      {
+        "name": "uncertainty-and-assumptions-explicit",
+        "description": "Assumptions, blockers, dependencies, or confidence are recorded clearly."
+      },
+      {
+        "name": "risk-changes-the-estimate",
+        "description": "Brownfield and coordination risk widen or qualify estimates where appropriate."
+      },
+      {
+        "name": "prepares-downstream-planning",
+        "description": "The output is shaped so sprint-planning can consume it directly."
+      }
+    ]
+  }
+]

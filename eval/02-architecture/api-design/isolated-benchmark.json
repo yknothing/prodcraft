@@ -1,0 +1,29 @@
+[
+  {
+    "id": "access-review-modernization-api-contract",
+    "title": "Brownfield Access Review API Contract",
+    "context_files": [
+      "fixtures/access-review-modernization-architecture.md",
+      "fixtures/access-review-modernization-requirements.md"
+    ],
+    "prompt": "Read `./access-review-modernization-architecture.md` and `./access-review-modernization-requirements.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the next-version API contract for the brownfield access-review modernization slice. Keep backward compatibility and legacy coexistence explicit, preserve unresolved rollout assumptions as open questions, stay at the contract boundary, and avoid leaking migration-only behavior into the public contract.",
+    "assertions": [
+      {
+        "name": "stays-in-contract-layer",
+        "description": "Stays at API contract level instead of turning into implementation or rollout planning"
+      },
+      {
+        "name": "preserves-compatibility",
+        "description": "Treats backward compatibility and brownfield coexistence as first-class constraints"
+      },
+      {
+        "name": "preserves-open-questions",
+        "description": "Keeps unresolved sync or rollout assumptions visible rather than silently resolving them"
+      },
+      {
+        "name": "prepares-downstream-handoff",
+        "description": "Leaves a consistent contract artifact usable by implementation and contract testing"
+      }
+    ]
+  }
+]

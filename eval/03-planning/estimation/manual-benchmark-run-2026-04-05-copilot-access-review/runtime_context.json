@@ -1,0 +1,9 @@
+{
+  "baseline_workspace": "baseline",
+  "with_skill_workspace": "with-skill",
+  "copied_skill_path": "with-skill/skill-under-test/SKILL.md",
+  "context_files": [
+    "access-review-modernization-task-list.md",
+    "access-review-modernization-risk-register.md"
+  ]
+}

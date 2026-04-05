@@ -1,0 +1,56 @@
+[
+  {
+    "id": "standard-low-risk-service-release",
+    "title": "Standard Low-Risk Service Release Strategy",
+    "context_files": [
+      "fixtures/ci-cd-release-summary.md",
+      "fixtures/low-risk-service-release.md"
+    ],
+    "prompt": "Read `./ci-cd-release-summary.md` and `./low-risk-service-release.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Choose the deployment strategy for this low-risk service release, including rollout pattern, verification checks, ownership, and rollback steps. Keep the answer specific to the supplied release and avoid generic deployment advice.",
+    "assertions": [
+      {
+        "name": "chooses-proportionate-rollout",
+        "description": "Uses a low-friction rollout pattern appropriate for a low-risk release"
+      },
+      {
+        "name": "defines-basic-verification",
+        "description": "Includes smoke or health checks before full traffic exposure"
+      },
+      {
+        "name": "keeps-rollback-concrete",
+        "description": "Describes a specific rollback path rather than a vague fallback"
+      },
+      {
+        "name": "stays-release-specific",
+        "description": "Keeps the rollout plan tied to the supplied release context instead of generic guidance"
+      }
+    ]
+  },
+  {
+    "id": "brownfield-staged-rollout",
+    "title": "Brownfield Staged Rollout Strategy",
+    "context_files": [
+      "fixtures/ci-cd-release-summary.md",
+      "fixtures/brownfield-staged-rollout.md"
+    ],
+    "prompt": "Read `./ci-cd-release-summary.md` and `./brownfield-staged-rollout.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Choose the deployment strategy for this brownfield release, including rollout pattern, verification checkpoints, stop conditions, ownership, and rollback path. Keep the answer specific to the supplied release and avoid defaulting to a full cutover.",
+    "assertions": [
+      {
+        "name": "classifies-brownfield-risk",
+        "description": "Recognizes the release as staged-risk or similarly constrained brownfield delivery"
+      },
+      {
+        "name": "chooses-staged-rollout",
+        "description": "Selects canary or staged expansion instead of a direct full cutover"
+      },
+      {
+        "name": "defines-stop-gates",
+        "description": "Adds explicit verification and stop/continue gates before expanding traffic"
+      },
+      {
+        "name": "preserves-rollback-readiness",
+        "description": "Keeps rollback speed and ownership explicit in the rollout plan"
+      }
+    ]
+  }
+]

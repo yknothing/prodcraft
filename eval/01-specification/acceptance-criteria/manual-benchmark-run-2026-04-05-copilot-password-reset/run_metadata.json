@@ -1,0 +1,6 @@
+{
+  "runner": "copilot",
+  "run_started_at": "2026-04-05T21:20:12",
+  "scenario_id": "password-reset-acceptance-criteria",
+  "skill_path": "skills/01-specification/acceptance-criteria"
+}

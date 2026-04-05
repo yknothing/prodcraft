@@ -1,0 +1,34 @@
+[
+  {
+    "id": "high-risk-invite-acceptance-audit",
+    "title": "High-Risk Invite Acceptance Audit",
+    "context_files": [
+      "fixtures/high-risk-change-summary.md",
+      "fixtures/high-risk-dependency-summary.md",
+      "fixtures/high-risk-auth-summary.md"
+    ],
+    "prompt": "Read `./high-risk-change-summary.md`, `./high-risk-dependency-summary.md`, and `./high-risk-auth-summary.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the security audit report for this reviewed change. Distinguish blocking findings from advisory items and keep the audit release-focused.",
+    "assertions": [
+      {
+        "name": "covers-auth-and-trust-boundary",
+        "description": "The audit identifies missing authorization or trust-boundary issues."
+      },
+      {
+        "name": "covers-injection-risk",
+        "description": "The audit identifies the SQL construction risk."
+      },
+      {
+        "name": "covers-secret-handling",
+        "description": "The audit identifies secret exposure risk."
+      },
+      {
+        "name": "covers-dependency-risk",
+        "description": "The audit flags the vulnerable or suspect dependency."
+      },
+      {
+        "name": "distinguishes-blocking-vs-advisory",
+        "description": "The audit separates release blockers from follow-up guidance."
+      }
+    ]
+  }
+]

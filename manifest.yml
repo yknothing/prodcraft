@@ -136,12 +136,16 @@ skills:
 - name: market-analysis
   phase: 00-discovery
   file: skills/00-discovery/market-analysis/SKILL.md
-  status: draft
+  status: review
   qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/00-discovery/market-analysis/evals/eval-strategy.md
 - name: user-research
   phase: 00-discovery
   file: skills/00-discovery/user-research/SKILL.md
-  status: review
+  status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
@@ -155,8 +159,12 @@ skills:
 - name: feasibility-study
   phase: 00-discovery
   file: skills/00-discovery/feasibility-study/SKILL.md
-  status: draft
+  status: review
   qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/00-discovery/feasibility-study/evals/eval-strategy.md
 - name: requirements-engineering
   phase: 01-specification
   file: skills/01-specification/requirements-engineering/SKILL.md
@@ -179,18 +187,34 @@ skills:
 - name: spec-writing
   phase: 01-specification
   file: skills/01-specification/spec-writing/SKILL.md
-  status: draft
+  status: review
   qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/01-specification/spec-writing/evals/eval-strategy.md
 - name: domain-modeling
   phase: 01-specification
   file: skills/01-specification/domain-modeling/SKILL.md
-  status: draft
+  status: review
   qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/01-specification/domain-modeling/evals/eval-strategy.md
 - name: acceptance-criteria
   phase: 01-specification
   file: skills/01-specification/acceptance-criteria/SKILL.md
-  status: draft
+  status: tested
   qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/01-specification/acceptance-criteria/evals/eval-strategy.md
+    benchmark_plan_path: eval/01-specification/acceptance-criteria/isolated-benchmark-plan.md
+    benchmark_results_path: eval/01-specification/acceptance-criteria/isolated-benchmark-review.md
+    findings_path: eval/01-specification/acceptance-criteria/findings.md
+    integration_test_path: eval/01-specification/acceptance-criteria/testing-strategy-handoff-review.md
 - name: system-design
   phase: 02-architecture
   file: skills/02-architecture/system-design/SKILL.md
@@ -206,35 +230,45 @@ skills:
 - name: data-modeling
   phase: 02-architecture
   file: skills/02-architecture/data-modeling/SKILL.md
-  status: draft
+  status: review
   qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/02-architecture/data-modeling/evals/eval-strategy.md
 - name: security-design
   phase: 02-architecture
   file: skills/02-architecture/security-design/SKILL.md
-  status: draft
+  status: review
   qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/02-architecture/security-design/evals/eval-strategy.md
 - name: tech-selection
   phase: 02-architecture
   file: skills/02-architecture/tech-selection/SKILL.md
-  status: review
+  status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/02-architecture/tech-selection/evals/eval-strategy.md
     benchmark_plan_path: eval/02-architecture/tech-selection/isolated-benchmark-plan.md
+    benchmark_results_path: eval/02-architecture/tech-selection/isolated-benchmark-review.md
     findings_path: eval/02-architecture/tech-selection/findings.md
     integration_test_path: eval/02-architecture/tech-selection/system-design-handoff-review.md
 - name: api-design
   phase: 02-architecture
   file: skills/02-architecture/api-design/SKILL.md
-  status: review
+  status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/02-architecture/api-design/evals/eval-strategy.md
     benchmark_plan_path: eval/02-architecture/api-design/isolated-benchmark-plan.md
+    benchmark_results_path: eval/02-architecture/api-design/manual-benchmark-review.md
     findings_path: eval/02-architecture/api-design/findings.md
     integration_test_path: eval/02-architecture/api-design/architecture-handoff-review.md
 - name: task-breakdown
@@ -253,25 +287,42 @@ skills:
 - name: estimation
   phase: 03-planning
   file: skills/03-planning/estimation/SKILL.md
-  status: draft
+  status: tested
   qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/03-planning/estimation/evals/eval-strategy.md
+    benchmark_plan_path: eval/03-planning/estimation/isolated-benchmark-plan.md
+    benchmark_results_path: eval/03-planning/estimation/isolated-benchmark-review.md
+    findings_path: eval/03-planning/estimation/findings.md
+    integration_test_path: eval/03-planning/estimation/sprint-planning-handoff-review.md
 - name: risk-assessment
   phase: 03-planning
   file: skills/03-planning/risk-assessment/SKILL.md
-  status: review
+  status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/03-planning/risk-assessment/evals/eval-strategy.md
     benchmark_plan_path: eval/03-planning/risk-assessment/isolated-benchmark-plan.md
+    benchmark_results_path: eval/03-planning/risk-assessment/isolated-benchmark-review.md
     findings_path: eval/03-planning/risk-assessment/findings.md
     integration_test_path: eval/03-planning/risk-assessment/task-breakdown-handoff-review.md
 - name: sprint-planning
   phase: 03-planning
   file: skills/03-planning/sprint-planning/SKILL.md
-  status: draft
+  status: tested
   qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/03-planning/sprint-planning/evals/eval-strategy.md
+    benchmark_plan_path: eval/03-planning/sprint-planning/isolated-benchmark-plan.md
+    benchmark_results_path: eval/03-planning/sprint-planning/isolated-benchmark-review.md
+    findings_path: eval/03-planning/sprint-planning/findings.md
+    integration_test_path: eval/03-planning/sprint-planning/estimation-handoff-review.md
 - name: tdd
   phase: 04-implementation
   file: skills/04-implementation/tdd/SKILL.md
@@ -288,55 +339,59 @@ skills:
 - name: systematic-debugging
   phase: 04-implementation
   file: skills/04-implementation/systematic-debugging/SKILL.md
-  status: review
+  status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/04-implementation/systematic-debugging/evals/eval-strategy.md
     benchmark_plan_path: eval/04-implementation/systematic-debugging/isolated-benchmark-plan.md
+    benchmark_results_path: eval/04-implementation/systematic-debugging/isolated-benchmark-review.md
     findings_path: eval/04-implementation/systematic-debugging/findings.md
     integration_test_path: eval/04-implementation/systematic-debugging/bugfix-review.md
 - name: task-execution
   phase: 04-implementation
   file: skills/04-implementation/task-execution/SKILL.md
-  status: review
+  status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/04-implementation/task-execution/evals/eval-strategy.md
     benchmark_plan_path: eval/04-implementation/task-execution/isolated-benchmark-plan.md
+    benchmark_results_path: eval/04-implementation/task-execution/isolated-benchmark-review.md
     findings_path: eval/04-implementation/task-execution/findings.md
     integration_test_path: eval/04-implementation/task-execution/tactical-batch-review.md
 - name: feature-development
   phase: 04-implementation
   file: skills/04-implementation/feature-development/SKILL.md
-  status: review
+  status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/04-implementation/feature-development/evals/eval-strategy.md
     benchmark_plan_path: eval/04-implementation/feature-development/isolated-benchmark-plan.md
+    benchmark_results_path: eval/04-implementation/feature-development/isolated-benchmark-review.md
     findings_path: eval/04-implementation/feature-development/findings.md
     integration_test_path: eval/04-implementation/feature-development/tdd-handoff-review.md
 - name: refactoring
   phase: 04-implementation
   file: skills/04-implementation/refactoring/SKILL.md
-  status: review
+  status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/04-implementation/refactoring/evals/eval-strategy.md
     benchmark_plan_path: eval/04-implementation/refactoring/isolated-benchmark-plan.md
+    benchmark_results_path: eval/04-implementation/refactoring/isolated-benchmark-review.md
     findings_path: eval/04-implementation/refactoring/findings.md
     integration_test_path: eval/04-implementation/refactoring/code-review-handoff-review.md
 - name: code-review
   phase: 05-quality
   file: skills/05-quality/code-review/SKILL.md
-  status: review
+  status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -349,42 +404,45 @@ skills:
 - name: receiving-code-review
   phase: 05-quality
   file: skills/05-quality/receiving-code-review/SKILL.md
-  status: review
+  status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/05-quality/receiving-code-review/evals/eval-strategy.md
     benchmark_plan_path: eval/05-quality/receiving-code-review/isolated-benchmark-plan.md
+    benchmark_results_path: eval/05-quality/receiving-code-review/isolated-benchmark-review.md
     findings_path: eval/05-quality/receiving-code-review/findings.md
     integration_test_path: eval/05-quality/receiving-code-review/feedback-response-review.md
 - name: testing-strategy
   phase: 05-quality
   file: skills/05-quality/testing-strategy/SKILL.md
-  status: review
+  status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/05-quality/testing-strategy/evals/eval-strategy.md
     benchmark_plan_path: eval/05-quality/testing-strategy/isolated-benchmark-plan.md
+    benchmark_results_path: eval/05-quality/testing-strategy/isolated-benchmark-review.md
     findings_path: eval/05-quality/testing-strategy/findings.md
     integration_test_path: eval/05-quality/testing-strategy/strategy-review.md
 - name: e2e-scenario-design
   phase: 05-quality
   file: skills/05-quality/e2e-scenario-design/SKILL.md
-  status: review
+  status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/05-quality/e2e-scenario-design/evals/eval-strategy.md
-    benchmark_results_path: eval/05-quality/e2e-scenario-design/skill-creator-run-2026-03-30/benchmark.json
+    benchmark_results_path: eval/05-quality/e2e-scenario-design/isolated-benchmark-review.md
     findings_path: eval/05-quality/e2e-scenario-design/findings.md
+    integration_test_path: eval/05-quality/e2e-scenario-design/testing-strategy-handoff-review.md
 - name: security-audit
   phase: 05-quality
   file: skills/05-quality/security-audit/SKILL.md
-  status: review
+  status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -392,64 +450,71 @@ skills:
     eval_strategy_path: eval/05-quality/security-audit/evals/eval-strategy.md
     security_check_path: eval/05-quality/security-audit/evals/security-check-evidence.md
     findings_path: eval/05-quality/security-audit/findings.md
+    benchmark_results_path: eval/05-quality/security-audit/isolated-benchmark-review.md
+    integration_test_path: eval/05-quality/security-audit/release-management-handoff-review.md
 - name: ci-cd
   phase: 06-delivery
   file: skills/06-delivery/ci-cd/SKILL.md
-  status: review
+  status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/06-delivery/ci-cd/evals/eval-strategy.md
     benchmark_plan_path: eval/06-delivery/ci-cd/isolated-benchmark-plan.md
+    benchmark_results_path: eval/06-delivery/ci-cd/isolated-benchmark-review.md
     findings_path: eval/06-delivery/ci-cd/findings.md
     integration_test_path: eval/06-delivery/ci-cd/pipeline-review.md
 - name: delivery-completion
   phase: 06-delivery
   file: skills/06-delivery/delivery-completion/SKILL.md
-  status: review
+  status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/06-delivery/delivery-completion/evals/eval-strategy.md
     benchmark_plan_path: eval/06-delivery/delivery-completion/isolated-benchmark-plan.md
+    benchmark_results_path: eval/06-delivery/delivery-completion/isolated-benchmark-review.md
     findings_path: eval/06-delivery/delivery-completion/findings.md
     integration_test_path: eval/06-delivery/delivery-completion/completion-handoff-review.md
 - name: deployment-strategy
   phase: 06-delivery
   file: skills/06-delivery/deployment-strategy/SKILL.md
-  status: review
+  status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/06-delivery/deployment-strategy/evals/eval-strategy.md
     benchmark_plan_path: eval/06-delivery/deployment-strategy/isolated-benchmark-plan.md
+    benchmark_results_path: eval/06-delivery/deployment-strategy/isolated-benchmark-review.md
     findings_path: eval/06-delivery/deployment-strategy/findings.md
     integration_test_path: eval/06-delivery/deployment-strategy/pipeline-handoff-review.md
 - name: release-management
   phase: 06-delivery
   file: skills/06-delivery/release-management/SKILL.md
-  status: review
+  status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/06-delivery/release-management/evals/eval-strategy.md
     benchmark_plan_path: eval/06-delivery/release-management/isolated-benchmark-plan.md
+    benchmark_results_path: eval/06-delivery/release-management/isolated-benchmark-review.md
     findings_path: eval/06-delivery/release-management/findings.md
     integration_test_path: eval/06-delivery/release-management/delivery-completion-handoff-review.md
 - name: incident-response
   phase: 07-operations
   file: skills/07-operations/incident-response/SKILL.md
-  status: review
+  status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/07-operations/incident-response/evals/eval-strategy.md
     benchmark_plan_path: eval/07-operations/incident-response/isolated-benchmark-plan.md
+    benchmark_results_path: eval/07-operations/incident-response/manual-benchmark-review.md
     findings_path: eval/07-operations/incident-response/findings.md
     integration_test_path: eval/07-operations/incident-response/incident-review.md
 - name: monitoring-observability
@@ -467,44 +532,56 @@ skills:
 - name: runbooks
   phase: 07-operations
   file: skills/07-operations/runbooks/SKILL.md
-  status: review
+  status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/07-operations/runbooks/evals/eval-strategy.md
     benchmark_plan_path: eval/07-operations/runbooks/isolated-benchmark-plan.md
+    benchmark_results_path: eval/07-operations/runbooks/manual-benchmark-review.md
     findings_path: eval/07-operations/runbooks/findings.md
     integration_test_path: eval/07-operations/runbooks/runbook-review.md
 - name: tech-debt-management
   phase: 08-evolution
   file: skills/08-evolution/tech-debt-management/SKILL.md
-  status: review
+  status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/08-evolution/tech-debt-management/evals/eval-strategy.md
     benchmark_plan_path: eval/08-evolution/tech-debt-management/isolated-benchmark-plan.md
+    benchmark_results_path: eval/08-evolution/tech-debt-management/manual-benchmark-review.md
     findings_path: eval/08-evolution/tech-debt-management/findings.md
     integration_test_path: eval/08-evolution/tech-debt-management/debt-review.md
 - name: retrospective
   phase: 08-evolution
   file: skills/08-evolution/retrospective/SKILL.md
-  status: review
+  status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/08-evolution/retrospective/evals/eval-strategy.md
     benchmark_plan_path: eval/08-evolution/retrospective/isolated-benchmark-plan.md
+    benchmark_results_path: eval/08-evolution/retrospective/manual-benchmark-review.md
     findings_path: eval/08-evolution/retrospective/findings.md
     integration_test_path: eval/08-evolution/retrospective/retro-review.md
 - name: documentation
   phase: cross-cutting
   file: skills/cross-cutting/documentation/SKILL.md
-  status: draft
+  status: tested
   qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/cross-cutting/documentation/evals/eval-strategy.md
+    benchmark_plan_path: eval/cross-cutting/documentation/isolated-benchmark-plan.md
+    benchmark_results_path: eval/cross-cutting/documentation/isolated-benchmark-review.md
+    findings_path: eval/cross-cutting/documentation/findings.md
+    integration_test_path: eval/cross-cutting/documentation/documentation-handoff-review.md
+    manual_review_path: eval/cross-cutting/documentation/documentation-handoff-review.md
 - name: observability
   phase: cross-cutting
   file: skills/cross-cutting/observability/SKILL.md
@@ -520,8 +597,12 @@ skills:
 - name: bug-history-retrieval
   phase: cross-cutting
   file: skills/cross-cutting/bug-history-retrieval/SKILL.md
-  status: draft
+  status: review
   qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/cross-cutting/bug-history-retrieval/evals/eval-strategy.md
 - name: verification-before-completion
   phase: cross-cutting
   file: skills/cross-cutting/verification-before-completion/SKILL.md
@@ -538,18 +619,30 @@ skills:
 - name: accessibility
   phase: cross-cutting
   file: skills/cross-cutting/accessibility/SKILL.md
-  status: draft
+  status: review
   qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/cross-cutting/accessibility/evals/eval-strategy.md
 - name: internationalization
   phase: cross-cutting
   file: skills/cross-cutting/internationalization/SKILL.md
-  status: draft
+  status: review
   qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/cross-cutting/internationalization/evals/eval-strategy.md
 - name: compliance
   phase: cross-cutting
   file: skills/cross-cutting/compliance/SKILL.md
-  status: draft
+  status: review
   qa_tier: standard
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/cross-cutting/compliance/evals/eval-strategy.md
 planned_skills:
 - name: pair-programming
   phase: 04-implementation

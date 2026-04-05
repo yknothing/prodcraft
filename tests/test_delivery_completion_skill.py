@@ -28,12 +28,13 @@ class DeliveryCompletionSkillTests(unittest.TestCase):
 
         entry = entries["delivery-completion"]
         self.assertEqual("06-delivery", entry["phase"])
-        self.assertEqual("review", entry["status"])
+        self.assertEqual("tested", entry["status"])
         self.assertEqual("critical", entry["qa_tier"])
         self.assertEqual("routed", entry["evaluation_mode"])
         self.assertIn("qa", entry)
         self.assertIn("eval_strategy_path", entry["qa"])
         self.assertIn("benchmark_plan_path", entry["qa"])
+        self.assertIn("benchmark_results_path", entry["qa"])
         self.assertIn("findings_path", entry["qa"])
         self.assertIn("integration_test_path", entry["qa"])
 
@@ -55,6 +56,27 @@ class DeliveryCompletionSkillTests(unittest.TestCase):
         self.assertIn("delivery-completion", phase_text)
         self.assertIn("delivery-completion", gateway_text)
         self.assertIn("finishing-a-development-branch", gateway_text)
+
+    def test_tested_artifacts_exist(self):
+        targets = [
+            REPO_ROOT / "eval" / "06-delivery" / "delivery-completion" / "findings.md",
+            REPO_ROOT / "eval" / "06-delivery" / "delivery-completion" / "evals" / "eval-strategy.md",
+            REPO_ROOT / "eval" / "06-delivery" / "delivery-completion" / "isolated-benchmark-plan.md",
+            REPO_ROOT / "eval" / "06-delivery" / "delivery-completion" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "06-delivery" / "delivery-completion" / "completion-handoff-review.md",
+        ]
+
+        for path in targets:
+            with self.subTest(path=path):
+                self.assertTrue(path.exists(), path)
+
+    def test_findings_record_tested_status(self):
+        findings = (
+            REPO_ROOT / "eval" / "06-delivery" / "delivery-completion" / "findings.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("Current status: `tested`", findings)
+        self.assertIn("isolated benchmark", findings)
 
 
 if __name__ == "__main__":

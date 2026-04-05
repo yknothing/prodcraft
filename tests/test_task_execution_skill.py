@@ -22,14 +22,15 @@ class TaskExecutionSkillTests(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertTrue(path.exists(), path)
 
-    def test_manifest_registers_task_execution_as_critical_review_skill(self):
+    def test_manifest_registers_task_execution_as_critical_tested_skill(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
         entry = entries["task-execution"]
 
         self.assertEqual("04-implementation", entry["phase"])
-        self.assertEqual("review", entry["status"])
+        self.assertEqual("tested", entry["status"])
         self.assertEqual("critical", entry["qa_tier"])
         self.assertEqual("routed", entry["evaluation_mode"])
+        self.assertIn("benchmark_results_path", entry["qa"])
 
     def test_artifact_flow_and_gateway_keep_task_execution_tactical(self):
         artifact_flow = {entry["artifact"]: entry for entry in self.manifest["artifact_flow"]}
@@ -51,6 +52,17 @@ class TaskExecutionSkillTests(unittest.TestCase):
         self.assertIn("optional tactical wrapper", gateway)
         self.assertIn("### Implementation Routing Quick Map", implementation_phase)
         self.assertIn("use `task-execution` only when the batch itself needs explicit checkpoints", implementation_phase)
+
+    def test_tested_artifacts_exist(self):
+        targets = [
+            REPO_ROOT / "eval" / "04-implementation" / "task-execution" / "isolated-benchmark.json",
+            REPO_ROOT / "eval" / "04-implementation" / "task-execution" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "04-implementation" / "task-execution" / "tactical-batch-review.md",
+        ]
+
+        for path in targets:
+            with self.subTest(path=path):
+                self.assertTrue(path.exists(), path)
 
 
 if __name__ == "__main__":

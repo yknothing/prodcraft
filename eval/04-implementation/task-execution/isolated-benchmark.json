@@ -1,0 +1,30 @@
+[
+  {
+    "id": "feature-slice-to-tdd-batch",
+    "title": "Feature Slice To Tactical Batch",
+    "context_files": [
+      "fixtures/feature-batch-slice.md",
+      "fixtures/feature-batch-dependencies.md",
+      "fixtures/feature-batch-verification.md"
+    ],
+    "prompt": "Read `./feature-batch-slice.md`, `./feature-batch-dependencies.md`, and `./feature-batch-verification.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the next tactical execution batch and an honest execution checkpoint for this slice. Keep the batch short and route to the correct downstream implementation discipline.",
+    "assertions": [
+      {
+        "name": "tactical-not-strategic",
+        "description": "The batch stays in 2-5 minute execution steps."
+      },
+      {
+        "name": "routes-to-real-discipline",
+        "description": "The output explicitly routes through the correct implementation discipline."
+      },
+      {
+        "name": "stop-conditions-explicit",
+        "description": "Pause and stop conditions are visible."
+      },
+      {
+        "name": "checkpoint-honest",
+        "description": "The checkpoint records verified progress and open work honestly."
+      }
+    ]
+  }
+]

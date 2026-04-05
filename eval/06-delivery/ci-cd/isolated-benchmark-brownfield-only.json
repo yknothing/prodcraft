@@ -1,0 +1,34 @@
+[
+  {
+    "id": "access-review-modernization-pipeline",
+    "title": "Brownfield Access Review Pipeline",
+    "context_files": [
+      "fixtures/access-review-modernization-task-slice.md",
+      "fixtures/access-review-modernization-testing-summary.md",
+      "fixtures/access-review-modernization-review-findings.md"
+    ],
+    "prompt": "Read `./access-review-modernization-task-slice.md`, `./access-review-modernization-testing-summary.md`, and `./access-review-modernization-review-findings.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Design the CI/CD pipeline for this reviewed service change, including build, test, staging deployment, rollback, and release-boundary gates. Keep the answer release-safe and concrete.",
+    "assertions": [
+      {
+        "name": "maps-gates-to-risk",
+        "description": "Pipeline stages reflect the reviewed test strategy and known blockers"
+      },
+      {
+        "name": "preserves-brownfield-safety",
+        "description": "Rollback, coexistence, and unsupported-flow checks remain explicit delivery gates"
+      },
+      {
+        "name": "stays-delivery-focused",
+        "description": "Output remains a pipeline/release automation plan, not a new testing or architecture document"
+      },
+      {
+        "name": "fails-closed",
+        "description": "Unsafe releases are blocked before deployment rather than left to production discovery"
+      },
+      {
+        "name": "prepares-downstream-handoff",
+        "description": "Output is usable by deployment-strategy and release-management follow-on work"
+      }
+    ]
+  }
+]

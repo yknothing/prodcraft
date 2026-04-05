@@ -1,0 +1,29 @@
+[
+  {
+    "id": "access-review-modernization-tech-selection",
+    "title": "Brownfield Access Review Tech Selection",
+    "context_files": [
+      "fixtures/access-review-modernization-requirements-summary.md",
+      "fixtures/access-review-modernization-architecture-summary.md"
+    ],
+    "prompt": "Read `./access-review-modernization-requirements-summary.md` and `./access-review-modernization-architecture-summary.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the tech-selection artifact for this brownfield modernization slice. Debate only unresolved technology categories, map every choice to the documented drivers, record trade-offs and revisit triggers, prefer the minimum viable stack, and avoid reopening the architecture itself.",
+    "assertions": [
+      {
+        "name": "decision-surface-is-bounded",
+        "description": "Only unresolved technology categories are debated"
+      },
+      {
+        "name": "choices-map-to-drivers",
+        "description": "Technology choices are justified against the documented architecture and delivery drivers"
+      },
+      {
+        "name": "trade-offs-are-recorded",
+        "description": "Rejected alternatives and revisit triggers are explicit"
+      },
+      {
+        "name": "minimum-stack-wins",
+        "description": "Avoids unnecessary platform sprawl or overlapping tools"
+      }
+    ]
+  }
+]

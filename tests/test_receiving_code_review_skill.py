@@ -27,10 +27,11 @@ class ReceivingCodeReviewSkillTests(unittest.TestCase):
         entry = entries["receiving-code-review"]
 
         self.assertEqual("05-quality", entry["phase"])
-        self.assertEqual("review", entry["status"])
+        self.assertEqual("tested", entry["status"])
         self.assertEqual("standard", entry["qa_tier"])
         self.assertEqual("routed", entry["evaluation_mode"])
         self.assertIn("eval_strategy_path", entry["qa"])
+        self.assertIn("benchmark_results_path", entry["qa"])
 
     def test_artifact_flow_and_phase_docs_reference_author_side_review_followup(self):
         artifact_flow = {entry["artifact"]: entry for entry in self.manifest["artifact_flow"]}
@@ -44,6 +45,17 @@ class ReceivingCodeReviewSkillTests(unittest.TestCase):
 
         self.assertIn("receiving-code-review", quality_phase)
         self.assertIn("receiving-code-review", gateway)
+
+    def test_tested_artifacts_exist(self):
+        targets = [
+            REPO_ROOT / "eval" / "05-quality" / "receiving-code-review" / "isolated-benchmark.json",
+            REPO_ROOT / "eval" / "05-quality" / "receiving-code-review" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "05-quality" / "receiving-code-review" / "feedback-response-review.md",
+        ]
+
+        for path in targets:
+            with self.subTest(path=path):
+                self.assertTrue(path.exists(), path)
 
 
 if __name__ == "__main__":

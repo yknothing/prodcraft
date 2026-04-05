@@ -1,14 +1,19 @@
 # Delivery Completion QA Findings
 
-## Summary
+## Status
 
-`delivery-completion` has been added to close the branch/PR/keep/discard gap between verified implementation work and coordinated release handling.
+- Current status: `tested`
+- Evidence type: routed handoff review plus isolated benchmark
+- Scope covered:
+  - one verified branch-completion scenario
+  - explicit branch/PR/hold/discard decision boundary before release coordination
 
 ## What Changed
 
 1. Added a thin completion skill in `06-delivery` for explicit integration outcomes.
 2. Kept release coordination in `release-management` and rollout design in `deployment-strategy`.
 3. Added `delivery-decision-record` as the handoff artifact for explicit completion state.
+4. Added the first clean isolated benchmark for a verified feature-branch handoff.
 
 ## What We Learned
 
@@ -22,8 +27,14 @@ At this stage, `delivery-completion` appears to be:
 
 - a thin delivery wrapper rather than a new governance layer
 - useful when verified work needs an explicit branch or PR fate
-- newly supported by a first routed review, but still awaiting isolated benchmark evidence
+- strong enough for a narrow `tested` judgment because the isolated run shows clearer completion-option discipline than baseline
+
+## Current Limits
+
+- Only one benchmark scenario exists
+- The evidence is still centered on PR-oriented repository policy
+- There is no later release drill yet showing repeated use across multiple completion outcomes
 
 ## Next QA Step
 
-Run the planned isolated benchmark and compare behavior against a generic branch-finish baseline.
+Add a second benchmark where the correct answer is to hold or discard instead of opening a PR.

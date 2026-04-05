@@ -2,8 +2,8 @@
 
 ## Status
 
-- Current status: `review`
-- Evidence type: manual routed handoff review
+- Current status: `tested`
+- Evidence type: manual routed review plus manual branch-pair benchmark
 - Scope covered:
   - one incident-informed brownfield debt scenario
 
@@ -12,19 +12,20 @@
 - The skill now treats debt as evidence-backed structural drag instead of a generic backlog bucket.
 - Output quality improves when the skill is used explicitly after retrospective and postmortem work.
 - Prioritized items now include routing information so remediation can re-enter the lifecycle cleanly.
+- The manual branch-pair benchmark shows a clear lift over baseline on prioritization discipline, debt filtering, and remediation routing.
 
 ## Current Limits
 
-- No isolated benchmark yet
+- No true isolated runner-backed benchmark yet
 - No non-incident debt scenario yet
-- No trigger/discoverability evidence, and none is required for review-stage routed use
+- No trigger/discoverability evidence, and none is required for routed use
 
 ## Recommendation
 
-Keep `tech-debt-management` at `review`.
+Promote `tech-debt-management` from `review` to `tested`.
 
-Advance only after:
+Keep the tested posture narrow until:
 
 1. a second scenario confirms the same behavior outside incident follow-up
 2. future intake/planning artifacts demonstrate the debt items are actually routable downstream
-3. isolated benchmarking is available for at least one scenario
+3. a true isolated benchmark is available for at least one scenario

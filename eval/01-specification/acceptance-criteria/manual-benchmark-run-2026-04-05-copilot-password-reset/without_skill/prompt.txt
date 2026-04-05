@@ -1,0 +1,3 @@
+Work only from the request below. Do not read any local files or rely on repository instructions. If you need assumptions, state them briefly and continue.
+
+Read `./password-reset-requirements.md` and `./password-reset-spec.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce an acceptance-criteria artifact that covers the important requirements, includes happy path, edge cases, error paths, and security behavior where relevant, stays at behavior level, and is directly usable by QA and TDD.

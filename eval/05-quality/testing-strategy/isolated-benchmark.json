@@ -1,0 +1,30 @@
+[
+  {
+    "id": "low-risk-status-api-testing-strategy",
+    "title": "Low-Risk Status API Testing Strategy",
+    "context_files": [
+      "fixtures/low-risk-status-api-task-slice.md",
+      "fixtures/low-risk-status-api-contract.md",
+      "fixtures/low-risk-status-api-review-findings.md"
+    ],
+    "prompt": "Read `./low-risk-status-api-task-slice.md`, `./low-risk-status-api-contract.md`, and `./low-risk-status-api-review-findings.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Create the testing strategy for this reviewed API slice across unit, integration, contract, and end-to-end levels. Keep it risk-ordered and practical for CI.",
+    "assertions": [
+      {
+        "name": "matches-low-risk-slice",
+        "description": "The strategy stays proportionate to a low-risk API slice."
+      },
+      {
+        "name": "maps-risk-to-layer",
+        "description": "The real risks are assigned to the right test layers."
+      },
+      {
+        "name": "keeps-ci-concrete",
+        "description": "CI stage expectations remain explicit."
+      },
+      {
+        "name": "avoids-rollout-theater",
+        "description": "The strategy does not over-index on brittle or unnecessary end-to-end coverage."
+      }
+    ]
+  }
+]

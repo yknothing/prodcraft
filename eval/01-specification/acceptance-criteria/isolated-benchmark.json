@@ -1,0 +1,33 @@
+[
+  {
+    "id": "password-reset-acceptance-criteria",
+    "title": "Password Reset Acceptance Criteria From Reviewed Requirements",
+    "context_files": [
+      "fixtures/password-reset-requirements.md",
+      "fixtures/password-reset-spec.md"
+    ],
+    "prompt": "Read `./password-reset-requirements.md` and `./password-reset-spec.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce an acceptance-criteria artifact that covers the important requirements, includes happy path, edge cases, error paths, and security behavior where relevant, stays at behavior level, and is directly usable by QA and TDD.",
+    "assertions": [
+      {
+        "name": "covers-every-important-requirement",
+        "description": "Each requirement is represented by at least one acceptance criterion."
+      },
+      {
+        "name": "covers-happy-edge-error-and-security",
+        "description": "The artifact covers happy path, error behavior, and security-sensitive paths relevant to this slice."
+      },
+      {
+        "name": "criteria-are-measurable",
+        "description": "Expected outcomes are observable, specific, and directly testable."
+      },
+      {
+        "name": "stays-at-behavior-level",
+        "description": "The output avoids implementation details and remains a behavioral contract."
+      },
+      {
+        "name": "prepares-testing-handoff",
+        "description": "QA or TDD could derive tests directly from the artifact without guessing."
+      }
+    ]
+  }
+]

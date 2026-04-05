@@ -1,0 +1,35 @@
+[
+  {
+    "id": "supported-reassignment-handler-refactor",
+    "title": "Supported Reassignment Handler Refactor",
+    "context_files": [
+      "fixtures/reassignment_handlers.py",
+      "fixtures/test_reassignment_handlers.py",
+      "fixtures/reassignment-structural-review-report.md",
+      "fixtures/reassignment-tech-debt-note.md"
+    ],
+    "prompt": "Read `./reassignment_handlers.py`, `./test_reassignment_handlers.py`, `./reassignment-structural-review-report.md`, and `./reassignment-tech-debt-note.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce a small refactoring increment for the supplied handler module. Preserve the current behavior and contract, target the duplicated supported-path logic directly, use the existing tests as the safety net, and avoid policy changes, API redesign, or unrelated cleanup.",
+    "assertions": [
+      {
+        "name": "behavior-does-not-change",
+        "description": "Preserves the supported and unsupported response contract"
+      },
+      {
+        "name": "duplication-targeted",
+        "description": "Attacks the duplicated supported-path logic directly"
+      },
+      {
+        "name": "test-safety-net-used",
+        "description": "Treats current tests as the prerequisite safety net"
+      },
+      {
+        "name": "scope-stays-small",
+        "description": "Does not expand into policy changes, broader API redesign, or unrelated cleanup"
+      },
+      {
+        "name": "reviewable-step-shape",
+        "description": "Leaves a small, reviewable cleanup increment"
+      }
+    ]
+  }
+]

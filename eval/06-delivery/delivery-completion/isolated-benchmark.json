@@ -1,0 +1,33 @@
+[
+  {
+    "id": "verified-feature-pr-handoff",
+    "title": "Verified Feature PR Handoff",
+    "context_files": [
+      "fixtures/verified-feature-pr-handoff-verification-record.md",
+      "fixtures/verified-feature-pr-handoff-execution-checkpoint.md"
+    ],
+    "prompt": "Read `./verified-feature-pr-handoff-verification-record.md` and `./verified-feature-pr-handoff-execution-checkpoint.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the delivery-completion decision for this verified feature branch. Preserve verification freshness, present the explicit completion outcomes clearly enough for a human to choose, identify the recommended path for this scenario, and keep downstream release handoff explicit when shipping continues.",
+    "assertions": [
+      {
+        "name": "four-outcomes-explicit",
+        "description": "Makes the four completion outcomes visible instead of implying one vague next step"
+      },
+      {
+        "name": "verification-gate-preserved",
+        "description": "Keeps fresh verification evidence as a prerequisite for completion"
+      },
+      {
+        "name": "recommended-path-is-pr-handoff",
+        "description": "Recommends push/create PR for this scenario instead of blurring it into release management"
+      },
+      {
+        "name": "discard-safety-stays-visible",
+        "description": "Keeps typed discard confirmation or equivalent destructive-action safety visible"
+      },
+      {
+        "name": "downstream-release-handoff-is-explicit",
+        "description": "Makes the release-management handoff explicit once the PR exists"
+      }
+    ]
+  }
+]

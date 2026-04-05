@@ -2,8 +2,8 @@
 
 ## Status
 
-- Current status: `review`
-- Evidence type: manual routed handoff review
+- Current status: `tested`
+- Evidence type: routed handoff review plus isolated benchmark
 - Scope covered:
   - one code-review-driven structural cleanup scenario
   - a behaviorally protected reassignment handler fixture with explicit review findings
@@ -14,18 +14,23 @@
 - The repository now has a concrete example of when structural duplication should route to `refactoring` instead of reopening `feature-development`.
 - The review packet makes the safety boundary explicit: preserve observable behavior, keep tests green, and avoid policy or scope expansion.
 
+## What the Benchmark Added
+
+- The first clean isolated benchmark now exists in `run-2026-04-04-copilot-minimal`.
+- The baseline already found the same helper extraction, so this is not a blowout benchmark.
+- The with-skill branch still performed better on the intended contract:
+  - it explicitly framed the work as constrained post-review refactoring
+  - it kept behavior preservation central
+  - it added a lightweight harness check after the change instead of treating the cleanup as self-evidently safe
+
 ## Current Limits
 
-- No isolated benchmark yet
-- No second scenario driven by tech-debt evidence or larger structural debt
-- No live execution evidence yet that the skill consistently outperforms a generic cleanup baseline
+- The measured lift is modest rather than dramatic
+- Only one duplication-driven scenario exists
+- There is still no tech-debt-driven or larger structural-debt benchmark
 
 ## Recommendation
 
-Promote `refactoring` from `draft` to `review`.
+Promote `refactoring` from `review` to `tested`.
 
-Keep it below `tested` until:
-
-1. one isolated benchmark exists for the same constrained post-review slice
-2. at least one second scenario proves the skill is not overfit to a single duplication case
-3. the skill is shown to preserve behavior without cleanup drift under execution pressure
+This is a narrow `tested` judgment based on one clean run and visible safety-discipline improvement, not a claim that the skill is broadly saturated.

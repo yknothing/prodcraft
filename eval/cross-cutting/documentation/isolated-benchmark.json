@@ -1,0 +1,34 @@
+[
+  {
+    "id": "maturity-wave-maintainer-note",
+    "title": "Maintainer-Facing Maturity Wave Documentation Note",
+    "context_files": [
+      "fixtures/maturity-wave-request.md",
+      "fixtures/public-lifecycle-summary.md",
+      "fixtures/maintainer-audience.md"
+    ],
+    "prompt": "Read `./maturity-wave-request.md`, `./public-lifecycle-summary.md`, and `./maintainer-audience.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce a short maintainer-facing documentation artifact that explains where durable skill-maturity knowledge should live, what minimum evidence is needed before a skill can reach tested, and how to distinguish durable docs from transient notes. Keep it direct, audience-aware, and not changelog-like.",
+    "assertions": [
+      {
+        "name": "stays-concise",
+        "description": "Keeps the note compact rather than turning into a long dump"
+      },
+      {
+        "name": "answers-document-location-decision",
+        "description": "Explains where durable knowledge should live and why"
+      },
+      {
+        "name": "names-audience-and-authority-boundaries",
+        "description": "Makes the maintainer audience and authoritative sources explicit"
+      },
+      {
+        "name": "distinguishes-durable-from-transient",
+        "description": "Separates durable documentation from transient notes or changelog material"
+      },
+      {
+        "name": "avoids-changelog-narration",
+        "description": "Does not drift into changelog-style narration"
+      }
+    ]
+  }
+]

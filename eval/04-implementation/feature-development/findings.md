@@ -1,14 +1,19 @@
 # Feature Development QA Findings
 
-## Summary
+## Status
 
-`feature-development` has moved to `review` status.
+- Current status: `tested`
+- Evidence type: routed handoff review plus valid fixture-based isolated benchmark
+- Scope covered:
+  - one brownfield compatibility implementation slice
+  - clean baseline and with-skill execution against the same fixture
 
 ## What Changed
 
 1. The skill is now under manifest-backed QA instead of remaining a critical-but-untracked draft.
 2. Review-stage evidence was defined around the real routed handoff: reviewed task slice plus tests into a small mergeable increment.
-3. The benchmark lane is now explicit, so future isolated Gemini runs can measure whether the skill improves slice discipline over a baseline.
+3. A fresh isolated rerun now exists with the minimal code and test fixture included in the benchmark context.
+4. Both baseline and with-skill branches now complete cleanly on the same fixture-backed scenario.
 
 ## What We Learned
 
@@ -16,9 +21,9 @@
 2. The strongest first evidence for this skill is routed handoff quality, not discoverability.
 3. The main regression risk is scope creep: generic implementation behavior often widens the change once coding starts.
 4. A first isolated benchmark asset now exists for the brownfield compatibility slice.
-5. The current benchmark context is too thin for a tested-grade implementation benchmark: task slice plus API contract is not enough on its own because the model still needs a minimal codebase and test fixture to implement against honestly.
-6. The `copilot` fallback baseline completed and showed a non-trivial control artifact, but it also confirmed the same design gap by inventing local project structure.
-7. The with-skill branch tried to discover and operate on a local codebase, then failed with `Connection error.` before producing a usable artifact. This means the current blocker is not just runner instability; it is also missing code fixture context.
+5. The old fixture-fairness blocker is now closed: the benchmark no longer forces either branch to invent a repo structure.
+6. The current limitation is benchmark quality delta, not runner stability or missing context.
+7. On the current fixture, the with-skill branch produces a usable small increment and keeps the slice bounded, even though the observed lift over baseline is modest.
 
 ## Current Interpretation
 
@@ -26,8 +31,15 @@ At this stage, `feature-development` appears to be:
 
 - a core implementation skill on the lifecycle spine
 - stronger as a routed workflow skill than as a discoverability-first skill
-- still in need of a valid isolated benchmark with a minimal code fixture before it can leave `review`
+- now backed by a valid fixture-based isolated benchmark result
+- strong enough for a narrow `tested` posture because a fair fixture-based benchmark now exists and both branches complete cleanly against the same bounded slice
+
+## Current Limits
+
+- the benchmark lift is modest rather than dramatic
+- only one fixture-backed scenario exists
+- a second differentiating implementation slice is still needed before stronger maturity claims
 
 ## Next QA Step
 
-Add a minimal code fixture to the brownfield benchmark, rerun that scenario cleanly, and only then decide whether a second forward slice is needed.
+Add a second implementation slice where baseline is more likely to scope drift or lose brownfield discipline.

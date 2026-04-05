@@ -1,0 +1,66 @@
+[
+  {
+    "id": "access-review-modernization-pipeline",
+    "title": "Brownfield Access Review Pipeline",
+    "context_files": [
+      "fixtures/access-review-modernization-task-slice.md",
+      "fixtures/access-review-modernization-testing-summary.md",
+      "fixtures/access-review-modernization-review-findings.md"
+    ],
+    "prompt": "Read `./access-review-modernization-task-slice.md`, `./access-review-modernization-testing-summary.md`, and `./access-review-modernization-review-findings.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Design the CI/CD pipeline for this reviewed service change, including build, test, staging deployment, rollback, and release-boundary gates. Keep the answer release-safe and concrete.",
+    "assertions": [
+      {
+        "name": "maps-gates-to-risk",
+        "description": "Pipeline stages reflect the reviewed test strategy and known blockers"
+      },
+      {
+        "name": "preserves-brownfield-safety",
+        "description": "Rollback, coexistence, and unsupported-flow checks remain explicit delivery gates"
+      },
+      {
+        "name": "stays-delivery-focused",
+        "description": "Output remains a pipeline/release automation plan, not a new testing or architecture document"
+      },
+      {
+        "name": "fails-closed",
+        "description": "Unsafe releases are blocked before deployment rather than left to production discovery"
+      },
+      {
+        "name": "prepares-downstream-handoff",
+        "description": "Output is usable by deployment-strategy and release-management follow-on work"
+      }
+    ]
+  },
+  {
+    "id": "low-risk-service-pipeline",
+    "title": "Low-Risk Service Pipeline",
+    "context_files": [
+      "fixtures/low-risk-service-release.md",
+      "fixtures/low-risk-service-testing-summary.md",
+      "fixtures/low-risk-service-review-findings.md"
+    ],
+    "prompt": "Read `./low-risk-service-release.md`, `./low-risk-service-testing-summary.md`, and `./low-risk-service-review-findings.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Design the CI/CD pipeline for this low-risk service release, including build, test, staging deployment, and production release gates. Keep the answer practical and avoid unnecessary rollout theater.",
+    "assertions": [
+      {
+        "name": "sequences-stages-coherently",
+        "description": "Build, test, and deployment stages are ordered sensibly"
+      },
+      {
+        "name": "includes-feedback-fast-gates",
+        "description": "Commit / PR checks are included for fast feedback"
+      },
+      {
+        "name": "preserves-staging-verification",
+        "description": "Staging verification happens before production release"
+      },
+      {
+        "name": "avoids-overengineering",
+        "description": "The pipeline matches the low-risk release without unnecessary high-friction steps"
+      },
+      {
+        "name": "remains-operationally-clear",
+        "description": "The result is concrete enough for delivery owners to use directly"
+      }
+    ]
+  }
+]

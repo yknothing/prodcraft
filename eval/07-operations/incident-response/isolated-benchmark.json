@@ -1,0 +1,30 @@
+[
+  {
+    "id": "access-review-modernization-incident",
+    "title": "Brownfield Access Review Incident Response",
+    "context_files": [
+      "fixtures/access-review-modernization-pipeline-summary.md",
+      "fixtures/access-review-modernization-architecture-summary.md",
+      "fixtures/access-review-modernization-incident-alert.md"
+    ],
+    "prompt": "Read `./access-review-modernization-pipeline-summary.md`, `./access-review-modernization-architecture-summary.md`, and `./access-review-modernization-incident-alert.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the incident-response artifact for the next 2 hours. Prioritize containment before redesign, preserve rollback and brownfield safety, make severity, owners, and stakeholder communication explicit, and leave a clean handoff for follow-up work.",
+    "assertions": [
+      {
+        "name": "maps-response-to-live-failure",
+        "description": "Ties containment to the actual failing boundary rather than a generic outage script"
+      },
+      {
+        "name": "preserves-brownfield-safety",
+        "description": "Keeps coexistence, rollback, and data-integrity constraints explicit"
+      },
+      {
+        "name": "mitigates-before-redesign",
+        "description": "Prioritizes containment and evidence capture before speculative redesign"
+      },
+      {
+        "name": "uses-explicit-command-and-communication",
+        "description": "Makes severity, roles, cadence, and stakeholder updates concrete"
+      }
+    ]
+  }
+]

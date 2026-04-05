@@ -1,0 +1,35 @@
+[
+  {
+    "id": "access-review-modernization-sprint-plan",
+    "title": "Brownfield Capacity-Constrained Sprint Plan",
+    "context_files": [
+      "fixtures/access-review-modernization-task-list.md",
+      "fixtures/access-review-modernization-estimate-set.md",
+      "fixtures/access-review-modernization-risk-register.md",
+      "fixtures/access-review-modernization-capacity-note.md"
+    ],
+    "prompt": "Read `./access-review-modernization-task-list.md`, `./access-review-modernization-estimate-set.md`, `./access-review-modernization-risk-register.md`, and `./access-review-modernization-capacity-note.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce a sprint-planning artifact for the next iteration that starts from actual capacity, keeps risky and dependency-heavy work visible, separates committed work from stretch work, and avoids turning the output into a generic roadmap or backlog priority list.",
+    "assertions": [
+      {
+        "name": "capacity-first",
+        "description": "Starts from the supplied team capacity and carry-over constraints instead of desired scope"
+      },
+      {
+        "name": "commitment-is-bounded",
+        "description": "Commits only the smallest defensible set of work that fits the sprint goal"
+      },
+      {
+        "name": "dependencies-shape-sequence",
+        "description": "Orders work according to dependencies and risk pressure instead of flattening everything into a priority list"
+      },
+      {
+        "name": "stretch-is-explicit",
+        "description": "Separates committed work from stretch and deferred work clearly"
+      },
+      {
+        "name": "does-not-turn-into-roadmap",
+        "description": "Stays at iteration-planning level rather than becoming a generic long-range roadmap"
+      }
+    ]
+  }
+]
