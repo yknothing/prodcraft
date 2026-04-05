@@ -46,8 +46,8 @@ class ReviewWavePromotionTests(unittest.TestCase):
             REPO_ROOT / "docs" / "plans" / "2026-04-05-skill-status-snapshot.md"
         ).read_text(encoding="utf-8")
 
-        self.assertIn("`tested`: `31`", snapshot)
-        self.assertIn("`review`: `13`", snapshot)
+        self.assertIn("`tested`: `32`", snapshot)
+        self.assertIn("`review`: `12`", snapshot)
         self.assertIn("`draft`: `0`", snapshot)
         self.assertIn("This wave moved `12` skills from `draft` to `review`", snapshot)
 

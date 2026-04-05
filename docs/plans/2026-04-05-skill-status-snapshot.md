@@ -5,8 +5,8 @@
 ## Current Counts
 
 - total skills: `44`
-- `tested`: `31`
-- `review`: `13`
+- `tested`: `32`
+- `review`: `12`
 - `draft`: `0`
 
 ## Tested Gate Contract
@@ -91,6 +91,7 @@ Review-stage evidence is intentionally smaller:
 ### cross-cutting
 
 - `documentation`
+- `observability`
 - `verification-before-completion`
 
 ## Review Skills
@@ -105,7 +106,6 @@ Review-stage evidence is intentionally smaller:
 | `02-architecture` | `data-modeling` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
 | `02-architecture` | `security-design` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
 | `07-operations` | `monitoring-observability` | `critical` | benchmark plan and findings already exist | add `benchmark_results_path`; preserve routed `integration_test_path`; keep `findings_path` current |
-| `cross-cutting` | `observability` | `critical` | benchmark plan and findings already exist | add `benchmark_results_path`; add routed `integration_test_path`; keep `findings_path` current |
 | `cross-cutting` | `bug-history-retrieval` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
 | `cross-cutting` | `accessibility` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
 | `cross-cutting` | `internationalization` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
@@ -135,3 +135,5 @@ On the same date, `security-audit` moved from `review` to `tested` by converting
 Later the same day, `estimation` moved from `review` to `tested` after landing its first clean isolated benchmark review and reusing the existing `sprint-planning` handoff review as the downstream integration artifact.
 
 Later the same day, `acceptance-criteria` moved from `review` to `tested` after landing its first clean isolated benchmark review and reusing the existing `testing-strategy` handoff review as the downstream integration artifact.
+
+Later the same day, `observability` moved from `review` to `tested` after converting completed and failed execution traces into a checked-in benchmark review and reusing the existing runtime contract review as the integration artifact.

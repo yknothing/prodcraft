@@ -28,7 +28,6 @@ For the current manifest, every `review` skill is `routed`.
 | `02-architecture` | `data-modeling` | `standard` | structure validation + review strategy | add one routed benchmark result and one downstream integration or handoff review |
 | `02-architecture` | `security-design` | `standard` | structure validation + review strategy | add one routed benchmark result and one downstream integration or handoff review |
 | `07-operations` | `monitoring-observability` | `critical` | findings, benchmark plan, routed observability review | add first isolated benchmark result exercised against a concrete post-deploy or incident drill |
-| `cross-cutting` | `observability` | `critical` | findings, benchmark plan, runtime contract review | add first isolated benchmark result and add a routed integration artifact path in manifest |
 | `cross-cutting` | `bug-history-retrieval` | `standard` | structure validation + review strategy | add one routed benchmark result and one downstream integration or handoff review |
 | `cross-cutting` | `accessibility` | `standard` | structure validation + review strategy | add one routed benchmark result and one downstream integration or handoff review |
 | `cross-cutting` | `internationalization` | `standard` | structure validation + review strategy | add one routed benchmark result and one downstream integration or handoff review |
@@ -38,8 +37,7 @@ For the current manifest, every `review` skill is `routed`.
 
 1. `system-design`
 2. `monitoring-observability`
-3. `observability`
-4. the new `standard` review batch, grouped by lifecycle adjacency rather than alphabetically
+3. the new `standard` review batch, grouped by lifecycle adjacency rather than alphabetically
 
 ## Notes
 
@@ -47,5 +45,6 @@ For the current manifest, every `review` skill is `routed`.
 - `security-audit` moved to `tested` once the existing isolated benchmark lane was converted into a checked-in benchmark review and the first routed `release-management` handoff review was added.
 - `estimation` moved to `tested` once the first clean isolated benchmark review landed and the existing `sprint-planning` handoff review was reused as downstream evidence.
 - `acceptance-criteria` moved to `tested` once the first clean isolated benchmark review landed and the existing `testing-strategy` handoff review was reused as downstream evidence.
-- `monitoring-observability` and `observability` are the remaining critical reviews because they already have review-depth evidence instead of only evaluation strategies.
+- `observability` moved to `tested` once completed and failed execution traces were converted into a checked-in benchmark review and the existing runtime contract review was reused as downstream evidence.
+- `monitoring-observability` is now the only remaining critical review with review-depth evidence instead of just evaluation strategy scaffolding.
 - The remaining 10 newly reviewed `standard` skills should not be mass-promoted to `tested` from paperwork alone. They now have review posture; they still need real benchmark and handoff evidence.
