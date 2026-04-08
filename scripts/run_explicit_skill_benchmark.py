@@ -79,6 +79,10 @@ def build_prompt_command(runner: str, prompt: str, model: str | None) -> list[st
             "text",
             "--approval-mode",
             "plan",
+            "--extensions",
+            "none",
+            "--allowed-mcp-server-names",
+            "none",
         ]
     elif runner == "claude":
         cmd = [
@@ -240,16 +244,19 @@ def run_prompt(prompt: str, runner: str, model: str | None, cwd: Path, timeout_s
                 return sanitize_runner_output(runner, stdout)
                 
             combined_output = stdout + "\n" + stderr
+            empty_failure = not stdout.strip() and not stderr.strip()
             is_transient = (
                 "429" in combined_output or 
                 "RESOURCE_EXHAUSTED" in combined_output or 
                 "ECONNRESET" in combined_output or
+                "fetch failed" in combined_output or
                 "Connection error." in combined_output or
                 "Connection error" in combined_output or
                 "worker_failed" in combined_output or
                 "Premature close" in combined_output or
                 "socket hang up" in combined_output or
-                "ERR_STREAM_PREMATURE_CLOSE" in combined_output
+                "ERR_STREAM_PREMATURE_CLOSE" in combined_output or
+                empty_failure
             )
             
             if is_transient and attempt < max_attempts:

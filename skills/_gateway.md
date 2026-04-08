@@ -42,7 +42,7 @@ Match based on what phase the work is currently in:
 | Exploring a new idea | 00-discovery | problem-framing, market-analysis, user-research, feasibility-study |
 | Defining requirements | 01-specification | requirements-engineering, spec-writing, domain-modeling |
 | Designing system structure | 02-architecture | system-design, api-design, data-modeling, security-design, tech-selection |
-| Breaking down work | 03-planning | task-breakdown, estimation, risk-assessment |
+| Breaking down work | 03-planning | task-breakdown, estimation, risk-assessment, sprint-planning |
 | Writing code or tactically executing an approved slice | 04-implementation | task-execution, systematic-debugging, tdd, feature-development, refactoring |
 | Reviewing/testing | 05-quality | code-review, receiving-code-review, testing-strategy, security-audit |
 | Deploying/releasing | 06-delivery | ci-cd, delivery-completion, deployment-strategy, release-management |

@@ -100,6 +100,29 @@ Explain *why* something is a problem, not just *that* it is. Suggest a fix or di
 
 If a change silently hard-codes an unresolved architecture or contract decision, call that out as a correctness or scope-boundary issue, not a nit.
 
+Keep the final review output disciplined:
+
+- Default to a short, prioritized findings list rather than a broad checklist walkthrough.
+- Do **not** include remediation snippets, replacement code, or step-by-step implementation instructions unless the prompt explicitly asks for them.
+- Do **not** append a separate approval or merge-decision footer (`approve`, `reject`, `do not merge`) unless the prompt explicitly asks for approval state.
+- When several checklist violations share one root cause, report the root cause once and mention secondary implications inside the same finding instead of emitting duplicate findings.
+- Do **not** turn branch-mechanics observations into separate blocking findings when they only restate a higher-level contract or brownfield failure already identified.
+- For brownfield or contract-sensitive changes, prioritize contract, coexistence, release-boundary, and test-coverage blockers ahead of generic maintainability commentary.
+- Every blocking finding must be backed by evidence visible in the provided diff, contract, tests, or an explicit trace through the shown code path.
+- Do **not** report hypothetical regressions unless the provided fixture lets you trace the claimed input to the claimed failure behavior.
+
+When the caller asks for review feedback rather than remediation:
+
+- default to findings-first output ordered by severity
+- stay in review mode; do not provide code snippets, sample payloads, rewrite plans, or implementation steps unless the prompt explicitly asks for them
+- do not end with approval-status language such as `approve`, `reject`, `do not merge`, or a merge-decision footer unless the caller explicitly asks for approval state
+- collapse derivative checklist issues into the higher-severity root finding when they do not independently change the merge decision
+- only emit a separate blocker when it changes the merge decision on its own; otherwise fold implementation details such as inverted conditions, missing constants, TODO notes, or dead-path observations into the parent finding
+- if a concern is only a plausible consequence of a blocker already reported, keep it inside that blocker unless the supplied fixture proves it independently
+- treat checklist-only policies such as TODO-without-ticket or one-off magic-string commentary as standalone findings only when they independently create release, contract, or safety risk; otherwise omit them from concise merge-focused output
+
+For concise benchmark-style reviews, prefer the smallest set of findings that still preserves the real blockers.
+
 ## Review Etiquette
 
 - Critique the code, never the person. Say "this function could be simplified" not "you wrote this wrong."
@@ -136,7 +159,13 @@ git config core.hooksPath .githooks
 
 ## Outputs
 
-- **review-report**: Written feedback on the changeset with classified issues, approval status, and any follow-up actions. Stored as PR review comments or a formal review document.
+- **review-report**: Written feedback on the changeset with classified issues and any follow-up actions. Unless explicitly requested, the default output is a concise findings list rather than an approval verdict.
+
+Default review-report shape when approval state is not requested:
+
+1. prioritized findings only
+2. brief assumptions or open questions only if they materially affect the review
+3. no remediation appendix, no patch sketch, and no approval footer
 
 ## Quality Gate
 
@@ -155,6 +184,9 @@ git config core.hooksPath .githooks
 4. **Scope creep**: Requesting large refactors unrelated to the change. Open a separate issue for broader improvements.
 5. **Delayed reviews**: Letting PRs sit for days. Aim for initial review within 4 business hours for small changes, 1 business day for large changes.
 6. **Approving guessed behavior**: Letting a changeset merge even though it resolves unsupported or unresolved release-1 behavior by assumption.
+7. **Turning the checklist into the output**: The checklist is an internal review aid, not a requirement to emit every item as a separate finding.
+8. **Solving instead of reviewing**: Supplying implementation patches, code snippets, or merge-verdict theatrics when the prompt asked for review feedback only.
+9. **Inventing blockers from suspicion alone**: Escalating a hypothetical regression or unsupported interpretation that the provided fixture does not actually demonstrate.
 
 ## Gotchas
 
