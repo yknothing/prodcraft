@@ -520,13 +520,14 @@ skills:
 - name: monitoring-observability
   phase: 07-operations
   file: skills/07-operations/monitoring-observability/SKILL.md
-  status: review
+  status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/07-operations/monitoring-observability/evals/eval-strategy.md
     benchmark_plan_path: eval/07-operations/monitoring-observability/isolated-benchmark-plan.md
+    benchmark_results_path: eval/07-operations/monitoring-observability/manual-benchmark-review.md
     findings_path: eval/07-operations/monitoring-observability/findings.md
     integration_test_path: eval/07-operations/monitoring-observability/observability-review.md
 - name: runbooks

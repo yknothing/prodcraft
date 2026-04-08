@@ -5,8 +5,8 @@
 ## Current Counts
 
 - total skills: `44`
-- `tested`: `33`
-- `review`: `11`
+- `tested`: `34`
+- `review`: `10`
 - `draft`: `0`
 
 ## Tested Gate Contract
@@ -81,6 +81,7 @@ Review-stage evidence is intentionally smaller:
 ### 07-operations
 
 - `incident-response`
+- `monitoring-observability`
 - `runbooks`
 
 ### 08-evolution
@@ -106,7 +107,6 @@ Review-stage evidence is intentionally smaller:
 | `02-architecture` | `system-design` | `critical` | benchmark plan and findings already exist | one clean `benchmark_results_path`; keep `findings_path` current; preserve a valid routed integration artifact |
 | `02-architecture` | `data-modeling` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
 | `02-architecture` | `security-design` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
-| `07-operations` | `monitoring-observability` | `critical` | benchmark plan and findings already exist | add `benchmark_results_path`; preserve routed `integration_test_path`; keep `findings_path` current |
 | `cross-cutting` | `bug-history-retrieval` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
 | `cross-cutting` | `internationalization` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
 | `cross-cutting` | `compliance` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
@@ -139,3 +139,5 @@ Later the same day, `acceptance-criteria` moved from `review` to `tested` after 
 Later the same day, `observability` moved from `review` to `tested` after converting completed and failed execution traces into a checked-in benchmark review and reusing the existing runtime contract review as the integration artifact.
 
 On 2026-04-06, `accessibility` moved from `review` to `tested` after its first clean isolated benchmark review landed and the downstream `acceptance-criteria` handoff review was checked in as the integration artifact.
+
+On 2026-04-08, `monitoring-observability` moved from `review` to `tested` after a manual branch-pair benchmark review was checked in and the existing routed `observability-review.md` remained the downstream integration artifact.

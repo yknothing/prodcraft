@@ -6,15 +6,15 @@
 
 ## Current Review Pool
 
-- total `review` skills: `11`
+- total `review` skills: `10`
 - closest to `tested`: `system-design`
-- runner-blocked critical reviews: `system-design`, `monitoring-observability`
+- runner-blocked critical reviews: `system-design`
 - newly reviewed standard skills: `9`
 
 ## Priority Order
 
 1. `system-design`
-2. `monitoring-observability`
+2. `security-design`
 3. the newly reviewed standard skills, grouped by lifecycle adjacency
 
 ## Review Skill Matrix
@@ -22,7 +22,6 @@
 | Skill | Current posture | Smallest honest next artifact | Why that artifact is next |
 |---|---|---|---|
 | `system-design` | benchmark plan, findings, and routed handoff exist; no clean with-skill benchmark result yet | one clean `benchmark_results_path` on the existing brownfield isolated benchmark | this is already the narrowest remaining blocker for promotion |
-| `monitoring-observability` | manual routed review exists across brownfield and non-brownfield scenarios | first benchmark result that compares baseline vs with-skill signal plans | the integration story exists; the missing proof is runner-backed quality lift |
 | `market-analysis` | eval strategy seeded | first routed benchmark result on one opportunity-shaping scenario plus one handoff review into `feasibility-study` or `requirements-engineering` | it needs proof that it improves evidence quality instead of generating generic competitor prose |
 | `feasibility-study` | eval strategy seeded | first routed benchmark result on one go/no-go scenario plus one handoff review into `requirements-engineering` or intake decisioning | it needs evidence that it sharpens decision quality rather than rewriting discovery notes |
 | `spec-writing` | eval strategy seeded | first routed benchmark result plus one handoff review into `system-design` | tested posture depends on downstream architectural usability, not just spec completeness |
@@ -40,7 +39,7 @@ Do not promote any of the remaining `10` newly reviewed standard skills to `test
 1. one checked-in benchmark result
 2. one checked-in downstream handoff or integration review
 
-For the two remaining critical reviews, do not bypass the runner-backed benchmark requirement just because manual review evidence already exists.
+For the remaining critical review `system-design`, do not bypass the runner-backed benchmark requirement just because manual review evidence exists elsewhere in the repo.
 
 ## Completed In This Follow-Up
 
@@ -49,3 +48,4 @@ For the two remaining critical reviews, do not bypass the runner-backed benchmar
 - `acceptance-criteria` moved to `tested` after the first clean isolated benchmark review landed and the downstream `testing-strategy` handoff review was reused as the integration artifact.
 - `observability` moved to `tested` after completed and failed execution traces were converted into a checked-in benchmark review and the runtime contract review was reused as the integration artifact.
 - `accessibility` moved to `tested` after the first clean isolated benchmark review landed and the downstream `acceptance-criteria` handoff review was reused as the integration artifact.
+- `monitoring-observability` moved to `tested` after the existing manual branch-pair evidence was formalized into `manual-benchmark-review.md` and the routed `observability-review.md` remained the integration artifact.
