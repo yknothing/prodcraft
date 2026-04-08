@@ -6,10 +6,10 @@
 
 ## Current Review Pool
 
-- total `review` skills: `12`
+- total `review` skills: `11`
 - closest to `tested`: `system-design`
 - runner-blocked critical reviews: `system-design`, `monitoring-observability`
-- newly reviewed standard skills: `10`
+- newly reviewed standard skills: `9`
 
 ## Priority Order
 
@@ -30,7 +30,6 @@
 | `data-modeling` | eval strategy seeded | first routed benchmark result plus one handoff review into `task-breakdown` or implementation planning | it needs proof that storage ownership and migration safety become clearer downstream |
 | `security-design` | eval strategy seeded | first routed benchmark result plus one handoff review into `security-audit` or implementation | tested posture depends on concrete control design, not generic threat prose |
 | `bug-history-retrieval` | eval strategy seeded | first routed benchmark result on a lineage-sensitive bug scenario plus one handoff review into `systematic-debugging` | tested posture depends on grounding the next debugging step in canonical history |
-| `accessibility` | eval strategy seeded | first routed benchmark result on a UI acceptance scenario plus one handoff review into `acceptance-criteria` or QA | it needs proof that outputs become implementation- and review-ready checks |
 | `internationalization` | eval strategy seeded | first routed benchmark result on a locale-sensitive UI/content scenario plus one handoff review into specification or QA | tested posture depends on executable locale rules, not generic i18n advice |
 | `compliance` | eval strategy seeded | first routed benchmark result on one compliance-heavy release/spec scenario plus one handoff review into delivery or specification | it needs proof that obligations become engineering constraints and evidence checkpoints |
 
@@ -49,3 +48,4 @@ For the two remaining critical reviews, do not bypass the runner-backed benchmar
 - `estimation` moved to `tested` after the first clean isolated benchmark review landed and the downstream `sprint-planning` handoff review was reused as the integration artifact.
 - `acceptance-criteria` moved to `tested` after the first clean isolated benchmark review landed and the downstream `testing-strategy` handoff review was reused as the integration artifact.
 - `observability` moved to `tested` after completed and failed execution traces were converted into a checked-in benchmark review and the runtime contract review was reused as the integration artifact.
+- `accessibility` moved to `tested` after the first clean isolated benchmark review landed and the downstream `acceptance-criteria` handoff review was reused as the integration artifact.

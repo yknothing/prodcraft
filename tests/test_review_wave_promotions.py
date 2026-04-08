@@ -23,7 +23,6 @@ class ReviewWavePromotionTests(unittest.TestCase):
             "data-modeling": "02-architecture",
             "security-design": "02-architecture",
             "bug-history-retrieval": "cross-cutting",
-            "accessibility": "cross-cutting",
             "internationalization": "cross-cutting",
             "compliance": "cross-cutting",
         }
@@ -46,8 +45,8 @@ class ReviewWavePromotionTests(unittest.TestCase):
             REPO_ROOT / "docs" / "plans" / "2026-04-05-skill-status-snapshot.md"
         ).read_text(encoding="utf-8")
 
-        self.assertIn("`tested`: `32`", snapshot)
-        self.assertIn("`review`: `12`", snapshot)
+        self.assertIn("`tested`: `33`", snapshot)
+        self.assertIn("`review`: `11`", snapshot)
         self.assertIn("`draft`: `0`", snapshot)
         self.assertIn("This wave moved `12` skills from `draft` to `review`", snapshot)
 

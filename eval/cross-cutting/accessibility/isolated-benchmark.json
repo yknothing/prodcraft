@@ -1,0 +1,33 @@
+[
+  {
+    "id": "invite-modal-accessibility-contract",
+    "title": "Invite Modal Accessibility Contract",
+    "context_files": [
+      "fixtures/invite-modal-ui-summary.md",
+      "fixtures/invite-modal-product-constraints.md"
+    ],
+    "prompt": "Read `./invite-modal-ui-summary.md` and `./invite-modal-product-constraints.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the accessibility-guidance artifact for this modal. Keep the output at accessibility-contract level, name the affected controls and states explicitly, and make the result directly usable by acceptance criteria and QA review.",
+    "assertions": [
+      {
+        "name": "names-the-affected-surface",
+        "description": "The output identifies the specific controls, states, and interactions in scope."
+      },
+      {
+        "name": "covers-keyboard-focus-semantics-feedback-and-contrast",
+        "description": "The contract covers keyboard access, focus order/return, semantics, feedback/announcements, and contrast or equivalent cues."
+      },
+      {
+        "name": "stays-at-contract-level",
+        "description": "The output stays at accessibility-contract level instead of redesigning the UI or drifting into implementation detail."
+      },
+      {
+        "name": "produces-reviewable-checks",
+        "description": "The result gives reviewers and QA explicit checks they can execute without inventing policy."
+      },
+      {
+        "name": "prepares-acceptance-handoff",
+        "description": "The artifact is directly usable by downstream acceptance-criteria work."
+      }
+    ]
+  }
+]

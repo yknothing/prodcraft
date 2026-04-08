@@ -5,8 +5,8 @@
 ## Current Counts
 
 - total skills: `44`
-- `tested`: `32`
-- `review`: `12`
+- `tested`: `33`
+- `review`: `11`
 - `draft`: `0`
 
 ## Tested Gate Contract
@@ -90,6 +90,7 @@ Review-stage evidence is intentionally smaller:
 
 ### cross-cutting
 
+- `accessibility`
 - `documentation`
 - `observability`
 - `verification-before-completion`
@@ -107,7 +108,6 @@ Review-stage evidence is intentionally smaller:
 | `02-architecture` | `security-design` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
 | `07-operations` | `monitoring-observability` | `critical` | benchmark plan and findings already exist | add `benchmark_results_path`; preserve routed `integration_test_path`; keep `findings_path` current |
 | `cross-cutting` | `bug-history-retrieval` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
-| `cross-cutting` | `accessibility` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
 | `cross-cutting` | `internationalization` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
 | `cross-cutting` | `compliance` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
 
@@ -137,3 +137,5 @@ Later the same day, `estimation` moved from `review` to `tested` after landing i
 Later the same day, `acceptance-criteria` moved from `review` to `tested` after landing its first clean isolated benchmark review and reusing the existing `testing-strategy` handoff review as the downstream integration artifact.
 
 Later the same day, `observability` moved from `review` to `tested` after converting completed and failed execution traces into a checked-in benchmark review and reusing the existing runtime contract review as the integration artifact.
+
+On 2026-04-06, `accessibility` moved from `review` to `tested` after its first clean isolated benchmark review landed and the downstream `acceptance-criteria` handoff review was checked in as the integration artifact.

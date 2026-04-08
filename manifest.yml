@@ -621,12 +621,16 @@ skills:
 - name: accessibility
   phase: cross-cutting
   file: skills/cross-cutting/accessibility/SKILL.md
-  status: review
+  status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/cross-cutting/accessibility/evals/eval-strategy.md
+    benchmark_plan_path: eval/cross-cutting/accessibility/isolated-benchmark-plan.md
+    benchmark_results_path: eval/cross-cutting/accessibility/isolated-benchmark-review.md
+    findings_path: eval/cross-cutting/accessibility/findings.md
+    integration_test_path: eval/cross-cutting/accessibility/acceptance-criteria-handoff-review.md
 - name: internationalization
   phase: cross-cutting
   file: skills/cross-cutting/internationalization/SKILL.md
@@ -1145,7 +1149,8 @@ artifact_flow:
   - incident-response
 - artifact: accessibility-guidance
   produced_by: accessibility
-  consumed_by: []
+  consumed_by:
+  - acceptance-criteria
 - artifact: localization-guidance
   produced_by: internationalization
   consumed_by: []
