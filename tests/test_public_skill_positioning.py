@@ -15,6 +15,7 @@ class PublicSkillPositioningTests(unittest.TestCase):
         self.assertIn("discoverability-first", readme)
         self.assertIn("routed", readme)
         self.assertIn("not a promise that every skill should auto-trigger", readme)
+        self.assertIn("does **not** automatically publish it to `npx`", readme)
         self.assertIn("packaging stability", readme)
         self.assertIn("capability readiness", readme)
 

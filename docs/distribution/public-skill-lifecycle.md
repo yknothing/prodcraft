@@ -8,6 +8,13 @@ Prodcraft separates lifecycle authoring from public installation.
 - Public installation for `npx skills add/update` lives under `skills/.curated/`.
 - Public skill names are governed by `schemas/distribution/public-skill-registry.json`.
 
+## Internal Status vs Public Export
+
+- `manifest.yml` status is the repository's internal maturity signal for the full authoring tree.
+- Curated export is the public packaging signal for agent installers.
+- A skill reaching `tested` does not automatically enter the curated/public surface.
+- Public widening should happen in small, explicit batches around the current public spine and adjacent tested capabilities, not by mirroring every tested skill in the repository.
+
 ## Stability Rules
 
 - A public skill keeps a stable canonical `name`.

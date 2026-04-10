@@ -65,6 +65,7 @@ This means:
 - the public install surface in `skills/.curated/` is an install and upgrade contract, not a promise that every skill should auto-trigger in a crowded environment
 - review or benchmark evidence for routed skills matters more than raw trigger recall
 - if a deeper lifecycle skill adds value mainly after handoff, Prodcraft treats routed invocation as the primary contract
+- repository maturity and public installability are separate signals; a skill can be `tested` in `manifest.yml` without being part of the public install surface
 
 ### Global Entry Cutover
 
@@ -98,11 +99,15 @@ npx skills update
 The stable public install surface is `skills/.curated/`. This curated surface is a stable packaging contract, not a blanket production-readiness claim for all skills.
 
 - `skills/00-discovery/` through `skills/cross-cutting/` remain the authoring source of truth
+- `manifest.yml` tracks repository-side maturity for the full authoring tree; installers do not read it directly
 - `skills/.curated/` is the install and upgrade contract consumed by `npx skills add/update`. Skills here are manually allowlisted while they graduate toward production maturity.
+- moving a skill to `tested` does **not** automatically publish it to `npx`; public export remains a separate registry decision in `schemas/distribution/public-skill-registry.json`
 - public registry entries now separate **packaging stability** from **capability readiness**
 - `stability` answers whether install and update semantics are stable; `readiness` answers how much repository-backed evidence supports public use (`core`, `beta`, or `experimental`)
 - regenerate the curated surface with `python3 scripts/export_curated_skills.py`
 - validate curated parity with `python3 scripts/validate_prodcraft.py --check curated-surface`
+
+In practice, this means a repository may honestly report dozens of authored or internally tested skills while `npx skills` lists a smaller number. `npx` should count only the generated curated surface, not the full lifecycle tree or every manifest entry.
 
 ## External Skill Integration Boundary
 

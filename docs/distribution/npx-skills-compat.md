@@ -18,6 +18,14 @@ The `.curated` tree is optimized for stable installation and upgrade contracts a
 
 This separation lets Prodcraft preserve rich lifecycle structure internally without forcing that structure onto installers. Inclusion in the curated tree means a skill's installation boundary is stable, not necessarily that the skill itself has reached full public maturity.
 
+Common confusion:
+
+- the repository may contain many more authored skills than the installer shows
+- `manifest.yml` may mark many more skills as `tested` than the installer shows
+- `npx skills` should count only the generated curated surface, not the full `skills/` tree and not every manifest entry
+
+Promotion to `tested` is a repository maturity decision. Promotion into `skills/.curated/` is a separate public packaging decision.
+
 Public registry entries expose two different release signals:
 
 - `stability`: install/update contract stability for the packaged skill
