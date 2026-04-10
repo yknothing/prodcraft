@@ -2,7 +2,7 @@
 
 ## Summary
 
-`verification-before-completion` has been added as the cross-cutting evidence gate for completion claims. It has now proven its ability to block false completion claims in isolated benchmarks, including successfully closing a previous "fast-track" loophole, and has been promoted to `tested`.
+`verification-before-completion` has been added as the cross-cutting evidence gate for completion claims. It proved its ability to block false completion claims in isolated benchmarks, closed the previous fast-track loophole, moved to `tested`, and now advances to `production` after a clean package security review.
 
 ## What Changed
 
@@ -18,7 +18,11 @@ At this stage, the skill is:
 - a proven cross-cutting honesty gate rather than a replacement for phase-local QA
 - valuable wherever completion language, PR readiness, release readiness, or incident resolution is asserted
 - supported by both a routed review and isolated benchmark evidence
-- safely graduated to `tested` status after closing the fast-track hallucination vulnerability
+- now backed by the security review required for a truthful `production` claim
+
+## Next QA Step
+
+Continue gathering field evidence from multi-agent execution loops, but the current package now has enough benchmark, integration, findings, and security-review support for `production`.
 
 ## Next QA Step
 

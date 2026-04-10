@@ -26,6 +26,12 @@ Common confusion:
 
 Promotion to `tested` is a repository maturity decision. Promotion into `skills/.curated/` is a separate public packaging decision.
 
+Current publication rule:
+
+- the registry should normally include every manifest skill at `tested`, `secure`, or `production`
+- lower-maturity public entries must remain explicit exceptions with a documented reason
+- `npx skills` therefore tracks the checked-in public beta surface, not the raw authoring count and not the unpublished review backlog
+
 Public registry entries expose two different release signals:
 
 - `stability`: install/update contract stability for the packaged skill

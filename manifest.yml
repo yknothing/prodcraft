@@ -104,7 +104,7 @@ skills:
   phase: 00-discovery
   file: skills/00-discovery/intake/SKILL.md
   gateway: true
-  status: tested
+  status: production
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -114,6 +114,7 @@ skills:
     benchmark_results_path: eval/00-discovery/intake/post-redesign-benchmark-review.md
     integration_test_path: eval/00-discovery/intake/post-redesign-integration-review.md
     findings_path: eval/00-discovery/intake/current-evidence-status.md
+    security_review_path: eval/00-discovery/intake/security-review.md
     redesign_notes_path: eval/00-discovery/intake/redesign-notes.md
     revalidation_plan_path: eval/00-discovery/intake/evals/eval-strategy.md
     historical_trigger_eval_results_path: eval/00-discovery/intake/optimization/iter-2/results-mixed.json
@@ -121,13 +122,14 @@ skills:
 - name: problem-framing
   phase: 00-discovery
   file: skills/00-discovery/problem-framing/SKILL.md
-  status: tested
+  status: production
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/00-discovery/problem-framing/evals/eval-strategy.md
     findings_path: eval/00-discovery/problem-framing/findings.md
+    security_review_path: eval/00-discovery/problem-framing/security-review.md
     explicit_invocation_plan_path: eval/00-discovery/problem-framing/explicit-invocation-benchmark.md
     benchmark_results_path: eval/00-discovery/problem-framing/isolated-benchmark-review.md
     integration_test_path: eval/00-discovery/problem-framing/intake-handoff-review.md
@@ -168,7 +170,7 @@ skills:
 - name: requirements-engineering
   phase: 01-specification
   file: skills/01-specification/requirements-engineering/SKILL.md
-  status: tested
+  status: production
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -177,6 +179,7 @@ skills:
     trigger_eval_set_path: eval/01-specification/requirements-engineering/evals/trigger-eval.json
     trigger_eval_results_path: eval/01-specification/requirements-engineering/results-trigger-iter3.json
     findings_path: eval/01-specification/requirements-engineering/findings.md
+    security_review_path: eval/01-specification/requirements-engineering/security-review.md
     explicit_invocation_plan_path: eval/01-specification/requirements-engineering/explicit-invocation-benchmark.md
     benchmark_results_path: eval/01-specification/requirements-engineering/problem-framing-routed-benchmark-review.md
     integration_test_path: eval/01-specification/requirements-engineering/intake-handoff-review.md
@@ -274,7 +277,7 @@ skills:
 - name: task-breakdown
   phase: 03-planning
   file: skills/03-planning/task-breakdown/SKILL.md
-  status: tested
+  status: production
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -283,6 +286,7 @@ skills:
     benchmark_plan_path: eval/03-planning/task-breakdown/isolated-benchmark-plan.md
     benchmark_results_path: eval/03-planning/task-breakdown/isolated-benchmark-review.md
     findings_path: eval/03-planning/task-breakdown/findings.md
+    security_review_path: eval/03-planning/task-breakdown/security-review.md
     integration_test_path: eval/03-planning/task-breakdown/architecture-handoff-review.md
 - name: estimation
   phase: 03-planning
@@ -326,7 +330,7 @@ skills:
 - name: tdd
   phase: 04-implementation
   file: skills/04-implementation/tdd/SKILL.md
-  status: tested
+  status: production
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -335,6 +339,7 @@ skills:
     benchmark_plan_path: eval/04-implementation/tdd/isolated-benchmark-plan.md
     benchmark_results_path: eval/04-implementation/tdd/isolated-benchmark-review.md
     findings_path: eval/04-implementation/tdd/findings.md
+    security_review_path: eval/04-implementation/tdd/security-review.md
     integration_test_path: eval/04-implementation/tdd/task-handoff-review.md
 - name: systematic-debugging
   phase: 04-implementation
@@ -609,7 +614,7 @@ skills:
 - name: verification-before-completion
   phase: cross-cutting
   file: skills/cross-cutting/verification-before-completion/SKILL.md
-  status: tested
+  status: production
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -618,6 +623,7 @@ skills:
     benchmark_plan_path: eval/cross-cutting/verification-before-completion/isolated-benchmark-plan.md
     benchmark_results_path: eval/cross-cutting/verification-before-completion/isolated-benchmark-review.md
     findings_path: eval/cross-cutting/verification-before-completion/findings.md
+    security_review_path: eval/cross-cutting/verification-before-completion/security-review.md
     integration_test_path: eval/cross-cutting/verification-before-completion/completion-claim-review.md
 - name: accessibility
   phase: cross-cutting

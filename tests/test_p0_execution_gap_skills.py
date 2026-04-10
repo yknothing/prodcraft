@@ -34,7 +34,7 @@ class P0ExecutionGapSkillTests(unittest.TestCase):
         self.assertEqual("04-implementation", systematic["phase"])
         self.assertEqual("cross-cutting", verification["phase"])
         self.assertEqual("tested", systematic["status"])
-        self.assertEqual("tested", verification["status"])
+        self.assertEqual("production", verification["status"])
         self.assertEqual("critical", systematic["qa_tier"])
         self.assertEqual("critical", verification["qa_tier"])
         self.assertEqual("routed", systematic["evaluation_mode"])
@@ -47,6 +47,8 @@ class P0ExecutionGapSkillTests(unittest.TestCase):
             self.assertIn("benchmark_plan_path", qa)
             self.assertIn("findings_path", qa)
         self.assertIn("benchmark_results_path", systematic["qa"])
+        self.assertIn("security_review_path", verification["qa"])
+        self.assertTrue((REPO_ROOT / verification["qa"]["security_review_path"]).exists())
 
     def test_artifact_flow_tracks_debugging_and_verification_outputs(self):
         artifact_flow = {entry["artifact"]: entry for entry in self.manifest["artifact_flow"]}

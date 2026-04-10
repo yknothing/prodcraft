@@ -27,14 +27,14 @@ class TddDisciplineContractTests(unittest.TestCase):
         self.assertIn("\"I'll write the tests after\"", content)
         self.assertIn("the next test will need it anyway", content)
 
-    def test_tdd_manifest_entry_is_critical_routed_and_tested_with_benchmark_results(self):
+    def test_tdd_manifest_entry_is_critical_routed_and_production_with_benchmark_results(self):
         manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
         entries = {entry["name"]: entry for entry in manifest["skills"]}
 
         tdd = entries["tdd"]
 
         self.assertEqual("04-implementation", tdd["phase"])
-        self.assertEqual("tested", tdd["status"])
+        self.assertEqual("production", tdd["status"])
         self.assertEqual("critical", tdd["qa_tier"])
         self.assertEqual("routed", tdd["evaluation_mode"])
 
@@ -42,10 +42,12 @@ class TddDisciplineContractTests(unittest.TestCase):
         self.assertIn("benchmark_results_path", qa)
         self.assertIn("integration_test_path", qa)
         self.assertIn("findings_path", qa)
+        self.assertIn("security_review_path", qa)
 
         self.assertTrue((REPO_ROOT / qa["benchmark_results_path"]).exists())
         self.assertTrue((REPO_ROOT / qa["integration_test_path"]).exists())
         self.assertTrue((REPO_ROOT / qa["findings_path"]).exists())
+        self.assertTrue((REPO_ROOT / qa["security_review_path"]).exists())
 
 
 if __name__ == "__main__":

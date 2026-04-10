@@ -2,7 +2,7 @@
 
 ## Summary
 
-`tdd` has moved to `tested` status.
+`tdd` moved to `tested` and now advances to `production` after a clean package security review.
 
 ## What Changed
 
@@ -23,7 +23,7 @@ At this stage, `tdd` appears to be:
 - a core implementation skill on the lifecycle spine
 - stronger as a routed workflow skill than as a discoverability-first skill
 - now backed by enough isolated benchmark evidence to leave `review`
-- not yet supported by security-review evidence, so it should stop at `tested`
+- now supported by security-review evidence as well as routed benchmark and handoff artifacts
 
 ## 2026-03-31 Benchmark Smoke Attempt
 
@@ -113,4 +113,4 @@ This is enough to justify moving `tdd` to `tested`.
 
 ## Next QA Step
 
-Hold `tdd` at `tested` until a security review artifact exists. Revalidate later on the primary Gemini lane when it becomes stable enough to serve as a comparable benchmark runner again.
+The primary Gemini lane should still be revalidated when it becomes stable enough to serve as a comparable benchmark runner again, but the current package now has enough evidence for `production`.

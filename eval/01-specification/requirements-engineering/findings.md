@@ -2,7 +2,7 @@
 
 ## Summary
 
-`requirements-engineering` has moved from `review` to `tested`.
+`requirements-engineering` moved from `review` to `tested` and now advances to `production` after a clean package security review.
 
 Three trigger-eval iterations were run on **2026-03-16**:
 
@@ -54,7 +54,4 @@ For explicit-invocation QA:
 
 ## Next QA Step
 
-Do not push beyond `tested` until at least one of the following is added:
-
-- security-review evidence for the skill package, and/or
-- broader isolated rerun coverage on a second routed chain such as `user-research -> requirements-engineering`
+Keep broader isolated rerun coverage as evolutionary evidence, but the current package now has enough routed benchmark, integration, findings, and security-review support for `production`.

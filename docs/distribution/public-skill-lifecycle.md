@@ -13,7 +13,9 @@ Prodcraft separates lifecycle authoring from public installation.
 - `manifest.yml` status is the repository's internal maturity signal for the full authoring tree.
 - Curated export is the public packaging signal for agent installers.
 - A skill reaching `tested` does not automatically enter the curated/public surface.
-- Public widening should happen in small, explicit batches around the current public spine and adjacent tested capabilities, not by mirroring every tested skill in the repository.
+- Public export still happens by explicit registry edit and curated re-export, not by automatically mirroring `manifest.yml`.
+- Current policy is to keep the public beta surface aligned with the manifest `tested` / `secure` / `production` set unless the repository records a deliberate exception.
+- Below-tested public skills remain rare continuity exceptions and should stay explicitly documented.
 
 ## Stability Rules
 

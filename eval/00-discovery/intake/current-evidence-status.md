@@ -2,9 +2,16 @@
 
 ## Current Status
 
-`intake` is now `tested` under a `routed` QA posture.
+`intake` is now `production` under a `routed` QA posture.
 
 That posture change is intentional. `intake` is a mandatory gateway enforced by Prodcraft workflow contracts and the `intake-brief` artifact, so its primary QA question is whether explicit invocation improves routing discipline and downstream handoff quality. Anthropic trigger-discoverability remains useful diagnostic evidence, but it is no longer the maturity gate for this skill.
+
+The current production decision is backed by:
+
+- routed benchmark evidence in `post-redesign-benchmark-review.md`
+- routed integration evidence in `post-redesign-integration-review.md`
+- this findings record
+- package security review in `security-review.md`
 
 ## What Still Counts
 
@@ -104,7 +111,7 @@ Why this is the stronger contract:
 
 ## Current Recommendation
 
-`intake` should hold at `tested` under the routed posture.
+`intake` should now hold at `production` under the routed posture.
 
 The trigger-discoverability lane should remain as supplemental monitoring only until one of the following occurs:
 1. the `anthropic_trigger_eval` harness is repaired to ensure Claude CLI actually respects command metadata for automatic routing

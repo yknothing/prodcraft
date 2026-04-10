@@ -60,6 +60,32 @@ class ManifestGovernanceTests(unittest.TestCase):
         self.assertIn("tdd", public_names)
         self.assertIn("incident-response", public_names)
 
+    def test_public_registry_covers_manifest_tested_or_better_skills(self):
+        manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
+        registry = json.loads((REPO_ROOT / "schemas" / "distribution" / "public-skill-registry.json").read_text(encoding="utf-8"))
+
+        public_names = {entry["name"] for entry in registry["public_skills"]}
+        tested_or_better = {
+            skill["name"]
+            for skill in manifest["skills"]
+            if skill["status"] in {"tested", "secure", "production"}
+        }
+
+        self.assertEqual(set(), tested_or_better - public_names)
+
+    def test_public_registry_only_keeps_one_below_tested_exception(self):
+        manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
+        registry = json.loads((REPO_ROOT / "schemas" / "distribution" / "public-skill-registry.json").read_text(encoding="utf-8"))
+
+        statuses = {skill["name"]: skill["status"] for skill in manifest["skills"]}
+        below_tested = {
+            entry["name"]
+            for entry in registry["public_skills"]
+            if statuses.get(entry["name"]) not in {None, "tested", "secure", "production"}
+        }
+
+        self.assertEqual({"system-design"}, below_tested)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -20,7 +20,7 @@ metadata:
   distribution_surface: curated
   source_path: skills/cross-cutting/verification-before-completion/SKILL.md
   public_stability: beta
-  public_readiness: beta
+  public_readiness: core
 ---
 
 # Verification Before Completion
@@ -155,4 +155,4 @@ For common completion-claim failure modes and recovery patterns, see [Gotchas](r
 - Canonical authoring source: `skills/cross-cutting/verification-before-completion/SKILL.md`
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
-- Capability readiness: `beta`
+- Capability readiness: `core`

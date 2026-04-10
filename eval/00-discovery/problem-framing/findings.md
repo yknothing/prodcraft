@@ -2,7 +2,7 @@
 
 ## Summary
 
-`problem-framing` has moved from `review` to `tested`.
+`problem-framing` moved from `review` to `tested` and now advances to `production` after a clean package security review.
 
 ## Why This Skill Exists
 
@@ -85,7 +85,4 @@ Interpretation:
 
 ## Next QA Step
 
-Do not push beyond `tested` until one of the following is added:
-
-- security-review evidence for the skill package, and/or
-- broader isolated rerun coverage on a second scenario such as the non-brownfield team-invite path
+Keep broader isolated rerun coverage as evolutionary evidence, but the current package now has enough benchmark, integration, findings, and security-review support for `production`.

@@ -2,7 +2,7 @@
 
 ## Summary
 
-`task-breakdown` has successfully proven its value in isolated benchmarks and has been promoted to `tested` status.
+`task-breakdown` has successfully proven its value in isolated benchmarks, reached `tested`, and now advances to `production` after a clean package security review.
 
 ## What Changed
 
@@ -28,4 +28,4 @@ At this stage, `task-breakdown` is:
 
 ## Next QA Step
 
-Gather multi-agent execution field evidence to see how well downstream skills (like `tdd`) consume the task and dependency graphs produced by this skill.
+Gather multi-agent execution field evidence to see how well downstream skills (like `tdd`) consume the task and dependency graphs produced by this skill, but the current package is now strong enough for `production`.

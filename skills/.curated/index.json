@@ -23,6 +23,13 @@
       "manual_allowlist": true
     },
     {
+      "name": "user-research",
+      "source": "skills/00-discovery/user-research",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
       "name": "requirements-engineering",
       "source": "skills/01-specification/requirements-engineering",
       "stability": "beta",
@@ -44,10 +51,45 @@
       "manual_allowlist": true
     },
     {
+      "name": "tech-selection",
+      "source": "skills/02-architecture/tech-selection",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
+      "name": "api-design",
+      "source": "skills/02-architecture/api-design",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
       "name": "task-breakdown",
       "source": "skills/03-planning/task-breakdown",
       "stability": "beta",
       "readiness": "core",
+      "manual_allowlist": true
+    },
+    {
+      "name": "estimation",
+      "source": "skills/03-planning/estimation",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
+      "name": "risk-assessment",
+      "source": "skills/03-planning/risk-assessment",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
+      "name": "sprint-planning",
+      "source": "skills/03-planning/sprint-planning",
+      "stability": "beta",
+      "readiness": "beta",
       "manual_allowlist": true
     },
     {
@@ -58,8 +100,29 @@
       "manual_allowlist": true
     },
     {
+      "name": "systematic-debugging",
+      "source": "skills/04-implementation/systematic-debugging",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
+      "name": "task-execution",
+      "source": "skills/04-implementation/task-execution",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
       "name": "feature-development",
       "source": "skills/04-implementation/feature-development",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
+      "name": "refactoring",
+      "source": "skills/04-implementation/refactoring",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true
@@ -72,8 +135,22 @@
       "manual_allowlist": true
     },
     {
+      "name": "receiving-code-review",
+      "source": "skills/05-quality/receiving-code-review",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
       "name": "testing-strategy",
       "source": "skills/05-quality/testing-strategy",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
+      "name": "e2e-scenario-design",
+      "source": "skills/05-quality/e2e-scenario-design",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true
@@ -88,6 +165,13 @@
     {
       "name": "ci-cd",
       "source": "skills/06-delivery/ci-cd",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
+      "name": "release-management",
+      "source": "skills/06-delivery/release-management",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true
@@ -117,6 +201,20 @@
       "name": "verification-before-completion",
       "source": "skills/cross-cutting/verification-before-completion",
       "stability": "beta",
+      "readiness": "core",
+      "manual_allowlist": true
+    },
+    {
+      "name": "accessibility",
+      "source": "skills/cross-cutting/accessibility",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
+      "name": "documentation",
+      "source": "skills/cross-cutting/documentation",
+      "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true
     },
@@ -130,6 +228,27 @@
     {
       "name": "incident-response",
       "source": "skills/07-operations/incident-response",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
+      "name": "runbooks",
+      "source": "skills/07-operations/runbooks",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
+      "name": "tech-debt-management",
+      "source": "skills/08-evolution/tech-debt-management",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
+      "name": "retrospective",
+      "source": "skills/08-evolution/retrospective",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true

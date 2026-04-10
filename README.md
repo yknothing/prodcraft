@@ -101,7 +101,8 @@ The stable public install surface is `skills/.curated/`. This curated surface is
 - `skills/00-discovery/` through `skills/cross-cutting/` remain the authoring source of truth
 - `manifest.yml` tracks repository-side maturity for the full authoring tree; installers do not read it directly
 - `skills/.curated/` is the install and upgrade contract consumed by `npx skills add/update`. Skills here are manually allowlisted while they graduate toward production maturity.
-- moving a skill to `tested` does **not** automatically publish it to `npx`; public export remains a separate registry decision in `schemas/distribution/public-skill-registry.json`
+- moving a skill to `tested` does **not** automatically publish it to `npx`; public export still happens through `schemas/distribution/public-skill-registry.json`, not by reading `manifest.yml` directly
+- current policy keeps the public beta surface aligned with the manifest `tested` / `secure` / `production` set, plus any explicitly justified lower-maturity exceptions needed for contract continuity
 - public registry entries now separate **packaging stability** from **capability readiness**
 - `stability` answers whether install and update semantics are stable; `readiness` answers how much repository-backed evidence supports public use (`core`, `beta`, or `experimental`)
 - regenerate the curated surface with `python3 scripts/export_curated_skills.py`
