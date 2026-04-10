@@ -36,6 +36,9 @@ class CuratedDistributionSurfaceTests(unittest.TestCase):
         self.assertIn("intake", exported_names)
         self.assertIn("code-review", exported_names)
         self.assertIn("incident-response", exported_names)
+        self.assertIn("verification-before-completion", exported_names)
+        self.assertIn("delivery-completion", exported_names)
+        self.assertIn("acceptance-criteria", exported_names)
 
         for skill_name in exported_names:
             self.assertTrue((CURATED_DIR / skill_name / "SKILL.md").exists())
