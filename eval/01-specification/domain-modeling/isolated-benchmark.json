@@ -1,0 +1,32 @@
+[
+  {
+    "id": "access-review-modernization-domain-model",
+    "title": "Brownfield Access Review Domain Model",
+    "context_files": [
+      "fixtures/access-review-modernization-requirements.md"
+    ],
+    "prompt": "Read `./access-review-modernization-requirements.md`. Work only from that file. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the domain-model artifact for this brownfield modernization slice. Identify the core entities, authoritative relationships, bounded contexts only when justified, and a ubiquitous-language glossary that keeps legacy or tenant-specific compatibility terms visible without letting them silently become the canonical future model.",
+    "assertions": [
+      {
+        "name": "core-entities-are-explicit",
+        "description": "The output identifies business entities and relationships instead of implementation objects."
+      },
+      {
+        "name": "ubiquitous-language-is-resolved",
+        "description": "Ambiguous or overlapping terms are normalized into a stable glossary."
+      },
+      {
+        "name": "brownfield-boundaries-stay-visible",
+        "description": "Legacy-only or compatibility-only concepts remain explicit."
+      },
+      {
+        "name": "bounded-contexts-are-justified",
+        "description": "Contexts are introduced only when the slice actually requires them."
+      },
+      {
+        "name": "prepares-downstream-handoff",
+        "description": "The resulting artifact can feed spec writing or architecture work directly."
+      }
+    ]
+  }
+]

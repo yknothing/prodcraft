@@ -1,0 +1,31 @@
+{
+  "id": "access-review-modernization-security-design",
+  "title": "Brownfield Access Review Security Design",
+  "context_files": [
+    "fixtures/access-review-modernization-architecture.md",
+    "fixtures/access-review-modernization-api-contract.md"
+  ],
+  "prompt": "Read `./access-review-modernization-architecture.md` and `./access-review-modernization-api-contract.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the threat-model artifact for this brownfield modernization slice. Identify the high-value assets, trust boundaries, abuse paths, and concrete controls. Keep legacy coexistence, tenant isolation, evidence integrity, and fail-closed unsupported-flow handling explicit.",
+  "assertions": [
+    {
+      "name": "identifies-assets-and-trust-boundaries",
+      "description": "Sensitive assets and trust transitions are explicit."
+    },
+    {
+      "name": "enumerates-real-abuse-paths",
+      "description": "Tenant isolation, replay, logging leakage, and coexistence weaknesses are considered."
+    },
+    {
+      "name": "assigns-concrete-controls",
+      "description": "Controls are mapped to concrete system boundaries."
+    },
+    {
+      "name": "keeps-brownfield-risk-visible",
+      "description": "Legacy and compatibility exposure remain explicit."
+    },
+    {
+      "name": "prepares-audit-handoff",
+      "description": "The resulting threat model can feed security audit directly."
+    }
+  ]
+}

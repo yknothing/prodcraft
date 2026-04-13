@@ -1,0 +1,7 @@
+{
+  "id": "access-review-modernization-domain-model",
+  "title": "Manual Evaluation for Domain Modeling Brownfield Requirements Handoff",
+  "evaluation_mode": "manual-assistant-review",
+  "date": "2026-04-10",
+  "notes": "Supplemental manual evaluation of domain-modeling using the brownfield access-review modernization scenario. Treat as tested-stage evidence only when combined with the routed spec-writing handoff review."
+}

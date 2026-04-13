@@ -1,0 +1,3 @@
+First read ./skill-under-test/SKILL.md, then answer the request below using that skill. Do not read any other local files or rely on repository instructions beyond the copied skill. If you need assumptions, state them briefly and continue.
+
+Read `./access-review-modernization-requirements.md`. Work only from that file. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the domain-model artifact for this brownfield modernization slice. Identify the core entities, authoritative relationships, bounded contexts only when justified, and a ubiquitous-language glossary that keeps legacy or tenant-specific compatibility terms visible without letting them silently become the canonical future model.

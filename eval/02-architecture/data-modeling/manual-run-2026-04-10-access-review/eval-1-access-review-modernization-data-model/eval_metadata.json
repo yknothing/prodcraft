@@ -1,0 +1,32 @@
+{
+  "id": "access-review-modernization-data-model",
+  "title": "Brownfield Access Review Data Model",
+  "context_files": [
+    "fixtures/access-review-modernization-architecture.md",
+    "fixtures/access-review-modernization-domain-model.md",
+    "fixtures/access-review-modernization-spec.md"
+  ],
+  "prompt": "Read `./access-review-modernization-architecture.md`, `./access-review-modernization-domain-model.md`, and `./access-review-modernization-spec.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the data-schema artifact for this brownfield modernization slice. Keep authoritative ownership, retention, archival, compatibility boundaries, and change safety explicit. Stay at the schema and lifecycle boundary rather than drifting into API or implementation detail.",
+  "assertions": [
+    {
+      "name": "authoritative-ownership-is-explicit",
+      "description": "Canonical records, derived views, and compatibility-only references are distinguished."
+    },
+    {
+      "name": "lifecycle-rules-are-documented",
+      "description": "Retention, archival, mutation, and uniqueness rules are visible."
+    },
+    {
+      "name": "brownfield-change-safety-is-preserved",
+      "description": "Coexistence and historical-read boundaries remain explicit."
+    },
+    {
+      "name": "stays-at-schema-and-ownership-layer",
+      "description": "The output stays at schema and lifecycle level."
+    },
+    {
+      "name": "prepares-implementation-handoff",
+      "description": "The resulting guidance can feed feature implementation directly."
+    }
+  ]
+}

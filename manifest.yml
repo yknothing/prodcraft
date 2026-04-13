@@ -190,21 +190,29 @@ skills:
 - name: spec-writing
   phase: 01-specification
   file: skills/01-specification/spec-writing/SKILL.md
-  status: review
+  status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/01-specification/spec-writing/evals/eval-strategy.md
+    benchmark_plan_path: eval/01-specification/spec-writing/isolated-benchmark-plan.md
+    benchmark_results_path: eval/01-specification/spec-writing/manual-benchmark-review.md
+    findings_path: eval/01-specification/spec-writing/findings.md
+    integration_test_path: eval/01-specification/spec-writing/api-design-handoff-review.md
 - name: domain-modeling
   phase: 01-specification
   file: skills/01-specification/domain-modeling/SKILL.md
-  status: review
+  status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/01-specification/domain-modeling/evals/eval-strategy.md
+    benchmark_plan_path: eval/01-specification/domain-modeling/isolated-benchmark-plan.md
+    benchmark_results_path: eval/01-specification/domain-modeling/manual-benchmark-review.md
+    findings_path: eval/01-specification/domain-modeling/findings.md
+    integration_test_path: eval/01-specification/domain-modeling/spec-writing-handoff-review.md
 - name: acceptance-criteria
   phase: 01-specification
   file: skills/01-specification/acceptance-criteria/SKILL.md
@@ -233,21 +241,29 @@ skills:
 - name: data-modeling
   phase: 02-architecture
   file: skills/02-architecture/data-modeling/SKILL.md
-  status: review
+  status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/02-architecture/data-modeling/evals/eval-strategy.md
+    benchmark_plan_path: eval/02-architecture/data-modeling/isolated-benchmark-plan.md
+    benchmark_results_path: eval/02-architecture/data-modeling/manual-benchmark-review.md
+    findings_path: eval/02-architecture/data-modeling/findings.md
+    integration_test_path: eval/02-architecture/data-modeling/feature-development-handoff-review.md
 - name: security-design
   phase: 02-architecture
   file: skills/02-architecture/security-design/SKILL.md
-  status: review
+  status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/02-architecture/security-design/evals/eval-strategy.md
+    benchmark_plan_path: eval/02-architecture/security-design/isolated-benchmark-plan.md
+    benchmark_results_path: eval/02-architecture/security-design/manual-benchmark-review.md
+    findings_path: eval/02-architecture/security-design/findings.md
+    integration_test_path: eval/02-architecture/security-design/security-audit-handoff-review.md
 - name: tech-selection
   phase: 02-architecture
   file: skills/02-architecture/tech-selection/SKILL.md

@@ -1,0 +1,33 @@
+[
+  {
+    "id": "access-review-modernization-spec",
+    "title": "Brownfield Access Review Specification",
+    "context_files": [
+      "fixtures/access-review-modernization-requirements.md",
+      "fixtures/access-review-modernization-domain-model.md"
+    ],
+    "prompt": "Read `./access-review-modernization-requirements.md` and `./access-review-modernization-domain-model.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the spec-doc artifact for this brownfield modernization slice. Make release-1 scope, non-goals, interface and policy boundaries, rollout constraints, and open questions explicit. Keep the document at the contract layer and avoid drifting into implementation design.",
+    "assertions": [
+      {
+        "name": "scope-and-non-goals-are-explicit",
+        "description": "The spec fixes what release 1 includes and excludes."
+      },
+      {
+        "name": "brownfield-constraints-are-preserved",
+        "description": "Coexistence, history, and rollout constraints remain explicit."
+      },
+      {
+        "name": "open-questions-are-not-laundered",
+        "description": "Unresolved sync or compatibility assumptions stay visible."
+      },
+      {
+        "name": "stays-at-contract-layer",
+        "description": "The output stays at specification level rather than implementation detail."
+      },
+      {
+        "name": "prepares-architecture-handoff",
+        "description": "The resulting spec can feed architecture or API work directly."
+      }
+    ]
+  }
+]

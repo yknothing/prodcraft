@@ -18,10 +18,6 @@ class ReviewWavePromotionTests(unittest.TestCase):
         targets = {
             "market-analysis": "00-discovery",
             "feasibility-study": "00-discovery",
-            "spec-writing": "01-specification",
-            "domain-modeling": "01-specification",
-            "data-modeling": "02-architecture",
-            "security-design": "02-architecture",
             "bug-history-retrieval": "cross-cutting",
             "internationalization": "cross-cutting",
             "compliance": "cross-cutting",

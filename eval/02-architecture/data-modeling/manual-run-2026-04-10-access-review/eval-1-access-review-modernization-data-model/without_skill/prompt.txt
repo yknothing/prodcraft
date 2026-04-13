@@ -1,0 +1,3 @@
+Work only from the request below. Do not read any local files or rely on repository instructions. If you need assumptions, state them briefly and continue.
+
+Read `./access-review-modernization-architecture.md`, `./access-review-modernization-domain-model.md`, and `./access-review-modernization-spec.md`. Work only from those files. Do not ask follow-up questions. If you need assumptions, state them briefly and continue. Produce the data-schema artifact for this brownfield modernization slice. Keep authoritative ownership, retention, archival, compatibility boundaries, and change safety explicit. Stay at the schema and lifecycle boundary rather than drifting into API or implementation detail.
