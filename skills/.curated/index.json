@@ -37,6 +37,20 @@
       "manual_allowlist": true
     },
     {
+      "name": "spec-writing",
+      "source": "skills/01-specification/spec-writing",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
+      "name": "domain-modeling",
+      "source": "skills/01-specification/domain-modeling",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
       "name": "acceptance-criteria",
       "source": "skills/01-specification/acceptance-criteria",
       "stability": "beta",
@@ -46,6 +60,20 @@
     {
       "name": "system-design",
       "source": "skills/02-architecture/system-design",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
+      "name": "data-modeling",
+      "source": "skills/02-architecture/data-modeling",
+      "stability": "beta",
+      "readiness": "beta",
+      "manual_allowlist": true
+    },
+    {
+      "name": "security-design",
+      "source": "skills/02-architecture/security-design",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true
