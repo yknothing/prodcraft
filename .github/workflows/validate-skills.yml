@@ -7,7 +7,17 @@ on:
       - 'skills/**'
       - 'workflows/**'
       - 'personas/**'
+      - 'docs/**'
+      - 'schemas/**'
+      - 'rules/**'
+      - 'eval/**'
+      - 'tests/**'
+      - '.github/workflows/validate-skills.yml'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
       - 'manifest.yml'
+      - 'README.md'
+      - 'README.*.md'
       - 'scripts/**'
       - 'templates/**'
 
@@ -20,12 +30,10 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install validator dependencies
-        run: python -m pip install pyyaml
+        run: python -m pip install pyyaml jsonschema
 
       - name: Validate Prodcraft structure
-        run: |
-          python scripts/validate_prodcraft.py \
-            --check skill-frontmatter \
-            --check workflow-frontmatter \
-            --check workflow-entry-gate \
-            --check manifest-skill-status
+        run: python scripts/validate_prodcraft.py
+
+      - name: Run contract tests
+        run: python -m unittest discover tests
