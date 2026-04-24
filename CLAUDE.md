@@ -35,7 +35,7 @@ For gray-rollout or production cutovers that need Prodcraft to become the author
 - Schema files: `skills/_schema.md`, `workflows/_schema.md`, `personas/_schema.md`
 - QA evidence: `eval/{phase}/{skill-name}/` mirrors the `skills/` directory tree; each directory holds eval sets, fixtures, benchmark results, and findings for one skill
 - All file names use kebab-case
-- All content in English
+- Canonical repository content is in English. Localized companion reader guides are allowed only when explicitly requested, clearly labeled non-authoritative, and linked back to the English canonical artifacts they summarize. They must not define or modify repository rules, schemas, validators, workflow contracts, distribution registries, or architecture policy.
 
 ## Working with This Project
 
