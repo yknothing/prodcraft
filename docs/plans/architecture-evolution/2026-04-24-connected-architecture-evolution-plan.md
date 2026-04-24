@@ -70,7 +70,9 @@ The architecture bundle has already converged on these durable constraints:
 
 The open debt is now execution sequencing:
 
-- AR-01 still needs a concrete enforcement promotion matrix
+- AR-01 now has a provisional enforcement promotion matrix; individual rows
+  still need to graduate through narrow repository-owned contracts before they
+  become executable
 - AR-02 still needs the first small repo-native downstream execution hardening
   wave
 - AR-03 exists as a provisional host adapter policy, but is not an ADR and has
@@ -114,9 +116,13 @@ Acceptance:
 Goal: turn the measurement protocol into a concrete decision table without
 claiming enforcement before implementation.
 
-Recommended first artifact:
+Current artifact:
 
 - `docs/plans/architecture-evolution/2026-04-24-ar-01-enforcement-promotion-matrix.md`
+
+Status on 2026-04-24: initial provisional matrix exists. It remains a planning
+artifact until individual controls graduate into schemas, validators, workflow
+contracts, rules, tests, CI, manifest artifact flow, or a narrow ADR.
 
 Minimum rows:
 
@@ -149,7 +155,8 @@ honesty without creating proxy compliance.
 
 Recommended first experiment:
 
-- extend `verification-record.v1` from proof-shape schema into a practical
+- use AR01-C04 and AR01-C05 from the promotion matrix to extend
+  `verification-record.v1` from proof-shape schema into a practical
   completion-claim validator path
 
 Candidate check shape:
