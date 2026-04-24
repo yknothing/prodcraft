@@ -1,10 +1,14 @@
-# Prodcraft Architecture Evolution Basis
+# Historical Source: Prodcraft Architecture Evolution Basis
 
 > Date: 2026-04-17
 >
-> Role of this document: architecture review basis for the next evolution step.
-> This document records the debate, preserves the ADR lineage, separates consensus from open questions, and names which conclusions are mature enough to guide execution.
-> It is **not** itself an ADR.
+> Status: retained as a historical source record, not the highest-level canonical architecture definition.
+>
+> Canonical architecture state now lives in:
+> [`2026-04-18-prodcraft-architecture-state-bundle.md`](./2026-04-18-prodcraft-architecture-state-bundle.md)
+>
+> Role of this document: preserve the longer review synthesis, debate lineage, ADR process framing, and convergence path that fed the canonical state bundle.
+> It is **not** itself an ADR, and it is no longer the top-level source of truth for architecture state.
 
 ## Purpose
 
@@ -39,9 +43,10 @@ This document is **not**:
 - a full implementation plan
 - a claim that every statement below has already been converted into repository policy
 
-The implementation handoff from this review is tracked separately in:
+The execution handoff from this historical review is tracked separately in:
 
 - [`2026-04-17-architecture-review-action-register.md`](./2026-04-17-architecture-review-action-register.md)
+- [`2026-04-18-prodcraft-architecture-state-bundle.md`](./2026-04-18-prodcraft-architecture-state-bundle.md)
 
 ## Review Method
 
@@ -59,11 +64,17 @@ As of this review:
 
 - source lifecycle skills: `44`
 - curated public install skills: `40`
-- workflows: `7`
-- personas: `8`
+- workflows: `6`
+- personas: `7`
 - rules files: `7`
 - tests: `49`
 - all active manifest skills use `evaluation_mode: routed`
+
+Important context-economics distinction:
+
+- repository total volume is **not** the same thing as runtime injected volume
+- Anthropic's current skill guidance distinguishes metadata that is pre-loaded from `SKILL.md` and supporting files that are read on demand
+- the real pressure point for Prodcraft is therefore not raw repository size alone, but the cumulative load of the entry path and downstream path a task actually activates
 
 Key repository artifacts repeatedly referenced in the review:
 
@@ -110,6 +121,10 @@ The real architecture pressure comes from two problems:
 
 - the content types are not yet cleanly separated enough
 - the consumer surfaces do not all receive the same level of protocol and enforcement support
+
+The deeper form of that pressure is:
+
+> Prodcraft's central architecture challenge is to let knowledge, state, constraints, and evidence move across different consumer surfaces with as little distortion as possible.
 
 ### Why The Debate Mattered
 
@@ -404,9 +419,15 @@ The review settled on a bounded compromise:
 
 That means future design work should distinguish:
 
-- the contract
-- the checking mechanism
-- the evidence that the contract is actually sufficient in practice
+- `protocol spec` -- the object, state, or handoff contract itself
+- `enforcement mechanism` -- the validator, hook, CI check, or rule runner that consumes the contract
+- `semantic adequacy evidence` -- the eval, review, or findings evidence that tells us whether a valid object is actually sufficient in practice
+
+Example:
+
+- `schemas/artifacts/intake-brief.schema.json` expresses a `protocol spec`
+- the artifact-schema checks inside `scripts/validate_prodcraft.py` are an `enforcement mechanism`
+- routed benchmarks, findings, and review artifacts under `eval/00-discovery/intake/` provide `semantic adequacy evidence`
 
 ### 3. Whether More Meta-Analysis Is Still Justified
 
@@ -513,6 +534,9 @@ while preserving visibility into:
 - repository governance control
 - downstream execution control
 - public consumer surfaces
+
+The hard part is not writing more engineering wisdom into the system.
+The hard part is preserving the integrity of that wisdom, its state objects, its constraints, and its proof signals as they move across those surfaces.
 
 The immediate next move is not another abstract architecture round.
 It is to use the control promotion law to harden the downstream execution loop without destroying the high-semantic judgment that makes Prodcraft valuable.

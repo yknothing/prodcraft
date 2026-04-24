@@ -1,14 +1,20 @@
-# Prodcraft Architecture Review Action Register
+# Supporting Register: Prodcraft Architecture Review Action Register
 
 > Date: 2026-04-17
 >
-> Source of truth for this register: [`2026-04-17-prodcraft-architecture-evolution-basis.md`](./2026-04-17-prodcraft-architecture-evolution-basis.md)
+> Status: execution support document, subordinate to the canonical architecture state bundle.
 >
-> Role of this document: convert the architecture review basis into sequenced implementation work without pretending that the whole review has already become accepted ADR policy.
+> Canonical architecture state now lives in:
+> [`2026-04-18-prodcraft-architecture-state-bundle.md`](./2026-04-18-prodcraft-architecture-state-bundle.md)
+>
+> Historical synthesis source remains:
+> [`2026-04-17-prodcraft-architecture-evolution-basis.md`](./2026-04-17-prodcraft-architecture-evolution-basis.md)
+>
+> Role of this document: translate the canonical state and historical review into sequenced implementation work without pretending that the whole review has already become accepted ADR policy.
 
 ## Why This Register Exists
 
-The architecture review basis established enough stable signal to stop debating in the abstract.
+The architecture state bundle and the historical review basis together established enough stable signal to stop debating in the abstract.
 What remained was an execution problem:
 
 - which work moves first
@@ -77,6 +83,11 @@ Without this matrix, the team will oscillate between:
 
 The matrix is the concrete form of the control promotion law.
 
+The measurement protocol for this workstream is defined in
+[`ar-01-enforcement-promotion-measurement-protocol.md`](./ar-01-enforcement-promotion-measurement-protocol.md).
+That companion document is governance guidance for building the matrix; it is
+not a claim that any listed control has already been enforced.
+
 ### Required Fields
 
 Each candidate rule should record at least:
@@ -93,6 +104,16 @@ Each candidate rule should record at least:
 - recommended surface (`protocol`, `repo-native enforcement`, `host-native adapter`, `evidence only`)
 - owner
 
+AR-01 measurement must also record:
+
+- evidence source class
+- sample window
+- false-positive risk
+- false-negative risk
+- friction cost
+- decision owner
+- review date
+
 ### Initial Candidate Set
 
 The first candidate set should include at least:
@@ -103,6 +124,14 @@ The first candidate set should include at least:
 - unsupported-flow and release-safety structural checks
 - TDD-adjacent checks that are structural but not semantic
 - review-adjacent checks that are structural but not semantic
+- agent security controls: prompt injection, command safety, external reference trust, dynamic remote instruction prohibition, and secret/PII exposure
+
+Expected evidence inputs for this first pass should come from real repository traces where possible, including:
+
+- routed benchmark reviews and current-evidence snapshots under `eval/`
+- skill findings documents
+- execution observability summaries
+- validator failures and existing repo-native guardrail hits
 
 ### Explicit Non-Goal
 
@@ -151,6 +180,10 @@ Those remain in the skill/review/evidence domain unless a much higher-signal mec
 
 Make it explicit how host-native bindings relate to repository-owned contracts.
 
+The provisional policy is recorded in
+[`ar-03-host-adapter-policy.md`](./ar-03-host-adapter-policy.md).
+It is a design note, not an accepted ADR.
+
 ### Why This Is Not First
 
 If host bindings are defined before the repo-native contract is clear, the repository will optimize around the first runtime it happens to integrate with.
@@ -175,22 +208,34 @@ One of:
 
 ### Goal
 
-Review the current `.curated/` surface skill by skill and classify:
+Establish a public portability landing zone, then review the current
+`.curated/` surface skill by skill.
+
+The coarse classification is now recorded in
+[`schemas/distribution/public-skill-portability.json`](../../schemas/distribution/public-skill-portability.json).
+The initial static review is recorded in
+[`2026-04-24-curated-portability-review.md`](../distribution/2026-04-24-curated-portability-review.md).
+Future live and skill-by-skill reviews should use the companion registry as the
+landing zone for:
 
 1. portable as-is
-2. portable with tightened wording
-3. useful only with explicit protocol/context caveats
-4. should not be publicly exported in current form
+2. portable with explicit protocol/context caveats
+3. should not be publicly exported in current form
 
-### Why This Must Wait Until After Initial Hardening
+### Sequencing
 
-Public export decisions depend on understanding which capabilities are:
+The landing zone and initial static review may proceed after the first
+repo-native check proves the repository-owned path is viable.
+
+Final public export decisions still depend on understanding which capabilities
+are:
 
 - pure knowledge units
 - partial protocol units
 - tightly coupled to repo-native enforcement or evidence scaffolding
 
-If the hardened control plane is still unclear, the export review will be noisy and unstable.
+If the hardened control plane is still unclear, a full skill-by-skill export
+review will be noisy and unstable.
 
 ### Review Lens
 
