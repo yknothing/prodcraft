@@ -7,6 +7,7 @@ Prodcraft separates lifecycle authoring from public installation.
 - Lifecycle authoring source lives under `skills/00-discovery/...` through `skills/cross-cutting/...`.
 - Public installation for `npx skills add/update` lives under `skills/.curated/`.
 - Public skill names are governed by `schemas/distribution/public-skill-registry.json`.
+- Public portability claims are governed by `schemas/distribution/public-skill-portability.json`.
 
 ## Internal Status vs Public Export
 
@@ -28,6 +29,20 @@ Prodcraft separates lifecycle authoring from public installation.
   - `beta`: installable and reviewable, but not yet part of the hardened public promise
   - `experimental`: intentionally exposed for evaluation while still below the normal public maturity bar
 - `manual_allowlist: true` is the escape hatch for curated export while a skill is still below the default maturity bar. It signals that a skill is part of the public beta surface even if its repository evidence does not yet support a full production status.
+
+## Portability Rules
+
+The public registry is an export allowlist. It answers which skills are packaged.
+
+The portability registry is the public-claim safety contract. It answers what value survives outside the full repository control plane:
+
+- `portable_as_is`: the exported skill does not depend on hidden repository protocol, validation, or evidence context.
+- `portable_with_caveat`: the skill is useful as portable guidance, but its strongest governance claims require named repository context.
+- `blocked`: the skill must not be exported in its current form.
+
+Every exported public skill must have portability metadata. Exported skills classified as `blocked` fail curated-surface validation.
+`skills/.curated/index.json` exposes only public-safe portability fields: `portability` and, when needed, `public_caveat_text`.
+Hidden dependencies stay in the repository registry unless the team intentionally decides to publish them.
 
 ## Export Rules
 

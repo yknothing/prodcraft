@@ -46,6 +46,11 @@ class CuratedDistributionSurfaceTests(unittest.TestCase):
         for entry in index["skills"]:
             self.assertIn("stability", entry, entry["name"])
             self.assertIn("readiness", entry, entry["name"])
+            self.assertIn("portability", entry, entry["name"])
+            self.assertIn(entry["portability"], {"portable_as_is", "portable_with_caveat"}, entry["name"])
+            if entry["portability"] == "portable_with_caveat":
+                self.assertIn("public_caveat_text", entry, entry["name"])
+                self.assertGreater(len(entry["public_caveat_text"]), 0, entry["name"])
 
     def test_export_script_can_materialize_surface_into_temp_directory(self):
         module = load_module()

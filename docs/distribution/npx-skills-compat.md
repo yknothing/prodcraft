@@ -37,15 +37,22 @@ Public registry entries expose two different release signals:
 - `stability`: install/update contract stability for the packaged skill
 - `readiness`: current public capability maturity (`core`, `beta`, or `experimental`)
 
+Portability is tracked separately in `schemas/distribution/public-skill-portability.json`.
+That companion registry prevents the export allowlist from becoming a mixed decision table.
+It classifies each public skill as `portable_as_is`, `portable_with_caveat`, or `blocked`, and records hidden dependencies, required context, and public caveat text.
+The generated curated index publishes only `portability` and public caveats; internal hidden-dependency notes stay in the repository contract.
+
 ## Export Contract
 
 - `.curated/<skill>/SKILL.md` must be directly installable
 - packaged `references/`, `scripts/`, and `assets/` must resolve locally
 - public skill names must remain stable across `update`
 - deprecations require a migration path and at least one full release cycle of overlap
+- exported skills must not be classified as `blocked` in the portability registry
 
 ## Tooling
 
 - Source registry: `schemas/distribution/public-skill-registry.json`
+- Portability registry: `schemas/distribution/public-skill-portability.json`
 - Exporter: `scripts/export_curated_skills.py`
 - Repo index: `skills/.curated/index.json`

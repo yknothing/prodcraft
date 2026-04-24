@@ -21,6 +21,7 @@ MANIFEST_PATH = ROOT / "manifest.yml"
 SCHEMAS_DIR = ROOT / "schemas"
 ARTIFACT_REGISTRY_PATH = SCHEMAS_DIR / "artifacts" / "registry.yml"
 DISTRIBUTION_REGISTRY_PATH = SCHEMAS_DIR / "distribution" / "public-skill-registry.json"
+PUBLIC_SKILL_PORTABILITY_PATH = SCHEMAS_DIR / "distribution" / "public-skill-portability.json"
 MATRIX_PATH = ROOT / "rules" / "cross-cutting-matrix.yml"
 INTAKE_SKILL_PATH = SKILLS_DIR / "00-discovery" / "intake" / "SKILL.md"
 GATEWAY_PATH = SKILLS_DIR / "_gateway.md"
@@ -112,6 +113,12 @@ PUBLIC_SURFACE_READINESS = {
     "core",
     "beta",
     "experimental",
+}
+
+PUBLIC_SURFACE_PORTABILITY = {
+    "portable_as_is",
+    "portable_with_caveat",
+    "blocked",
 }
 
 CRITICAL_REVIEW_DEPTH_PATHS = {
@@ -1234,6 +1241,65 @@ def validate_curated_surface(errors: list[str]) -> None:
         errors.append(f"{DISTRIBUTION_REGISTRY_PATH}: `public_skills` must be a list")
         return
 
+    try:
+        portability_registry = json.loads(PUBLIC_SKILL_PORTABILITY_PATH.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: file does not exist")
+        return
+    except Exception as exc:
+        errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: failed to parse JSON: {exc}")
+        return
+
+    if not isinstance(portability_registry, dict):
+        errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: expected a JSON object")
+        return
+    if portability_registry.get("schema_version") != "public-skill-portability.v1":
+        errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: `schema_version` must be `public-skill-portability.v1`")
+    portability_entries_raw = portability_registry.get("skills", [])
+    if not isinstance(portability_entries_raw, list):
+        errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: `skills` must be a list")
+        return
+
+    portability_entries: dict[str, dict] = {}
+    portability_names: set[str] = set()
+    for entry in portability_entries_raw:
+        if not isinstance(entry, dict):
+            errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: each portability entry must be an object")
+            continue
+        name = entry.get("name")
+        if not isinstance(name, str) or not name:
+            errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: each portability entry must include non-empty `name`")
+            continue
+        if name in portability_names:
+            errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: duplicate portability entry `{name}`")
+        portability_names.add(name)
+        portability_entries[name] = entry
+
+        portability = entry.get("portability")
+        hidden_dependencies = entry.get("hidden_dependencies")
+        required_context = entry.get("required_context")
+        public_caveat_text = entry.get("public_caveat_text")
+        if portability not in PUBLIC_SURFACE_PORTABILITY:
+            errors.append(
+                f"{PUBLIC_SKILL_PORTABILITY_PATH}: portability entry `{name}` has invalid portability `{portability}`; expected one of {sorted(PUBLIC_SURFACE_PORTABILITY)}"
+            )
+        if not isinstance(hidden_dependencies, list) or any(not isinstance(item, str) or not item for item in hidden_dependencies):
+            errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: portability entry `{name}` must include a string `hidden_dependencies` list")
+        if not isinstance(required_context, str):
+            errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: portability entry `{name}` must include string `required_context`")
+        if not isinstance(public_caveat_text, str):
+            errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: portability entry `{name}` must include string `public_caveat_text`")
+        if portability == "portable_as_is":
+            if hidden_dependencies != []:
+                errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: portable_as_is entry `{name}` must not declare hidden dependencies")
+            if public_caveat_text != "":
+                errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: portable_as_is entry `{name}` must not declare public caveat text")
+        if portability == "portable_with_caveat":
+            if not isinstance(required_context, str) or not required_context:
+                errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: portable_with_caveat entry `{name}` must include required_context")
+            if not isinstance(public_caveat_text, str) or not public_caveat_text:
+                errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: portable_with_caveat entry `{name}` must include public_caveat_text")
+
     index_path = CURATED_SKILLS_DIR / "index.json"
     if not index_path.exists():
         errors.append(f"{index_path}: curated surface index is missing")
@@ -1275,6 +1341,11 @@ def validate_curated_surface(errors: list[str]) -> None:
             errors.append(
                 f"{DISTRIBUTION_REGISTRY_PATH}: public skill `{name}` has invalid `readiness` `{readiness}`; expected one of {sorted(PUBLIC_SURFACE_READINESS)}"
             )
+        portability_entry = portability_entries.get(name)
+        if portability_entry is None:
+            errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: missing portability metadata for exported public skill `{name}`")
+        elif portability_entry.get("portability") == "blocked":
+            errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: exported public skill `{name}` must not be classified as blocked")
         if name not in index_names:
             errors.append(f"{index_path}: curated surface index is missing `{name}`")
         else:
@@ -1283,6 +1354,15 @@ def validate_curated_surface(errors: list[str]) -> None:
                 errors.append(f"{index_path}: curated surface index entry `{name}` has mismatched `stability`")
             if index_entry.get("readiness") != readiness:
                 errors.append(f"{index_path}: curated surface index entry `{name}` has mismatched `readiness`")
+            if portability_entry is not None:
+                portability = portability_entry.get("portability")
+                public_caveat = portability_entry.get("public_caveat_text", "")
+                if index_entry.get("portability") != portability:
+                    errors.append(f"{index_path}: curated surface index entry `{name}` has mismatched `portability`")
+                if public_caveat and index_entry.get("public_caveat_text") != public_caveat:
+                    errors.append(f"{index_path}: curated surface index entry `{name}` has mismatched `public_caveat_text`")
+                if not public_caveat and "public_caveat_text" in index_entry:
+                    errors.append(f"{index_path}: curated surface index entry `{name}` must not include empty public caveat text")
         skill_dir = CURATED_SKILLS_DIR / name
         skill_file = skill_dir / "SKILL.md"
         if not skill_file.exists():
@@ -1317,6 +1397,12 @@ def validate_curated_surface(errors: list[str]) -> None:
             bundled_path = skill_dir / rel_target[0] / rel_target[1]
             if not bundled_path.exists():
                 errors.append(f"{skill_file}: curated reference `{bundled_path.relative_to(ROOT)}` does not exist")
+
+    extra_portability_names = sorted(portability_names - names)
+    if extra_portability_names:
+        errors.append(
+            f"{PUBLIC_SKILL_PORTABILITY_PATH}: portability metadata includes non-exported public skills {extra_portability_names[:10]}"
+        )
 
     try:
         from export_curated_skills import export_curated_skills
