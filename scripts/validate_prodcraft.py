@@ -482,6 +482,123 @@ def validate_course_correction_schema_contract(schema: dict, schema_path: Path, 
         errors.append(f"{schema_path}: `additionalProperties` must be `false` to keep the course-correction contract closed")
 
 
+def validate_verification_record_schema_contract(schema: dict, schema_path: Path, errors: list[str]) -> None:
+    required = schema.get("required", [])
+    expected_required = {
+        "artifact",
+        "schema_version",
+        "status",
+        "claim",
+        "claim_scope",
+        "verified_at",
+        "work_state_ref",
+        "evidence_refs",
+        "checks_run",
+        "passed",
+        "failed",
+        "remaining_unverified",
+        "claim_may_be_made",
+    }
+    if set(required) != expected_required:
+        errors.append(
+            f"{schema_path}: required fields must be exactly {sorted(expected_required)}; found {required}"
+        )
+
+    properties = schema.get("properties", {})
+    if not isinstance(properties, dict):
+        errors.append(f"{schema_path}: `properties` must be a mapping")
+        return
+
+    artifact = properties.get("artifact", {})
+    if not isinstance(artifact, dict) or artifact.get("const") != "verification-record":
+        errors.append(f"{schema_path}: artifact const must be `verification-record`")
+
+    schema_version = properties.get("schema_version", {})
+    if not isinstance(schema_version, dict) or schema_version.get("const") != "verification-record.v1":
+        errors.append(f"{schema_path}: schema_version const must be `verification-record.v1`")
+
+    status = properties.get("status", {})
+    if not isinstance(status, dict) or set(status.get("enum", [])) != {"draft", "accepted", "rejected"}:
+        errors.append(f"{schema_path}: status enum must be draft/accepted/rejected")
+
+    verified_at = properties.get("verified_at", {})
+    if not isinstance(verified_at, dict) or verified_at.get("format") != "date-time":
+        errors.append(f"{schema_path}: verified_at must use JSON Schema date-time format")
+
+    for field_name in ("claim", "claim_scope", "work_state_ref"):
+        field = properties.get(field_name, {})
+        if not isinstance(field, dict) or field.get("minLength") != 1:
+            errors.append(f"{schema_path}: `{field_name}` must require non-empty strings with minLength 1")
+
+    evidence_refs = properties.get("evidence_refs", {})
+    if not isinstance(evidence_refs, dict) or evidence_refs.get("minItems") != 1:
+        errors.append(f"{schema_path}: evidence_refs must require at least one item")
+    else:
+        evidence_ref_item = evidence_refs.get("items", {})
+        if not isinstance(evidence_ref_item, dict) or evidence_ref_item.get("minLength") != 1:
+            errors.append(f"{schema_path}: evidence_refs items must require non-empty strings with minLength 1")
+
+    checks_run = properties.get("checks_run", {})
+    if not isinstance(checks_run, dict) or checks_run.get("minItems") != 1:
+        errors.append(f"{schema_path}: checks_run must require at least one item")
+    else:
+        check_item = checks_run.get("items", {})
+        if not isinstance(check_item, dict) or check_item.get("additionalProperties") is not False:
+            errors.append(f"{schema_path}: checks_run items must be closed objects")
+        elif set(check_item.get("required", [])) != {"name", "result", "evidence_ref"}:
+            errors.append(f"{schema_path}: checks_run items must require name/result/evidence_ref")
+        else:
+            check_properties = check_item.get("properties", {})
+            if not isinstance(check_properties, dict):
+                errors.append(f"{schema_path}: checks_run item properties must be a mapping")
+            else:
+                for field_name in ("name", "evidence_ref"):
+                    field = check_properties.get(field_name, {})
+                    if not isinstance(field, dict) or field.get("minLength") != 1:
+                        errors.append(f"{schema_path}: checks_run item `{field_name}` must require minLength 1")
+                result = check_properties.get("result", {})
+                if not isinstance(result, dict) or set(result.get("enum", [])) != {"passed", "failed", "skipped"}:
+                    errors.append(f"{schema_path}: checks_run item result enum must be passed/failed/skipped")
+
+    expected_all_of = [
+        {
+            "if": {"properties": {"status": {"const": "accepted"}}, "required": ["status"]},
+            "then": {"properties": {"claim_may_be_made": {"const": True}}},
+        },
+        {
+            "if": {"properties": {"status": {"const": "rejected"}}, "required": ["status"]},
+            "then": {"properties": {"claim_may_be_made": {"const": False}}},
+        },
+        {
+            "if": {
+                "properties": {"claim_may_be_made": {"const": True}},
+                "required": ["claim_may_be_made"],
+            },
+            "then": {
+                "properties": {
+                    "status": {"const": "accepted"},
+                    "failed": {"maxItems": 0},
+                    "remaining_unverified": {"maxItems": 0},
+                    "checks_run": {
+                        "items": {
+                            "properties": {"result": {"const": "passed"}},
+                            "required": ["result"],
+                        }
+                    },
+                }
+            },
+        },
+    ]
+    all_of = schema.get("allOf")
+    if not isinstance(all_of, list) or all(expected_rule in all_of for expected_rule in expected_all_of) is False:
+        errors.append(
+            f"{schema_path}: allOf must bind accepted/rejected status to claim_may_be_made and require passed-only proof when claims may be made"
+        )
+
+    if schema.get("additionalProperties") is not False:
+        errors.append(f"{schema_path}: `additionalProperties` must be `false` to keep the verification contract closed")
+
+
 def snapshot_file_tree(root: Path) -> dict[str, bytes]:
     return {
         str(path.relative_to(root)): path.read_bytes()
@@ -965,6 +1082,8 @@ def validate_artifact_schema_registry(manifest: dict, errors: list[str]) -> None
             validate_language_boundary_schema_contract(schema, schema_path, errors)
         if artifact_name == "course-correction-note":
             validate_course_correction_schema_contract(schema, schema_path, errors)
+        if artifact_name == "verification-record":
+            validate_verification_record_schema_contract(schema, schema_path, errors)
         template_rel = entry.get("template_path")
         if isinstance(template_rel, str):
             template_path = ROOT / template_rel

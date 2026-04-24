@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prodcraft.dev/schemas/artifacts/verification-record.schema.json",
+  "title": "Prodcraft Verification Record",
+  "type": "object",
+  "required": [
+    "artifact",
+    "schema_version",
+    "status",
+    "claim",
+    "claim_scope",
+    "verified_at",
+    "work_state_ref",
+    "evidence_refs",
+    "checks_run",
+    "passed",
+    "failed",
+    "remaining_unverified",
+    "claim_may_be_made"
+  ],
+  "properties": {
+    "artifact": { "const": "verification-record" },
+    "schema_version": { "const": "verification-record.v1" },
+    "status": { "enum": ["draft", "accepted", "rejected"] },
+    "claim": { "type": "string", "minLength": 1 },
+    "claim_scope": { "type": "string", "minLength": 1 },
+    "verified_at": { "type": "string", "format": "date-time" },
+    "work_state_ref": { "type": "string", "minLength": 1 },
+    "evidence_refs": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "checks_run": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "result", "evidence_ref"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "result": { "enum": ["passed", "failed", "skipped"] },
+          "evidence_ref": { "type": "string", "minLength": 1 },
+          "notes": { "type": "string" }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "passed": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "failed": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "remaining_unverified": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "claim_may_be_made": { "type": "boolean" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "accepted" } }, "required": ["status"] },
+      "then": { "properties": { "claim_may_be_made": { "const": true } } }
+    },
+    {
+      "if": { "properties": { "status": { "const": "rejected" } }, "required": ["status"] },
+      "then": { "properties": { "claim_may_be_made": { "const": false } } }
+    },
+    {
+      "if": {
+        "properties": { "claim_may_be_made": { "const": true } },
+        "required": ["claim_may_be_made"]
+      },
+      "then": {
+        "properties": {
+          "status": { "const": "accepted" },
+          "failed": { "maxItems": 0 },
+          "remaining_unverified": { "maxItems": 0 },
+          "checks_run": {
+            "items": {
+              "properties": { "result": { "const": "passed" } },
+              "required": ["result"]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

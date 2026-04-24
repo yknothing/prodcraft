@@ -8,6 +8,10 @@ artifacts:
     schema_version: course-correction-note.v1
     schema_path: schemas/artifacts/course-correction-note.schema.json
     template_path: templates/course-correction-note.md
+  verification-record:
+    schema_version: verification-record.v1
+    schema_path: schemas/artifacts/verification-record.schema.json
+    template_path: templates/verification-record.md
   problem-frame:
     schema_version: problem-frame.v1
     schema_path: schemas/artifacts/problem-frame.schema.json
