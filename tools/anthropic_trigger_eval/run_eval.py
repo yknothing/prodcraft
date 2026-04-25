@@ -114,8 +114,9 @@ def run_single_query(
             },
         )
 
+        claude_bin = os.environ.get("PRODCRAFT_CLAUDE_BIN", "claude")
         cmd = [
-            "claude",
+            claude_bin,
             "-p",
             query,
             "--output-format",
@@ -173,12 +174,93 @@ def run_single_query(
             )
             return result
 
+        def parse_stream_line(line: str) -> bool | None:
+            nonlocal accumulated_json, pending_tool_name, triggered
+
+            line = line.strip()
+            if not line:
+                return None
+
+            try:
+                event = json.loads(line)
+            except json.JSONDecodeError:
+                return None
+
+            if event.get("type") == "stream_event":
+                se = event.get("event", {})
+                se_type = se.get("type", "")
+
+                if se_type == "content_block_start":
+                    cb = se.get("content_block", {})
+                    if cb.get("type") == "tool_use":
+                        tool_name = cb.get("name", "")
+                        if tool_name in ("Skill", "Read"):
+                            pending_tool_name = tool_name
+                            accumulated_json = ""
+                        else:
+                            return False
+
+                elif se_type == "content_block_delta" and pending_tool_name:
+                    delta = se.get("delta", {})
+                    if delta.get("type") == "input_json_delta":
+                        accumulated_json += delta.get("partial_json", "")
+                        if clean_name in accumulated_json:
+                            return True
+
+                elif se_type in ("content_block_stop", "message_stop"):
+                    if pending_tool_name:
+                        return clean_name in accumulated_json
+                    if se_type == "message_stop":
+                        return False
+
+            elif event.get("type") == "assistant":
+                message = event.get("message", {})
+                saw_tool_use = False
+                for content_item in message.get("content", []):
+                    if content_item.get("type") != "tool_use":
+                        continue
+                    saw_tool_use = True
+                    tool_name = content_item.get("name", "")
+                    tool_input = content_item.get("input", {})
+                    if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
+                        triggered = True
+                    elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
+                        triggered = True
+                if saw_tool_use:
+                    return triggered
+
+            elif event.get("type") == "result":
+                return triggered
+
+            return None
+
+        def parse_buffered_lines(flush: bool = False) -> bool | None:
+            nonlocal buffer
+
+            while "\n" in buffer:
+                line, buffer = buffer.split("\n", 1)
+                result = parse_stream_line(line)
+                if result is not None:
+                    return result
+
+            if flush and buffer.strip():
+                line = buffer
+                buffer = ""
+                result = parse_stream_line(line)
+                if result is not None:
+                    return result
+
+            return None
+
         try:
             while time.time() - wall_start < timeout:
                 if process.poll() is not None:
                     remaining = process.stdout.read()
                     if remaining:
                         buffer += remaining.decode("utf-8", errors="replace")
+                    result = parse_buffered_lines(flush=True)
+                    if result is not None:
+                        return finalize(result)
                     break
 
                 ready, _, _ = select.select([process.stdout], [], [], 1.0)
@@ -189,64 +271,17 @@ def run_single_query(
                 if not chunk:
                     break
                 buffer += chunk.decode("utf-8", errors="replace")
-
-                while "\n" in buffer:
-                    line, buffer = buffer.split("\n", 1)
-                    line = line.strip()
-                    if not line:
-                        continue
-
-                    try:
-                        event = json.loads(line)
-                    except json.JSONDecodeError:
-                        continue
-
-                    if event.get("type") == "stream_event":
-                        se = event.get("event", {})
-                        se_type = se.get("type", "")
-
-                        if se_type == "content_block_start":
-                            cb = se.get("content_block", {})
-                            if cb.get("type") == "tool_use":
-                                tool_name = cb.get("name", "")
-                                if tool_name in ("Skill", "Read"):
-                                    pending_tool_name = tool_name
-                                    accumulated_json = ""
-                                else:
-                                    return finalize(False)
-
-                        elif se_type == "content_block_delta" and pending_tool_name:
-                            delta = se.get("delta", {})
-                            if delta.get("type") == "input_json_delta":
-                                accumulated_json += delta.get("partial_json", "")
-                                if clean_name in accumulated_json:
-                                    return finalize(True)
-
-                        elif se_type in ("content_block_stop", "message_stop"):
-                            if pending_tool_name:
-                                return finalize(clean_name in accumulated_json)
-                            if se_type == "message_stop":
-                                return finalize(False)
-
-                    elif event.get("type") == "assistant":
-                        message = event.get("message", {})
-                        for content_item in message.get("content", []):
-                            if content_item.get("type") != "tool_use":
-                                continue
-                            tool_name = content_item.get("name", "")
-                            tool_input = content_item.get("input", {})
-                            if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
-                                triggered = True
-                            elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
-                                triggered = True
-                            return finalize(triggered)
-
-                    elif event.get("type") == "result":
-                        return finalize(triggered)
+                result = parse_buffered_lines()
+                if result is not None:
+                    return finalize(result)
         finally:
             if process.poll() is None:
                 process.kill()
                 process.wait()
+
+        result = parse_buffered_lines(flush=True)
+        if result is not None:
+            return finalize(result)
 
         return finalize(triggered)
     finally:
