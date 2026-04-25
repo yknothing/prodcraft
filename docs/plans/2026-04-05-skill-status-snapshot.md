@@ -1,12 +1,14 @@
 # Skill Status Snapshot
 
-> Date: 2026-04-05
+> Original snapshot date: 2026-04-05
+> Current manifest refresh: 2026-04-25
 
-## Current Counts
+## Current Manifest Snapshot
 
 - total skills: `44`
-- `tested`: `34`
-- `review`: `10`
+- `production`: `6`
+- `tested`: `32`
+- `review`: `6`
 - `draft`: `0`
 
 ## Tested Gate Contract
@@ -30,34 +32,56 @@ Review-stage evidence is intentionally smaller:
   - `qa.findings_path`
   - at least one substantive review artifact such as `benchmark_plan_path`
 
-## Tested Skills
+## Production Skills
 
 ### 00-discovery
 
 - `intake`
 - `problem-framing`
-- `user-research`
 
 ### 01-specification
 
 - `requirements-engineering`
+
+### 03-planning
+
+- `task-breakdown`
+
+### 04-implementation
+
+- `tdd`
+
+### cross-cutting
+
+- `verification-before-completion`
+
+## Tested Skills
+
+### 00-discovery
+
+- `user-research`
+
+### 01-specification
+
+- `spec-writing`
+- `domain-modeling`
 - `acceptance-criteria`
 
 ### 02-architecture
 
+- `data-modeling`
+- `security-design`
 - `tech-selection`
 - `api-design`
 
 ### 03-planning
 
-- `task-breakdown`
 - `estimation`
 - `risk-assessment`
 - `sprint-planning`
 
 ### 04-implementation
 
-- `tdd`
 - `systematic-debugging`
 - `task-execution`
 - `feature-development`
@@ -94,7 +118,6 @@ Review-stage evidence is intentionally smaller:
 - `accessibility`
 - `documentation`
 - `observability`
-- `verification-before-completion`
 
 ## Review Skills
 
@@ -102,14 +125,16 @@ Review-stage evidence is intentionally smaller:
 |---|---|---|---|---|
 | `00-discovery` | `market-analysis` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
 | `00-discovery` | `feasibility-study` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
-| `01-specification` | `spec-writing` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
-| `01-specification` | `domain-modeling` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
 | `02-architecture` | `system-design` | `critical` | benchmark plan and findings already exist | one clean `benchmark_results_path`; keep `findings_path` current; preserve a valid routed integration artifact |
-| `02-architecture` | `data-modeling` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
-| `02-architecture` | `security-design` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
 | `cross-cutting` | `bug-history-retrieval` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
 | `cross-cutting` | `internationalization` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
 | `cross-cutting` | `compliance` | `standard` | eval strategy seeded | one routed benchmark result plus one downstream handoff or integration review |
+
+## Current Refresh Notes
+
+The current manifest has a smaller `review` pool than the 2026-04-05 follow-up board. `spec-writing`, `domain-modeling`, `data-modeling`, and `security-design` are no longer pending review-stage skills in `manifest.yml`; they are now `tested`.
+
+The current manifest also separates `production` from `tested`. The dated 2026-04-05 follow-up notes below remain historical wave records and should not be read as the live review queue.
 
 ## What Changed In This Wave
 

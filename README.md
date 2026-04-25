@@ -6,9 +6,10 @@ This English README is the canonical project overview. A non-authoritative Chine
 
 ## Current State
 
-As of 2026-04-24, the checked-in system contains:
+As of 2026-04-25, the checked-in system contains:
 
 - 44 lifecycle skill packages in `skills/00-discovery/` through `skills/cross-cutting/`
+- authored-skill maturity in `manifest.yml`: 6 `production`, 32 `tested`, 6 `review`, 0 `draft`
 - 6 workflow files: 3 primary methodology workflows and 3 overlays
 - 7 advisory personas
 - 6 registered protocol artifact schemas
@@ -177,11 +178,11 @@ Current architecture governance is split deliberately:
 
 The current action sequence is:
 
-1. Build the AR-01 enforcement promotion matrix from bounded evidence.
-2. Harden a small first wave of repo-native downstream execution checks.
-3. Formalize or implement host adapters only after repository-owned contracts are clear.
-4. Extend `.curated/` portability review from the initial static review to live full-repo versus curated-only task runs.
-5. Audit protocol artifacts for essential versus accidental complexity.
+1. Treat the AR-01 provisional enforcement promotion matrix as the current planning input, not as canonical architecture policy.
+2. Run AR-02 first repo-native downstream execution checks on a small execution-critical slice.
+3. Formalize or implement AR-03 host adapters only after repository-owned contracts are clear.
+4. Extend AR-04 `.curated/` portability review from the initial static review to live full-repo versus curated-only task runs.
+5. Audit AR-05 protocol artifacts for essential versus accidental complexity.
 
 Do not treat conceptual contracts in the architecture bundle as executable API definitions until they are represented in schemas, validators, workflow contracts, manifest artifact flow, or generated public artifacts.
 
