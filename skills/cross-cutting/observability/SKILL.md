@@ -91,6 +91,13 @@ Good candidates:
 
 The goal is to capture execution once per boundary with a consistent schema.
 
+For skill systems, capture two different signals:
+
+- real model usage from the provider or runner when exposed
+- exact byte/character measurements for what the skill loaded or deferred
+
+Do not mix the two. Exact provider or runner usage answers token and billing questions. Skill-context byte/character counts answer context-size questions until a model-specific tokenizer or provider token-count API is available.
+
 ### Step 4: Separate Signal Capture from Signal Consumption
 
 Keep the instrumentation contract independent from dashboards and alerts.
@@ -107,6 +114,7 @@ Before calling the design complete, verify that a reviewer can answer:
 - which skill ran
 - which model and runner were used
 - how many tokens were consumed
+- how many skill-context bytes and characters were loaded or deferred
 - where the time went
 - where the chain failed or stopped
 
@@ -132,6 +140,9 @@ Do not stop at event emission. Summarize recurring failures, missing usage data,
 - [ ] Event schema is versioned and uses stable field names
 - [ ] Skill invocation, runner execution, and model usage are distinguishable event types
 - [ ] Model and token accounting fields use canonical names and never fabricate unavailable values
+- [ ] Estimated runner usage is kept separate from exact provider or runner usage
+- [ ] Skill-context measurements use exact byte/character counts unless a model-specific tokenizer or provider token-count API is available
+- [ ] Runtime summaries can compare baseline and with-skill exact token usage before any token-saving claim is accepted
 - [ ] Ownership and downstream consumption path are documented
 - [ ] Runtime summaries can identify recurring failures, missing usage, and risky actions
 
@@ -140,8 +151,9 @@ Do not stop at event emission. Summarize recurring failures, missing usage data,
 1. **Metric soup** -- Capturing everything because it is easy, without clear questions the telemetry answers.
 2. **Inline logging everywhere** -- Repeating custom logging at each call site instead of instrumenting shared boundaries.
 3. **Conflating instrumentation with dashboards** -- Hard-coding alerting or UI assumptions into the event model.
-4. **Invented usage data** -- Estimating token counts without marking them as missing or derived.
+4. **Invented usage data** -- Estimating token counts and then aggregating them with exact provider or runner usage.
 5. **No schema versioning** -- Breaking downstream consumers every time fields evolve.
+6. **Optimization before measurement** -- Shortening or compressing skill instructions before proving the change preserves benchmark quality and actually reduces loaded context.
 
 ## Related Skills
 
