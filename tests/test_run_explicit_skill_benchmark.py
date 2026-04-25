@@ -89,6 +89,35 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
             "## TDD Plan\n\n- Write the failing test first",
         )
 
+    def test_parse_copilot_usage_footer_preserves_runner_usage(self):
+        module = load_module()
+        output = "\n".join(
+            [
+                "## TDD Plan",
+                "",
+                "Total usage est:       1 Premium request",
+                "Total duration (API):  3.6s",
+                "Usage by model:",
+                "    Claude Sonnet 4.5    7.0k input, 4 output, 12 cache read, 3 cache write (Est. 1 Premium request)",
+            ]
+        )
+
+        usage = module.parse_copilot_usage(output)
+
+        self.assertEqual(
+            usage,
+            {
+                "model_name": "Claude Sonnet 4.5",
+                "token_input": 7000,
+                "token_output": 4,
+                "token_cache_read_input": 12,
+                "token_cache_write_input": 3,
+                "token_total": 7004,
+                "usage_source": "runner",
+                "usage_precision": "estimated",
+            },
+        )
+
     def test_maybe_materialize_local_artifact_reads_temp_plan_file(self):
         module = load_module()
 
@@ -299,7 +328,7 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
                 str(output_dir),
             ]
 
-            with mock.patch.object(module, "run_prompt", side_effect=["baseline output", "skill output"]):
+            with mock.patch.object(module, "run_prompt_with_usage", side_effect=[("baseline output", None), ("skill output", None)]):
                 with mock.patch.object(sys, "argv", argv):
                     exit_code = module.main()
 
@@ -312,6 +341,7 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
             self.assertIn("runner_execution.completed", event_types)
             self.assertIn("skill_invocation.started", event_types)
             self.assertIn("skill_invocation.completed", event_types)
+            self.assertIn("skill_context.measured", event_types)
             self.assertIn("model_usage.unavailable", event_types)
 
             scenario_dir = output_dir / "eval-1-demo-scenario"
@@ -370,7 +400,7 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
             ]
             pointer_output = f"The plan is available for review at:\n`{plan_path}`"
 
-            with mock.patch.object(module, "run_prompt", side_effect=[pointer_output, pointer_output]):
+            with mock.patch.object(module, "run_prompt_with_usage", side_effect=[(pointer_output, None), (pointer_output, None)]):
                 with mock.patch.object(sys, "argv", argv):
                     exit_code = module.main()
 
@@ -511,8 +541,8 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
                         "  shift",
                         "done",
                         "case \"$prompt\" in",
-                        "  *\"First read ./skill-under-test/SKILL.md\"*) printf 'skill cli output\\n\\nTotal usage est:       1 Premium request\\n' ;;",
-                        "  *) printf 'baseline cli output\\n\\nTotal usage est:       1 Premium request\\n' ;;",
+                        "  *\"First read ./skill-under-test/SKILL.md\"*) printf 'skill cli output\\n\\nTotal usage est:       1 Premium request\\nUsage by model:\\n    Claude Sonnet 4.5    8 input, 2 output, 1 cache read, 0 cache write\\n' ;;",
+                        "  *) printf 'baseline cli output\\n\\nTotal usage est:       1 Premium request\\nUsage by model:\\n    Claude Sonnet 4.5    5 input, 1 output, 0 cache read, 0 cache write\\n' ;;",
                         "esac",
                     ]
                 )
@@ -570,6 +600,12 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, msg=result.stderr or result.stdout)
             run_metadata = json.loads((output_dir / "run_metadata.json").read_text(encoding="utf-8"))
             self.assertEqual(run_metadata["runner"], "copilot")
+            events = read_jsonl(output_dir / "execution-observability.jsonl")
+            event_types = {event["event_type"] for event in events}
+            self.assertIn("model_usage.completed", event_types)
+            self.assertIn("skill_context.measured", event_types)
+            completed_usage = [event for event in events if event["event_type"] == "model_usage.completed"]
+            self.assertEqual([event["token_total"] for event in completed_usage], [6, 10])
 
             scenario_dir = output_dir / "eval-1-demo-scenario"
             self.assertEqual(

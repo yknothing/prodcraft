@@ -21,7 +21,8 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from tools.execution_observability import ExecutionTrace, infer_skill_identity, new_span_id
+from tools.execution_observability import ExecutionTrace, infer_skill_identity, measure_skill_context, new_span_id
+from tools.model_usage_normalization import COPILOT_FOOTER_RE, normalize_copilot_footer_usage, normalize_runner_usage
 
 
 SUPPORTED_RUNNERS = {"claude", "copilot", "gemini"}
@@ -47,7 +48,6 @@ GEMINI_INLINE_PREAMBLE_PATTERNS = (
     re.compile(r'^Tool with name ".*?" is already registered\. Overwriting\.'),
     re.compile(r'^Skill conflict detected: .*?\.md"\.', re.DOTALL),
 )
-COPILOT_FOOTER_RE = re.compile(r"\n+Total usage est:.*\Z", re.DOTALL)
 LOCAL_ARTIFACT_REFERENCE_RE = re.compile(
     r"(?P<path>/(?:Users|tmp|var/folders)[^\s`]+?\.(?:md|txt))"
 )
@@ -67,6 +67,14 @@ GEMINI_TEMP_PATH_RE = re.compile(
 )
 MACOS_TEMP_PATH_RE = re.compile(r"/var/folders/[^\s`]+")
 TMP_PATH_RE = re.compile(r"/tmp/[^\s`]+")
+
+
+def parse_copilot_usage(output: str) -> dict[str, int | str] | None:
+    return normalize_copilot_footer_usage(output)
+
+
+def parse_runner_usage(runner: str, output: str) -> dict[str, int | str] | None:
+    return normalize_runner_usage(runner, output)
 
 
 def build_prompt_command(runner: str, prompt: str, model: str | None) -> list[str]:
@@ -219,7 +227,13 @@ def maybe_materialize_local_artifact(output: str) -> str:
     return sanitize_machine_specific_paths(normalized)
 
 
-def run_prompt(prompt: str, runner: str, model: str | None, cwd: Path, timeout_seconds: int) -> str:
+def run_prompt_with_usage(
+    prompt: str,
+    runner: str,
+    model: str | None,
+    cwd: Path,
+    timeout_seconds: int,
+) -> tuple[str, dict | None]:
     cmd = build_prompt_command(runner, prompt, model)
     env = os.environ.copy()
     if runner == "claude":
@@ -241,7 +255,7 @@ def run_prompt(prompt: str, runner: str, model: str | None, cwd: Path, timeout_s
         try:
             stdout, stderr = process.communicate(timeout=timeout_seconds)
             if process.returncode == 0:
-                return sanitize_runner_output(runner, stdout)
+                return sanitize_runner_output(runner, stdout), parse_runner_usage(runner, stdout)
                 
             combined_output = stdout + "\n" + stderr
             empty_failure = not stdout.strip() and not stderr.strip()
@@ -291,6 +305,11 @@ def run_prompt(prompt: str, runner: str, model: str | None, cwd: Path, timeout_s
     raise RuntimeError("Retry loop exhausted without returning or raising.")
 
 
+def run_prompt(prompt: str, runner: str, model: str | None, cwd: Path, timeout_seconds: int) -> str:
+    output, _usage = run_prompt_with_usage(prompt, runner, model, cwd, timeout_seconds)
+    return output
+
+
 def write_text(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content.rstrip() + "\n")
@@ -315,6 +334,7 @@ def run_case(
     scenario_id: str,
     skill_name: str | None = None,
     phase: str | None = None,
+    skill_context: dict[str, object] | None = None,
 ) -> None:
     trace = ExecutionTrace(
         output_path=observability_output,
@@ -333,6 +353,61 @@ def run_case(
             span_id=skill_span_id,
             metadata={"branch": branch_label, "scenario_id": scenario_id},
         )
+        if skill_context:
+            skill_file_chars = skill_context.get("skill_file_char_count")
+            supporting_chars = skill_context.get("supporting_context_char_count")
+            skill_file_bytes = skill_context.get("skill_file_byte_count")
+            supporting_bytes = skill_context.get("supporting_context_byte_count")
+            if (
+                isinstance(skill_file_chars, int)
+                and isinstance(supporting_chars, int)
+                and isinstance(skill_file_bytes, int)
+                and isinstance(supporting_bytes, int)
+            ):
+                loaded_chars = skill_file_chars
+                deferred_chars = supporting_chars
+                total_available_chars = loaded_chars + deferred_chars
+                loaded_bytes = skill_file_bytes
+                deferred_bytes = supporting_bytes
+                total_available_bytes = loaded_bytes + deferred_bytes
+            else:
+                loaded_chars = None
+                deferred_chars = None
+                total_available_chars = None
+                loaded_bytes = None
+                deferred_bytes = None
+                total_available_bytes = None
+
+            trace.emit(
+                event_type="skill_context.measured",
+                status="completed",
+                span_id=new_span_id(),
+                parent_span_id=skill_span_id,
+                usage_source="unavailable",
+                usage_precision="unavailable",
+                metadata={
+                    "branch": branch_label,
+                    "scenario_id": scenario_id,
+                    "load_stage": "skill_body",
+                    "loaded_file_count": 1,
+                    "loaded_context_char_count": loaded_chars,
+                    "deferred_context_char_count": deferred_chars,
+                    "available_context_char_count": total_available_chars,
+                    "loaded_context_byte_count": loaded_bytes,
+                    "deferred_context_byte_count": deferred_bytes,
+                    "available_context_byte_count": total_available_bytes,
+                    "skill_metadata_char_count": skill_context.get("skill_metadata_char_count"),
+                    "skill_body_char_count": skill_context.get("skill_body_char_count"),
+                    "skill_frontmatter_char_count": skill_context.get("skill_frontmatter_char_count"),
+                    "skill_metadata_byte_count": skill_context.get("skill_metadata_byte_count"),
+                    "skill_body_byte_count": skill_context.get("skill_body_byte_count"),
+                    "skill_frontmatter_byte_count": skill_context.get("skill_frontmatter_byte_count"),
+                    "supporting_context_file_count": skill_context.get("supporting_context_file_count"),
+                    "token_count_status": skill_context.get("token_count_status"),
+                    "token_count_reason": skill_context.get("token_count_reason"),
+                    "skill_file_sha256": skill_context.get("skill_file_sha256"),
+                },
+            )
 
     runner_span_id = new_span_id()
     trace.emit(
@@ -344,7 +419,7 @@ def run_case(
     )
     start_time = time.monotonic()
     try:
-        output = run_prompt(
+        output, usage = run_prompt_with_usage(
             prompt,
             runner=runner,
             model=model,
@@ -355,19 +430,43 @@ def run_case(
         response_path = result_dir / "response.md"
         write_text(response_path, output)
         duration_ms = int((time.monotonic() - start_time) * 1000)
-        trace.emit(
-            event_type="model_usage.unavailable",
-            status="unavailable",
-            span_id=new_span_id(),
-            parent_span_id=runner_span_id,
-            artifact_path=display_path(response_path),
-            usage_source="unavailable",
-            metadata={
-                "branch": branch_label,
-                "scenario_id": scenario_id,
-                "reason": "runner output did not expose token usage",
-            },
-        )
+        if usage:
+            usage_model_name = usage.get("model_name")
+            trace.emit(
+                event_type="model_usage.completed",
+                status="completed",
+                span_id=new_span_id(),
+                parent_span_id=runner_span_id,
+                artifact_path=display_path(response_path),
+                model_name=str(usage_model_name) if usage_model_name else None,
+                token_input=int(usage["token_input"]),
+                token_output=int(usage["token_output"]),
+                token_total=int(usage["token_total"]),
+                token_cache_read_input=int(usage.get("token_cache_read_input", 0)),
+                token_cache_write_input=int(usage.get("token_cache_write_input", 0)),
+                usage_source=str(usage["usage_source"]),
+                usage_precision=str(usage.get("usage_precision") or "unknown"),
+                metadata={
+                    "branch": branch_label,
+                    "scenario_id": scenario_id,
+                    "usage_note": "runner-reported aggregate; precision is recorded separately and estimated usage is excluded from exact summaries",
+                },
+            )
+        else:
+            trace.emit(
+                event_type="model_usage.unavailable",
+                status="unavailable",
+                span_id=new_span_id(),
+                parent_span_id=runner_span_id,
+                artifact_path=display_path(response_path),
+                usage_source="unavailable",
+                usage_precision="unavailable",
+                metadata={
+                    "branch": branch_label,
+                    "scenario_id": scenario_id,
+                    "reason": "runner output did not expose token usage",
+                },
+            )
         trace.emit(
             event_type="runner_execution.completed",
             status="completed",
@@ -397,6 +496,7 @@ def run_case(
             parent_span_id=runner_span_id,
             artifact_path=display_path(error_path),
             usage_source="unavailable",
+            usage_precision="unavailable",
             metadata={
                 "branch": branch_label,
                 "scenario_id": scenario_id,
@@ -440,6 +540,7 @@ def run_case(
             parent_span_id=runner_span_id,
             artifact_path=display_path(error_path),
             usage_source="unavailable",
+            usage_precision="unavailable",
             metadata={
                 "branch": branch_label,
                 "scenario_id": scenario_id,
@@ -540,6 +641,7 @@ def main() -> int:
     progress_log = output_dir / "progress.log"
     observability_output = output_dir / "execution-observability.jsonl"
     skill_name, phase = infer_skill_identity(skill_path)
+    skill_context = measure_skill_context(skill_path)
 
     for index, scenario in enumerate(scenarios, start=1):
         scenario_dir = output_dir / f"eval-{index}-{scenario['id']}"
@@ -621,6 +723,7 @@ def main() -> int:
                 scenario_id=scenario["id"],
                 skill_name=skill_name,
                 phase=phase,
+                skill_context=skill_context,
             )
 
             append_text(progress_log, f"completed {scenario['id']}")

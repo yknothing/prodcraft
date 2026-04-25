@@ -108,6 +108,7 @@ class AnthropicTriggerEvalToolingTests(unittest.TestCase):
             self.assertIn("runner_execution.completed", event_types)
             self.assertIn("skill_invocation.started", event_types)
             self.assertIn("skill_invocation.completed", event_types)
+            self.assertIn("skill_context.measured", event_types)
             self.assertIn("model_usage.unavailable", event_types)
 
 

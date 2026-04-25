@@ -23,7 +23,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from tools.execution_observability import ExecutionTrace, new_span_id
+from tools.execution_observability import ExecutionTrace, measure_text_size, new_span_id
 
 try:
     from .utils import parse_skill_md
@@ -91,6 +91,28 @@ def run_single_query(
             f"This skill handles: {skill_description}\n"
         )
         command_file.write_text(command_content, encoding="utf-8")
+        command_size = measure_text_size(command_content)
+        trace.emit(
+            event_type="skill_context.measured",
+            status="completed",
+            span_id=new_span_id(),
+            parent_span_id=skill_span_id,
+            usage_source="unavailable",
+            usage_precision="unavailable",
+            metadata={
+                "query": query,
+                "load_stage": "skill_description_command_stub",
+                "loaded_file_count": 1,
+                "loaded_context_char_count": command_size["char_count"],
+                "deferred_context_char_count": 0,
+                "available_context_char_count": command_size["char_count"],
+                "loaded_context_byte_count": command_size["byte_count"],
+                "deferred_context_byte_count": 0,
+                "available_context_byte_count": command_size["byte_count"],
+                "token_count_status": "unavailable",
+                "token_count_reason": "no model-specific tokenizer or provider token-count API was used",
+            },
+        )
 
         cmd = [
             "claude",
@@ -128,6 +150,7 @@ def run_single_query(
                 span_id=new_span_id(),
                 parent_span_id=runner_span_id,
                 usage_source="unavailable",
+                usage_precision="unavailable",
                 metadata={
                     "query": query,
                     "reason": "runner stream did not expose token usage",
