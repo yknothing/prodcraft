@@ -231,7 +231,7 @@ and curated-only execution on the same probes.
 
 Recommended artifact:
 
-- `docs/plans/architecture-evolution/2026-04-24-ar-04-live-portability-benchmark-plan.md`
+- `docs/plans/architecture-evolution/2026-04-25-ar-04-live-portability-benchmark-plan.md`
 
 Required probe fields:
 
