@@ -14,15 +14,27 @@ Use this template whenever `verification-before-completion` checks whether a com
 - claim_scope:
 - verified_at:
 - work_state_ref:
+  id:
+  kind:
+  ref:
+  captured_at:
+  status:
+  diff_ref: # Required only when status is dirty.
 
 ## Evidence
 
 - evidence_refs:
-  -
+  - id:
+    kind:
+    ref:
+    captured_at:
+    work_state_ref:
+    notes:
 - checks_run:
   - name:
     result:
     evidence_ref:
+    work_state_ref:
     notes:
 
 ## Result

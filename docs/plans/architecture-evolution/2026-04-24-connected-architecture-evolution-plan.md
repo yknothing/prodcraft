@@ -73,8 +73,10 @@ The open debt is now execution sequencing:
 - AR-01 now has a provisional enforcement promotion matrix; individual rows
   still need to graduate through narrow repository-owned contracts before they
   become executable
-- AR-02 still needs the first small repo-native downstream execution hardening
-  wave
+- AR-02 has its first small repo-native downstream execution hardening slice
+  landed: `verification-record.v1` now carries structured work-state and
+  evidence bindings plus validator coverage for stale or mismatched completion
+  proof
 - AR-03 exists as a provisional host adapter policy, but is not an ADR and has
   no implemented adapters
 - AR-04 has a portability landing zone and initial static review, but no live
@@ -153,27 +155,47 @@ Graduation path:
 Goal: implement one small downstream execution check that strengthens completion
 honesty without creating proxy compliance.
 
-Recommended first experiment:
+Status: first hardening slice landed.
+
+Landed slice:
 
 - use AR01-C04 and AR01-C05 from the promotion matrix to extend
   `verification-record.v1` from proof-shape schema into a practical
   completion-claim validator path
+- represent `work_state_ref` as a structured current-work-state object rather
+  than a free-form string
+- represent `evidence_refs` as structured evidence objects with ids,
+  timestamps, and explicit work-state bindings
+- require each `checks_run` item to bind back to both an evidence id and the
+  current work-state id
+- add validator coverage for accepted records whose evidence is older than the
+  work-state capture, references undeclared evidence, or binds evidence to a
+  different work state
 
-Candidate check shape:
+Current check shape:
 
 - accepted verification records must bind to the current work state
 - `claim_may_be_made=true` remains valid only when status is accepted, checks
   passed, failed list is empty, and remaining unverified list is empty
 - freshness must be represented by an explicit work-state reference or evidence
   reference, not by prose
+- instance validation checks evidence/check alignment that portable JSON Schema
+  cannot express by itself
 
-Acceptance:
+Acceptance for this slice:
 
 - at least one negative test covers stale or mismatched completion proof
 - the validator reports a concrete failure reason
 - the check remains repository-owned and host-portable
 - the implementation does not claim to prove real TDD, real review quality, or
   good architecture
+
+Boundary:
+
+- this slice validates artifact shape, current work-state binding, evidence
+  timestamp freshness, and evidence/check alignment only
+- it does not prove that the named command was sufficient, that TDD happened,
+  that review was high quality, or that the architecture is semantically sound
 
 Graduation path:
 
@@ -268,14 +290,15 @@ Graduation path:
 Create the AR-01 enforcement promotion matrix as the next planning artifact.
 Keep it provisional and evidence-first.
 
-Suggested first-row decision:
+Suggested next-row decision:
 
 - `completion claims require fresh verification evidence`
 - Current home: `verification-before-completion`, `delivery-completion`,
   `verification-record.v1`, validator schema contract
 - Initial surface: `repo-native enforcement`
-- Initial next move: prototype validator coverage only for proof freshness and
-  status alignment; leave semantic completion judgment review-led
+- Initial landed move: validator coverage only for proof freshness, status
+  alignment, work-state binding, and evidence/check alignment; leave semantic
+  completion judgment review-led
 
 ## Validation Expectations
 

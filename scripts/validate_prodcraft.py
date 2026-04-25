@@ -8,6 +8,7 @@ import json
 import re
 import sys
 import tempfile
+from datetime import datetime
 from pathlib import Path
 
 import yaml
@@ -532,18 +533,79 @@ def validate_verification_record_schema_contract(schema: dict, schema_path: Path
     if not isinstance(verified_at, dict) or verified_at.get("format") != "date-time":
         errors.append(f"{schema_path}: verified_at must use JSON Schema date-time format")
 
-    for field_name in ("claim", "claim_scope", "work_state_ref"):
+    for field_name in ("claim", "claim_scope"):
         field = properties.get(field_name, {})
         if not isinstance(field, dict) or field.get("minLength") != 1:
             errors.append(f"{schema_path}: `{field_name}` must require non-empty strings with minLength 1")
+
+    work_state_ref = properties.get("work_state_ref", {})
+    if not isinstance(work_state_ref, dict) or work_state_ref.get("type") != "object":
+        errors.append(f"{schema_path}: work_state_ref must be a structured object")
+    else:
+        expected_work_state_required = {"id", "kind", "ref", "captured_at", "status"}
+        if set(work_state_ref.get("required", [])) != expected_work_state_required:
+            errors.append(
+                f"{schema_path}: work_state_ref must require {sorted(expected_work_state_required)}"
+            )
+        work_state_properties = work_state_ref.get("properties", {})
+        if not isinstance(work_state_properties, dict):
+            errors.append(f"{schema_path}: work_state_ref properties must be a mapping")
+        else:
+            for field_name in ("id", "ref", "diff_ref"):
+                field = work_state_properties.get(field_name, {})
+                if not isinstance(field, dict) or field.get("minLength") != 1:
+                    errors.append(f"{schema_path}: work_state_ref `{field_name}` must require minLength 1")
+            kind = work_state_properties.get("kind", {})
+            if not isinstance(kind, dict) or set(kind.get("enum", [])) != {"git"}:
+                errors.append(f"{schema_path}: work_state_ref kind enum must be git")
+            captured_at = work_state_properties.get("captured_at", {})
+            if not isinstance(captured_at, dict) or captured_at.get("format") != "date-time":
+                errors.append(f"{schema_path}: work_state_ref captured_at must use JSON Schema date-time format")
+            status_field = work_state_properties.get("status", {})
+            if not isinstance(status_field, dict) or set(status_field.get("enum", [])) != {"clean", "dirty"}:
+                errors.append(f"{schema_path}: work_state_ref status enum must be clean/dirty")
+        if work_state_ref.get("additionalProperties") is not False:
+            errors.append(f"{schema_path}: work_state_ref must be a closed object")
+        dirty_rule = {
+            "if": {
+                "properties": {"status": {"const": "dirty"}},
+                "required": ["status"],
+            },
+            "then": {"required": ["diff_ref"]},
+        }
+        if dirty_rule not in work_state_ref.get("allOf", []):
+            errors.append(f"{schema_path}: work_state_ref must require diff_ref when status is dirty")
 
     evidence_refs = properties.get("evidence_refs", {})
     if not isinstance(evidence_refs, dict) or evidence_refs.get("minItems") != 1:
         errors.append(f"{schema_path}: evidence_refs must require at least one item")
     else:
         evidence_ref_item = evidence_refs.get("items", {})
-        if not isinstance(evidence_ref_item, dict) or evidence_ref_item.get("minLength") != 1:
-            errors.append(f"{schema_path}: evidence_refs items must require non-empty strings with minLength 1")
+        if not isinstance(evidence_ref_item, dict) or evidence_ref_item.get("type") != "object":
+            errors.append(f"{schema_path}: evidence_refs items must be structured objects")
+        else:
+            expected_evidence_required = {"id", "kind", "ref", "captured_at", "work_state_ref"}
+            if set(evidence_ref_item.get("required", [])) != expected_evidence_required:
+                errors.append(
+                    f"{schema_path}: evidence_refs items must require {sorted(expected_evidence_required)}"
+                )
+            evidence_properties = evidence_ref_item.get("properties", {})
+            if not isinstance(evidence_properties, dict):
+                errors.append(f"{schema_path}: evidence_refs item properties must be a mapping")
+            else:
+                for field_name in ("id", "ref", "work_state_ref"):
+                    field = evidence_properties.get(field_name, {})
+                    if not isinstance(field, dict) or field.get("minLength") != 1:
+                        errors.append(f"{schema_path}: evidence_refs item `{field_name}` must require minLength 1")
+                kind = evidence_properties.get("kind", {})
+                expected_kinds = {"command", "file", "diff", "test", "review", "other"}
+                if not isinstance(kind, dict) or set(kind.get("enum", [])) != expected_kinds:
+                    errors.append(f"{schema_path}: evidence_refs item kind enum must be {sorted(expected_kinds)}")
+                captured_at = evidence_properties.get("captured_at", {})
+                if not isinstance(captured_at, dict) or captured_at.get("format") != "date-time":
+                    errors.append(f"{schema_path}: evidence_refs item captured_at must use JSON Schema date-time format")
+            if evidence_ref_item.get("additionalProperties") is not False:
+                errors.append(f"{schema_path}: evidence_refs items must be closed objects")
 
     checks_run = properties.get("checks_run", {})
     if not isinstance(checks_run, dict) or checks_run.get("minItems") != 1:
@@ -552,14 +614,14 @@ def validate_verification_record_schema_contract(schema: dict, schema_path: Path
         check_item = checks_run.get("items", {})
         if not isinstance(check_item, dict) or check_item.get("additionalProperties") is not False:
             errors.append(f"{schema_path}: checks_run items must be closed objects")
-        elif set(check_item.get("required", [])) != {"name", "result", "evidence_ref"}:
-            errors.append(f"{schema_path}: checks_run items must require name/result/evidence_ref")
+        elif set(check_item.get("required", [])) != {"name", "result", "evidence_ref", "work_state_ref"}:
+            errors.append(f"{schema_path}: checks_run items must require name/result/evidence_ref/work_state_ref")
         else:
             check_properties = check_item.get("properties", {})
             if not isinstance(check_properties, dict):
                 errors.append(f"{schema_path}: checks_run item properties must be a mapping")
             else:
-                for field_name in ("name", "evidence_ref"):
+                for field_name in ("name", "evidence_ref", "work_state_ref"):
                     field = check_properties.get(field_name, {})
                     if not isinstance(field, dict) or field.get("minLength") != 1:
                         errors.append(f"{schema_path}: checks_run item `{field_name}` must require minLength 1")
@@ -604,6 +666,94 @@ def validate_verification_record_schema_contract(schema: dict, schema_path: Path
 
     if schema.get("additionalProperties") is not False:
         errors.append(f"{schema_path}: `additionalProperties` must be `false` to keep the verification contract closed")
+
+
+def _parse_record_datetime(value: object) -> datetime | None:
+    if not isinstance(value, str):
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        return None
+    return parsed
+
+
+def validate_verification_record_instance_contract(record: dict, source: str, errors: list[str]) -> None:
+    """Validate completion-claim bindings that JSON Schema cannot express portably."""
+    if record.get("status") != "accepted" and record.get("claim_may_be_made") is not True:
+        return
+
+    work_state = record.get("work_state_ref")
+    if not isinstance(work_state, dict):
+        errors.append(f"{source}: accepted verification record must use structured work_state_ref")
+        return
+
+    verified_at = _parse_record_datetime(record.get("verified_at"))
+    if verified_at is None:
+        errors.append(f"{source}: accepted verification record must include valid verified_at")
+
+    work_state_id = work_state.get("id")
+    if not isinstance(work_state_id, str) or not work_state_id:
+        errors.append(f"{source}: accepted verification record work_state_ref must include non-empty id")
+        return
+
+    work_state_captured_at = _parse_record_datetime(work_state.get("captured_at"))
+    if work_state_captured_at is None:
+        errors.append(f"{source}: accepted verification record work_state_ref must include valid captured_at")
+
+    evidence_refs = record.get("evidence_refs")
+    if not isinstance(evidence_refs, list) or not evidence_refs:
+        errors.append(f"{source}: accepted verification record must declare at least one evidence_ref")
+        evidence_refs = []
+
+    evidence_by_id: dict[str, dict] = {}
+    for evidence in evidence_refs:
+        if not isinstance(evidence, dict):
+            errors.append(f"{source}: evidence_refs entries must be structured objects")
+            continue
+        evidence_id = evidence.get("id")
+        if not isinstance(evidence_id, str) or not evidence_id:
+            errors.append(f"{source}: evidence_refs entries must include non-empty id")
+            continue
+        if evidence_id in evidence_by_id:
+            errors.append(f"{source}: evidence_ref id `{evidence_id}` must be unique")
+        evidence_by_id[evidence_id] = evidence
+
+        evidence_work_state_ref = evidence.get("work_state_ref")
+        if evidence_work_state_ref != work_state_id:
+            errors.append(
+                f"{source}: evidence `{evidence_id}` binds to work_state_ref `{evidence_work_state_ref}` instead of current work state `{work_state_id}`"
+            )
+
+        evidence_captured_at = _parse_record_datetime(evidence.get("captured_at"))
+        if evidence_captured_at is None:
+            errors.append(f"{source}: evidence `{evidence_id}` must include valid captured_at")
+        elif work_state_captured_at is not None and evidence_captured_at < work_state_captured_at:
+            errors.append(
+                f"{source}: accepted verification record evidence `{evidence_id}` is older than work state `{work_state_id}`"
+            )
+
+    checks_run = record.get("checks_run")
+    if not isinstance(checks_run, list) or not checks_run:
+        errors.append(f"{source}: accepted verification record must declare at least one check")
+        return
+
+    for check in checks_run:
+        if not isinstance(check, dict):
+            errors.append(f"{source}: checks_run entries must be structured objects")
+            continue
+        check_name = check.get("name")
+        check_label = check_name if isinstance(check_name, str) and check_name else "<unnamed>"
+        check_evidence_ref = check.get("evidence_ref")
+        if check_evidence_ref not in evidence_by_id:
+            errors.append(f"{source}: check `{check_label}` references unknown evidence_ref `{check_evidence_ref}`")
+        check_work_state_ref = check.get("work_state_ref")
+        if check_work_state_ref != work_state_id:
+            errors.append(
+                f"{source}: check `{check_label}` binds to work_state_ref `{check_work_state_ref}` instead of current work state `{work_state_id}`"
+            )
 
 
 def snapshot_file_tree(root: Path) -> dict[str, bytes]:
