@@ -6,3 +6,33 @@ missing_usage:
 
 high_risk_actions:
   max_count: 0
+
+token_usage:
+  # Default is non-blocking because some runners still do not expose usage.
+  # Raise this for benchmark suites that must prove exact model usage capture.
+  min_completed_count: 0
+  # Coverage is exact / (exact + estimated + unknown + invalid + unavailable usage events).
+  # Raise to 1.0 for runs that must reject non-exact token usage.
+  min_exact_coverage_ratio: 0.0
+
+estimated_token_usage:
+  # Estimated usage must stay explicit. Exact accounting gates should not pass
+  # when estimated usage is present unless a run-specific threshold allows it.
+  max_count: 0
+
+unknown_token_usage:
+  # Missing usage_precision or unsupported precision is unknown, never exact.
+  max_count: 0
+
+invalid_token_usage:
+  # Exact usage events with inconsistent or incomplete token totals are rejected
+  # by the summary before they can contribute to exact KPIs.
+  max_count: 0
+
+skill_context:
+  # Default is non-blocking so legacy traces keep summarizing.
+  # Raise this when a run must prove skill context size attribution.
+  min_measured_count: 0
+  # Sampling is skill_context.measured events / skill_invocation.* events.
+  # Raise this when a run must prove progressive-loading coverage.
+  min_sampling_ratio: 0.0

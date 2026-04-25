@@ -2,6 +2,11 @@ name: Runtime Feedback Loop
 
 on:
   workflow_dispatch:
+    inputs:
+      exact_accounting_paths:
+        description: 'Optional newline-separated JSONL paths for a scoped exact-accounting threshold gate.'
+        required: false
+        type: string
   schedule:
     - cron: '0 3 1 * *'
   pull_request:
@@ -36,19 +41,56 @@ jobs:
           printf '%s\n' "${files[@]}" > observability-inputs.txt
           echo "has_inputs=true" >> "$GITHUB_OUTPUT"
 
-      - name: Summarize execution observability
+      - name: Summarize checked-in observability history
         if: steps.collect.outputs.has_inputs == 'true'
         run: |
           mkdir -p build
           python scripts/summarize_execution_observability.py \
             $(cat observability-inputs.txt) \
+            --output build/legacy-execution-observability-summary.json
+
+      - name: Collect scoped exact-accounting inputs
+        id: collect_exact
+        if: github.event_name == 'workflow_dispatch' && inputs.exact_accounting_paths != ''
+        env:
+          EXACT_ACCOUNTING_PATHS: ${{ inputs.exact_accounting_paths }}
+        run: |
+          : > exact-accounting-inputs.txt
+          while IFS= read -r candidate; do
+            if [ -z "$candidate" ]; then
+              continue
+            fi
+            if [ ! -e "$candidate" ]; then
+              echo "::error::Exact-accounting input not found: $candidate"
+              exit 1
+            fi
+            printf '%s\n' "$candidate" >> exact-accounting-inputs.txt
+          done <<< "$EXACT_ACCOUNTING_PATHS"
+
+          if [ ! -s exact-accounting-inputs.txt ]; then
+            echo "has_exact_inputs=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "has_exact_inputs=true" >> "$GITHUB_OUTPUT"
+
+      - name: Run scoped exact-accounting threshold gate
+        if: steps.collect_exact.outputs.has_exact_inputs == 'true'
+        run: |
+          mkdir -p build
+          python scripts/validate_execution_observability.py \
+            $(cat exact-accounting-inputs.txt)
+          python scripts/summarize_execution_observability.py \
+            $(cat exact-accounting-inputs.txt) \
             --thresholds rules/execution-observability-thresholds.yml \
-            --output build/execution-observability-summary.json \
+            --output build/exact-accounting-summary.json \
             --fail-on-breach
 
       - name: Upload summary artifact
-        if: steps.collect.outputs.has_inputs == 'true'
+        if: steps.collect.outputs.has_inputs == 'true' || steps.collect_exact.outputs.has_exact_inputs == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: execution-observability-summary
-          path: build/execution-observability-summary.json
+          path: |
+            build/legacy-execution-observability-summary.json
+            build/exact-accounting-summary.json
+          if-no-files-found: ignore
