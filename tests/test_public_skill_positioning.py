@@ -18,6 +18,8 @@ class PublicSkillPositioningTests(unittest.TestCase):
         self.assertIn("does **not** automatically publish it to `npx`", readme)
         self.assertIn("packaging stability", readme)
         self.assertIn("capability readiness", readme)
+        self.assertIn("single `prodcraft/SKILL.md`", readme)
+        self.assertIn("not evidence that downstream skills are missing", readme)
 
     def test_curated_prodcraft_skill_sets_routed_expectation(self):
         prodcraft_skill = (REPO_ROOT / "skills" / ".curated" / "prodcraft" / "SKILL.md").read_text(encoding="utf-8")
@@ -25,6 +27,8 @@ class PublicSkillPositioningTests(unittest.TestCase):
         self.assertIn("## Routed Invocation", prodcraft_skill)
         self.assertIn("stable packaging contract", prodcraft_skill)
         self.assertIn("deeper lifecycle skills", prodcraft_skill)
+        self.assertIn("## Runtime Resolution", prodcraft_skill)
+        self.assertIn("partial-entry mode", prodcraft_skill)
         self.assertIn("Packaging stability", prodcraft_skill)
         self.assertIn("Capability readiness", prodcraft_skill)
 

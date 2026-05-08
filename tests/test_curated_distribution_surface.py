@@ -77,6 +77,22 @@ class CuratedDistributionSurfaceTests(unittest.TestCase):
         self.assertIn("default entry system for software-development tasks", content)
         self.assertIn("skipping Prodcraft preserves the same lifecycle guarantees", content)
 
+    def test_curated_prodcraft_skill_defends_gateway_self_location_boundary(self):
+        content = (CURATED_DIR / "prodcraft" / "SKILL.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "A `prodcraft` directory that contains only this `SKILL.md` is a valid gateway install",
+            content,
+        )
+        self.assertIn("Look for sibling skill packages beside `prodcraft`", content)
+        self.assertIn(
+            "do not claim that downstream skills such as `code-review`, `testing-strategy`, or `security-audit` ran",
+            content,
+        )
+        self.assertIn("This is partial-entry guidance, not a completed Prodcraft workflow or evidence gate.", content)
+        self.assertNotIn(str(REPO_ROOT), content)
+        self.assertNotIn("/Users/", content)
+
 
 if __name__ == "__main__":
     unittest.main()
