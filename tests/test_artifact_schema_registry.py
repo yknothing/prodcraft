@@ -57,6 +57,7 @@ class ArtifactSchemaRegistryTests(unittest.TestCase):
                 "intake_mode",
                 "work_type",
                 "entry_phase",
+                "quality_target_context",
                 "scope_assessment",
                 "recommended_next_skill",
                 "routing_rationale",
@@ -73,6 +74,10 @@ class ArtifactSchemaRegistryTests(unittest.TestCase):
         self.assertIn("enum", schema["properties"]["user_presentation_locale"])
         self.assertIn("enum", schema["properties"]["work_type"])
         self.assertIn("enum", schema["properties"]["entry_phase"])
+        quality_target = schema["properties"]["quality_target_context"]
+        self.assertFalse(quality_target["additionalProperties"])
+        self.assertIn("enum", quality_target["properties"]["runtime_context"])
+        self.assertIn("enum", quality_target["properties"]["exposure_profile"])
         self.assertIn("enum", schema["properties"]["workflow_primary"])
         self.assertIn("enum", schema["properties"]["workflow_overlays"]["items"])
         self.assertEqual(1, schema["properties"]["workflow_overlays"]["minItems"])

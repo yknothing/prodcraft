@@ -39,8 +39,8 @@ Do not use it when the route is already well-scoped enough for downstream work, 
 
 ## Inputs
 
-- **intake-brief** -- Must identify the work type, entry phase, recommended workflow, key risks, and the next likely skill.
-  Preserve the intake language boundary fields instead of silently guessing them away: `source_language`, `artifact_record_language`, and `user_presentation_locale`.
+- **intake-brief** -- Must identify the work type, entry phase, recommended workflow, key risks, `quality_target_context`, and the next likely skill.
+  Preserve the intake language boundary fields instead of silently guessing them away: `source_language`, `artifact_record_language`, and `user_presentation_locale`. Preserve `quality_target_context` so downstream quality and security work does not reconstruct the runtime or exposure boundary from guesses.
 
 ## Process
 
@@ -81,6 +81,8 @@ Produce a concise `problem-frame` covering:
 - open questions
 
 The canonical `problem-frame` record stays in English under current repo policy, but user-facing framing output may still be presented in the user's locale. Carry `source_language`, `artifact_record_language`, and `user_presentation_locale` forward explicitly.
+
+Carry `quality_target_context` forward explicitly when it affects scope, risk, or downstream QA. If the target is an agent-internal skill, host runtime tool, or local harness, do not let problem framing drift into a public service design unless the user chose that product target.
 
 The problem frame must be sharp enough that downstream skills do not have to rediscover the core problem.
 Use plain language, default to Chinese for user-facing output unless the user asks for another language, and explicitly note system shape or collaboration quality when they materially affect the framing.

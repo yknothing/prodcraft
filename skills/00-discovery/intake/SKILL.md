@@ -34,7 +34,7 @@ Intake is the control plane for all engineering work in Prodcraft. Every piece o
 
 ## Outputs
 
-- **intake-brief** -- structured routing record: request summary, `source_language`, `artifact_record_language`, `user_presentation_locale`, intake mode, work type, entry phase, workflow metadata (`workflow_primary` when governance is explicit, `workflow_overlays` when an overlay is active), next skill, routing rationale, key risks
+- **intake-brief** -- structured routing record: request summary, `source_language`, `artifact_record_language`, `user_presentation_locale`, intake mode, work type, entry phase, `quality_target_context`, workflow metadata (`workflow_primary` when governance is explicit, `workflow_overlays` when an overlay is active), next skill, routing rationale, key risks
 - **phase-recommendation** -- the lifecycle phase where work should begin
 - **workflow-recommendation** -- the methodology best suited to the work
 
@@ -105,6 +105,22 @@ For `fast-track`, omit `workflow_primary` when the route stays direct enough tha
 
 Record `workflow_overlays` only when one or more overlays are active. Omit the field instead of emitting an empty list.
 
+### Step 2A: Record the Quality Target Context
+
+Every intake brief must include `quality_target_context`. Infer it from the repository and request when possible, and ask at most one clarifying question only when the answer would change route, risk, or review severity.
+
+Record:
+
+- `runtime_context`: `agent_internal_skill`, `host_runtime_tool`, `local_dev_harness`, `internal_service`, `public_service`, or `unknown`
+- `exposure_profile`: `no_network_listener`, `localhost_only`, `private_network`, `public_internet`, or `unknown`
+- `production_target`: the real thing being shipped or reviewed
+- `non_targets`: important things this work is not trying to become
+- `evidence_refs`: concrete artifacts or user statements that support the classification
+
+This context must calibrate quality and security handoff. An agent-internal skill, host runtime tool, or local harness may still need rigorous QA, but it should not inherit public service controls such as browser auth flows, public API rate limiting, or internet CORS policy unless the target actually exposes that surface. A public service, multi-user API, or internet-exposed component keeps the full service-style quality and security posture.
+
+If the target context is unknown, say so explicitly and do not invent a public service boundary from implementation details such as Flask, routes, HTTP clients, or a model provider adapter.
+
 ### Step 3: Ask Clarifying Questions
 
 Ask questions **one at a time**, adapting based on answers. Start with the most important unknown.
@@ -138,6 +154,7 @@ Name concrete Prodcraft skills whenever the next step is already known. Avoid ge
 **Intake mode**: [full / fast-track / resume]
 **workflow_primary**: [primary governance workflow, if explicit for this route]
 **workflow_overlays**: [[overlay list], omit when none]
+**quality_target_context**: [runtime_context, exposure_profile, production_target, non_targets, evidence_refs]
 **Key skills needed**: [3-7 concrete Prodcraft skills, or clearly marked open routing questions]
 **Scope assessment**: [small / medium / large / xlarge]
 **routing_rationale**: [why this route wins]
@@ -178,6 +195,7 @@ The `intake-brief` must capture:
 - `user_presentation_locale` for the language used when presenting the intake result to the user
 - why intake was invoked, fast-tracked, or resumed
 - `intake_mode`
+- `quality_target_context`, including `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs`
 - the key questions asked and the answers that changed routing
 - `workflow_primary` when the route depends on explicit primary governance, and `workflow_overlays` when overlays are active
 - the recommended path and any meaningful alternative considered

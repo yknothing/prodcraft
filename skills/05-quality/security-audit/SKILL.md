@@ -4,6 +4,7 @@ description: Use when a reviewed change, release candidate, or high-risk slice m
 metadata:
   phase: 05-quality
   inputs:
+  - intake-brief
   - source-code
   - architecture-doc
   - threat-model
@@ -36,8 +37,19 @@ In Prodcraft, security audit exists to stop avoidable release risk. It should pr
 - **source-code** -- The implementation under audit, including configuration and integration points visible in the change.
 - **architecture-doc** -- Trust boundaries, component interactions, and intended control points.
 - **threat-model** -- Known attacker capabilities, abuse cases, and assumptions to verify when one exists.
+- **intake-brief** -- Must include `quality_target_context` with `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs`.
 
 ## Process
+
+### Step 0: Calibrate the Security Target
+
+Read `quality_target_context` before mapping attack surface. Confirm whether the reviewed target is an agent-internal skill, host runtime tool, local harness, internal service, or public HTTP service.
+
+Do not downgrade baseline security because the target is internal. An agent-internal skill still needs review for prompt injection, command safety, remote instruction trust, tool/file/network side effects, secrets and PII in prompts, examples, logs, and artifacts, dependency execution risk, and public export supply-chain safety.
+
+Escalate to full service-style audit when `runtime_context=public_service`, `exposure_profile=public_internet`, or evidence shows externally reachable behavior, multi-user access, sensitive data handling, auth/authz, privileged operations, new deployment exposure, or service-to-service trust boundaries. Only then should CORS, public auth, rate limiting, browser session handling, and internet abuse paths become release blockers.
+
+If target context is missing or contradictory, stop and request the boundary or route a `course-correction-note`; do not invent public service blockers from HTTP-shaped implementation details alone.
 
 ### Step 1: Map the Attack Surface
 

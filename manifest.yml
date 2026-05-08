@@ -837,6 +837,9 @@ artifact_flow:
   - user-research
   - feasibility-study
   - requirements-engineering
+  - code-review
+  - security-audit
+  - testing-strategy
 - artifact: course-correction-note
   produced_by:
   - systematic-debugging

@@ -38,7 +38,7 @@ The downstream execution loop is still being hardened. AR-01, AR-02, AR-03, and 
 
 ## How It Works
 
-Every piece of engineering work starts with `intake`, the mandatory triage skill. Intake classifies the request, chooses the lifecycle entry point, records the route decision, and hands off to the next skill or workflow.
+Every piece of engineering work starts with `intake`, the mandatory triage skill. Intake classifies the request, chooses the lifecycle entry point, records the route decision, captures the quality target context, and hands off to the next skill or workflow.
 
 If the route is clear but the problem statement or solution direction is still fuzzy, `problem-framing` runs before deeper discovery, specification, or architecture work begins.
 
@@ -107,6 +107,8 @@ Protocol artifacts are registered in `schemas/artifacts/registry.yml` and backed
 `verification-record.v1` is the first repo-native foothold for completion-claim proof shape. It requires evidence references, checks run, pass/fail lists, remaining unverified scope, and `claim_may_be_made` alignment. A completion claim may be made only when the record is accepted, checks are passed, and no failed or unverified items remain.
 
 This is intentionally narrow. `verification-record.v1` validates proof shape; route-level acceptance and semantic adequacy still require workflow rules, artifact-flow checks, and human or agent review for the specific route.
+
+`intake-brief.v1` also carries `quality_target_context`: runtime context, exposure profile, production target, non-targets, and evidence references. This prevents downstream quality skills from treating an agent-internal skill or local harness as a public service just because the implementation contains HTTP-shaped code, while preserving full service review when the target is actually internet-exposed or multi-user.
 
 ## Routed vs Discoverability
 
@@ -294,7 +296,7 @@ Operations     -> Evolution      [SLOs and runbooks validated]
 Evolution      -> Discovery      [retrospective informs next cycle]
 ```
 
-Quality gates are not magic. They are useful only when the required state, artifact, or evidence is explicit enough to be reviewed or validated.
+Quality gates are not magic. They are useful only when the required state, artifact, or evidence is explicit enough to be reviewed or validated. Phase-05 quality work must use `quality_target_context` before assigning service-style blockers; agent-internal skills, host runtime tools, local harnesses, internal services, and public services have different exposure and test layers.
 
 ## Quick Start
 
