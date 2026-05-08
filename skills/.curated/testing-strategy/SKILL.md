@@ -4,6 +4,7 @@ description: Use when a reviewed implementation slice or feature needs a deliber
 metadata:
   phase: 05-quality
   inputs:
+  - intake-brief
   - source-code
   - task-list
   - architecture-doc
@@ -41,10 +42,19 @@ A testing strategy defines what to test, at what layer, and with what tools. Wit
 - **task-list**: The reviewed implementation slice or change scope that defines what must be verified now.
 - **architecture-doc**: System topology that determines integration points and test boundaries.
 - **api-contract**: API specifications (OpenAPI, GraphQL schema) that drive contract tests.
+- **intake-brief**: Must include `quality_target_context` with `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs`.
 
 In a lifecycle-aware system, testing strategy must preserve upstream scope boundaries. Do not hide unsupported release-1 behavior, coexistence risks, or unresolved contract questions under a generic "we have E2E tests" answer.
 
 ## Process
+
+### Step 0: Calibrate the Test Target
+
+Read `quality_target_context` before choosing layers. Confirm whether the reviewed target is an agent-internal skill, host runtime tool, local harness, internal service, or public HTTP service.
+
+For an agent-internal skill, bias toward trigger evals, fixture and golden-output checks, schema or validator coverage, command/tool boundary tests, artifact privacy checks, curated export parity, and runtime portability probes. Do not default to browser E2E, OpenAPI contract, or public web-auth flows unless the target actually exposes that surface.
+
+For a public HTTP service or internet-exposed target, keep API contract, integration, browser/E2E, auth, rate-limit, and abuse-path coverage where risk supports it. If the target context is unknown, document the blind spot and ask for the smallest clarification that can change the test layer decision.
 
 ### Step 1: Define the Test Pyramid
 

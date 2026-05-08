@@ -104,6 +104,42 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
             set(self.schema["properties"]["user_presentation_locale"]["enum"]),
         )
 
+    def test_runtime_boundary_fields_define_quality_calibration_axis(self):
+        quality_target = self.schema["properties"]["quality_target_context"]
+
+        self.assertEqual(
+            {
+                "agent_internal_skill",
+                "host_runtime_tool",
+                "local_dev_harness",
+                "internal_service",
+                "public_service",
+                "unknown",
+            },
+            set(quality_target["properties"]["runtime_context"]["enum"]),
+        )
+        self.assertEqual(
+            {
+                "no_network_listener",
+                "localhost_only",
+                "private_network",
+                "public_internet",
+                "unknown",
+            },
+            set(quality_target["properties"]["exposure_profile"]["enum"]),
+        )
+        self.assertEqual(
+            {
+                "runtime_context",
+                "exposure_profile",
+                "production_target",
+                "non_targets",
+                "evidence_refs",
+            },
+            set(quality_target["required"]),
+        )
+        self.assertFalse(quality_target["additionalProperties"])
+
     def test_workflow_primary_enum_matches_primary_workflows(self):
         expected = extract_primary_workflows()
         actual = set(self.schema["properties"]["workflow_primary"]["enum"])
@@ -129,6 +165,13 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
             "intake_mode": "full",
             "work_type": "New Feature",
             "entry_phase": "01-specification",
+            "quality_target_context": {
+                "runtime_context": "internal_service",
+                "exposure_profile": "private_network",
+                "production_target": "Internal approval workflow",
+                "non_targets": ["Public SaaS API"],
+                "evidence_refs": ["architecture-doc"],
+            },
             "workflow_primary": "agile-sprint",
             "scope_assessment": "medium",
             "recommended_next_skill": "requirements-engineering",
@@ -162,6 +205,16 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
         for field_name, invalid_value in invalid_cases:
             payload = dict(valid_full_payload)
             payload[field_name] = invalid_value
+            with self.assertRaises(jsonschema.ValidationError, msg=field_name):
+                jsonschema.validate(payload, self.schema)
+
+        for field_name, invalid_value in (
+            ("runtime_context", "public_api_shape"),
+            ("exposure_profile", "probably_public"),
+        ):
+            payload = dict(valid_full_payload)
+            payload["quality_target_context"] = dict(payload["quality_target_context"])
+            payload["quality_target_context"][field_name] = invalid_value
             with self.assertRaises(jsonschema.ValidationError, msg=field_name):
                 jsonschema.validate(payload, self.schema)
 

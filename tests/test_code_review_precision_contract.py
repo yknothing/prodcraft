@@ -22,6 +22,22 @@ class CodeReviewPrecisionContractTests(unittest.TestCase):
             self.assertIn("if a concern is only a plausible consequence of a blocker already reported", text)
             self.assertIn("Inventing blockers from suspicion alone", text)
 
+    def test_code_review_calibrates_service_blockers_to_runtime_boundary(self):
+        source = (REPO_ROOT / "skills" / "05-quality" / "code-review" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        curated = (REPO_ROOT / "skills" / ".curated" / "code-review" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+
+        for text in (source, curated):
+            self.assertIn("quality_target_context", text)
+            self.assertIn("runtime_context", text)
+            self.assertIn("exposure_profile", text)
+            self.assertIn("Do not infer a public-service release boundary", text)
+            self.assertIn("agent-internal skill", text)
+            self.assertIn("CORS, public auth, rate limiting", text)
+
 
 if __name__ == "__main__":
     unittest.main()

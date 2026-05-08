@@ -345,6 +345,43 @@ def validate_intake_brief_schema_contract(schema: dict, schema_path: Path, manif
             f"{schema_path}: `entry_phase` enum must match manifest phases plus `cross-cutting` {sorted(expected_entry_phases)}; found {sorted(schema_entry_phases)}"
         )
 
+    expected_runtime_contexts = {
+        "agent_internal_skill",
+        "host_runtime_tool",
+        "local_dev_harness",
+        "internal_service",
+        "public_service",
+        "unknown",
+    }
+    schema_runtime_contexts = schema_nested_string_enum(
+        schema,
+        ["quality_target_context", "properties", "runtime_context"],
+        schema_path,
+        errors,
+    )
+    if schema_runtime_contexts and schema_runtime_contexts != expected_runtime_contexts:
+        errors.append(
+            f"{schema_path}: `quality_target_context.runtime_context` enum must be {sorted(expected_runtime_contexts)}; found {sorted(schema_runtime_contexts)}"
+        )
+
+    expected_exposure_profiles = {
+        "no_network_listener",
+        "localhost_only",
+        "private_network",
+        "public_internet",
+        "unknown",
+    }
+    schema_exposure_profiles = schema_nested_string_enum(
+        schema,
+        ["quality_target_context", "properties", "exposure_profile"],
+        schema_path,
+        errors,
+    )
+    if schema_exposure_profiles and schema_exposure_profiles != expected_exposure_profiles:
+        errors.append(
+            f"{schema_path}: `quality_target_context.exposure_profile` enum must be {sorted(expected_exposure_profiles)}; found {sorted(schema_exposure_profiles)}"
+        )
+
     expected_primary_workflows = load_primary_workflow_names(errors)
     schema_primary_workflows = schema_string_enum(schema, "workflow_primary", schema_path, errors)
     if schema_primary_workflows and expected_primary_workflows and schema_primary_workflows != expected_primary_workflows:

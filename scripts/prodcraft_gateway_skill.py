@@ -104,6 +104,8 @@ In partial-entry mode, keep the boundary explicit:
 
 - say: `This is partial-entry guidance, not a completed Prodcraft workflow or evidence gate.`
 - produce only an entry-level route recommendation and name the missing runtime context
+- if the quality target context is missing, ask for `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs`
+- do not assume public HTTP service from framework names, routes, CORS, HTTP clients, or model provider adapters
 - ask for the source repository path or installation of the needed public skill package before deeper execution
 - do not claim that downstream skills such as `code-review`, `testing-strategy`, or `security-audit` ran
 - do not manually simulate repository validators, workflow approval, QA evidence, or completion gates as if Prodcraft executed them

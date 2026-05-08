@@ -46,6 +46,10 @@ class ProdcraftGatewayLocatorContractTests(unittest.TestCase):
             "do not claim that downstream skills such as `code-review`, `testing-strategy`, or `security-audit` ran",
             content,
         )
+        self.assertIn("if the quality target context is missing", content)
+        self.assertIn("runtime_context", content)
+        self.assertIn("exposure_profile", content)
+        self.assertIn("do not assume public HTTP service", content)
         self.assertNotIn(str(REPO_ROOT), content)
 
 

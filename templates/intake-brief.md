@@ -18,6 +18,14 @@ Use this template whenever `intake` routes new work into a workflow.
 - intake_mode:
 - work_type:
 - entry_phase:
+- quality_target_context:
+  - runtime_context: `agent_internal_skill` / `host_runtime_tool` / `local_dev_harness` / `internal_service` / `public_service` / `unknown`
+  - exposure_profile: `no_network_listener` / `localhost_only` / `private_network` / `public_internet` / `unknown`
+  - production_target:
+  - non_targets:
+    -
+  - evidence_refs:
+    -
 - workflow_primary: `required for full/resume; omit when fast-track routing keeps the primary workflow implicit`
 - workflow_overlays: `omit when no overlay is active`
 - scope_assessment:

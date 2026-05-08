@@ -41,6 +41,22 @@ class IntakeQaPostureTests(unittest.TestCase):
         self.assertIn("mandatory gateway enforced by Prodcraft workflow contracts", findings)
         self.assertIn("Anthropic trigger-discoverability remains useful diagnostic evidence", findings)
 
+    def test_intake_requires_runtime_boundary_before_quality_handoff(self):
+        source = (REPO_ROOT / "skills" / "00-discovery" / "intake" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        curated = (REPO_ROOT / "skills" / ".curated" / "intake" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+
+        for text in (source, curated):
+            self.assertIn("quality_target_context", text)
+            self.assertIn("runtime_context", text)
+            self.assertIn("exposure_profile", text)
+            self.assertIn("agent-internal skill", text)
+            self.assertIn("public service", text)
+            self.assertIn("must calibrate quality and security handoff", text)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -58,6 +58,23 @@ class SecurityAuditTestedStatusTests(unittest.TestCase):
         self.assertEqual("security-audit", artifact_flow["security-report"]["produced_by"])
         self.assertIn("release-management", artifact_flow["security-report"]["consumed_by"])
 
+    def test_security_audit_calibrates_to_exposure_without_dropping_baseline(self):
+        source = (
+            REPO_ROOT / "skills" / "05-quality" / "security-audit" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+        curated = (
+            REPO_ROOT / "skills" / ".curated" / "security-audit" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+
+        for text in (source, curated):
+            self.assertIn("quality_target_context", text)
+            self.assertIn("runtime_context", text)
+            self.assertIn("exposure_profile", text)
+            self.assertIn("agent-internal skill", text)
+            self.assertIn("prompt injection", text)
+            self.assertIn("Do not downgrade", text)
+            self.assertIn("Escalate to full service-style audit", text)
+
 
 if __name__ == "__main__":
     unittest.main()

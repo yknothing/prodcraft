@@ -10,6 +10,7 @@ Verify that the implementation meets the specification, acceptance criteria, and
 - Unit and integration tests pass in CI.
 - Code is ready for review.
 - Reviewed task, contract, and architecture context are available for the reviewer.
+- The intake brief includes `quality_target_context` with `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs`.
 
 ## Entry Criteria
 
@@ -17,6 +18,7 @@ Verify that the implementation meets the specification, acceptance criteria, and
 - Automated test suite passes with no known failures.
 - Task/contract context is documented and available for validation.
 - Test environments are provisioned and configured.
+- Quality target context is explicit enough to distinguish an agent-internal skill, host runtime tool, local harness, internal service, or public service.
 
 ## Exit Criteria (Quality Gate)
 
@@ -50,6 +52,8 @@ performance-audit ────────────────────�
 ```
 
 Code review establishes the reviewer-side findings. `receiving-code-review` governs the author-side follow-up on those findings before broader testing closes out the phase. `testing-strategy` decides the layered plan; `e2e-scenario-design` deepens the scenario and edge-case layers when shallow E2E coverage would otherwise hide release risk. Security and performance audits can run in parallel with functional testing. All must pass for QA sign-off.
+
+Do not assume public HTTP service from framework or transport details. `security-audit`, `testing-strategy`, and `e2e-scenario-design` are calibrated branches, not automatic service-style follow-ups. For agent-internal skill or host-runtime work, the quality target may be trigger behavior, artifact safety, tool boundaries, validators, curated export, and runtime portability. For public service work, browser/API contracts, CORS, public auth, rate limiting, and internet abuse paths remain in scope when supported by evidence.
 
 In brownfield work, quality review must verify that coexistence and unsupported release-boundary behavior are still protected before broader QA sign-off proceeds.
 

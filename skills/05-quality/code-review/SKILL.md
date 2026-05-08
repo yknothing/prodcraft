@@ -4,6 +4,7 @@ description: Use when a concrete code change is ready for review and the reviewe
 metadata:
   phase: 05-quality
   inputs:
+  - intake-brief
   - source-code
   - test-suite
   - task-list
@@ -37,10 +38,19 @@ Code review is the last quality gate before code enters the shared codebase. It 
 - **task-list**: The reviewed implementation slice or task context that defines what was actually supposed to land now.
 - **api-contract**: The contract or externally visible behavior that the changeset must preserve or implement.
 - **architecture-doc**: System design context to verify the change aligns with architectural decisions.
+- **intake-brief**: Must include `quality_target_context` with `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs`.
 
 In a lifecycle-aware system, review should not silently approve code that closes unresolved upstream questions by accident. Brownfield coexistence, unsupported release-1 flows, and contract boundaries are review concerns, not "later" concerns.
 
 ## Process
+
+### Step 0: Calibrate the Review Target
+
+Read `quality_target_context` before assigning severity. Confirm whether the reviewed target is an agent-internal skill, host runtime tool, local harness, internal service, or public HTTP service.
+
+Do not infer a public-service release boundary from framework shape, route names, provider adapters, or HTTP client usage alone. For an agent-internal skill, focus on skill contract correctness, trigger behavior, tool/file/network side effects, prompt injection, artifact leakage, command safety, dependency execution risk, and portability evidence. CORS, public auth, rate limiting, browser sessions, and public API contracts become blockers only when `exposure_profile` or direct evidence shows that the target is actually a public service.
+
+If `quality_target_context` is missing or contradicts the code, stop and ask for the missing boundary or route a `course-correction-note` instead of continuing with assumed service blockers.
 
 ### Step 1: Understand the Context
 

@@ -173,6 +173,27 @@ Entry skills should minimize user burden:
 - `problem-framing`: default to 1-3 additional questions, never more than 5
 - do not ask another question unless its answer could change the route, direction, or risk posture
 
+## Quality Target Context Gate
+
+Before entering any `05-quality` skill, confirm the approved `intake-brief` includes `quality_target_context`:
+
+- `runtime_context`
+- `exposure_profile`
+- `production_target`
+- `non_targets`
+- `evidence_refs`
+
+Do not assume public HTTP service from implementation details such as Flask routes, HTTP clients, CORS configuration, model provider adapters, or API-shaped filenames. A codebase can use HTTP internally while the reviewed product target is an agent-internal skill, host runtime tool, or local harness.
+
+If the target context is missing or contradictory, ask one clarifying question when it can change review severity. If the mismatch is discovered after implementation, produce a `course-correction-note` instead of continuing the quality chain. Do not run `security-audit`, `testing-strategy`, or `e2e-scenario-design` as a service-style sequence until the quality target context is explicit.
+
+Use this calibration:
+
+- `agent_internal_skill`, `host_runtime_tool`, or `local_dev_harness`: focus review on skill contract, trigger behavior, prompt injection, command safety, tool/file/network side effects, secrets and PII in artifacts, dependency execution risk, schema validators, curated export, and runtime portability probes.
+- `internal_service`: check service boundaries, private-network exposure, authentication or caller assumptions, logs, dependency risk, and integration contracts that actually exist.
+- `public_service` or `public_internet`: keep full public service review. CORS, public auth, rate limiting, browser-facing behavior, OpenAPI contracts, and abuse controls may be blocking when evidence supports that exposure.
+- `unknown`: record uncertainty, avoid invented release blockers, and route to the smallest clarification or upstream context artifact that can settle the boundary.
+
 ## Phase Transition Protocol
 
 When transitioning between phases:
