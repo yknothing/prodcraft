@@ -28,11 +28,21 @@ def render_prodcraft_skill(
         problem_framing_ref = "`problem-framing`"
         gateway_ref = "`skills/_gateway.md` in the source repository"
         workflows_ref = "`workflows/` in the source repository"
+        repo_source_line = "- Canonical repo source: see the source repository"
+        locator_note = (
+            "- No machine-specific locator is bundled with the curated package; if the source repository is not "
+            "available, rely only on sibling public skill packages that are actually installed."
+        )
     else:
-        intake_ref = f"`{repo_root / 'skills' / '00-discovery' / 'intake' / 'SKILL.md'}`"
-        problem_framing_ref = f"`{repo_root / 'skills' / '00-discovery' / 'problem-framing' / 'SKILL.md'}`"
-        gateway_ref = f"`{repo_root / 'skills' / '_gateway.md'}`"
-        workflows_ref = f"`{repo_root / 'workflows'}`"
+        intake_ref = "`intake` from the canonical repository recorded in `prodcraft-runtime.json`"
+        problem_framing_ref = "`problem-framing` from the canonical repository recorded in `prodcraft-runtime.json`"
+        gateway_ref = "the `gateway_path` recorded in `prodcraft-runtime.json`"
+        workflows_ref = "the `workflow_root` recorded in `prodcraft-runtime.json`"
+        repo_source_line = "- Canonical repo source: recorded in `prodcraft-runtime.json` for this global install"
+        locator_note = (
+            "- Machine locator: read `prodcraft-runtime.json` beside this `SKILL.md` when available; it records "
+            "the canonical source repository, gateway file, and source skill root for this global install."
+        )
 
     frontmatter = {
         "name": "prodcraft",
@@ -76,6 +86,28 @@ The curated install surface is a stable packaging contract, not a promise that e
 - deeper lifecycle skills usually add value after route selection, not before it
 - prefer routed handoff over forcing generic auto-discovery for architecture, planning, quality, and operations skills
 
+## Runtime Resolution
+
+A `prodcraft` directory that contains only this `SKILL.md` is a valid gateway install. It is not evidence that downstream Prodcraft skills are missing. Do not search for downstream skills inside the `prodcraft` directory.
+
+Resolve the actual operating context in this order:
+
+1. For a global install, read `prodcraft-runtime.json` beside this file when it exists, then use its `gateway_path`, `source_skills_root`, `workflow_root`, and `canonical_repo_root` fields.
+2. In global mode, trust the current workspace as the source repository only when it is the locator's `canonical_repo_root` or inside that root, and it also contains Prodcraft identity files such as `CLAUDE.md`, `manifest.yml`, `skills/_gateway.md`, `schemas/distribution/public-skill-registry.json`, and `scripts/validate_prodcraft.py`.
+3. Without a trusted global locator, treat a source repository as authoritative only when the user or higher-priority runtime context explicitly identifies it as the Prodcraft source repository and the same identity files are present.
+4. Look for sibling skill packages beside `prodcraft`, such as `../intake/SKILL.md`, `../code-review/SKILL.md`, `../testing-strategy/SKILL.md`, and `../security-audit/SKILL.md`. Sibling packages provide public skill guidance; they do not provide source-repository authority.
+5. If neither a trusted source repository nor sibling public skill packages can be resolved, treat the runtime as a partial entry install.
+
+Use explicit file reads for these checks. Do not recursively search arbitrary parent directories or run shell commands to discover a substitute repository.
+
+In partial-entry mode, keep the boundary explicit:
+
+- say: `This is partial-entry guidance, not a completed Prodcraft workflow or evidence gate.`
+- produce only an entry-level route recommendation and name the missing runtime context
+- ask for the source repository path or installation of the needed public skill package before deeper execution
+- do not claim that downstream skills such as `code-review`, `testing-strategy`, or `security-audit` ran
+- do not manually simulate repository validators, workflow approval, QA evidence, or completion gates as if Prodcraft executed them
+
 ## Observability
 
 When Prodcraft is chosen, preserve routing observability:
@@ -83,6 +115,7 @@ When Prodcraft is chosen, preserve routing observability:
 - why Prodcraft was invoked
 - which entry skill was chosen
 - what next skill or workflow was selected
+- which source repository, runtime locator, or sibling skill package was used
 - whether any global skill override experiment is active
 
 ## Distribution
@@ -90,7 +123,8 @@ When Prodcraft is chosen, preserve routing observability:
 - Install surface: `{install_surface}`
 - Packaging stability: `{public_stability}`
 - Capability readiness: `{public_readiness}`
-{f"- Canonical repo source: `{repo_root}`" if install_surface != "curated" else "- Canonical repo source: see the source repository"}
+{repo_source_line}
 - Gateway contract: {gateway_ref}
+{locator_note}
 """
     return f"---\n{yaml.safe_dump(frontmatter, sort_keys=False, width=10000).strip()}\n---\n\n{body}"

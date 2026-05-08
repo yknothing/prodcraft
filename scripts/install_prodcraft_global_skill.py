@@ -24,6 +24,7 @@ DEFAULT_TARGET_ROOT = Path.home() / ".agents" / "skills"
 DEFAULT_STATE_PATH = REPO_ROOT / "build" / "prodcraft-global-skill-state.json"
 DEFAULT_LOG_PATH = REPO_ROOT / "build" / "prodcraft-global-skill-events.jsonl"
 SKILL_NAME = "prodcraft"
+RUNTIME_LOCATOR_FILENAME = "prodcraft-runtime.json"
 
 
 def utc_now_iso() -> str:
@@ -49,6 +50,25 @@ def read_state(path: Path) -> Dict[str, object]:
 
 def skill_dir(target_root: Path) -> Path:
     return target_root / SKILL_NAME
+
+
+def runtime_locator_path(target_root: Path) -> Path:
+    return skill_dir(target_root) / RUNTIME_LOCATOR_FILENAME
+
+
+def runtime_locator_payload(*, target_root: Path, repo_root: Path) -> Dict[str, object]:
+    return {
+        "schema_version": "prodcraft-runtime-locator.v1",
+        "skill_name": SKILL_NAME,
+        "install_surface": "global",
+        "global_skill_path": str(skill_dir(target_root)),
+        "canonical_repo_root": str(repo_root),
+        "gateway_path": str(repo_root / "skills" / "_gateway.md"),
+        "source_skills_root": str(repo_root / "skills"),
+        "workflow_root": str(repo_root / "workflows"),
+        "curated_sibling_root_hint": str(target_root),
+        "singleton_gateway_directory_is_expected": True,
+    }
 
 
 def log_event(
@@ -97,11 +117,15 @@ def persist_state(
 
 def get_status(*, target_root: Path, state_path: Path) -> Dict[str, object]:
     skill_path = skill_dir(target_root)
+    locator_path = runtime_locator_path(target_root)
     snapshot = {
         "status": "installed" if skill_path.exists() else "missing",
         "skill_exists": skill_path.exists(),
         "skill_path": str(skill_path),
     }
+    if skill_path.exists():
+        snapshot["runtime_locator_path"] = str(locator_path)
+        snapshot["runtime_locator_exists"] = locator_path.exists()
     state = read_state(state_path)
     if state:
         snapshot["state_file"] = str(state_path)
@@ -129,6 +153,10 @@ def install_skill(
             public_stability="beta",
             public_readiness="core",
         ),
+        encoding="utf-8",
+    )
+    (target / RUNTIME_LOCATOR_FILENAME).write_text(
+        json.dumps(runtime_locator_payload(target_root=target_root, repo_root=repo_root), indent=2) + "\n",
         encoding="utf-8",
     )
 

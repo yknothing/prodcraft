@@ -23,6 +23,7 @@ Common confusion:
 - the repository may contain many more authored skills than the installer shows
 - `manifest.yml` may mark many more skills as `tested` than the installer shows
 - `npx skills` should count only the generated curated surface, not the full `skills/` tree and not every manifest entry
+- a singleton `prodcraft/SKILL.md` gateway package is expected; do not treat that directory as the complete downstream skill inventory
 
 Promotion to `tested` is a repository maturity decision. Promotion into `skills/.curated/` is a separate public packaging decision.
 
@@ -49,6 +50,28 @@ The generated curated index publishes only `portability` and public caveats; int
 - public skill names must remain stable across `update`
 - deprecations require a migration path and at least one full release cycle of overlap
 - exported skills must not be classified as `blocked` in the portability registry
+
+## Gateway Package Resolution
+
+The public `prodcraft` package is an entry gateway. It may be installed by
+itself, and the matching global install under `~/.agents/skills/prodcraft` may
+also contain only `SKILL.md` plus a runtime locator. That shape is valid.
+
+Agent runtimes should resolve downstream context in this order:
+
+1. For a global install, use `prodcraft-runtime.json` beside the gateway skill.
+   Trust the current workspace as the source repository only when it is the
+   locator's `canonical_repo_root` or inside that root and it has the expected
+   Prodcraft identity files.
+2. Without a trusted locator, use a source repository only when the user or host
+   runtime explicitly identifies it as the Prodcraft repository.
+3. For a public install, use sibling packages such as `intake`, `code-review`,
+   `testing-strategy`, or `security-audit` only when they are actually present.
+4. If none of those contexts resolve, stay in entry-level guidance and ask for
+   the missing repository or package context.
+
+Do not claim repository workflow gates, validators, evidence records, or
+downstream QA skills ran from a gateway-only package.
 
 ## Tooling
 

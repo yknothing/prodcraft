@@ -30,6 +30,7 @@ REQUIRED_PROBES = (
     "AR04-P03",
     "AR04-P04",
     "AR04-P05",
+    "AR04-P06",
 )
 
 
@@ -67,6 +68,7 @@ class AR04LivePortabilityPlanTests(unittest.TestCase):
         self.assertIn("code-review", content)
         self.assertIn("course-correction/ops", content)
         self.assertIn("public install self-description", content)
+        self.assertIn("global-gateway-only", content)
 
     def test_no_promotion_rule_requires_live_curated_only_evidence(self):
         content = read_plan()

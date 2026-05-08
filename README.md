@@ -149,6 +149,8 @@ Portability classifications are:
 
 Current public skills are conservatively classified as `portable_with_caveat`. The generated `skills/.curated/index.json` exposes only public-safe portability fields: `portability` and, when needed, `public_caveat_text`. Hidden dependency notes stay in the repository registry.
 
+The generated `prodcraft` package is a gateway package. A single `prodcraft/SKILL.md` in a global or public install is expected and is not evidence that downstream skills are missing. Agents must resolve downstream context from a trusted source repository, a global runtime locator, or sibling public skill packages; if those cannot be resolved, they should stay in entry-level guidance instead of claiming repository-grade workflow, validator, QA, or completion gates have run. For a global install, the current workspace is trusted only when it matches the locator's canonical repository root or has been explicitly identified by the user or host runtime as the Prodcraft source repository.
+
 Regenerate and validate the curated surface:
 
 ```bash
@@ -325,6 +327,8 @@ Prodcraft does **not** ship a standalone `/orchestrator` command. The orchestrat
 ## Operator Notes
 
 For gray-rollout or production cutovers where Prodcraft should become the default software-development entry system, use `scripts/install_prodcraft_global_skill.py` to manage the global `~/.agents/skills/prodcraft` gateway and `scripts/archive_superpowers_skills.py` to archive or restore conflicting global superpowers skills. Both scripts write reversible state and event logs under `build/`, which is gitignored.
+
+The global `prodcraft` install is also a singleton gateway directory. Its installer writes `prodcraft-runtime.json` beside `SKILL.md` so agent runtimes can find the canonical repository, gateway file, source skill root, and workflows without mistaking the gateway directory for a complete skill inventory.
 
 For routine local QA, prefer the installed `gemini` CLI where this repository asks for model-backed evals. Use the vendored Anthropic trigger harness only when official Claude trigger behavior is the object under test.
 
