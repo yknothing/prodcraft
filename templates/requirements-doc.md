@@ -7,9 +7,9 @@ Use this template when `requirements-engineering` converts approved upstream dir
 - artifact: `requirements-doc`
 - schema_version: `requirements-doc.v1`
 - status:
-- source_language:
+- source_language: `BCP-47 locale such as en or zh-Hans, or mixed`
 - artifact_record_language: `en`
-- user_presentation_locale:
+- user_presentation_locale: `BCP-47 locale`
 
 ## Source Context
 

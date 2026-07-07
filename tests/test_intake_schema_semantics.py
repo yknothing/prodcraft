@@ -92,16 +92,19 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
 
     def test_language_boundary_fields_match_repo_policy(self):
         self.assertEqual(
-            {"en", "zh", "mixed"},
-            set(self.schema["properties"]["source_language"]["enum"]),
+            [
+                {"type": "string", "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$"},
+                {"const": "mixed"},
+            ],
+            self.schema["properties"]["source_language"]["oneOf"],
         )
         self.assertEqual(
             "en",
             self.schema["properties"]["artifact_record_language"]["const"],
         )
         self.assertEqual(
-            {"en", "zh"},
-            set(self.schema["properties"]["user_presentation_locale"]["enum"]),
+            "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$",
+            self.schema["properties"]["user_presentation_locale"]["pattern"],
         )
 
     def test_runtime_boundary_fields_define_quality_calibration_axis(self):
@@ -183,6 +186,14 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
         }
 
         jsonschema.validate(valid_full_payload, self.schema)
+        jsonschema.validate(
+            {
+                **valid_full_payload,
+                "source_language": "fr-FR",
+                "user_presentation_locale": "fr",
+            },
+            self.schema,
+        )
 
         valid_fast_track_payload = {
             **valid_full_payload,
@@ -199,8 +210,8 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
             ("work_type", "New Feture"),
             ("entry_phase", "whatever"),
             ("workflow_primary", "kanban"),
-            ("source_language", "fr"),
-            ("user_presentation_locale", "fr"),
+            ("source_language", "not_a_locale"),
+            ("user_presentation_locale", "not_a_locale"),
         )
         for field_name, invalid_value in invalid_cases:
             payload = dict(valid_full_payload)

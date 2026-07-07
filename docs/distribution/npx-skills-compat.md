@@ -2,14 +2,17 @@
 
 Prodcraft supports the de facto Agent Skills installation flow:
 
-- `npx skills add <repo>`
-- `npx skills add <repo> --skill <name>`
+- `npx skills add <repo-url>/skills/.curated`
+- `npx skills add <repo-url>/skills/.curated --skill <name>`
 - `npx skills update`
 
 ## Public Install Surface
 
 - Canonical public install surface: `skills/.curated/`
 - Canonical authoring source: lifecycle directories under `skills/00-discovery/` through `skills/cross-cutting/`
+- Repository-root discovery is not the public contract unless the installer is
+  known to filter by the public registry. The curated directory is the install
+  source that matches the checked-in public index.
 
 ## Why `.curated` Exists
 

@@ -17,9 +17,17 @@
     "artifact": { "const": "requirements-doc" },
     "schema_version": { "const": "requirements-doc.v1" },
     "status": { "enum": ["draft", "reviewed", "approved"] },
-    "source_language": { "enum": ["en", "zh", "mixed"] },
+    "source_language": {
+      "oneOf": [
+        { "type": "string", "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$" },
+        { "const": "mixed" }
+      ]
+    },
     "artifact_record_language": { "const": "en" },
-    "user_presentation_locale": { "enum": ["en", "zh"] },
+    "user_presentation_locale": {
+      "type": "string",
+      "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$"
+    },
     "requirements": {
       "type": "array",
       "items": { "type": "string" }

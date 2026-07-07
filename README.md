@@ -131,12 +131,15 @@ This means:
 Prodcraft supports the public Agent Skills install flow:
 
 ```bash
-npx skills add <repo-url>
-npx skills add <repo-url> --skill intake
+npx skills add <repo-url>/skills/.curated
+npx skills add <repo-url>/skills/.curated --skill intake
 npx skills update
 ```
 
 The canonical public beta install surface is `skills/.curated/`. It is generated from repository registries and should not be edited by hand.
+Repository-root discovery is not the public contract unless the installer has
+explicit registry-aware filtering; root discovery includes repository-local
+authoring packages that are not part of the curated public surface.
 
 Public export is governed by two registries:
 
@@ -311,7 +314,7 @@ Quality gates are not magic. They are useful only when the required state, artif
 ### Use the public skill surface
 
 ```bash
-npx skills add <repo-url> --skill prodcraft
+npx skills add <repo-url>/skills/.curated --skill prodcraft
 ```
 
 The public surface is useful for portable guidance and entry routing. Full governance guarantees require the source repository contracts, schemas, validators, and evidence paths.

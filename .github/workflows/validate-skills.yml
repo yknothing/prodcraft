@@ -2,6 +2,26 @@
 name: Validate Skills
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'skills/**'
+      - 'workflows/**'
+      - 'personas/**'
+      - 'docs/**'
+      - 'schemas/**'
+      - 'rules/**'
+      - 'eval/**'
+      - 'tests/**'
+      - '.github/workflows/validate-skills.yml'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'manifest.yml'
+      - 'README.md'
+      - 'README.*.md'
+      - 'scripts/**'
+      - 'templates/**'
   pull_request:
     paths:
       - 'skills/**'

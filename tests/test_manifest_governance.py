@@ -13,6 +13,16 @@ PUBLIC_SKILL_PORTABILITY_PATH = REPO_ROOT / "schemas" / "distribution" / "public
 
 
 class ManifestGovernanceTests(unittest.TestCase):
+    def test_ci_validates_main_pushes_and_pull_requests(self):
+        workflow = yaml.safe_load(
+            (REPO_ROOT / ".github" / "workflows" / "validate-skills.yml").read_text(encoding="utf-8")
+        )
+        triggers = workflow[True]
+
+        self.assertIn("pull_request", triggers)
+        self.assertIn("push", triggers)
+        self.assertEqual(["main"], triggers["push"]["branches"])
+
     def test_distribution_registry_declares_public_readiness(self):
         registry = json.loads(PUBLIC_SKILL_REGISTRY_PATH.read_text(encoding="utf-8"))
 
@@ -27,6 +37,35 @@ class ManifestGovernanceTests(unittest.TestCase):
         for skill in manifest["skills"]:
             self.assertIn("qa_tier", skill, skill["name"])
             self.assertIn(skill["qa_tier"], {"critical", "standard"})
+
+    def test_planned_skills_are_explicit_registry_entries(self):
+        manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
+        planned = manifest.get("planned_skills", [])
+        planned_names = {entry["name"] for entry in planned}
+        implemented_names = {entry["name"] for entry in manifest["skills"]}
+        phases = {entry["id"] for entry in manifest["phases"]}
+
+        self.assertIn("migration-strategy", planned_names)
+        self.assertIn("performance-audit", planned_names)
+        self.assertIn("capacity-planning", planned_names)
+        self.assertEqual(set(), planned_names & implemented_names)
+        for entry in planned:
+            self.assertIn(entry["phase"], phases | {"cross-cutting"})
+            self.assertGreater(len(entry["rationale"]), 0)
+
+    def test_examples_key_skills_resolve_to_implemented_or_planned_skills(self):
+        manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
+        allowed = {entry["name"] for entry in manifest["skills"]}
+        allowed.update(entry["name"] for entry in manifest.get("planned_skills", []))
+        examples = (REPO_ROOT / "examples" / "README.md").read_text(encoding="utf-8")
+
+        for line in examples.splitlines():
+            if "Key skills:" not in line:
+                continue
+            _, raw_skills = line.split("Key skills:", 1)
+            for raw_token in raw_skills.split(","):
+                skill_name = raw_token.strip().strip(".").strip("` ")
+                self.assertIn(skill_name, allowed)
 
     def test_non_draft_skills_have_minimum_review_artifacts(self):
         manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))

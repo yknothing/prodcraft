@@ -422,6 +422,28 @@ skills:
     benchmark_results_path: eval/05-quality/code-review/isolated-benchmark-review.md
     findings_path: eval/05-quality/code-review/findings.md
     integration_test_path: eval/05-quality/code-review/changeset-review.md
+- name: implementation-alignment-review
+  phase: 05-quality
+  file: skills/05-quality/implementation-alignment-review/SKILL.md
+  status: review
+  qa_tier: critical
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/05-quality/implementation-alignment-review/evals/eval-strategy.md
+    benchmark_plan_path: eval/05-quality/implementation-alignment-review/isolated-benchmark-plan.md
+    findings_path: eval/05-quality/implementation-alignment-review/findings.md
+- name: implementation-integrity-audit
+  phase: 05-quality
+  file: skills/05-quality/implementation-integrity-audit/SKILL.md
+  status: review
+  qa_tier: critical
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/05-quality/implementation-integrity-audit/evals/eval-strategy.md
+    benchmark_plan_path: eval/05-quality/implementation-integrity-audit/isolated-benchmark-plan.md
+    findings_path: eval/05-quality/implementation-integrity-audit/findings.md
 - name: receiving-code-review
   phase: 05-quality
   file: skills/05-quality/receiving-code-review/SKILL.md
@@ -676,21 +698,27 @@ planned_skills:
 - name: pair-programming
   phase: 04-implementation
   target_file: skills/04-implementation/pair-programming/SKILL.md
+  rationale: Planned implementation collaboration skill; not yet part of routed workflows.
 - name: performance-audit
   phase: 05-quality
   target_file: skills/05-quality/performance-audit/SKILL.md
+  rationale: Planned producer for performance-report artifacts in quality gates.
 - name: feature-flags
   phase: 06-delivery
   target_file: skills/06-delivery/feature-flags/SKILL.md
+  rationale: Planned delivery control for staged rollout and deprecation workflows.
 - name: capacity-planning
   phase: 07-operations
   target_file: skills/07-operations/capacity-planning/SKILL.md
+  rationale: Planned consumer for performance and monitoring artifacts.
 - name: migration-strategy
   phase: 08-evolution
   target_file: skills/08-evolution/migration-strategy/SKILL.md
+  rationale: Planned brownfield modernization skill referenced by evolution routing.
 - name: deprecation
   phase: 08-evolution
   target_file: skills/08-evolution/deprecation/SKILL.md
+  rationale: Planned evolution/delivery bridge for migration and API lifecycle work.
 workflows:
 - name: spec-driven
   file: workflows/spec-driven.md
@@ -838,6 +866,8 @@ artifact_flow:
   - feasibility-study
   - requirements-engineering
   - code-review
+  - implementation-alignment-review
+  - implementation-integrity-audit
   - security-audit
   - testing-strategy
 - artifact: course-correction-note
@@ -908,6 +938,7 @@ artifact_flow:
   - tdd
   - testing-strategy
   - code-review
+  - implementation-alignment-review
 - artifact: architecture-doc
   produced_by: system-design
   consumed_by:
@@ -968,6 +999,8 @@ artifact_flow:
   - tdd
   - feature-development
   - code-review
+  - implementation-alignment-review
+  - implementation-integrity-audit
   - testing-strategy
   - e2e-scenario-design
   - ci-cd
@@ -1000,6 +1033,8 @@ artifact_flow:
   - systematic-debugging
   - refactoring
   - code-review
+  - implementation-alignment-review
+  - implementation-integrity-audit
   - testing-strategy
   - e2e-scenario-design
   - security-audit
@@ -1015,6 +1050,8 @@ artifact_flow:
   - feature-development
   - refactoring
   - code-review
+  - implementation-alignment-review
+  - implementation-integrity-audit
   - ci-cd
   - testing-strategy
 - artifact: execution-batch-plan
@@ -1037,7 +1074,10 @@ artifact_flow:
   - incident-response
   - retrospective
 - artifact: review-report
-  produced_by: code-review
+  produced_by:
+  - code-review
+  - implementation-alignment-review
+  - implementation-integrity-audit
   consumed_by:
   - receiving-code-review
   - feature-development

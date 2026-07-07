@@ -122,6 +122,8 @@ PUBLIC_SURFACE_PORTABILITY = {
     "blocked",
 }
 
+BCP_47_LOCALE_PATTERN = r"^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$"
+
 CRITICAL_REVIEW_DEPTH_PATHS = {
     "benchmark_plan_path",
     "benchmark_results_path",
@@ -225,6 +227,29 @@ def schema_string_enum(schema: dict, field_name: str, schema_path: Path, errors:
         return set()
 
     return set(values)
+
+
+def schema_locale_field(field: object, field_name: str, schema_path: Path, errors: list[str]) -> None:
+    if not isinstance(field, dict):
+        errors.append(f"{schema_path}: field `{field_name}` must be declared in `properties`")
+        return
+    if field.get("type") != "string" or field.get("pattern") != BCP_47_LOCALE_PATTERN:
+        errors.append(
+            f"{schema_path}: field `{field_name}` must be a BCP-47-style locale string using pattern {BCP_47_LOCALE_PATTERN}"
+        )
+
+
+def schema_source_language_field(field: object, field_name: str, schema_path: Path, errors: list[str]) -> None:
+    if not isinstance(field, dict):
+        errors.append(f"{schema_path}: field `{field_name}` must be declared in `properties`")
+        return
+    one_of = field.get("oneOf")
+    expected_locale_branch = {"type": "string", "pattern": BCP_47_LOCALE_PATTERN}
+    expected_mixed_branch = {"const": "mixed"}
+    if not isinstance(one_of, list) or expected_locale_branch not in one_of or expected_mixed_branch not in one_of:
+        errors.append(
+            f"{schema_path}: field `{field_name}` must allow BCP-47-style locale strings and the explicit `mixed` sentinel"
+        )
 
 
 def schema_nested_string_enum(schema: dict, path_parts: list[str], schema_path: Path, errors: list[str]) -> set[str]:
@@ -411,19 +436,14 @@ def validate_intake_brief_schema_contract(schema: dict, schema_path: Path, manif
 
 
 def validate_language_boundary_schema_contract(schema: dict, schema_path: Path, errors: list[str]) -> None:
-    source_language_enum = schema_string_enum(schema, "source_language", schema_path, errors)
-    if source_language_enum and source_language_enum != {"en", "zh", "mixed"}:
-        errors.append(
-            f"{schema_path}: `source_language` enum must be ['en', 'mixed', 'zh']; found {sorted(source_language_enum)}"
-        )
-
-    presentation_locale_enum = schema_string_enum(schema, "user_presentation_locale", schema_path, errors)
-    if presentation_locale_enum and presentation_locale_enum != {"en", "zh"}:
-        errors.append(
-            f"{schema_path}: `user_presentation_locale` enum must be ['en', 'zh']; found {sorted(presentation_locale_enum)}"
-        )
-
     properties = schema.get("properties", {})
+    if not isinstance(properties, dict):
+        errors.append(f"{schema_path}: `properties` must be a mapping")
+        return
+
+    schema_source_language_field(properties.get("source_language"), "source_language", schema_path, errors)
+    schema_locale_field(properties.get("user_presentation_locale"), "user_presentation_locale", schema_path, errors)
+
     artifact_record_language = properties.get("artifact_record_language", {}) if isinstance(properties, dict) else {}
     if not isinstance(artifact_record_language, dict) or artifact_record_language.get("const") != "en":
         errors.append(f"{schema_path}: `artifact_record_language` must be a const `en` under current repo policy")
@@ -793,6 +813,89 @@ def validate_verification_record_instance_contract(record: dict, source: str, er
             )
 
 
+def load_artifact_instance(path: Path, errors: list[str]) -> dict:
+    try:
+        text = path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        errors.append(f"{path}: artifact instance file does not exist")
+        return {}
+    except Exception as exc:
+        errors.append(f"{path}: failed to read artifact instance: {exc}")
+        return {}
+
+    try:
+        if path.suffix.lower() == ".json":
+            payload = json.loads(text)
+        else:
+            payload = yaml.safe_load(text)
+    except Exception as exc:
+        errors.append(f"{path}: failed to parse artifact instance as JSON/YAML: {exc}")
+        return {}
+
+    if not isinstance(payload, dict):
+        errors.append(f"{path}: artifact instance must be a mapping/object")
+        return {}
+    return payload
+
+
+def validate_artifact_instance(path: Path, errors: list[str]) -> None:
+    payload = load_artifact_instance(path, errors)
+    if not payload:
+        return
+
+    artifact_name = payload.get("artifact")
+    schema_version = payload.get("schema_version")
+    if not isinstance(artifact_name, str) or not artifact_name:
+        errors.append(f"{path}: artifact instance must include non-empty `artifact`")
+        return
+    if not isinstance(schema_version, str) or not schema_version:
+        errors.append(f"{path}: artifact instance must include non-empty `schema_version`")
+        return
+
+    registry = load_yaml_file(ARTIFACT_REGISTRY_PATH, errors)
+    artifacts = registry.get("artifacts", {})
+    if not isinstance(artifacts, dict):
+        errors.append(f"{ARTIFACT_REGISTRY_PATH}: `artifacts` must be a mapping")
+        return
+    entry = artifacts.get(artifact_name)
+    if not isinstance(entry, dict):
+        errors.append(f"{path}: artifact `{artifact_name}` is not registered in {ARTIFACT_REGISTRY_PATH}")
+        return
+    expected_schema_version = entry.get("schema_version")
+    if schema_version != expected_schema_version:
+        errors.append(
+            f"{path}: artifact `{artifact_name}` declares schema_version `{schema_version}`; expected `{expected_schema_version}`"
+        )
+
+    schema_rel = entry.get("schema_path")
+    if not isinstance(schema_rel, str):
+        errors.append(f"{ARTIFACT_REGISTRY_PATH}: artifact `{artifact_name}` is missing `schema_path`")
+        return
+    schema_path = ROOT / schema_rel
+    try:
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        errors.append(f"{schema_path}: failed to parse JSON schema: {exc}")
+        return
+
+    try:
+        import jsonschema
+    except Exception as exc:
+        errors.append(f"{path}: jsonschema is required to validate artifact instances: {exc}")
+        return
+
+    try:
+        jsonschema.validate(payload, schema)
+    except jsonschema.ValidationError as exc:
+        location = ".".join(str(part) for part in exc.absolute_path)
+        suffix = f" at `{location}`" if location else ""
+        errors.append(f"{path}: artifact `{artifact_name}` failed schema validation{suffix}: {exc.message}")
+        return
+
+    if artifact_name == "verification-record":
+        validate_verification_record_instance_contract(payload, str(path), errors)
+
+
 def snapshot_file_tree(root: Path) -> dict[str, bytes]:
     return {
         str(path.relative_to(root)): path.read_bytes()
@@ -1014,6 +1117,36 @@ def validate_manifest(errors: list[str]) -> dict:
         if not path.exists():
             errors.append(f"{MANIFEST_PATH}: missing referenced workflow file `{entry['file']}`")
 
+    phase_ids = {
+        entry.get("id")
+        for entry in manifest.get("phases", [])
+        if isinstance(entry, dict) and isinstance(entry.get("id"), str)
+    }
+    skill_names = manifest_skill_names(manifest)
+    planned_names: set[str] = set()
+    planned_skills = manifest.get("planned_skills", [])
+    if planned_skills is not None and not isinstance(planned_skills, list):
+        errors.append(f"{MANIFEST_PATH}: `planned_skills` must be a list when present")
+    for entry in planned_skills if isinstance(planned_skills, list) else []:
+        if not isinstance(entry, dict):
+            errors.append(f"{MANIFEST_PATH}: planned skill entries must be mappings")
+            continue
+        name = entry.get("name")
+        phase = entry.get("phase")
+        rationale = entry.get("rationale")
+        if not isinstance(name, str) or not name:
+            errors.append(f"{MANIFEST_PATH}: planned skill entries must include non-empty `name`")
+            continue
+        if name in planned_names:
+            errors.append(f"{MANIFEST_PATH}: duplicate planned skill `{name}`")
+        planned_names.add(name)
+        if name in skill_names:
+            errors.append(f"{MANIFEST_PATH}: planned skill `{name}` already exists in `skills`")
+        if phase not in phase_ids and phase != "cross-cutting":
+            errors.append(f"{MANIFEST_PATH}: planned skill `{name}` has invalid phase `{phase}`")
+        if not isinstance(rationale, str) or not rationale:
+            errors.append(f"{MANIFEST_PATH}: planned skill `{name}` must include rationale")
+
     return manifest
 
 
@@ -1112,6 +1245,10 @@ def validate_artifact_flow(manifest: dict, errors: list[str]) -> None:
             return {item for item in value if isinstance(item, str)}
         return set()
 
+    skills = manifest_skill_names(manifest)
+    planned_skills = manifest_planned_skill_names(manifest)
+    allowed_skill_tokens = skills | planned_skills
+
     artifact_flow = {
         entry["artifact"]: {
             "produced_by": producer_set(entry.get("produced_by")),
@@ -1120,6 +1257,28 @@ def validate_artifact_flow(manifest: dict, errors: list[str]) -> None:
         for entry in manifest.get("artifact_flow", [])
         if isinstance(entry, dict) and "artifact" in entry
     }
+
+    for entry in manifest.get("artifact_flow", []):
+        if not isinstance(entry, dict) or "artifact" not in entry:
+            continue
+        artifact = entry["artifact"]
+        producers = producer_set(entry.get("produced_by"))
+        if not producers:
+            errors.append(f"{MANIFEST_PATH}: artifact_flow `{artifact}` must declare at least one produced_by skill")
+        for producer in sorted(producers):
+            if producer not in allowed_skill_tokens:
+                errors.append(
+                    f"{MANIFEST_PATH}: artifact_flow `{artifact}` produced_by references unknown skill `{producer}`"
+                )
+        consumers = entry.get("consumed_by", [])
+        if not isinstance(consumers, list):
+            errors.append(f"{MANIFEST_PATH}: artifact_flow `{artifact}` consumed_by must be a list")
+            consumers = []
+        for consumer in sorted(item for item in consumers if isinstance(item, str)):
+            if consumer not in allowed_skill_tokens:
+                errors.append(
+                    f"{MANIFEST_PATH}: artifact_flow `{artifact}` consumed_by references unknown skill `{consumer}`"
+                )
 
     for path in iter_lifecycle_skill_paths():
         try:
@@ -1160,6 +1319,14 @@ def extract_backtick_refs(text: str) -> set[str]:
     return set(re.findall(r"`([a-z0-9-]+)`", text))
 
 
+def manifest_planned_skill_names(manifest: dict) -> set[str]:
+    return {
+        entry.get("name")
+        for entry in manifest.get("planned_skills", [])
+        if isinstance(entry, dict) and isinstance(entry.get("name"), str)
+    }
+
+
 def load_skill_methodologies(errors: list[str]) -> dict[str, list[str]]:
     skill_methods: dict[str, list[str]] = {}
     for path in iter_lifecycle_skill_paths():
@@ -1193,6 +1360,7 @@ def workflow_compatibility_tags(workflow_name: str) -> set[str]:
 
 def validate_workflow_skill_references(manifest: dict, errors: list[str]) -> None:
     skills = manifest_skill_names(manifest)
+    planned_skills = manifest_planned_skill_names(manifest)
     skill_methods = load_skill_methodologies(errors)
     manifest_skills = {
         entry["name"]: entry
@@ -1227,6 +1395,10 @@ def validate_workflow_skill_references(manifest: dict, errors: list[str]) -> Non
                     if skill_status == "draft":
                         if not re.search(rf"`{re.escape(ref)}`\s*\((?:experimental|planned)\)", line, re.IGNORECASE):
                             errors.append(f"{path}: draft skill `{ref}` is referenced without being explicitly marked as (experimental) or (planned)")
+                    elif re.search(rf"`{re.escape(ref)}`\s*\((?:experimental|planned)\)", line, re.IGNORECASE):
+                        errors.append(
+                            f"{path}: non-draft skill `{ref}` is marked experimental/planned; sync the label with manifest status `{skill_status}`"
+                        )
 
         refs = extract_backtick_refs(body)
         compatibility_tags = workflow_compatibility_tags(frontmatter.get("name", ""))
@@ -1236,6 +1408,52 @@ def validate_workflow_skill_references(manifest: dict, errors: list[str]) -> Non
                 errors.append(
                     f"{path}: references skill `{ref}` but workflow `{frontmatter.get('name')}` is incompatible with metadata.methodologies {methods}"
                 )
+
+    validate_gateway_phase_skill_references(skills, planned_skills, manifest_skills, errors)
+
+
+def validate_gateway_phase_skill_references(
+    skills: set[str],
+    planned_skills: set[str],
+    manifest_skills: dict[str, dict],
+    errors: list[str],
+) -> None:
+    text = GATEWAY_PATH.read_text(encoding="utf-8")
+    match = re.search(
+        r"### Priority 2: Phase-Specific Skills \(contextual\)\s*(?P<section>.*?)\n### ",
+        text,
+        re.DOTALL,
+    )
+    if not match:
+        errors.append(f"{GATEWAY_PATH}: could not locate the phase-specific skill routing table")
+        return
+
+    for line in match.group("section").splitlines():
+        stripped = line.strip()
+        if not stripped.startswith("|") or "Likely Skills" in stripped or set(stripped.replace("|", "").strip()) == {"-"}:
+            continue
+        columns = [item.strip() for item in stripped.split("|")[1:-1]]
+        if len(columns) != 3:
+            continue
+        for raw_token in columns[2].split(","):
+            token_text = raw_token.strip()
+            if not token_text or token_text.lower() == "none":
+                continue
+            is_marked_planned = bool(re.search(r"\((?:experimental|planned)\)", token_text, re.IGNORECASE))
+            token = re.sub(r"\s*\((?:experimental|planned)\)\s*", "", token_text, flags=re.IGNORECASE).strip("` ")
+            if token in skills:
+                status = manifest_skills.get(token, {}).get("status")
+                if status == "draft" and not is_marked_planned:
+                    errors.append(f"{GATEWAY_PATH}: draft skill `{token}` in routing table must be marked experimental/planned")
+                if status != "draft" and is_marked_planned:
+                    errors.append(
+                        f"{GATEWAY_PATH}: non-draft skill `{token}` in routing table is marked experimental/planned; manifest status is `{status}`"
+                    )
+            elif token in planned_skills:
+                if not is_marked_planned:
+                    errors.append(f"{GATEWAY_PATH}: planned skill `{token}` in routing table must be marked planned")
+            else:
+                errors.append(f"{GATEWAY_PATH}: routing table references undefined skill `{token}`")
 
 
 def validate_artifact_schema_registry(manifest: dict, errors: list[str]) -> None:
@@ -1292,6 +1510,39 @@ def validate_artifact_schema_registry(manifest: dict, errors: list[str]) -> None
                     errors.append(
                         f"{template_path}: template is missing required schema field markers {', '.join(missing)}"
                     )
+
+
+def validate_markdown_script_references(errors: list[str]) -> None:
+    for path in sorted(ROOT.rglob("*.md")):
+        if any(part in {".git", "build", "__pycache__"} for part in path.parts):
+            continue
+        text = path.read_text(encoding="utf-8")
+        for match in re.finditer(r"(?<![\w/-])(scripts/[A-Za-z0-9_./-]+\.py)", text):
+            rel_path = match.group(1)
+            if not (ROOT / rel_path).exists():
+                errors.append(f"{path}: references missing script `{rel_path}`")
+
+
+def validate_examples_reference_contract(manifest: dict, errors: list[str]) -> None:
+    examples_path = ROOT / "examples" / "README.md"
+    if not examples_path.exists():
+        return
+
+    allowed = manifest_skill_names(manifest) | manifest_planned_skill_names(manifest)
+    text = examples_path.read_text(encoding="utf-8")
+    for line_number, line in enumerate(text.splitlines(), start=1):
+        if "Key skills:" not in line:
+            continue
+        _, raw_skills = line.split("Key skills:", 1)
+        for raw_token in raw_skills.split(","):
+            token = raw_token.strip().strip(".")
+            if not token:
+                continue
+            skill_name = re.sub(r"\s*\([^)]*\)\s*", "", token).strip("` ")
+            if skill_name and skill_name not in allowed:
+                errors.append(
+                    f"{examples_path}:{line_number}: Key skills references unknown skill `{skill_name}`"
+                )
 
 
 def validate_cross_cutting_matrix(manifest: dict, errors: list[str]) -> None:
@@ -1626,6 +1877,13 @@ def main() -> int:
         choices=sorted(CHECKS),
         help="Run only the named check. May be repeated. Defaults to all checks.",
     )
+    parser.add_argument(
+        "--artifact-instance",
+        action="append",
+        type=Path,
+        default=[],
+        help="Validate a JSON or YAML protocol artifact instance against the artifact registry and schema.",
+    )
     args = parser.parse_args()
 
     selected_checks = set(args.check or CHECKS)
@@ -1670,11 +1928,19 @@ def main() -> int:
     if "artifact-schema-registry" in selected_checks and manifest:
         validate_artifact_schema_registry(manifest, errors)
 
+    if "manifest-files" in selected_checks:
+        validate_markdown_script_references(errors)
+        if manifest:
+            validate_examples_reference_contract(manifest, errors)
+
     if "cross-cutting-matrix" in selected_checks and manifest:
         validate_cross_cutting_matrix(manifest, errors)
 
     if "curated-surface" in selected_checks:
         validate_curated_surface(errors)
+
+    for artifact_instance in args.artifact_instance:
+        validate_artifact_instance(artifact_instance, errors)
 
     if errors:
         for error in errors:

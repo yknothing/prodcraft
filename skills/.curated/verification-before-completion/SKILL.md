@@ -103,6 +103,17 @@ Before making the claim, verify that:
 - handoff context is explicit enough for the next skill or operator
 - any skipped checks are logged as real gaps, not implied away
 
+When producing a repository artifact instance, store it under the governed
+project's `.prodcraft/artifacts/` directory when that directory exists. If the
+project has no `.prodcraft/` convention yet, write the instance in the nearest
+existing evidence or handoff directory and record that path in the handoff.
+
+For a `verification-record` instance, run:
+
+```bash
+python scripts/validate_prodcraft.py --artifact-instance <path-to-verification-record.json>
+```
+
 If the verification reveals a gap, do not translate it into optimistic language. State the actual status.
 
 ### Step 5: Record the Result Honestly

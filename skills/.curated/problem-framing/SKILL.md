@@ -90,7 +90,7 @@ The canonical `problem-frame` record stays in English under current repo policy,
 Carry `quality_target_context` forward explicitly when it affects scope, risk, or downstream QA. If the target is an agent-internal skill, host runtime tool, or local harness, do not let problem framing drift into a public service design unless the user chose that product target.
 
 The problem frame must be sharp enough that downstream skills do not have to rediscover the core problem.
-Use plain language, default to Chinese for user-facing output unless the user asks for another language, and explicitly note system shape or collaboration quality when they materially affect the framing.
+Use plain language, present user-facing output in the user's requested language or the `user_presentation_locale`, and explicitly note system shape or collaboration quality when they materially affect the framing.
 
 ### Step 4: Compare 2-3 Directions
 

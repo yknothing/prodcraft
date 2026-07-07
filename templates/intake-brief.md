@@ -12,9 +12,9 @@ Use this template whenever `intake` routes new work into a workflow.
 ## Work Summary
 
 - request_summary:
-- source_language:
+- source_language: `BCP-47 locale such as en or zh-Hans, or mixed`
 - artifact_record_language: `en`
-- user_presentation_locale:
+- user_presentation_locale: `BCP-47 locale`
 - intake_mode:
 - work_type:
 - entry_phase:

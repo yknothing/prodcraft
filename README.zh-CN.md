@@ -97,12 +97,13 @@ Prodcraft 不声称结构性检查能证明语义质量。schema 合法不等于
 Prodcraft 支持 public Agent Skills 安装流程：
 
 ```bash
-npx skills add <repo-url>
-npx skills add <repo-url> --skill intake
+npx skills add <repo-url>/skills/.curated
+npx skills add <repo-url>/skills/.curated --skill intake
 npx skills update
 ```
 
 公共安装面是 `skills/.curated/`。它是生成结果，不应手工编辑。
+Repository-root discovery is not the public contract，除非 installer 已支持按 registry 过滤；根目录 discovery 会包含仓库本地 authoring packages，不等于 curated 公共面。
 
 Public export 由两个 registry 控制：
 

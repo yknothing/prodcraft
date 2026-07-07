@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -27,6 +29,44 @@ class ArtifactSchemaRegistryTests(unittest.TestCase):
         registry = yaml.safe_load(REGISTRY_PATH.read_text(encoding="utf-8"))
         entry = registry["artifacts"][artifact_name]
         return json.loads((REPO_ROOT / entry["schema_path"]).read_text(encoding="utf-8"))
+
+    def valid_verification_record(self) -> dict:
+        return {
+            "artifact": "verification-record",
+            "schema_version": "verification-record.v1",
+            "status": "accepted",
+            "claim": "The artifact registry check passed.",
+            "claim_scope": "artifact-schema-registry",
+            "verified_at": "2026-04-24T09:01:00Z",
+            "work_state_ref": {
+                "id": "work-state:git:abc123",
+                "kind": "git",
+                "ref": "abc123",
+                "captured_at": "2026-04-24T09:00:00Z",
+                "status": "clean",
+            },
+            "evidence_refs": [
+                {
+                    "id": "evidence:validate-prodcraft-artifact-schema-registry",
+                    "kind": "command",
+                    "ref": "python3 scripts/validate_prodcraft.py --check artifact-schema-registry",
+                    "captured_at": "2026-04-24T09:00:30Z",
+                    "work_state_ref": "work-state:git:abc123",
+                }
+            ],
+            "checks_run": [
+                {
+                    "name": "artifact-schema-registry",
+                    "result": "passed",
+                    "evidence_ref": "evidence:validate-prodcraft-artifact-schema-registry",
+                    "work_state_ref": "work-state:git:abc123",
+                }
+            ],
+            "passed": ["artifact-schema-registry"],
+            "failed": [],
+            "remaining_unverified": [],
+            "claim_may_be_made": True,
+        }
 
     def test_registry_declares_core_artifacts(self):
         registry = yaml.safe_load(REGISTRY_PATH.read_text(encoding="utf-8"))
@@ -69,9 +109,9 @@ class ArtifactSchemaRegistryTests(unittest.TestCase):
             set(schema["required"]),
         )
         self.assertFalse(schema["additionalProperties"])
-        self.assertIn("enum", schema["properties"]["source_language"])
+        self.assertIn("oneOf", schema["properties"]["source_language"])
         self.assertEqual("en", schema["properties"]["artifact_record_language"]["const"])
-        self.assertIn("enum", schema["properties"]["user_presentation_locale"])
+        self.assertIn("pattern", schema["properties"]["user_presentation_locale"])
         self.assertIn("enum", schema["properties"]["work_type"])
         self.assertIn("enum", schema["properties"]["entry_phase"])
         quality_target = schema["properties"]["quality_target_context"]
@@ -303,42 +343,7 @@ class ArtifactSchemaRegistryTests(unittest.TestCase):
                     jsonschema.validate(payload, schema)
 
     def test_verification_record_validator_rejects_stale_or_mismatched_completion_proof(self):
-        valid_record = {
-            "artifact": "verification-record",
-            "schema_version": "verification-record.v1",
-            "status": "accepted",
-            "claim": "The artifact registry check passed.",
-            "claim_scope": "artifact-schema-registry",
-            "verified_at": "2026-04-24T09:01:00Z",
-            "work_state_ref": {
-                "id": "work-state:git:abc123",
-                "kind": "git",
-                "ref": "abc123",
-                "captured_at": "2026-04-24T09:00:00Z",
-                "status": "clean",
-            },
-            "evidence_refs": [
-                {
-                    "id": "evidence:validate-prodcraft-artifact-schema-registry",
-                    "kind": "command",
-                    "ref": "python3 scripts/validate_prodcraft.py --check artifact-schema-registry",
-                    "captured_at": "2026-04-24T09:00:30Z",
-                    "work_state_ref": "work-state:git:abc123",
-                }
-            ],
-            "checks_run": [
-                {
-                    "name": "artifact-schema-registry",
-                    "result": "passed",
-                    "evidence_ref": "evidence:validate-prodcraft-artifact-schema-registry",
-                    "work_state_ref": "work-state:git:abc123",
-                }
-            ],
-            "passed": ["artifact-schema-registry"],
-            "failed": [],
-            "remaining_unverified": [],
-            "claim_may_be_made": True,
-        }
+        valid_record = self.valid_verification_record()
 
         errors: list[str] = []
         validate_verification_record_instance_contract(valid_record, "valid-record", errors)
@@ -407,6 +412,49 @@ class ArtifactSchemaRegistryTests(unittest.TestCase):
             errors,
         )
 
+    def test_artifact_instance_cli_validates_verification_record_instances(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            record_path = Path(tmpdir) / "verification-record.json"
+            record_path.write_text(json.dumps(self.valid_verification_record()), encoding="utf-8")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/validate_prodcraft.py",
+                    "--check",
+                    "artifact-schema-registry",
+                    "--artifact-instance",
+                    str(record_path),
+                ],
+                cwd=REPO_ROOT,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=False,
+            )
+            self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+
+            stale = self.valid_verification_record()
+            stale["evidence_refs"][0]["captured_at"] = "2026-04-24T08:59:59Z"
+            record_path.write_text(json.dumps(stale), encoding="utf-8")
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/validate_prodcraft.py",
+                    "--check",
+                    "artifact-schema-registry",
+                    "--artifact-instance",
+                    str(record_path),
+                ],
+                cwd=REPO_ROOT,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=False,
+            )
+            self.assertNotEqual(0, result.returncode)
+            self.assertIn("is older than work state", result.stdout)
+
     def test_problem_frame_and_requirements_doc_language_boundary_contracts(self):
         registry = yaml.safe_load(REGISTRY_PATH.read_text(encoding="utf-8"))
 
@@ -419,9 +467,12 @@ class ArtifactSchemaRegistryTests(unittest.TestCase):
                 self.assertIn("source_language", schema["required"])
                 self.assertIn("artifact_record_language", schema["required"])
                 self.assertIn("user_presentation_locale", schema["required"])
-                self.assertEqual({"en", "zh", "mixed"}, set(schema["properties"]["source_language"]["enum"]))
+                self.assertIn({"const": "mixed"}, schema["properties"]["source_language"]["oneOf"])
                 self.assertEqual("en", schema["properties"]["artifact_record_language"]["const"])
-                self.assertEqual({"en", "zh"}, set(schema["properties"]["user_presentation_locale"]["enum"]))
+                self.assertEqual(
+                    "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$",
+                    schema["properties"]["user_presentation_locale"]["pattern"],
+                )
                 self.assertFalse(schema["additionalProperties"])
 
                 for field_name in schema["required"]:

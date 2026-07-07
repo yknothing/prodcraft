@@ -18,9 +18,17 @@
     "artifact": { "const": "problem-frame" },
     "schema_version": { "const": "problem-frame.v1" },
     "status": { "enum": ["draft", "approved"] },
-    "source_language": { "enum": ["en", "zh", "mixed"] },
+    "source_language": {
+      "oneOf": [
+        { "type": "string", "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$" },
+        { "const": "mixed" }
+      ]
+    },
     "artifact_record_language": { "const": "en" },
-    "user_presentation_locale": { "enum": ["en", "zh"] },
+    "user_presentation_locale": {
+      "type": "string",
+      "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$"
+    },
     "problem_statement": { "type": "string" },
     "recommended_option": { "type": "string" },
     "next_skill_to_invoke": { "type": "string" }

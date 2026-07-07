@@ -31,6 +31,8 @@ These skills MUST be invoked before any work begins:
 | Bug, failing test, or unexpected behavior before a fix | `systematic-debugging` | Root cause before code change |
 | Implementation about to start | `tdd` | Tests before code |
 | Code complete, ready for merge | `code-review` | Quality gate |
+| Need to verify delivered intent and scope consistency | `implementation-alignment-review` | Prevent wrong-thing delivery |
+| Need to audit fake-success, low-level, mock, or evidence-honesty risk | `implementation-integrity-audit` | Prevent deceptive implementation |
 | About to claim "done" | `verification-before-completion` | Verify claims |
 
 ### Priority 2: Phase-Specific Skills (contextual)
@@ -44,10 +46,10 @@ Match based on what phase the work is currently in:
 | Designing system structure | 02-architecture | system-design, api-design, data-modeling, security-design, tech-selection |
 | Breaking down work | 03-planning | task-breakdown, estimation, risk-assessment, sprint-planning |
 | Writing code or tactically executing an approved slice | 04-implementation | task-execution, systematic-debugging, tdd, feature-development, refactoring |
-| Reviewing/testing | 05-quality | code-review, receiving-code-review, testing-strategy, security-audit |
+| Reviewing/testing | 05-quality | implementation-alignment-review, implementation-integrity-audit, code-review, receiving-code-review, testing-strategy, security-audit |
 | Deploying/releasing | 06-delivery | ci-cd, delivery-completion, deployment-strategy, release-management |
 | Monitoring/responding | 07-operations | monitoring-observability, incident-response |
-| Improving/modernizing | 08-evolution | tech-debt-management, migration-strategy, retrospective |
+| Improving/modernizing | 08-evolution | tech-debt-management, migration-strategy (planned), retrospective |
 
 ### Implementation Routing Quick Map
 
@@ -302,7 +304,7 @@ Prodcraft is designed to complement, not replace, existing skill systems. If you
 
 Use whichever skill system is more appropriate for the context. Prodcraft adds lifecycle awareness; existing skills may have deeper domain-specific guidance.
 
-For repository-local experiments in this repo, Prodcraft may temporarily run in **repo-authoritative mode** for software-development work by installing the global `prodcraft` gateway skill through `scripts/install_prodcraft_global_skill.py` and disabling the global `brainstorming` skill through `scripts/manage_brainstorming_gate.py`. When that override is active:
+For repository-local experiments in this repo, Prodcraft may temporarily run in **repo-authoritative mode** for software-development work by installing the global `prodcraft` gateway skill through `scripts/install_prodcraft_global_skill.py` and archiving conflicting global superpowers skill directories through `scripts/archive_superpowers_skills.py`. When that override is active:
 
 - `intake` becomes the mandatory first software-development entry point
 - the override action and restore action must remain observable through the script's JSONL event log
