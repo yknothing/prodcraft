@@ -9,11 +9,13 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from tools import execution_state as execution_state_module
 from tools.execution_state import (
     StrictJSONError,
     WorktreeSnapshotError,
     capture_git_worktree,
     canonical_json_digest,
+    file_sha256,
     load_strict_json,
     resolve_control_ref,
 )
@@ -91,6 +93,26 @@ class StrictJSONTests(unittest.TestCase):
             with self.assertRaises(StrictJSONError):
                 load_strict_json(huge)
 
+    def test_strict_loader_rejects_documents_above_the_size_limit(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = self.write(Path(tmpdir), '{"value":"' + "x" * 64 + '"}')
+            with mock.patch.object(execution_state_module, "STRICT_JSON_MAX_BYTES", 32):
+                with self.assertRaisesRegex(StrictJSONError, "exceeds 32 bytes"):
+                    load_strict_json(path)
+
+    def test_content_digest_streams_without_whole_file_helper(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "evidence.bin"
+            path.write_bytes(b"streamed evidence")
+            with mock.patch(
+                "tools.execution_state._read_regular_file_bytes",
+                side_effect=AssertionError("whole-file helper used"),
+            ):
+                self.assertEqual(
+                    "sha256:69cd7f252ff35032c9b930b7e3508c17f4d1ba08f59f98f80bf77e66b53dea89",
+                    file_sha256(path),
+                )
+
 
 class ControlReferenceTests(unittest.TestCase):
     def test_ref_must_remain_inside_control_root_and_avoid_symlinks(self):
@@ -164,6 +186,10 @@ class GitWorktreeSnapshotTests(unittest.TestCase):
     def test_current_control_root_is_excluded_but_other_work_roots_are_governed(self):
         baseline = self.capture()
         self.assertEqual("clean", baseline["status"])
+        self.assertEqual(
+            "sha256:39974239f285417fab813671b4c2a421348e3c0510753cb8fd697c895d0b132d",
+            baseline["content_digest"],
+        )
 
         (self.control_root / "execution-state.json").write_text('{"changed":true}', encoding="utf-8")
         control_changed = self.capture()
@@ -318,10 +344,20 @@ class GitWorktreeSnapshotTests(unittest.TestCase):
         self.assertFalse(marker.exists())
 
     def test_git_command_timeout_fails_closed(self):
+        self.assertEqual(300, execution_state_module.GIT_COMMAND_TIMEOUT_SECONDS)
         timeout = subprocess.TimeoutExpired(["git", "rev-parse"], timeout=5)
         with mock.patch("tools.execution_state.subprocess.run", side_effect=timeout):
             with self.assertRaisesRegex(WorktreeSnapshotError, "timed out"):
                 self.capture()
+
+    def test_worktree_capture_streams_without_path_read_bytes(self):
+        with mock.patch.object(
+            Path,
+            "read_bytes",
+            side_effect=AssertionError("Path.read_bytes used"),
+        ):
+            snapshot = self.capture()
+        self.assertEqual("clean", snapshot["status"])
 
     def test_blocking_local_git_config_include_times_out(self):
         include_fifo = self.root / "blocking.gitconfig"

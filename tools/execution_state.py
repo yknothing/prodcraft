@@ -6,11 +6,12 @@ import os
 import re
 import stat
 import subprocess
+from contextlib import contextmanager
 from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
-from typing import Any, Iterable
+from typing import Any, BinaryIO, Iterable, Iterator
 
 
 AUTHORITY_STRUCTURAL = "structurally-valid-only"
@@ -20,7 +21,9 @@ AUTHORITY_TERMINAL = "terminal-authorized"
 MAX_SAFE_JSON_INTEGER = 9_007_199_254_740_991
 WORKTREE_ALGORITHM_ID = "git-worktree-content-v1"
 WORKTREE_SCOPE_POLICY_ID = "repo-worktree-excluding-bound-control-v1"
-GIT_COMMAND_TIMEOUT_SECONDS = 5
+GIT_COMMAND_TIMEOUT_SECONDS = 300
+STRICT_JSON_MAX_BYTES = 16 * 1024 * 1024
+FILE_HASH_CHUNK_BYTES = 1024 * 1024
 
 
 class StrictJSONError(ValueError):
@@ -147,9 +150,11 @@ def _reject_json_number(value: str) -> Any:
     raise StrictJSONError(f"JSON floats and non-finite numbers are forbidden: {value}")
 
 
-def _read_regular_file_bytes(path: Path) -> bytes:
-    """Read one non-symlink regular-file snapshot through a single descriptor."""
+@contextmanager
+def _open_regular_file(path: Path) -> Iterator[tuple[BinaryIO, os.stat_result]]:
+    """Open one stable non-symlink regular-file descriptor."""
 
+    descriptor = -1
     try:
         entry_stat = path.lstat()
         if stat.S_ISLNK(entry_stat.st_mode):
@@ -162,25 +167,64 @@ def _read_regular_file_bytes(path: Path) -> bytes:
             | getattr(os, "O_NONBLOCK", 0)
         )
         descriptor = os.open(path, flags)
-        try:
-            opened_stat = os.fstat(descriptor)
-            if not stat.S_ISREG(opened_stat.st_mode):
-                raise ValueError(f"content-bound path must be a regular file: {path}")
-            if (entry_stat.st_dev, entry_stat.st_ino) != (
+        opened_stat = os.fstat(descriptor)
+        if not stat.S_ISREG(opened_stat.st_mode):
+            raise ValueError(f"content-bound path must be a regular file: {path}")
+        if (entry_stat.st_dev, entry_stat.st_ino) != (
+            opened_stat.st_dev,
+            opened_stat.st_ino,
+        ):
+            raise ValueError(f"content-bound path changed while being opened: {path}")
+        with os.fdopen(descriptor, "rb", closefd=True) as handle:
+            descriptor = -1
+            yield handle, opened_stat
+            final_stat = os.fstat(handle.fileno())
+            opened_identity = (
                 opened_stat.st_dev,
                 opened_stat.st_ino,
-            ):
-                raise ValueError(f"content-bound path changed while being opened: {path}")
-            with os.fdopen(descriptor, "rb", closefd=True) as handle:
-                descriptor = -1
-                return handle.read()
-        finally:
-            if descriptor >= 0:
-                os.close(descriptor)
+                opened_stat.st_size,
+                opened_stat.st_mtime_ns,
+                opened_stat.st_ctime_ns,
+            )
+            final_identity = (
+                final_stat.st_dev,
+                final_stat.st_ino,
+                final_stat.st_size,
+                final_stat.st_mtime_ns,
+                final_stat.st_ctime_ns,
+            )
+            if opened_identity != final_identity:
+                raise ValueError(f"content-bound path changed while being read: {path}")
     except ValueError:
         raise
     except OSError as exc:
         raise ValueError(f"failed to read content-bound file {path}: {exc}") from exc
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+
+
+def _read_regular_file_bytes(
+    path: Path,
+    *,
+    max_bytes: int | None = None,
+) -> bytes:
+    """Read one bounded regular-file snapshot through a safe descriptor."""
+
+    limit = STRICT_JSON_MAX_BYTES if max_bytes is None else max_bytes
+    with _open_regular_file(path) as (handle, opened_stat):
+        if opened_stat.st_size > limit:
+            raise ValueError(
+                f"content-bound file exceeds {limit} bytes: {path}"
+            )
+        content = handle.read(limit + 1)
+        if len(content) > limit:
+            raise ValueError(
+                f"content-bound file exceeds {limit} bytes: {path}"
+            )
+        if len(content) != opened_stat.st_size:
+            raise ValueError(f"content-bound path changed while being read: {path}")
+        return content
 
 
 def _parse_strict_json_bytes(content: bytes, path: Path) -> dict[str, Any]:
@@ -600,15 +644,31 @@ def _blob_oid(content: bytes, object_format: str) -> str:
     return digest.hexdigest()
 
 
-def _length_delimited(value: bytes) -> bytes:
-    return len(value).to_bytes(8, byteorder="big", signed=False) + value
+def _update_length_delimited(digest: Any, value: bytes) -> None:
+    digest.update(len(value).to_bytes(8, byteorder="big", signed=False))
+    digest.update(value)
+
+
+def _update_worktree_entry(
+    digest: Any,
+    path: str,
+    entry_type: bytes,
+    mode: bytes,
+    content: bytes,
+) -> None:
+    _update_length_delimited(digest, path.encode("utf-8"))
+    _update_length_delimited(digest, entry_type)
+    _update_length_delimited(digest, mode)
+    _update_length_delimited(digest, content)
 
 
 def _snapshot_entry(
     repo_root: Path,
     path: str,
     tracked: dict[str, tuple[str, str]],
-) -> tuple[bytes, bytes, bytes] | None:
+    digest: Any,
+    object_format: str,
+) -> tuple[str, str] | None:
     absolute = repo_root / PurePosixPath(path)
     tracked_mode, tracked_oid = tracked.get(path, (None, None))
     current = repo_root
@@ -646,21 +706,46 @@ def _snapshot_entry(
             raise WorktreeSnapshotError(f"submodule HEAD does not match recorded gitlink: {path}")
         if nested_snapshot["status"] != "clean":
             raise WorktreeSnapshotError(f"submodule worktree is dirty: {path}")
-        return b"submodule", b"160000", nested_snapshot["head"].encode("ascii")
+        content = nested_snapshot["head"].encode("ascii")
+        _update_worktree_entry(digest, path, b"submodule", b"160000", content)
+        return "160000", nested_snapshot["head"]
 
     if stat.S_ISREG(entry_stat.st_mode):
+        mode = b"100755" if bool(
+            entry_stat.st_mode & (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+        ) else b"100644"
         try:
-            content = absolute.read_bytes()
-        except OSError as exc:
+            with _open_regular_file(absolute) as (handle, opened_stat):
+                _update_length_delimited(digest, path.encode("utf-8"))
+                _update_length_delimited(digest, b"file")
+                _update_length_delimited(digest, mode)
+                digest.update(
+                    opened_stat.st_size.to_bytes(8, byteorder="big", signed=False)
+                )
+                blob_digest = hashlib.new(object_format)
+                blob_digest.update(
+                    f"blob {opened_stat.st_size}\0".encode("ascii")
+                )
+                bytes_read = 0
+                while chunk := handle.read(FILE_HASH_CHUNK_BYTES):
+                    bytes_read += len(chunk)
+                    digest.update(chunk)
+                    blob_digest.update(chunk)
+                if bytes_read != opened_stat.st_size:
+                    raise ValueError(
+                        f"content-bound path changed while being read: {absolute}"
+                    )
+        except (OSError, ValueError) as exc:
             raise WorktreeSnapshotError(f"cannot read worktree file {path}: {exc}") from exc
-        executable = bool(entry_stat.st_mode & (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH))
-        return b"file", b"100755" if executable else b"100644", content
+        return mode.decode("ascii"), blob_digest.hexdigest()
     if stat.S_ISLNK(entry_stat.st_mode):
         try:
             target = os.readlink(absolute)
         except OSError as exc:
             raise WorktreeSnapshotError(f"cannot read worktree symlink {path}: {exc}") from exc
-        return b"symlink", b"120000", os.fsencode(target)
+        content = os.fsencode(target)
+        _update_worktree_entry(digest, path, b"symlink", b"120000", content)
+        return "120000", _blob_oid(content, object_format)
     if stat.S_ISDIR(entry_stat.st_mode):
         raise WorktreeSnapshotError(f"unsupported directory entry outside a submodule: {path}")
     raise WorktreeSnapshotError(f"unsupported special file in governed worktree: {path}")
@@ -725,20 +810,14 @@ def capture_git_worktree(
         object_format = _run_git(root, "rev-parse", "--show-object-format").stdout.strip().decode("ascii")
     except UnicodeDecodeError as exc:
         raise WorktreeSnapshotError("Git object format must be ASCII") from exc
+    if object_format not in {"sha1", "sha256"}:
+        raise WorktreeSnapshotError(f"unsupported Git object format: {object_format}")
     current_entries: dict[str, tuple[str, str]] = {}
     for path in paths:
-        entry = _snapshot_entry(root, path, tracked)
-        if entry is None:
+        identity = _snapshot_entry(root, path, tracked, digest, object_format)
+        if identity is None:
             continue
-        entry_type, mode, content = entry
-        if entry_type == b"submodule":
-            current_entries[path] = (mode.decode("ascii"), content.decode("ascii"))
-        else:
-            current_entries[path] = (mode.decode("ascii"), _blob_oid(content, object_format))
-        digest.update(_length_delimited(path.encode("utf-8")))
-        digest.update(_length_delimited(entry_type))
-        digest.update(_length_delimited(mode))
-        digest.update(_length_delimited(content))
+        current_entries[path] = identity
 
     try:
         head = _run_git(root, "rev-parse", "HEAD").stdout.strip().decode("ascii")
@@ -808,10 +887,17 @@ def canonical_json_digest(payload: Any) -> str:
 
 def file_sha256(path: Path) -> str:
     try:
-        content = _read_regular_file_bytes(path)
+        digest = hashlib.sha256()
+        with _open_regular_file(path) as (handle, opened_stat):
+            bytes_read = 0
+            while chunk := handle.read(FILE_HASH_CHUNK_BYTES):
+                bytes_read += len(chunk)
+                digest.update(chunk)
+            if bytes_read != opened_stat.st_size:
+                raise ValueError(f"content-bound path changed while being read: {path}")
     except ValueError as exc:
         raise ValueError(f"cannot read content-bound file {path}: {exc}") from exc
-    return "sha256:" + hashlib.sha256(content).hexdigest()
+    return "sha256:" + digest.hexdigest()
 
 
 def claim_payload_projection(attempt: dict[str, Any]) -> dict[str, Any]:

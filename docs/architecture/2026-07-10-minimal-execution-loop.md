@@ -692,7 +692,7 @@ Each requires a new approved intake, requirements set, threat model, and decisio
 | Canonical live state path | Distinguishes current authority from historical validity. | One-writer filesystem convention. | Move authority to event-store head in Direction 3. |
 | Completion basis digest | Detects mutation outside the allowed terminal projection. | Canonical projection logic must stay stable and tested. | Version through a new schema if frozen-field semantics change. |
 | Closed control root | Avoids self-hash cycles while binding authorization material. | Strict layout and enumeration rules. | Replace with a content-addressed artifact store. |
-| Full worktree content digest | Avoids diff formatting/config drift. | More I/O than hashing a diff. | Add optimized providers only if they prove identical semantics. |
+| Full worktree content digest | Avoids diff formatting/config drift; file bytes stream through the existing canonical digest instead of being held whole in memory. | More I/O than hashing a diff. | Add optimized providers only if they prove identical semantics. |
 | Additive strict mode | Preserves compatibility and reversibility. | Legacy users remain unenforced. | Mandatory migration requires separate approval and versioning. |
 
 ## Architecture Fitness Functions
@@ -709,7 +709,7 @@ Each requires a new approved intake, requirements set, threat model, and decisio
 | Pre-focus state | Validate routed and gated states with no phase events or cursor, then enter phase 0 after executing. | Pre-focus fixtures pass; premature cursor or event fails. |
 | Route entry consistency | Use an empty focus sequence or one whose first phase differs from `entry_phase`. | Both route fixtures fail cross-field validation. |
 | Digest closure | Mutate verification, approval, or validator evidence in control root. | Terminal authorization fails on content digest mismatch. |
-| Work identity | Toggle Git config; add a blocking config include; add replace refs; ignore `.prodcraft/`; mutate another work root; retarget symlink; chmod; add FIFO; or hide nested submodule changes. | Config and current control changes do not change digest; Git calls fail within their bound; other work roots and supported content do; unsupported or hidden states fail closed. |
+| Work identity | Toggle Git config; add a blocking config include; add replace refs; ignore `.prodcraft/`; mutate another work root; retarget symlink; chmod; add FIFO; or hide nested submodule changes. | Config and current control changes do not change digest; Git calls may run slowly but fail after the fixed 300-second liveness guard; other work roots and supported content do; unsupported or hidden states fail closed. |
 | Path safety | Test top-level/intermediate/final symlink, traversal, URI, drive, UNC, and backslash forms. | Every escape or ambiguous form fails. |
 | Compatibility | Run the complete discovered pre-change suite plus legacy fixtures. | All prior valid behavior remains green. |
 | Public runtime | Generate the flattened curated tree and validate every frontmatter and packaged relative reference. | Every package loads and every reference resolves. |

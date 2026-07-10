@@ -52,10 +52,10 @@ The self-hosted acceptance bundle lives at the intentionally ignored canonical l
 
 ## Residual P2 And Direction 3 Triggers
 
-- Content-bound and governed files are read whole; very large files or bundles can create memory pressure. Direction 3 should add explicit resource budgets and streaming content-addressed storage.
-- Each Git command has a fixed five-second fail-closed timeout. This is safe but may conservatively reject very large repositories, slow disks, or deep submodule graphs. A future provider may expose a reviewed total-budget policy, but a host must not silently weaken it.
 - The canonical test entrypoint is discovery-based; direct package-module invocation of `tests.test_execution_state_cli` is not supported by the current sibling fixture import.
 - Candidate completion digest output is human-readable. A versioned machine-readable authority response belongs with a future host adapter/API contract.
 - Approval identity, trusted time, malicious races around both captures, multi-writer concurrency, durable recovery, and CAS/idempotency remain explicit Direction 3 concerns.
 
 These are not silent guarantees: none is upgraded to terminal authority by Direction 2, and each has a documented migration seam in the architecture.
+
+The former whole-file memory-pressure issue is closed by bounded strict JSON plus streaming evidence/worktree hashing. The former five-second Git timeout is now a fixed 300-second liveness guard: large repositories may run slowly, while blocking Git config/FIFO input still fails eventually.
