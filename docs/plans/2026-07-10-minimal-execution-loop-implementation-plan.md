@@ -96,7 +96,7 @@
 **Done**
 
 - Focused tests, canonical validator, curated parity/loadability, and complete test suite pass on the final work state.
-- Two independent final reviewers report no unresolved P0/P1.
+- Three independent final reviewers report no unresolved P0/P1.
 - ADR status and README claims match the evidence exactly.
 
 **Rollback**
