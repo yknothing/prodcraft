@@ -8,6 +8,8 @@ metadata:
   - intake-brief
   - phase-recommendation
   - workflow-recommendation
+  - route-decision
+  - execution-state
   prerequisites: []
   quality_gate: Intake brief approved by user, target phase and workflow identified
   roles:
@@ -42,6 +44,8 @@ Intake is the control plane for all engineering work in Prodcraft. Every piece o
 - **intake-brief** -- structured routing record: request summary, `source_language`, `artifact_record_language`, `user_presentation_locale`, intake mode, work type, entry phase, `quality_target_context`, workflow metadata (`workflow_primary` when governance is explicit, `workflow_overlays` when an overlay is active), next skill, routing rationale, key risks
 - **phase-recommendation** -- the lifecycle phase where work should begin
 - **workflow-recommendation** -- the methodology best suited to the work
+- **route-decision** -- optional strict-mode approved route, workflow focus, obligations, revision, and operator-pinned digest
+- **execution-state** -- optional strict-mode initial routed state bound to that route decision
 
 ## Quality Gate
 
@@ -186,6 +190,16 @@ Wait for user confirmation. Accept:
 ### Step 6: Handoff
 
 Transition to the first skill in the proposed path, passing the intake brief as context.
+
+When the governed project explicitly opts into the strict execution loop, also create
+`route-decision.v1` and the initial `execution-state.v1` under
+`.prodcraft/artifacts/<work_id>/`. The route owns the full reviewer-declared
+obligation set; the state may only bind evidence to those obligations. Give the
+approved `route_digest` to the operator through a channel outside the writable
+control bundle. Do not describe an in-bundle digest as independent approval.
+
+Strict mode is additive. When it is not selected, continue to produce the legacy
+intake outputs without implying that execution-state authorization ran.
 
 If routing is clear but the problem or solution direction is still too fuzzy for specification or discovery research, hand off to [problem-framing](../problem-framing/SKILL.md) before moving deeper into the lifecycle.
 

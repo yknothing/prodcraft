@@ -113,8 +113,8 @@ The model should make those scenarios easier to explain without leaking into sch
 ## Related Skills
 
 - [requirements-engineering](../requirements-engineering/SKILL.md) -- provides requirements to model
-- [data-modeling](../../02-architecture/data-modeling/SKILL.md) -- translates domain model to data schema
-- [api-design](../../02-architecture/api-design/SKILL.md) -- uses domain language for API resources
+- [data-modeling](../data-modeling/SKILL.md) -- translates domain model to data schema
+- [api-design](../api-design/SKILL.md) -- uses domain language for API resources
 
 ## Distribution
 

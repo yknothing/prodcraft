@@ -151,11 +151,11 @@ Blameless postmortem -- focus on systems, not people:
 
 ## Related Skills
 
-- [ci-cd](../../06-delivery/ci-cd/SKILL.md) -- provides rollout, rollback, and release-boundary context
+- [ci-cd](../ci-cd/SKILL.md) -- provides rollout, rollback, and release-boundary context
 - [monitoring-observability](../monitoring-observability/SKILL.md) -- provides the alerting that triggers response
-- [systematic-debugging](../../04-implementation/systematic-debugging/SKILL.md) -- takes over after containment when the next move is a code-level fix
+- [systematic-debugging](../systematic-debugging/SKILL.md) -- takes over after containment when the next move is a code-level fix
 - [runbooks](../runbooks/SKILL.md) -- provides step-by-step response procedures
-- [retrospective](../../08-evolution/retrospective/SKILL.md) -- broader process improvement from incident patterns
+- [retrospective](../retrospective/SKILL.md) -- broader process improvement from incident patterns
 
 ## Distribution
 

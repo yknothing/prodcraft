@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 import sys
 from pathlib import Path
@@ -15,7 +16,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from prodcraft_gateway_skill import render_prodcraft_skill
+from prodcraft_gateway_skill import render_prodcraft_skill  # noqa: E402
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -24,6 +25,10 @@ PORTABILITY_REGISTRY_PATH = REPO_ROOT / "schemas" / "distribution" / "public-ski
 DEFAULT_OUTPUT_ROOT = REPO_ROOT / "skills" / ".curated"
 RESOURCE_DIRS = ("references", "scripts", "assets")
 PORTABILITY_VALUES = {"portable_as_is", "portable_with_caveat", "blocked"}
+MARKDOWN_REFERENCE_RE = re.compile(r"!?\[[^\]]*\]\((?P<target>[^)\s]+)\)")
+MARKDOWN_SKILL_LINK_RE = re.compile(
+    r"(?<!!)\[(?P<label>[^\]]+)\]\((?P<target>[^)\s]*SKILL\.md(?:#[^)\s]+)?)\)"
+)
 
 
 def load_frontmatter(path: Path) -> tuple[dict, str]:
@@ -48,6 +53,60 @@ def copy_resources(source_dir: Path, destination_dir: Path) -> None:
             shutil.rmtree(target_path)
         if source_path.exists():
             shutil.copytree(source_path, target_path)
+
+
+def rewrite_lifecycle_skill_links(
+    body: str,
+    *,
+    source_dir: Path,
+    canonical_skill_paths: set[Path],
+    exported_skill_names: dict[Path, str],
+) -> str:
+    def replace(match: re.Match[str]) -> str:
+        target = match.group("target")
+        target_path_text, separator, fragment = target.partition("#")
+        canonical_target = (source_dir / target_path_text).resolve()
+        if canonical_target not in canonical_skill_paths:
+            return match.group(0)
+
+        label = match.group("label")
+        exported_name = exported_skill_names.get(canonical_target)
+        if exported_name is None:
+            return f"`{label}`"
+
+        anchor = f"#{fragment}" if separator else ""
+        return f"[{label}](../{exported_name}/SKILL.md{anchor})"
+
+    return MARKDOWN_SKILL_LINK_RE.sub(replace, body)
+
+
+def validate_exported_surface(output_root: Path) -> None:
+    packaged_root = output_root.resolve()
+    for skill_path in sorted(output_root.glob("*/SKILL.md")):
+        frontmatter, body = load_frontmatter(skill_path)
+        if not isinstance(frontmatter, dict):
+            raise ValueError(f"{skill_path} frontmatter must load as a mapping")
+        if frontmatter.get("name") != skill_path.parent.name:
+            raise ValueError(f"{skill_path} frontmatter name must match its package directory")
+
+        description = frontmatter.get("description")
+        if not isinstance(description, str) or not description:
+            raise ValueError(f"{skill_path} frontmatter description must be a non-empty string")
+        if len(description) > 1024:
+            raise ValueError(f"{skill_path} frontmatter description must be 1024 characters or fewer")
+
+        for match in MARKDOWN_REFERENCE_RE.finditer(body):
+            target = match.group("target")
+            if target.startswith(("#", "/", "http://", "https://", "mailto:")):
+                continue
+
+            target_path = (skill_path.parent / target.split("#", 1)[0]).resolve()
+            try:
+                target_path.relative_to(packaged_root)
+            except ValueError as exc:
+                raise ValueError(f"{skill_path} relative reference escapes the packaged surface: {target}") from exc
+            if not target_path.exists():
+                raise ValueError(f"{skill_path} has dangling packaged relative reference: {target}")
 
 
 def curated_note(source_path: str) -> str:
@@ -111,7 +170,14 @@ def load_portability_metadata(repo_root: Path, public_skill_names: set[str]) -> 
     return entries
 
 
-def export_entry(entry: dict, *, repo_root: Path, output_root: Path) -> None:
+def export_entry(
+    entry: dict,
+    *,
+    repo_root: Path,
+    output_root: Path,
+    canonical_skill_paths: set[Path],
+    exported_skill_names: dict[Path, str],
+) -> None:
     destination_dir = output_root / entry["name"]
     if destination_dir.exists():
         shutil.rmtree(destination_dir)
@@ -137,6 +203,12 @@ def export_entry(entry: dict, *, repo_root: Path, output_root: Path) -> None:
     metadata["source_path"] = str((source_dir / "SKILL.md").relative_to(repo_root))
     metadata["public_stability"] = entry["stability"]
     metadata["public_readiness"] = entry["readiness"]
+    body = rewrite_lifecycle_skill_links(
+        body,
+        source_dir=source_dir,
+        canonical_skill_paths=canonical_skill_paths,
+        exported_skill_names=exported_skill_names,
+    )
 
     write_skill(
         destination_dir,
@@ -158,6 +230,16 @@ def export_curated_skills(*, repo_root: Path = REPO_ROOT, output_root: Path = DE
         entry["name"]
         for entry in registry["public_skills"]
     }
+    canonical_skill_paths = {
+        path.resolve()
+        for path in (repo_root / "skills").glob("*/*/SKILL.md")
+        if ".curated" not in path.parts
+    }
+    exported_skill_names = {
+        (repo_root / entry["source"] / "SKILL.md").resolve(): entry["name"]
+        for entry in registry["public_skills"]
+        if entry["source"] != "generated:prodcraft"
+    }
     portability = load_portability_metadata(repo_root, public_skill_names)
     output_root.mkdir(parents=True, exist_ok=True)
 
@@ -174,7 +256,13 @@ def export_curated_skills(*, repo_root: Path = REPO_ROOT, output_root: Path = DE
         if portability_entry is None:
             raise ValueError(f"Missing public portability metadata for {entry['name']}")
 
-        export_entry(entry, repo_root=repo_root, output_root=output_root)
+        export_entry(
+            entry,
+            repo_root=repo_root,
+            output_root=output_root,
+            canonical_skill_paths=canonical_skill_paths,
+            exported_skill_names=exported_skill_names,
+        )
         exported_names.append(entry["name"])
         index_entry = {
             "name": entry["name"],
@@ -193,6 +281,7 @@ def export_curated_skills(*, repo_root: Path = REPO_ROOT, output_root: Path = DE
         json.dumps({"schema_version": "curated-surface.v1", "skills": index_entries}, indent=2) + "\n",
         encoding="utf-8",
     )
+    validate_exported_surface(output_root)
     return {"skills": exported_names}
 
 

@@ -8,9 +8,12 @@ metadata:
   - dependency-graph
   - architecture-doc
   - api-contract
+  - route-decision
+  - execution-state
   outputs:
   - execution-batch-plan
   - execution-checkpoint
+  - execution-state
   prerequisites:
   - task-breakdown
   quality_gate: The current batch is explicit, each step is small enough to verify, stop conditions are named, and blockers are escalated instead of guessed through
@@ -110,10 +113,18 @@ Produce:
 
 The checkpoint should be short, factual, and handoff-friendly.
 
+If the project has opted into `execution-state.v1`, update it only through legal
+lifecycle, phase, and artifact-binding records in the shared
+`recorded_sequence`. Never redefine route obligations in mutable state. A gate
+advance is authoritative only when the canonical state validates against the
+operator-supplied route digest; a structurally valid snapshot without that pin is
+not advancement authority.
+
 ## Outputs
 
 - **execution-batch-plan** -- The next 2-5 minute step sequence, with files, commands, verification points, and stop conditions.
 - **execution-checkpoint** -- What the batch completed, how it was verified, what remains open, and the next recommended action.
+- **execution-state** -- Optional strict-mode checkpoint with replayable lifecycle, phase, and artifact-binding history.
 
 ## Quality Gate
 

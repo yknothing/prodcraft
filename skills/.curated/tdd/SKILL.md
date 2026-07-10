@@ -179,12 +179,12 @@ If an exception is used, state it explicitly. "We'll add tests later" without a 
 
 ## Related Skills
 
-- [acceptance-criteria](../../01-specification/acceptance-criteria/SKILL.md) -- provides the test specifications
+- [acceptance-criteria](../acceptance-criteria/SKILL.md) -- provides the test specifications
 - [systematic-debugging](../systematic-debugging/SKILL.md) -- establishes the bug boundary before TDD drives the fix
 - [feature-development](../feature-development/SKILL.md) -- turns the tested slice into the reviewable implementation increment
 - [refactoring](../refactoring/SKILL.md) -- applies the REFACTOR step more broadly once behavior is protected
-- [code-review](../../05-quality/code-review/SKILL.md) -- reviews both code and tests
-- [verification-before-completion](../../cross-cutting/verification-before-completion/SKILL.md) -- verifies that the claimed green state is backed by fresh evidence
+- [code-review](../code-review/SKILL.md) -- reviews both code and tests
+- [verification-before-completion](../verification-before-completion/SKILL.md) -- verifies that the claimed green state is backed by fresh evidence
 
 ## Distribution
 

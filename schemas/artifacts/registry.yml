@@ -12,6 +12,14 @@ artifacts:
     schema_version: verification-record.v1
     schema_path: schemas/artifacts/verification-record.schema.json
     template_path: templates/verification-record.md
+  route-decision:
+    schema_version: route-decision.v1
+    schema_path: schemas/artifacts/route-decision.schema.json
+    template_path: templates/route-decision.md
+  execution-state:
+    schema_version: execution-state.v1
+    schema_path: schemas/artifacts/execution-state.schema.json
+    template_path: templates/execution-state.md
   problem-frame:
     schema_version: problem-frame.v1
     schema_path: schemas/artifacts/problem-frame.schema.json

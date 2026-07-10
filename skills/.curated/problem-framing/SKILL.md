@@ -137,17 +137,17 @@ After approval, hand off the framing artifacts to the next skill named in the `d
 ## Anti-Patterns
 
 1. **Repeating intake** -- Intake already handled classification and routing. Framing should deepen the decision, not restart the entry gate.
-2. **Premature architecture** -- Stay at the level of direction and trade-off. Leave system structure to [system-design](../../02-architecture/system-design/SKILL.md).
+2. **Premature architecture** -- Stay at the level of direction and trade-off. Leave system structure to [system-design](../system-design/SKILL.md).
 3. **Infinite discovery interviews** -- Use the minimum questions needed to make a decision. If more information is required, route to research skills.
 4. **Single-option framing** -- If only one path is shown, there is no real trade-off analysis.
 
 ## Related Skills
 
 - [intake](../intake/SKILL.md) -- provides the approved route and initial constraints
-- [market-analysis](../market-analysis/SKILL.md) -- use when market uncertainty remains high
+- `market-analysis` -- use when market uncertainty remains high
 - [user-research](../user-research/SKILL.md) -- use when user behavior or pain points are still unclear
-- [feasibility-study](../feasibility-study/SKILL.md) -- use when go/no-go needs deeper validation
-- [requirements-engineering](../../01-specification/requirements-engineering/SKILL.md) -- consumes the approved design direction
+- `feasibility-study` -- use when go/no-go needs deeper validation
+- [requirements-engineering](../requirements-engineering/SKILL.md) -- consumes the approved design direction
 
 ## Distribution
 

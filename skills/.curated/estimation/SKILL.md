@@ -92,7 +92,7 @@ Package the estimates in a form sprint or milestone planning can consume directl
 - [task-breakdown](../task-breakdown/SKILL.md) -- provides the work items to size
 - [risk-assessment](../risk-assessment/SKILL.md) -- surfaces the uncertainties that affect confidence
 - [sprint-planning](../sprint-planning/SKILL.md) -- consumes the estimate set to choose realistic scope
-- [retrospective](../../08-evolution/retrospective/SKILL.md) -- can compare actuals vs estimates for calibration
+- [retrospective](../retrospective/SKILL.md) -- can compare actuals vs estimates for calibration
 
 ## Distribution
 

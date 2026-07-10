@@ -117,8 +117,8 @@ For every feature, explicitly state:
 
 - [requirements-engineering](../requirements-engineering/SKILL.md) -- provides the requirements to specify
 - [domain-modeling](../domain-modeling/SKILL.md) -- provides domain model referenced in spec
-- [system-design](../../02-architecture/system-design/SKILL.md) -- consumes spec for architecture decisions
-- [task-breakdown](../../03-planning/task-breakdown/SKILL.md) -- breaks spec into implementable tasks
+- [system-design](../system-design/SKILL.md) -- consumes spec for architecture decisions
+- [task-breakdown](../task-breakdown/SKILL.md) -- breaks spec into implementable tasks
 
 ## Distribution
 

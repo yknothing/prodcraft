@@ -24,6 +24,7 @@ __pycache__/
 .claude/commands/
 .conductor/
 .orch/
+.prodcraft/artifacts/prodcraft-direction2/
 
 # Build artifacts
 dist/

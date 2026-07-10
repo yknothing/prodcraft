@@ -46,7 +46,7 @@ Do not force every route through the same upstream artifact bundle. Start from t
 
 ## Inputs
 
-- **design-direction** -- Preferred directional input when [problem-framing](../../00-discovery/problem-framing/SKILL.md) has already compared options and selected a path. Treat this as the strongest signal for what release or iteration direction should be converted into requirements.
+- **design-direction** -- Preferred directional input when [problem-framing](../problem-framing/SKILL.md) has already compared options and selected a path. Treat this as the strongest signal for what release or iteration direction should be converted into requirements.
 - **problem-frame** -- Clarifies the problem statement, non-goals, assumptions, open questions, and language-boundary context that requirements must preserve rather than silently resolve.
 - **intake-brief** -- Supplemental routing and scope context. Useful for preserving work type, urgency, methodology choice, handoff risks, and the upstream language boundary.
 - **market-research-report** -- Market context, competitor gaps, or opportunity framing when the work is still anchored in discovery evidence.
@@ -133,7 +133,7 @@ If a metric, SLA, or retention bound is not directly supported by the source mat
 
 ## Related Skills
 
-- [problem-framing](../../00-discovery/problem-framing/SKILL.md) -- provides approved direction, non-goals, and open questions when the route is known but the solution direction was fuzzy
+- [problem-framing](../problem-framing/SKILL.md) -- provides approved direction, non-goals, and open questions when the route is known but the solution direction was fuzzy
 - [spec-writing](../spec-writing/SKILL.md) -- transforms requirements into detailed specification
 - [domain-modeling](../domain-modeling/SKILL.md) -- runs in parallel to model the domain
 - [acceptance-criteria](../acceptance-criteria/SKILL.md) -- creates testable criteria from requirements

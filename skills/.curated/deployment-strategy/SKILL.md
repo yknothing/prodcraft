@@ -96,8 +96,8 @@ Document the exact release sequence, rollback trigger conditions, rollback comma
 ## Related Skills
 
 - [ci-cd](../ci-cd/SKILL.md) -- provides the automated delivery path
-- [monitoring-observability](../../07-operations/monitoring-observability/SKILL.md) -- supplies the signals used for rollout verification
-- [runbooks](../../07-operations/runbooks/SKILL.md) -- operationalizes the deployment procedure after release
+- [monitoring-observability](../monitoring-observability/SKILL.md) -- supplies the signals used for rollout verification
+- [runbooks](../runbooks/SKILL.md) -- operationalizes the deployment procedure after release
 - [release-management](../release-management/SKILL.md) -- coordinates the broader human release process
 
 ## Distribution

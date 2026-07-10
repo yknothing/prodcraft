@@ -173,11 +173,11 @@ For recurring debugging failure modes that create false confidence or repeated m
 
 ## Related Skills
 
-- [bug-history-retrieval](../../cross-cutting/bug-history-retrieval/SKILL.md) -- retrieves canonical defect lineage before a new fix theory hardens
-- [incident-response](../../07-operations/incident-response/SKILL.md) -- contains live production impact before code-level debugging begins
+- `bug-history-retrieval` -- retrieves canonical defect lineage before a new fix theory hardens
+- [incident-response](../incident-response/SKILL.md) -- contains live production impact before code-level debugging begins
 - [tdd](../tdd/SKILL.md) -- turns the verified bug boundary into reproducing and regression tests
 - [feature-development](../feature-development/SKILL.md) -- implements the smallest safe repair once the test and scope boundary are clear
-- [verification-before-completion](../../cross-cutting/verification-before-completion/SKILL.md) -- verifies the claimed fix with fresh evidence before completion claims
+- [verification-before-completion](../verification-before-completion/SKILL.md) -- verifies the claimed fix with fresh evidence before completion claims
 
 ## Distribution
 

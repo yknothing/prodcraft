@@ -94,8 +94,8 @@ QA engineers are expert at finding missing edge cases. Review criteria with them
 ## Related Skills
 
 - [requirements-engineering](../requirements-engineering/SKILL.md) -- provides requirements to create criteria for
-- [tdd](../../04-implementation/tdd/SKILL.md) -- uses acceptance criteria to drive test writing
-- [testing-strategy](../../05-quality/testing-strategy/SKILL.md) -- builds test plan from acceptance criteria
+- [tdd](../tdd/SKILL.md) -- uses acceptance criteria to drive test writing
+- [testing-strategy](../testing-strategy/SKILL.md) -- builds test plan from acceptance criteria
 
 ## Distribution
 

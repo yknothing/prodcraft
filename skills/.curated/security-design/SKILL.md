@@ -91,9 +91,9 @@ Capture attacker assumptions, control decisions, unresolved risks, and the check
 ## Related Skills
 
 - [system-design](../system-design/SKILL.md) -- supplies the structural boundaries to secure
-- [security-audit](../../05-quality/security-audit/SKILL.md) -- verifies the implementation against this design
-- [deployment-strategy](../../06-delivery/deployment-strategy/SKILL.md) -- uses the threat model when rollout posture affects exposure
-- [monitoring-observability](../../07-operations/monitoring-observability/SKILL.md) -- exposes the signals needed to detect security-relevant failure modes
+- [security-audit](../security-audit/SKILL.md) -- verifies the implementation against this design
+- [deployment-strategy](../deployment-strategy/SKILL.md) -- uses the threat model when rollout posture affects exposure
+- [monitoring-observability](../monitoring-observability/SKILL.md) -- exposes the signals needed to detect security-relevant failure modes
 
 ## Distribution
 

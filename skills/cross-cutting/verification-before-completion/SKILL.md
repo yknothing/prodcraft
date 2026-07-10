@@ -3,9 +3,12 @@ name: verification-before-completion
 description: Use when about to claim a phase, fix, task, build, or release is complete, fixed, passing, or ready for handoff and fresh evidence must be checked before making the claim or creating a commit, PR, or deployment decision.
 metadata:
   phase: cross-cutting
-  inputs: []
+  inputs:
+  - route-decision
+  - execution-state
   outputs:
   - verification-record
+  - execution-state
   prerequisites: []
   quality_gate: Every completion claim is backed by fresh verification evidence, relevant artifact checks, and an explicit statement of what remains unverified
   roles:
@@ -109,6 +112,24 @@ For a `verification-record` instance, run:
 python scripts/validate_prodcraft.py --artifact-instance <path-to-verification-record.json>
 ```
 
+When the project has opted into the strict execution loop, generic artifact
+validation is not completion authority. Bind the accepted verification record and
+its evidence snapshots into the current completion attempt, then run:
+
+```bash
+python scripts/validate_prodcraft.py \
+  --authorize-execution-state .prodcraft/artifacts/<work_id>/execution-state.json \
+  --approved-route-digest sha256:<operator-pinned-route-digest> \
+  --approved-completion-digest sha256:<operator-pinned-completion-digest>
+```
+
+Only `terminal-authorized` permits an unqualified route-level completion claim.
+`gate-authorized` is non-terminal progress authority. A historical, non-canonical,
+missing-pin, stale-work, or structurally-valid-only result blocks the claim.
+Run the terminal command once without the completion pin to obtain a non-authoritative
+candidate digest, review the frozen verification commitment and terminal records,
+then supply the approved digest from outside the writable bundle.
+
 If the verification reveals a gap, do not translate it into optimistic language. State the actual status.
 
 ### Step 5: Record the Result Honestly
@@ -127,6 +148,7 @@ Only after this step may the workflow say the work is complete, fixed, passing, 
 ## Outputs
 
 - **verification-record** -- Fresh evidence for the specific completion claim, including commands run, artifact checks, and any remaining gaps.
+- **execution-state** -- Optional strict-mode completion attempt and content-bound verification envelope.
 
 ## Quality Gate
 
@@ -135,6 +157,7 @@ Only after this step may the workflow say the work is complete, fixed, passing, 
 - [ ] Relevant artifacts and handoff requirements were checked
 - [ ] Failures, skips, or unknowns are stated plainly
 - [ ] The final wording matches the evidence instead of the hoped-for result
+- [ ] When strict mode is active, the canonical state returns `terminal-authorized` against both operator pins and the live worktree
 
 ## Anti-Patterns
 

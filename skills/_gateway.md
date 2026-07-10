@@ -198,6 +198,24 @@ Use this calibration:
 
 ## Phase Transition Protocol
 
+### Optional Strict Execution Authority
+
+Projects may opt into the repository-owned `route-decision.v1` and
+`execution-state.v1` protocol. In that mode, conversation history and skill
+checklists remain guidance; the canonical state, its closed local evidence bundle,
+the live Git work snapshot, and operator-supplied route and terminal-completion
+digests determine gate or terminal authority.
+
+- `--artifact-instance` checks artifact shape/contract and emits no authority.
+- `gate-authorized` permits a non-terminal transition or checkpoint only.
+- `terminal-authorized` permits the bound completion claim only after the final
+  completion projection matches the out-of-band operator completion pin.
+- missing pin, stale evidence/work, non-canonical history, and structural-only
+  results fail closed.
+
+Strict mode is not mandatory for legacy workflows in this release. Hosts may adapt
+the CLI, but may not replace the repository contract with host-local state.
+
 When transitioning between phases:
 
 1. **Verify exit criteria** -- Check the current phase's quality gate

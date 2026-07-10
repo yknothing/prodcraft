@@ -97,9 +97,9 @@ Document why the option won, what trade-offs were accepted, and what future cond
 ## Related Skills
 
 - [system-design](../system-design/SKILL.md) -- provides the drivers that technologies must satisfy
-- [ci-cd](../../06-delivery/ci-cd/SKILL.md) -- operationalizes the selected toolchain in delivery
-- [feature-development](../../04-implementation/feature-development/SKILL.md) -- builds within the chosen stack constraints
-- [feasibility-study](../../00-discovery/feasibility-study/SKILL.md) -- may surface technical feasibility questions before final selection
+- [ci-cd](../ci-cd/SKILL.md) -- operationalizes the selected toolchain in delivery
+- [feature-development](../feature-development/SKILL.md) -- builds within the chosen stack constraints
+- `feasibility-study` -- may surface technical feasibility questions before final selection
 
 ## Distribution
 

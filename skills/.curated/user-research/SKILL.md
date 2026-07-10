@@ -123,9 +123,9 @@ If only `research-plan` exists, the discovery work is better framed but the skil
 ## Related Skills
 
 - [problem-framing](../problem-framing/SKILL.md) -- shapes the problem and open questions before research starts
-- [market-analysis](../market-analysis/SKILL.md) -- provides market context for targeting research
-- [requirements-engineering](../../01-specification/requirements-engineering/SKILL.md) -- consumes personas and journey maps
-- [acceptance-criteria](../../01-specification/acceptance-criteria/SKILL.md) -- uses persona scenarios
+- `market-analysis` -- provides market context for targeting research
+- [requirements-engineering](../requirements-engineering/SKILL.md) -- consumes personas and journey maps
+- [acceptance-criteria](../acceptance-criteria/SKILL.md) -- uses persona scenarios
 
 ## Distribution
 

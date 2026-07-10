@@ -193,13 +193,13 @@ For worked architecture-style comparisons and an ADR example, see [decision-exam
 
 ## Related Skills
 
-- [spec-writing](../../01-specification/spec-writing/SKILL.md) -- Provides the spec-doc input
-- [domain-modeling](../../01-specification/domain-modeling/SKILL.md) -- Provides bounded contexts that inform component boundaries
+- [spec-writing](../spec-writing/SKILL.md) -- Provides the spec-doc input
+- [domain-modeling](../domain-modeling/SKILL.md) -- Provides bounded contexts that inform component boundaries
 - [api-design](../api-design/SKILL.md) -- Designs the interfaces between components defined here
 - [data-modeling](../data-modeling/SKILL.md) -- Translates the domain model into storage schemas within this architecture
 - [security-design](../security-design/SKILL.md) -- Layers security controls onto the architecture
 - [tech-selection](../tech-selection/SKILL.md) -- Evaluates concrete technologies for the components defined here
-- [task-breakdown](../../03-planning/task-breakdown/SKILL.md) -- Decomposes the architecture into implementable tasks
+- [task-breakdown](../task-breakdown/SKILL.md) -- Decomposes the architecture into implementable tasks
 
 ## Distribution
 

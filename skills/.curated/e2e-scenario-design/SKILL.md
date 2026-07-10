@@ -130,7 +130,7 @@ For platform-specific gotchas that cause silent failures:
 ## Related Skills
 
 - [testing-strategy](../testing-strategy/SKILL.md) — defines pyramid ratios and CI integration; this skill implements the scenario and edge-case layers
-- [tdd](../../04-implementation/tdd/SKILL.md) — test-first discipline that prevents the shallow test trap at the unit layer
+- [tdd](../tdd/SKILL.md) — test-first discipline that prevents the shallow test trap at the unit layer
 
 ## Distribution
 

@@ -892,6 +892,21 @@ artifact_flow:
 - artifact: workflow-recommendation
   produced_by: intake
   consumed_by: []
+- artifact: route-decision
+  produced_by: intake
+  consumed_by:
+  - verification-before-completion
+  - task-execution
+  - delivery-completion
+- artifact: execution-state
+  produced_by:
+  - intake
+  - task-execution
+  - verification-before-completion
+  consumed_by:
+  - verification-before-completion
+  - task-execution
+  - delivery-completion
 - artifact: problem-frame
   produced_by: problem-framing
   consumed_by:

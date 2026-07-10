@@ -93,8 +93,8 @@ Clean up obvious naming, dead code, and accidental noise that would distract rev
 
 - [tdd](../tdd/SKILL.md) -- provides the test-first guardrail for the slice
 - [refactoring](../refactoring/SKILL.md) -- improves structure after behavior is working and protected
-- [code-review](../../05-quality/code-review/SKILL.md) -- validates correctness, maintainability, and scope discipline
-- [ci-cd](../../06-delivery/ci-cd/SKILL.md) -- consumes the resulting code in automated delivery
+- [code-review](../code-review/SKILL.md) -- validates correctness, maintainability, and scope discipline
+- [ci-cd](../ci-cd/SKILL.md) -- consumes the resulting code in automated delivery
 
 ## Distribution
 

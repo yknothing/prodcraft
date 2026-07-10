@@ -36,7 +36,7 @@ This skill covers **cross-cutting instrumentation design**, not just runtime das
 - AI execution telemetry such as skill invocation, runner execution, model usage, and token accounting
 - workflow-level observability that must survive handoff across phases
 
-This skill is intentionally distinct from [monitoring-observability](../../07-operations/monitoring-observability/SKILL.md):
+This skill is intentionally distinct from [monitoring-observability](../monitoring-observability/SKILL.md):
 
 - `observability` defines **what signals should exist and how they are structured**
 - `monitoring-observability` turns important production signals into **dashboards, alerts, and responder workflows**
@@ -162,9 +162,9 @@ Do not stop at event emission. Summarize recurring failures, missing usage data,
 
 ## Related Skills
 
-- [monitoring-observability](../../07-operations/monitoring-observability/SKILL.md) -- turns important runtime signals into dashboards, alerts, and responder workflows
+- [monitoring-observability](../monitoring-observability/SKILL.md) -- turns important runtime signals into dashboards, alerts, and responder workflows
 - [documentation](../documentation/SKILL.md) -- records ADRs, schemas, and operational guidance for the observability layer
-- [ci-cd](../../06-delivery/ci-cd/SKILL.md) -- supplies release and rollout boundaries that should remain visible in telemetry
+- [ci-cd](../ci-cd/SKILL.md) -- supplies release and rollout boundaries that should remain visible in telemetry
 - `docs/observability/runtime-feedback-loop.md` -- explains how execution JSONL evidence feeds back into the skills system
 
 ## Distribution

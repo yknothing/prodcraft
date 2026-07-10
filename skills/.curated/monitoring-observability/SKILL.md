@@ -114,7 +114,7 @@ Before relying on the setup:
 
 ## Related Skills
 
-- [ci-cd](../../06-delivery/ci-cd/SKILL.md) -- provides release and rollback context
+- [ci-cd](../ci-cd/SKILL.md) -- provides release and rollback context
 - [incident-response](../incident-response/SKILL.md) -- consumes observability signals during incidents
 - [runbooks](../runbooks/SKILL.md) -- attaches response steps to alerts
 - `capacity-planning` (planned) -- uses operational signals for projection

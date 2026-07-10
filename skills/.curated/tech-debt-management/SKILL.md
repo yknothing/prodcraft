@@ -123,8 +123,8 @@ For each top debt item, define:
 
 ## Related Skills
 
-- [code-review](../../05-quality/code-review/SKILL.md) -- identifies debt during review
-- [refactoring](../../04-implementation/refactoring/SKILL.md) -- the primary tool for paying down debt
+- [code-review](../code-review/SKILL.md) -- identifies debt during review
+- [refactoring](../refactoring/SKILL.md) -- the primary tool for paying down debt
 - [retrospective](../retrospective/SKILL.md) -- surfaces systemic debt issues
 - `migration-strategy` (planned) -- for large-scale debt remediation
 

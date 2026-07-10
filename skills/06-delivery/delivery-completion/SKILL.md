@@ -6,6 +6,8 @@ metadata:
   inputs:
   - verification-record
   - execution-checkpoint
+  - route-decision
+  - execution-state
   outputs:
   - delivery-decision-record
   prerequisites:
@@ -39,6 +41,11 @@ Use this skill when implementation and review are complete, verification evidenc
 ### Step 1: Confirm Fresh Verification Evidence
 
 Do not present completion options until you have current evidence that the work is actually passing. If merge-base drift, dependency updates, or additional commits changed the verified surface, re-run the necessary verification first.
+
+When strict execution state is active, require a fresh `terminal-authorized`
+result for the canonical state and operator-pinned route and completion digests. Do not substitute
+`--artifact-instance`, `gate-authorized`, a historical snapshot, or an earlier
+terminal result from a different worktree state.
 
 ### Step 2: Determine the Completion Target
 

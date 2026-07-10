@@ -6,13 +6,13 @@ This English README is the canonical project overview. A non-authoritative Chine
 
 ## Current State
 
-As of 2026-04-25, the checked-in system contains:
+As of 2026-07-10, the checked-in system contains:
 
-- 44 lifecycle skill packages in `skills/00-discovery/` through `skills/cross-cutting/`
-- authored-skill maturity in `manifest.yml`: 6 `production`, 32 `tested`, 6 `review`, 0 `draft`
+- 46 lifecycle skill packages in `skills/00-discovery/` through `skills/cross-cutting/`
+- authored-skill maturity in `manifest.yml`: 6 `production`, 32 `tested`, 8 `review`, 0 `draft`
 - 6 workflow files: 3 primary methodology workflows and 3 overlays
 - 7 advisory personas
-- 6 registered protocol artifact schemas
+- 8 registered protocol artifact schemas
 - 40 generated public skills in `skills/.curated/`
 
 The current canonical architecture state is [Architecture State Bundle](docs/architecture/2026-04-18-prodcraft-architecture-state-bundle.md). Its core position is that Prodcraft is not just a skill library. It is a host-agnostic governance system for production engineering, with repository-owned contracts as the authority and host bindings as adapters.
@@ -30,11 +30,11 @@ Those layers are evaluated across three consumer surfaces: `repo_internal`, `hos
 
 ## Guarantees And Limits
 
-Prodcraft can currently enforce and validate structural contracts such as workflow entry gates, artifact schema shape, curated-surface parity, portability metadata, and security-minimal checks.
+Prodcraft can enforce and validate structural contracts such as workflow entry gates, artifact schema shape, curated-surface parity, portability metadata, and security-minimal checks. Projects may also opt into the Direction 2 strict execution loop: repository-owned route and execution artifacts, operator-pinned route and terminal-completion digests, a replayed lifecycle/phase automaton, closed content-bound evidence, and live Git-worktree freshness can produce machine-distinct gate or terminal authority.
 
 Prodcraft does not claim that structural checks prove semantic engineering quality. A valid schema does not prove a good requirement, a passing review template does not prove high-quality review, and `verification-record.v1` does not by itself prove route-level completion. Judgment-heavy work still needs bounded evidence, review, and route-specific acceptance.
 
-The downstream execution loop is still being hardened. AR-01, AR-02, AR-03, and the public portability review are active governance workstreams, not proof that every execution-critical rule is already enforced.
+Strict execution state remains additive rather than mandatory. It does not authenticate approvers, provide trusted time, prove semantic engineering quality, or supply a scheduler, service, database, or multi-writer event authority. Legacy workflows remain guidance-led unless they explicitly adopt the strict artifacts and authority command.
 
 ## How It Works
 
@@ -103,10 +103,31 @@ Protocol artifacts are registered in `schemas/artifacts/registry.yml` and backed
 - `course-correction-note`
 - `review-report`
 - `verification-record`
+- `route-decision`
+- `execution-state`
 
 `verification-record.v1` is the first repo-native foothold for completion-claim proof shape. It requires evidence references, checks run, pass/fail lists, remaining unverified scope, and `claim_may_be_made` alignment. A completion claim may be made only when the record is accepted, checks are passed, and no failed or unverified items remain.
 
-This is intentionally narrow. `verification-record.v1` validates proof shape; route-level acceptance and semantic adequacy still require workflow rules, artifact-flow checks, and human or agent review for the specific route.
+`route-decision.v1` keeps approved workflow focus and reviewer-declared obligations outside mutable execution bindings. `execution-state.v1` records one globally ordered lifecycle/phase/binding history, append-only completion attempts, and content-addressed evidence/work snapshots. These v1 artifacts are opt-in and do not change `verification-record.v1.claim_scope` semantics.
+
+Generic artifact inspection emits no authority:
+
+```bash
+python scripts/validate_prodcraft.py --artifact-instance <artifact.json>
+```
+
+Strict gate authorization requires the canonical state path plus an operator-held route digest. Terminal authorization additionally requires an operator-held completion digest over the final attempt, evidence commitment, and terminal transition records:
+
+```bash
+python scripts/validate_prodcraft.py \
+  --authorize-execution-state .prodcraft/artifacts/<work_id>/execution-state.json \
+  --approved-route-digest sha256:<operator-pinned-route-digest> \
+  --approved-completion-digest sha256:<operator-pinned-completion-digest>
+```
+
+For a valid terminal bundle without a completion pin, the command exits non-zero and reports the candidate completion digest for out-of-band review. Supplying that digest is an explicit operator approval step, not an in-bundle self-attestation.
+
+Only `gate-authorized` or `terminal-authorized` exits zero. Historical/non-canonical state, a missing or mismatched pin, stale work/evidence, an invalid state projection, and structural-only results fail closed. See [Minimal Execution Loop Architecture](docs/architecture/2026-07-10-minimal-execution-loop.md), [ADR-003](docs/adr/ADR-003-repository-owned-execution-state.md), the [Threat Model](docs/architecture/2026-07-10-minimal-execution-loop-threat-model.md), and the [Acceptance Record](docs/architecture/2026-07-10-minimal-execution-loop-acceptance.md).
 
 `intake-brief.v1` also carries `quality_target_context`: runtime context, exposure profile, production target, non-targets, and evidence references. This prevents downstream quality skills from treating an agent-internal skill or local harness as a public service just because the implementation contains HTTP-shaped code, while preserving full service review when the target is actually internet-exposed or multi-user.
 
@@ -182,12 +203,14 @@ Current architecture governance is split deliberately:
 - Execution support register: [Architecture Review Action Register](docs/architecture/2026-04-17-architecture-review-action-register.md)
 - AR-01 measurement protocol: [Enforcement Promotion Measurement Protocol](docs/architecture/ar-01-enforcement-promotion-measurement-protocol.md)
 - Provisional AR-03 host policy: [Host Adapter Policy](docs/architecture/ar-03-host-adapter-policy.md)
+- Implemented Direction 2 control plane: [Minimal Execution Loop Architecture](docs/architecture/2026-07-10-minimal-execution-loop.md)
+- Direction 2 decision and Direction 3 migration boundary: [ADR-003](docs/adr/ADR-003-repository-owned-execution-state.md)
 
 The current action sequence is:
 
 1. Treat the AR-01 provisional enforcement promotion matrix as the current planning input, not as canonical architecture policy.
-2. Run AR-02 first repo-native downstream execution checks on a small execution-critical slice.
-3. Formalize or implement AR-03 host adapters only after repository-owned contracts are clear.
+2. Use the opt-in Direction 2 route/execution authority on bounded work before considering mandatory adoption.
+3. Formalize or implement AR-03 host adapters only as adapters over repository-owned authority.
 4. Extend AR-04 `.curated/` portability review from the initial static review to live full-repo versus curated-only task runs.
 5. Audit AR-05 protocol artifacts for essential versus accidental complexity.
 
