@@ -168,6 +168,21 @@ class ExecutionStateCLITests(unittest.TestCase):
             any("unbound control file" in error for error in unbound_payload["errors"]),
             unbound_payload["errors"],
         )
+        self.assertFalse(
+            any("candidate completion digest" in error for error in unbound_payload["errors"]),
+            unbound_payload["errors"],
+        )
+        unbound_text = self.run_validator(
+            "--authorize-execution-state",
+            str(state_path),
+            "--approved-route-digest",
+            self.fixture.route["route_digest"],
+        )
+        self.assertEqual(1, unbound_text.returncode)
+        self.assertNotIn(
+            "candidate completion digest",
+            unbound_text.stdout + unbound_text.stderr,
+        )
         unbound_path.unlink()
 
         terminal, terminal_payload = self.run_validator_json(
@@ -315,17 +330,55 @@ class ExecutionStateCLITests(unittest.TestCase):
         self.assertNotEqual(0, result.returncode)
         self.assertIn("regular file", result.stdout + result.stderr)
 
-    def test_generic_artifact_inspection_rejects_oversized_json_before_parsing(self):
+    def test_authority_entry_rejects_oversized_json_before_parsing(self):
         path = self.fixture.repo / "oversized-route.json"
         with path.open("wb") as handle:
             handle.seek(STRICT_JSON_MAX_BYTES)
             handle.write(b" ")
-        result = self.run_validator("--artifact-instance", str(path))
+        result = self.run_validator(
+            "--authorize-execution-state",
+            str(path),
+            "--approved-route-digest",
+            "sha256:" + "0" * 64,
+        )
         self.assertNotEqual(0, result.returncode)
         self.assertIn(
             f"exceeds {STRICT_JSON_MAX_BYTES} bytes",
             result.stdout + result.stderr,
         )
+
+    def test_generic_artifact_inspection_preserves_large_legacy_documents(self):
+        path = self.fixture.repo / "large-intake-brief.json"
+        payload = {
+            "artifact": "intake-brief",
+            "schema_version": "intake-brief.v1",
+            "status": "approved",
+            "request_summary": "x" * (STRICT_JSON_MAX_BYTES + 1),
+            "source_language": "en",
+            "artifact_record_language": "en",
+            "user_presentation_locale": "zh",
+            "intake_mode": "full",
+            "work_type": "New Feature",
+            "entry_phase": "01-specification",
+            "quality_target_context": {
+                "runtime_context": "internal_service",
+                "exposure_profile": "private_network",
+                "production_target": "Internal workflow",
+                "non_targets": [],
+                "evidence_refs": [],
+            },
+            "workflow_primary": "agile-sprint",
+            "scope_assessment": "medium",
+            "recommended_next_skill": "requirements-engineering",
+            "routing_rationale": "Existing feature work starts in specification.",
+            "key_risks": [],
+            "questions_asked": [],
+            "routing_changed_by_answers": False,
+            "approver": "user",
+        }
+        path.write_text(json.dumps(payload), encoding="utf-8")
+        result = self.run_validator("--artifact-instance", str(path))
+        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
 
     def test_reroute_requires_valid_predecessor_chain_and_archived_state_binding(self):
         for stale_file in ("verification-record.json", "test-output.txt"):

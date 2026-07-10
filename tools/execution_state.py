@@ -231,10 +231,14 @@ def _read_regular_file_bytes(
         return content
 
 
-def read_bounded_protocol_file(path: Path) -> bytes:
-    """Read one protocol artifact under the repository-owned JSON size bound."""
+def read_protocol_file(path: Path) -> bytes:
+    """Read one legacy protocol artifact through a safe regular-file descriptor."""
 
-    return _read_regular_file_bytes(path)
+    with _open_regular_file(path) as (handle, opened_stat):
+        content = handle.read()
+        if len(content) != opened_stat.st_size:
+            raise ValueError(f"content-bound path changed while being read: {path}")
+        return content
 
 
 def _parse_strict_json_bytes(content: bytes, path: Path) -> dict[str, Any]:

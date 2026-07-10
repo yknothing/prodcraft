@@ -26,7 +26,7 @@ from tools.execution_state import (  # noqa: E402
     file_sha256,
     load_strict_json,
     load_strict_json_with_digest,
-    read_bounded_protocol_file,
+    read_protocol_file,
     resolve_authority_context,
     resolve_control_ref,
     validate_control_bundle,
@@ -853,7 +853,7 @@ def validate_verification_record_instance_contract(record: dict, source: str, er
 
 def load_artifact_instance(path: Path, errors: list[str]) -> dict:
     try:
-        text = read_bounded_protocol_file(path).decode("utf-8")
+        text = read_protocol_file(path).decode("utf-8")
     except (UnicodeError, ValueError) as exc:
         errors.append(f"{path}: failed to read artifact instance: {exc}")
         return {}
@@ -2330,7 +2330,9 @@ def authorize_execution_state(
             is_canonical_current=True,
             authority_mode=True,
         )
-    errors.extend(f"{state_path}: {error}" for error in result.errors)
+    candidate_pending = result.candidate_completion_digest is not None
+    if not candidate_pending:
+        errors.extend(f"{state_path}: {error}" for error in result.errors)
 
     errors.extend(
         f"{state_path}: final control-bundle capture: {error}"
@@ -2369,6 +2371,11 @@ def authorize_execution_state(
                 )
     except (TypeError, ValueError) as exc:
         errors.append(f"{state_path}: final content freshness check failed: {exc}")
+    if candidate_pending:
+        if errors:
+            return ValidationResult(result.authority, [])
+        errors.extend(f"{state_path}: {error}" for error in result.errors)
+        return result
     if errors:
         return result
     if result.authority not in {AUTHORITY_GATE, AUTHORITY_TERMINAL}:
