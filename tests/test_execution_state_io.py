@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import stat
@@ -103,15 +104,22 @@ class StrictJSONTests(unittest.TestCase):
     def test_content_digest_streams_without_whole_file_helper(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "evidence.bin"
-            path.write_bytes(b"streamed evidence")
-            with mock.patch(
-                "tools.execution_state._read_regular_file_bytes",
-                side_effect=AssertionError("whole-file helper used"),
+            for size in (
+                0,
+                execution_state_module.FILE_HASH_CHUNK_BYTES,
+                execution_state_module.FILE_HASH_CHUNK_BYTES + 1,
             ):
-                self.assertEqual(
-                    "sha256:69cd7f252ff35032c9b930b7e3508c17f4d1ba08f59f98f80bf77e66b53dea89",
-                    file_sha256(path),
-                )
+                with self.subTest(size=size):
+                    content = b"x" * size
+                    path.write_bytes(content)
+                    with mock.patch(
+                        "tools.execution_state._read_regular_file_bytes",
+                        side_effect=AssertionError("whole-file helper used"),
+                    ):
+                        self.assertEqual(
+                            "sha256:" + hashlib.sha256(content).hexdigest(),
+                            file_sha256(path),
+                        )
 
 
 class ControlReferenceTests(unittest.TestCase):
@@ -256,6 +264,17 @@ class GitWorktreeSnapshotTests(unittest.TestCase):
         os.mkfifo(index_path)
         with self.assertRaisesRegex(WorktreeSnapshotError, "Git index must be a regular"):
             self.capture()
+
+    def test_info_exclude_uses_the_safe_descriptor_reader(self):
+        info_exclude = self.root / ".git" / "info" / "exclude"
+        info_exclude.write_text("# comments only\n", encoding="utf-8")
+        with mock.patch.object(
+            Path,
+            "read_text",
+            side_effect=AssertionError("Path.read_text used for Git metadata"),
+        ):
+            snapshot = self.capture()
+        self.assertEqual("clean", snapshot["status"])
 
     def test_git_environment_and_snapshot_relevant_config_do_not_change_identity(self):
         baseline = self.capture()

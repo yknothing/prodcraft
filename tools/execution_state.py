@@ -171,9 +171,10 @@ def _open_regular_file(path: Path) -> Iterator[tuple[BinaryIO, os.stat_result]]:
         opened_stat = os.fstat(descriptor)
         if not stat.S_ISREG(opened_stat.st_mode):
             raise ValueError(f"content-bound path must be a regular file: {path}")
-        if (entry_stat.st_dev, entry_stat.st_ino) != (
+        if (entry_stat.st_dev, entry_stat.st_ino, entry_stat.st_mode) != (
             opened_stat.st_dev,
             opened_stat.st_ino,
+            opened_stat.st_mode,
         ):
             raise ValueError(f"content-bound path changed while being opened: {path}")
         with os.fdopen(descriptor, "rb", closefd=True) as handle:
@@ -183,6 +184,7 @@ def _open_regular_file(path: Path) -> Iterator[tuple[BinaryIO, os.stat_result]]:
             opened_identity = (
                 opened_stat.st_dev,
                 opened_stat.st_ino,
+                opened_stat.st_mode,
                 opened_stat.st_size,
                 opened_stat.st_mtime_ns,
                 opened_stat.st_ctime_ns,
@@ -190,6 +192,7 @@ def _open_regular_file(path: Path) -> Iterator[tuple[BinaryIO, os.stat_result]]:
             final_identity = (
                 final_stat.st_dev,
                 final_stat.st_ino,
+                final_stat.st_mode,
                 final_stat.st_size,
                 final_stat.st_mtime_ns,
                 final_stat.st_ctime_ns,
@@ -226,6 +229,12 @@ def _read_regular_file_bytes(
         if len(content) != opened_stat.st_size:
             raise ValueError(f"content-bound path changed while being read: {path}")
         return content
+
+
+def read_bounded_protocol_file(path: Path) -> bytes:
+    """Read one protocol artifact under the repository-owned JSON size bound."""
+
+    return _read_regular_file_bytes(path)
 
 
 def _parse_strict_json_bytes(content: bytes, path: Path) -> dict[str, Any]:
@@ -531,8 +540,8 @@ def _validate_ignore_policy(
                     ".git/info/exclude must be a regular non-symlink file"
                 )
             try:
-                lines = info_exclude.read_text(encoding="utf-8").splitlines()
-            except (OSError, UnicodeError) as exc:
+                lines = _read_regular_file_bytes(info_exclude).decode("utf-8").splitlines()
+            except (ValueError, UnicodeError) as exc:
                 raise WorktreeSnapshotError(f"cannot read .git/info/exclude: {exc}") from exc
             if any(line.strip() and not line.lstrip().startswith("#") for line in lines):
                 raise WorktreeSnapshotError(".git/info/exclude contains a non-comment rule")
@@ -712,11 +721,11 @@ def _snapshot_entry(
         return "160000", nested_snapshot["head"]
 
     if stat.S_ISREG(entry_stat.st_mode):
-        mode = b"100755" if bool(
-            entry_stat.st_mode & (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
-        ) else b"100644"
         try:
             with _open_regular_file(absolute) as (handle, opened_stat):
+                mode = b"100755" if bool(
+                    opened_stat.st_mode & (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+                ) else b"100644"
                 _update_length_delimited(digest, path.encode("utf-8"))
                 _update_length_delimited(digest, b"file")
                 _update_length_delimited(digest, mode)

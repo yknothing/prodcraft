@@ -6,7 +6,6 @@ from __future__ import annotations
 import argparse
 import json
 import re
-import stat
 import sys
 import tempfile
 from datetime import datetime
@@ -27,6 +26,7 @@ from tools.execution_state import (  # noqa: E402
     file_sha256,
     load_strict_json,
     load_strict_json_with_digest,
+    read_bounded_protocol_file,
     resolve_authority_context,
     resolve_control_ref,
     validate_control_bundle,
@@ -853,18 +853,8 @@ def validate_verification_record_instance_contract(record: dict, source: str, er
 
 def load_artifact_instance(path: Path, errors: list[str]) -> dict:
     try:
-        entry_stat = path.lstat()
-        if stat.S_ISLNK(entry_stat.st_mode):
-            errors.append(f"{path}: artifact instance path must not be a symlink")
-            return {}
-        if not stat.S_ISREG(entry_stat.st_mode):
-            errors.append(f"{path}: artifact instance path must be a regular file")
-            return {}
-        text = path.read_text(encoding="utf-8")
-    except FileNotFoundError:
-        errors.append(f"{path}: artifact instance file does not exist")
-        return {}
-    except Exception as exc:
+        text = read_bounded_protocol_file(path).decode("utf-8")
+    except (UnicodeError, ValueError) as exc:
         errors.append(f"{path}: failed to read artifact instance: {exc}")
         return {}
 
@@ -2498,22 +2488,26 @@ def main() -> int:
 
     if args.output_format == "json":
         authority = None
+        candidate_completion_digest = None
         if (
             not errors
             and authority_result is not None
             and authority_result.authority in {AUTHORITY_GATE, AUTHORITY_TERMINAL}
         ):
             authority = authority_result.authority
+        if authority_result is not None and authority_result.candidate_completion_digest:
+            candidate_errors = [
+                f"{args.authorize_execution_state}: {error}"
+                for error in authority_result.errors
+            ]
+            if errors == candidate_errors:
+                candidate_completion_digest = authority_result.candidate_completion_digest
         print(
             json.dumps(
                 {
                     "status": "invalid" if errors else "valid",
                     "authority": authority,
-                    "candidate_completion_digest": (
-                        authority_result.candidate_completion_digest
-                        if authority_result is not None
-                        else None
-                    ),
+                    "candidate_completion_digest": candidate_completion_digest,
                     "errors": errors,
                 },
                 sort_keys=True,

@@ -13,7 +13,11 @@ try:
     from . import test_execution_state_completion as completion_support
 except ImportError:
     import test_execution_state_completion as completion_support
-from tools.execution_state import canonical_json_digest, terminal_authority_digest
+from tools.execution_state import (
+    STRICT_JSON_MAX_BYTES,
+    canonical_json_digest,
+    terminal_authority_digest,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -149,6 +153,22 @@ class ExecutionStateCLITests(unittest.TestCase):
             invalid_payload["errors"],
         )
         self.fixture.write("test-output.txt", "9 tests passed\n", raw=True)
+
+        unbound_path = self.fixture.control / "unbound.txt"
+        unbound_path.write_text("not part of the closed bundle\n", encoding="utf-8")
+        unbound, unbound_payload = self.run_validator_json(
+            "--authorize-execution-state",
+            str(state_path),
+            "--approved-route-digest",
+            self.fixture.route["route_digest"],
+        )
+        self.assertEqual(1, unbound.returncode)
+        self.assertIsNone(unbound_payload["candidate_completion_digest"])
+        self.assertTrue(
+            any("unbound control file" in error for error in unbound_payload["errors"]),
+            unbound_payload["errors"],
+        )
+        unbound_path.unlink()
 
         terminal, terminal_payload = self.run_validator_json(
             "--authorize-execution-state",
@@ -294,6 +314,18 @@ class ExecutionStateCLITests(unittest.TestCase):
         result = self.run_validator("--artifact-instance", str(path))
         self.assertNotEqual(0, result.returncode)
         self.assertIn("regular file", result.stdout + result.stderr)
+
+    def test_generic_artifact_inspection_rejects_oversized_json_before_parsing(self):
+        path = self.fixture.repo / "oversized-route.json"
+        with path.open("wb") as handle:
+            handle.seek(STRICT_JSON_MAX_BYTES)
+            handle.write(b" ")
+        result = self.run_validator("--artifact-instance", str(path))
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn(
+            f"exceeds {STRICT_JSON_MAX_BYTES} bytes",
+            result.stdout + result.stderr,
+        )
 
     def test_reroute_requires_valid_predecessor_chain_and_archived_state_binding(self):
         for stale_file in ("verification-record.json", "test-output.txt"):
