@@ -532,7 +532,7 @@ The output and exit contract is explicit:
 
 `--authorize-execution-state` exits zero only for `gate-authorized` or `terminal-authorized`. Structural-only, missing-pin, historical, and non-canonical results exit non-zero in authority mode. Generic `--artifact-instance` remains schema/contract inspection only and never emits an authority result. Every authoritative lifecycle transition or phase checkpoint, not only terminal completion, requires pin equality.
 
-Text remains the default presentation. `--output-format json` emits exactly `status`, `authority`, `candidate_completion_digest`, and `errors`; it carries the candidate as data instead of requiring a host to parse human error text. Presentation never changes exit codes or upgrades candidate-only state to authority.
+Text remains the default presentation. After successful argument parsing, `--output-format json` emits exactly `status`, `authority`, `candidate_completion_digest`, and `errors`; it carries the candidate as data instead of requiring a host to parse human error text. Presentation never changes domain-validation exit codes or upgrades candidate-only state to authority. Standard `argparse` usage errors remain on stderr with exit code 2. This unversioned local projection is not the future Direction 3 host-adapter contract; that boundary requires an explicit version and migration policy before adoption.
 
 ## Failure Semantics
 

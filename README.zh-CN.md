@@ -120,7 +120,7 @@ python scripts/validate_prodcraft.py \
   --output-format json
 ```
 
-对象固定包含 `status`、`authority`、`candidate_completion_digest` 和 `errors`。candidate-only 结果仍是 `status: "invalid"`、`authority: null`，并返回非零退出码。
+当前对象固定包含 `status`、`authority`、`candidate_completion_digest` 和 `errors`。candidate-only 结果仍是 `status: "invalid"`、`authority: null`，并返回非零退出码。JSON 渲染只覆盖参数解析成功后的领域校验；非法参数组合仍使用标准 `argparse` stderr 和退出码 2。这个本地 CLI 投影不是带版本的方向 3 host-adapter 协议。
 
 只有 `gate-authorized` 或 `terminal-authorized` 返回零退出码。historical/non-canonical state、missing/mismatched pin、stale work/evidence、非法状态投影和 structural-only 都会 fail closed。规范设计见 [Minimal Execution Loop Architecture](docs/architecture/2026-07-10-minimal-execution-loop.md)、[ADR-003](docs/adr/ADR-003-repository-owned-execution-state.md)、[Threat Model](docs/architecture/2026-07-10-minimal-execution-loop-threat-model.md) 和 [Acceptance Record](docs/architecture/2026-07-10-minimal-execution-loop-acceptance.md)。
 

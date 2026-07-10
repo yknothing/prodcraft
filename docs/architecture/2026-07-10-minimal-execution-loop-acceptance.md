@@ -1,6 +1,6 @@
 # Minimal Execution Loop Acceptance Record
 
-> Status: Accepted — 2026-07-10
+> Status: Accepted after corrective adversarial review — 2026-07-10
 >
 > Scope: Direction 2 repository-owned strict execution loop
 
@@ -9,6 +9,8 @@
 Direction 2 is accepted with no unresolved P0/P1 findings. The delivered contract is additive and opt-in: generic artifact inspection remains structural-only; gate authority requires the canonical live state and an operator-held route pin; terminal authority additionally requires an operator-held completion pin over the final authority projection and fresh evidence/work validation.
 
 Direction 3 remains architecture only. This change does not introduce a service, database, queue, scheduler, network API, identity provider, or multi-writer runtime.
+
+The delivery/process review, including consensus and unresolved design disagreements, is recorded in [`2026-07-10-minimal-execution-loop-retrospective.md`](./2026-07-10-minimal-execution-loop-retrospective.md).
 
 ## Intent And Acceptance Coverage
 
@@ -31,9 +33,12 @@ Direction 3 remains architecture only. This change does not introduce a service,
 | P1 | Git config, replace refs, alternate index state, or submodule settings/index flags could change or hide snapshot identity. | Fixed relevant Git settings, disabled replace refs, rejected unverifiable index states, and recursively validates submodule content independently of status-hiding config. |
 | P1 | Separate digest and semantic reads allowed an A-digest/B-semantics race. | Strict JSON is hashed and parsed from one descriptor snapshot; Schema and terminal semantics reuse that payload; authority performs a final control-bundle/freshness capture. |
 | P1 | Canonical/historical route-state selection, reroute replay, and generic structural semantics had incomplete negative coverage. | Enforced canonical filenames/selectors, content-addressed history, predecessor replay, and structural-only generic validation. |
+| P1 | Generic artifact inspection performed a TOCTOU-prone first read; the first correction then applied the strict 16 MiB cap to all legacy artifacts. | Unified safe descriptor semantics, retained the cap on strict authority inputs, and added a schema-valid 16 MiB-plus legacy compatibility regression. |
+| P1 | A globally invalid terminal bundle could still expose a completion candidate in JSON errors or text. | Deferred every candidate field/message until final bundle and freshness checks pass; invalid-bundle regressions cover both renderers. |
+| P1 | `.git/info/exclude` could be replaced with a FIFO after an outer `lstat`, leaving validation blocked outside the Git timeout. | Read Git metadata through the same nonblocking regular-file descriptor snapshot and reproduced the swap as fail-fast. |
 | P2 | `./x`, `x/`, and `a//b` were normalized before local-ref validation. | Closed in this slice: runtime and both schemas now reject noncanonical raw segments. |
 
-Fresh final reviewers independently covered requirements/architecture alignment, filesystem/Git/digest integrity, and Python/public-runtime compatibility. Each returned PASS with no unresolved P0/P1 findings after rerunning the original reproductions.
+The first post-P2 review returned FAIL and acceptance was reopened. After two corrective implementation commits, fresh architecture/process, implementation-integrity, and compatibility reviewers reran the original reproductions and returned PASS with no unresolved P0/P1.
 
 ## Verification Evidence
 
@@ -56,4 +61,4 @@ The self-hosted acceptance bundle lives at the intentionally ignored canonical l
 
 These are not silent guarantees: none is upgraded to terminal authority by Direction 2, and each has a documented migration seam in the architecture.
 
-The former whole-file memory-pressure issue is closed by bounded strict JSON plus streaming evidence/worktree hashing. The former five-second Git timeout is now a fixed 300-second liveness guard: large repositories may run slowly, while blocking Git config/FIFO input still fails eventually. Direct package-module CLI tests and stable machine-readable candidate output are also covered by the final P2 regression suite.
+The strict-authority whole-file memory-pressure issue is closed by bounded control JSON plus streaming evidence/worktree hashing. Generic legacy artifact inspection intentionally retains whole-document parsing for backward compatibility, but uses the same nonblocking regular-file descriptor safety. The former five-second Git timeout is now a fixed 300-second liveness guard: large repositories may run slowly, while blocking Git config/FIFO input still fails eventually. Direct package-module CLI tests and the current machine-readable candidate output are also covered by the final P2 regression suite.

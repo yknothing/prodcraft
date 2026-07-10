@@ -136,7 +136,7 @@ python scripts/validate_prodcraft.py \
   --output-format json
 ```
 
-The object contains exactly `status`, `authority`, `candidate_completion_digest`, and `errors`. A candidate-only result has `status: "invalid"`, `authority: null`, and a nonzero exit code.
+The current object contains exactly `status`, `authority`, `candidate_completion_digest`, and `errors`. A candidate-only result has `status: "invalid"`, `authority: null`, and a nonzero exit code. JSON rendering starts after successful argument parsing; invalid option combinations retain standard `argparse` stderr and exit code 2. This local CLI projection is not a versioned Direction 3 host-adapter protocol.
 
 Only `gate-authorized` or `terminal-authorized` exits zero. Historical/non-canonical state, a missing or mismatched pin, stale work/evidence, an invalid state projection, and structural-only results fail closed. See [Minimal Execution Loop Architecture](docs/architecture/2026-07-10-minimal-execution-loop.md), [ADR-003](docs/adr/ADR-003-repository-owned-execution-state.md), the [Threat Model](docs/architecture/2026-07-10-minimal-execution-loop-threat-model.md), and the [Acceptance Record](docs/architecture/2026-07-10-minimal-execution-loop-acceptance.md).
 

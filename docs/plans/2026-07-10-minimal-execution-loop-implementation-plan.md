@@ -123,3 +123,16 @@ Critical path: `MEL-T1 -> MEL-T2 -> MEL-T3 -> MEL-T5`.
 3. Keep public-export repair as a separate reversible batch.
 4. Stop and return to architecture if canonical digest, path containment, or reroute semantics require weakening a documented invariant.
 5. Stop completion claims if any final review has unresolved P0/P1 or if any final evidence predates the final work snapshot.
+
+## P2 Hardening Closure
+
+> Status: implemented and adversarially reviewed on 2026-07-10
+
+This follow-up stayed inside the repository-owned Direction 2 boundary:
+
+- Git subprocesses use a fixed 300-second liveness guard. It prevents indefinite blocking; it is not a performance target or a reason to reject a large repository merely for being slow.
+- Strict authority/control documents are bounded at 16 MiB. Raw evidence and governed worktree files are streamed in 1 MiB chunks while preserving `git-worktree-content-v1` identity.
+- `--output-format json` exposes the current validation result without changing text defaults, exit codes, or authority semantics.
+- Generic artifact inspection and strict authority share safe nonblocking descriptor semantics, while only strict authority applies the new 16 MiB policy so legacy generic inputs remain compatible. A completion candidate is emitted only when the bundle is otherwise valid and solely awaits the operator completion pin.
+
+Named resource profiles, adaptive budgets, schedulers, host-specific timeout overrides, and Direction 3 runtime services were deliberately excluded. The first P2 review found three entry-path defects; they were reproduced, fixed, and added to the regression suite before acceptance was refreshed. The associated process analysis and unresolved design questions are recorded in [`2026-07-10-minimal-execution-loop-retrospective.md`](../architecture/2026-07-10-minimal-execution-loop-retrospective.md).
