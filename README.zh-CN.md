@@ -111,6 +111,17 @@ python scripts/validate_prodcraft.py \
 
 当 terminal bundle 合法但未提供 completion pin 时，命令会非零退出并报告 candidate digest，供操作者在 bundle 外评审和批准；把该值写回命令是显式 approval，不是 bundle 自证。
 
+机器调用方可以请求单个稳定 JSON object，authority 语义与退出码不变：
+
+```bash
+python scripts/validate_prodcraft.py \
+  --authorize-execution-state .prodcraft/artifacts/<work_id>/execution-state.json \
+  --approved-route-digest sha256:<operator-pinned-route-digest> \
+  --output-format json
+```
+
+对象固定包含 `status`、`authority`、`candidate_completion_digest` 和 `errors`。candidate-only 结果仍是 `status: "invalid"`、`authority: null`，并返回非零退出码。
+
 只有 `gate-authorized` 或 `terminal-authorized` 返回零退出码。historical/non-canonical state、missing/mismatched pin、stale work/evidence、非法状态投影和 structural-only 都会 fail closed。规范设计见 [Minimal Execution Loop Architecture](docs/architecture/2026-07-10-minimal-execution-loop.md)、[ADR-003](docs/adr/ADR-003-repository-owned-execution-state.md)、[Threat Model](docs/architecture/2026-07-10-minimal-execution-loop-threat-model.md) 和 [Acceptance Record](docs/architecture/2026-07-10-minimal-execution-loop-acceptance.md)。
 
 ## Public Install Surface

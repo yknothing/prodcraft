@@ -62,6 +62,7 @@ LIFECYCLE_TRANSITIONS = {
 class ValidationResult:
     authority: str
     errors: list[str]
+    candidate_completion_digest: str | None = None
 
 
 def resolve_authority_context(
@@ -2109,6 +2110,11 @@ def validate_execution_state_contract(
             completion_digest = terminal_authority_digest(state)
         except ValueError as exc:
             return ValidationResult(AUTHORITY_STRUCTURAL, [str(exc)])
+        if not terminal_validation_passed:
+            return ValidationResult(
+                AUTHORITY_STRUCTURAL,
+                [f"{lifecycle_state} state requires terminal completion authorization"],
+            )
         if approved_completion_digest is None:
             return ValidationResult(
                 AUTHORITY_STRUCTURAL,
@@ -2116,16 +2122,12 @@ def validate_execution_state_contract(
                     "terminal authority requires an operator completion pin; "
                     f"candidate completion digest is {completion_digest}"
                 ],
+                candidate_completion_digest=completion_digest,
             )
         if approved_completion_digest != completion_digest:
             return ValidationResult(
                 AUTHORITY_STRUCTURAL,
                 ["operator completion pin does not match the terminal authority digest"],
             )
-        if terminal_validation_passed:
-            return ValidationResult(AUTHORITY_TERMINAL, [])
-        return ValidationResult(
-            AUTHORITY_STRUCTURAL,
-            [f"{lifecycle_state} state requires terminal completion authorization"],
-        )
+        return ValidationResult(AUTHORITY_TERMINAL, [])
     return ValidationResult(AUTHORITY_GATE, [])

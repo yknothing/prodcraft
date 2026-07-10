@@ -23,6 +23,7 @@ from tools.execution_state import (  # noqa: E402
     AUTHORITY_GATE,
     AUTHORITY_TERMINAL,
     StrictJSONError,
+    ValidationResult,
     file_sha256,
     load_strict_json,
     load_strict_json_with_digest,
@@ -2232,7 +2233,7 @@ def authorize_execution_state(
     approved_route_digest: str | None,
     approved_completion_digest: str | None,
     errors: list[str],
-) -> str | None:
+) -> ValidationResult | None:
     if approved_route_digest is None:
         errors.append("--approved-route-digest is required with --authorize-execution-state")
         return None
@@ -2379,11 +2380,11 @@ def authorize_execution_state(
     except (TypeError, ValueError) as exc:
         errors.append(f"{state_path}: final content freshness check failed: {exc}")
     if errors:
-        return None
+        return result
     if result.authority not in {AUTHORITY_GATE, AUTHORITY_TERMINAL}:
         errors.append(f"{state_path}: authority result is structural-only")
-        return None
-    return result.authority
+        return result
+    return result
 
 
 def main() -> int:
@@ -2413,6 +2414,12 @@ def main() -> int:
     parser.add_argument(
         "--approved-completion-digest",
         help="Operator-supplied terminal-authority digest pin for verified/completed state.",
+    )
+    parser.add_argument(
+        "--output-format",
+        choices=("text", "json"),
+        default="text",
+        help="Render the validation result as human-readable text or stable JSON.",
     )
     args = parser.parse_args()
 
@@ -2480,22 +2487,47 @@ def main() -> int:
     for artifact_instance in args.artifact_instance:
         validate_artifact_instance(artifact_instance, errors)
 
-    authority = None
+    authority_result = None
     if args.authorize_execution_state is not None:
-        authority = authorize_execution_state(
+        authority_result = authorize_execution_state(
             args.authorize_execution_state,
             args.approved_route_digest,
             args.approved_completion_digest,
             errors,
         )
 
+    if args.output_format == "json":
+        authority = None
+        if (
+            not errors
+            and authority_result is not None
+            and authority_result.authority in {AUTHORITY_GATE, AUTHORITY_TERMINAL}
+        ):
+            authority = authority_result.authority
+        print(
+            json.dumps(
+                {
+                    "status": "invalid" if errors else "valid",
+                    "authority": authority,
+                    "candidate_completion_digest": (
+                        authority_result.candidate_completion_digest
+                        if authority_result is not None
+                        else None
+                    ),
+                    "errors": errors,
+                },
+                sort_keys=True,
+            )
+        )
+        return 1 if errors else 0
+
     if errors:
         for error in errors:
             print(f"ERROR: {error}")
         return 1
 
-    if authority is not None:
-        print(authority)
+    if authority_result is not None:
+        print(authority_result.authority)
     else:
         print("Prodcraft validation passed")
     return 0

@@ -9,7 +9,10 @@ import sys
 import unittest
 from pathlib import Path
 
-import test_execution_state_completion as completion_support
+try:
+    from . import test_execution_state_completion as completion_support
+except ImportError:
+    import test_execution_state_completion as completion_support
 from tools.execution_state import canonical_json_digest, terminal_authority_digest
 
 
@@ -35,6 +38,10 @@ class ExecutionStateCLITests(unittest.TestCase):
             text=True,
             timeout=10,
         )
+
+    def run_validator_json(self, *args: str) -> tuple[subprocess.CompletedProcess[str], dict]:
+        result = self.run_validator(*args, "--output-format", "json")
+        return result, json.loads(result.stdout)
 
     def write_state(self, state: dict) -> Path:
         return self.fixture.write("execution-state.json", state)
@@ -91,6 +98,76 @@ class ExecutionStateCLITests(unittest.TestCase):
         )
         self.assertNotEqual(0, missing_completion_pin.returncode)
         self.assertIn("operator completion pin", missing_completion_pin.stdout + missing_completion_pin.stderr)
+
+    def test_json_output_distinguishes_structural_candidate_and_terminal_results(self):
+        route_path = self.fixture.control / "route-decision.r1.json"
+        structural, structural_payload = self.run_validator_json(
+            "--artifact-instance",
+            str(route_path),
+        )
+        self.assertEqual(0, structural.returncode)
+        self.assertEqual(
+            {
+                "status": "valid",
+                "authority": None,
+                "candidate_completion_digest": None,
+                "errors": [],
+            },
+            structural_payload,
+        )
+
+        state_path = self.write_state(self.fixture.state)
+        completion_digest = terminal_authority_digest(self.fixture.state)
+        candidate, candidate_payload = self.run_validator_json(
+            "--authorize-execution-state",
+            str(state_path),
+            "--approved-route-digest",
+            self.fixture.route["route_digest"],
+        )
+        self.assertEqual(1, candidate.returncode)
+        self.assertEqual("invalid", candidate_payload["status"])
+        self.assertIsNone(candidate_payload["authority"])
+        self.assertEqual(
+            completion_digest,
+            candidate_payload["candidate_completion_digest"],
+        )
+        self.assertEqual(1, len(candidate_payload["errors"]))
+        self.assertIn("operator completion pin", candidate_payload["errors"][0])
+
+        self.fixture.write("test-output.txt", "mutated after verification\n", raw=True)
+        invalid, invalid_payload = self.run_validator_json(
+            "--authorize-execution-state",
+            str(state_path),
+            "--approved-route-digest",
+            self.fixture.route["route_digest"],
+        )
+        self.assertEqual(1, invalid.returncode)
+        self.assertEqual("invalid", invalid_payload["status"])
+        self.assertIsNone(invalid_payload["candidate_completion_digest"])
+        self.assertTrue(
+            any("evidence binding" in error for error in invalid_payload["errors"]),
+            invalid_payload["errors"],
+        )
+        self.fixture.write("test-output.txt", "9 tests passed\n", raw=True)
+
+        terminal, terminal_payload = self.run_validator_json(
+            "--authorize-execution-state",
+            str(state_path),
+            "--approved-route-digest",
+            self.fixture.route["route_digest"],
+            "--approved-completion-digest",
+            completion_digest,
+        )
+        self.assertEqual(0, terminal.returncode)
+        self.assertEqual(
+            {
+                "status": "valid",
+                "authority": "terminal-authorized",
+                "candidate_completion_digest": None,
+                "errors": [],
+            },
+            terminal_payload,
+        )
 
     def test_missing_pin_mismatch_historical_duplicate_json_and_unbound_file_fail_closed(self):
         state_path = self.write_state(self.fixture.state)

@@ -127,6 +127,17 @@ python scripts/validate_prodcraft.py \
 
 For a valid terminal bundle without a completion pin, the command exits non-zero and reports the candidate completion digest for out-of-band review. Supplying that digest is an explicit operator approval step, not an in-bundle self-attestation.
 
+Machine consumers can request one stable JSON object without changing authority semantics or exit codes:
+
+```bash
+python scripts/validate_prodcraft.py \
+  --authorize-execution-state .prodcraft/artifacts/<work_id>/execution-state.json \
+  --approved-route-digest sha256:<operator-pinned-route-digest> \
+  --output-format json
+```
+
+The object contains exactly `status`, `authority`, `candidate_completion_digest`, and `errors`. A candidate-only result has `status: "invalid"`, `authority: null`, and a nonzero exit code.
+
 Only `gate-authorized` or `terminal-authorized` exits zero. Historical/non-canonical state, a missing or mismatched pin, stale work/evidence, an invalid state projection, and structural-only results fail closed. See [Minimal Execution Loop Architecture](docs/architecture/2026-07-10-minimal-execution-loop.md), [ADR-003](docs/adr/ADR-003-repository-owned-execution-state.md), the [Threat Model](docs/architecture/2026-07-10-minimal-execution-loop-threat-model.md), and the [Acceptance Record](docs/architecture/2026-07-10-minimal-execution-loop-acceptance.md).
 
 `intake-brief.v1` also carries `quality_target_context`: runtime context, exposure profile, production target, non-targets, and evidence references. This prevents downstream quality skills from treating an agent-internal skill or local harness as a public service just because the implementation contains HTTP-shaped code, while preserving full service review when the target is actually internet-exposed or multi-user.
