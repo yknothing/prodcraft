@@ -2,22 +2,31 @@
 
 from __future__ import annotations
 
+import errno
+import hashlib
 import json
+import os
 import re
+import stat
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
+from types import MappingProxyType
+from typing import Mapping
 
 import yaml
 
 from tools.execution_state import (
     AUTHORITY_GATE,
     AUTHORITY_TERMINAL,
+    ControlBundleIO,
+    FilesystemControlBundleIO,
     StrictJSONError,
     file_sha256,
     load_strict_json,
     load_strict_json_with_digest,
+    parse_strict_json_bytes,
     read_protocol_file,
     resolve_authority_context,
     resolve_control_ref,
@@ -25,6 +34,7 @@ from tools.execution_state import (
     validate_execution_state_contract,
     validate_route_decision_contract,
     validate_terminal_completion,
+    validate_control_ref,
 )
 
 
@@ -57,6 +67,150 @@ class ExecutionValidationOutcome:
     disposition: ValidationDisposition
     authority: str | None
     candidate_completion_digest: str | None = None
+    errors: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class CandidateBundleView:
+    """Immutable effective view over a live control bundle and candidate changes."""
+
+    control_root: Path
+    overrides: Mapping[str, bytes]
+    removals: frozenset[str]
+
+    def __init__(
+        self,
+        control_root: Path,
+        overrides: dict[str, bytes] | None = None,
+        removals: set[str] | frozenset[str] | None = None,
+    ) -> None:
+        normalized_overrides = dict(overrides or {})
+        normalized_removals = frozenset(removals or ())
+        root = control_root.absolute()
+        try:
+            root_stat = root.lstat()
+        except OSError as exc:
+            raise ValueError(f"control root cannot be inspected: {exc}") from exc
+        if stat.S_ISLNK(root_stat.st_mode) or not stat.S_ISDIR(root_stat.st_mode):
+            raise ValueError("control root must be a non-symlink directory")
+        for relative_path, content in normalized_overrides.items():
+            validate_control_ref(relative_path)
+            if not isinstance(content, bytes):
+                raise TypeError(f"candidate override must use bytes: {relative_path}")
+            self._inspect_candidate_path(root, relative_path, allow_absent_final=True)
+        for relative_path in normalized_removals:
+            validate_control_ref(relative_path)
+            self._inspect_candidate_path(root, relative_path, allow_absent_final=False)
+        conflicts = normalized_overrides.keys() & normalized_removals
+        if conflicts:
+            raise ValueError(
+                f"candidate path cannot be both overridden and removed: {sorted(conflicts)[0]}"
+            )
+        ordered_overrides = sorted(normalized_overrides)
+        for index, ancestor in enumerate(ordered_overrides):
+            prefix = ancestor + "/"
+            descendant = next(
+                (
+                    candidate
+                    for candidate in ordered_overrides[index + 1 :]
+                    if candidate.startswith(prefix)
+                ),
+                None,
+            )
+            if descendant is not None:
+                raise ValueError(
+                    "candidate overrides cannot contain ancestor and descendant paths: "
+                    f"{ancestor}, {descendant}"
+                )
+        object.__setattr__(self, "control_root", root)
+        object.__setattr__(self, "overrides", MappingProxyType(normalized_overrides))
+        object.__setattr__(self, "removals", normalized_removals)
+
+    @staticmethod
+    def _inspect_candidate_path(
+        root: Path,
+        relative_path: str,
+        *,
+        allow_absent_final: bool,
+    ) -> None:
+        parts = relative_path.split("/")
+        current = root
+        for index, part in enumerate(parts):
+            current /= part
+            final = index == len(parts) - 1
+            try:
+                metadata = current.lstat()
+            except FileNotFoundError:
+                if allow_absent_final:
+                    return
+                raise ValueError(
+                    f"control reference does not resolve to a readable file: {relative_path}"
+                ) from None
+            except OSError as exc:
+                raise ValueError(
+                    f"control reference does not resolve to a readable file: "
+                    f"{relative_path}: {exc}"
+                ) from exc
+            if stat.S_ISLNK(metadata.st_mode):
+                raise ValueError(f"control reference contains a symlink component: {relative_path}")
+            if final:
+                if not stat.S_ISREG(metadata.st_mode):
+                    raise ValueError(
+                        f"control reference target must be a regular file: {relative_path}"
+                    )
+            elif not stat.S_ISDIR(metadata.st_mode):
+                raise ValueError(
+                    f"control reference intermediate component is not a directory: {relative_path}"
+                )
+
+    def resolve_ref(self, ref: str) -> str:
+        validate_control_ref(ref)
+        if ref in self.removals:
+            missing = FileNotFoundError(
+                errno.ENOENT,
+                os.strerror(errno.ENOENT),
+                str(self.control_root / ref),
+            )
+            raise ValueError(
+                f"control reference does not resolve to a readable file: {ref}: {missing}"
+            )
+        if ref in self.overrides:
+            return ref
+        return FilesystemControlBundleIO(self.control_root).resolve_ref(ref)
+
+    def read_bytes(self, relative_path: str) -> bytes:
+        if relative_path in self.removals:
+            raise ValueError(f"candidate path was removed: {relative_path}")
+        if relative_path in self.overrides:
+            return self.overrides[relative_path]
+        resolved = self.resolve_ref(relative_path)
+        if resolved in self.overrides:
+            return self.overrides[resolved]
+        return FilesystemControlBundleIO(self.control_root).read_bytes(resolved)
+
+    def sha256(self, relative_path: str) -> str:
+        if relative_path in self.removals:
+            raise ValueError(f"candidate path was removed: {relative_path}")
+        if relative_path in self.overrides:
+            return "sha256:" + hashlib.sha256(self.overrides[relative_path]).hexdigest()
+        resolved = self.resolve_ref(relative_path)
+        return FilesystemControlBundleIO(self.control_root).sha256(resolved)
+
+    def iter_relative_files(self) -> tuple[str, ...]:
+        live_files = set(FilesystemControlBundleIO(self.control_root).iter_relative_files())
+        return tuple(sorted((live_files - self.removals) | self.overrides.keys()))
+
+
+def _load_strict_from_bundle(
+    bundle: ControlBundleIO,
+    ref: str,
+) -> tuple[dict, str, Path]:
+    relative = bundle.resolve_ref(ref)
+    source = bundle.control_root / relative
+    content = bundle.read_bytes(relative)
+    payload = parse_strict_json_bytes(content, source)
+    digest = "sha256:" + hashlib.sha256(content).hexdigest()
+    return payload, digest, source
 
 
 def _load_yaml_file(path: Path, errors: list[str]) -> dict:
@@ -317,6 +471,7 @@ def validate_execution_state_instance_contract(
     path: Path,
     state: dict,
     errors: list[str],
+    bundle_io: ControlBundleIO | None = None,
 ) -> None:
     """Replay generic execution-state instances without granting authority."""
 
@@ -327,8 +482,11 @@ def validate_execution_state_instance_contract(
         errors.append(f"{path}: execution-state route binding ref must be a string")
         return
     try:
-        route_path = resolve_control_ref(control_root, route_ref)
-        route = load_strict_json(route_path)
+        if bundle_io is None:
+            route_path = resolve_control_ref(control_root, route_ref)
+            route = load_strict_json(route_path)
+        else:
+            route, _digest, route_path = _load_strict_from_bundle(bundle_io, route_ref)
     except (StrictJSONError, TypeError, ValueError) as exc:
         errors.append(f"{path}: execution-state route cannot be loaded for structural replay: {exc}")
         return
@@ -378,6 +536,7 @@ def _validate_structural_artifact_bindings(
     state: dict,
     control_root: Path,
     errors: list[str],
+    bundle_io: ControlBundleIO | None = None,
 ) -> None:
     for index, binding in enumerate(state.get("artifact_bindings", [])):
         if not isinstance(binding, dict) or binding.get("assurance") != "structural_valid":
@@ -387,8 +546,13 @@ def _validate_structural_artifact_bindings(
             errors.append(f"artifact binding {index} structural subject ref must be a string")
             continue
         try:
-            subject_path = resolve_control_ref(control_root, ref)
-            subject, subject_digest = load_strict_json_with_digest(subject_path)
+            if bundle_io is None:
+                subject_path = resolve_control_ref(control_root, ref)
+                subject, subject_digest = load_strict_json_with_digest(subject_path)
+            else:
+                subject, subject_digest, subject_path = _load_strict_from_bundle(
+                    bundle_io, ref
+                )
         except (StrictJSONError, TypeError, ValueError) as exc:
             errors.append(f"artifact binding {index} structural subject is invalid: {exc}")
             continue
@@ -408,13 +572,19 @@ def _validate_structural_artifact_bindings(
             route_errors = validate_route_contract_from_repository(subject, errors)
             errors.extend(f"{subject_path}: {error}" for error in route_errors)
         elif subject.get("artifact") == "execution-state":
-            validate_execution_state_instance_contract(subject_path, subject, errors)
+            validate_execution_state_instance_contract(
+                subject_path,
+                subject,
+                errors,
+                bundle_io=bundle_io,
+            )
 
 
 def _validate_terminal_verification_schema(
     state: dict,
     control_root: Path,
     errors: list[str],
+    bundle_io: ControlBundleIO | None = None,
 ) -> tuple[dict, str] | None:
     attempt_id = state.get("current_completion_attempt_id")
     attempt = next(
@@ -433,8 +603,13 @@ def _validate_terminal_verification_schema(
         errors.append("terminal verification record ref must be a string")
         return None
     try:
-        verification_path = resolve_control_ref(control_root, verification_ref)
-        verification, verification_digest = load_strict_json_with_digest(verification_path)
+        if bundle_io is None:
+            verification_path = resolve_control_ref(control_root, verification_ref)
+            verification, verification_digest = load_strict_json_with_digest(verification_path)
+        else:
+            verification, verification_digest, verification_path = _load_strict_from_bundle(
+                bundle_io, verification_ref
+            )
     except (StrictJSONError, TypeError, ValueError) as exc:
         errors.append(f"terminal verification record is invalid: {exc}")
         return None
@@ -455,6 +630,7 @@ def _load_route_predecessor_chain(
     route: dict,
     control_root: Path,
     errors: list[str],
+    bundle_io: ControlBundleIO | None = None,
 ) -> list[dict]:
     predecessors: list[dict] = []
     current = route
@@ -473,8 +649,11 @@ def _load_route_predecessor_chain(
         if ref != expected_ref:
             errors.append(f"route predecessor ref must use canonical route filename {expected_ref}")
         try:
-            previous_path = resolve_control_ref(control_root, ref)
-            predecessor = load_strict_json(previous_path)
+            if bundle_io is None:
+                previous_path = resolve_control_ref(control_root, ref)
+                predecessor = load_strict_json(previous_path)
+            else:
+                predecessor, _digest, previous_path = _load_strict_from_bundle(bundle_io, ref)
         except (StrictJSONError, TypeError, ValueError) as exc:
             errors.append(f"route predecessor {ref!r} is invalid: {exc}")
             break
@@ -504,6 +683,7 @@ def _load_previous_execution_chain(
     predecessors: list[dict],
     control_root: Path,
     errors: list[str],
+    bundle_io: ControlBundleIO | None = None,
 ) -> list[dict]:
     historical_states: list[dict] = []
     current_state = state
@@ -532,8 +712,11 @@ def _load_previous_execution_chain(
                 f"previous execution {ref!r} must use the canonical content-addressed history filename"
             )
         try:
-            previous_path = resolve_control_ref(control_root, ref)
-            archived, actual_digest = load_strict_json_with_digest(previous_path)
+            if bundle_io is None:
+                previous_path = resolve_control_ref(control_root, ref)
+                archived, actual_digest = load_strict_json_with_digest(previous_path)
+            else:
+                archived, actual_digest, previous_path = _load_strict_from_bundle(bundle_io, ref)
         except (StrictJSONError, TypeError, ValueError) as exc:
             errors.append(f"previous execution {ref!r} is invalid: {exc}")
             break
@@ -573,6 +756,230 @@ def _load_previous_execution_chain(
         current_state = archived
         expected_revision -= 1
     return historical_states
+
+
+def validate_execution_candidate(
+    *,
+    repo_root: Path,
+    control_root: Path,
+    state_path: Path,
+    state: dict,
+    route: dict,
+    view: CandidateBundleView,
+    approved_route_digest: str | None,
+    approved_completion_digest: str | None = None,
+) -> ExecutionValidationOutcome:
+    """Validate one effective candidate bundle without materializing candidate bytes."""
+
+    errors: list[str] = []
+    root = control_root.absolute()
+    if view.control_root != root:
+        errors.append("candidate bundle view root does not match control_root")
+    canonical_state_path = root / "execution-state.json"
+    if state_path.absolute() != canonical_state_path:
+        errors.append("candidate state path must be the canonical execution-state.json selector")
+    if approved_route_digest is None:
+        errors.append("approved route digest is required for candidate validation")
+
+    state_digest: str | None = None
+    try:
+        loaded_state, state_digest, _loaded_state_path = _load_strict_from_bundle(
+            view, "execution-state.json"
+        )
+    except (StrictJSONError, TypeError, ValueError) as exc:
+        errors.append(f"candidate execution-state is invalid: {exc}")
+        return ExecutionValidationOutcome(
+            ValidationDisposition.INVALID,
+            None,
+            errors=tuple(_normalize_candidate_errors(errors, root)),
+        )
+    if loaded_state != state:
+        errors.append("candidate execution-state bytes do not match the supplied state payload")
+    if not validate_registered_artifact_payload(loaded_state, Path("execution-state.json"), errors):
+        return ExecutionValidationOutcome(
+            ValidationDisposition.INVALID,
+            None,
+            errors=tuple(_normalize_candidate_errors(errors, root)),
+        )
+    if loaded_state.get("artifact") != "execution-state":
+        errors.append("candidate state must be an execution-state artifact")
+
+    route_binding = loaded_state.get("route_binding", {})
+    route_ref = route_binding.get("ref")
+    expected_route_ref = f"route-decision.r{route_binding.get('route_revision')}.json"
+    if route_ref != expected_route_ref:
+        errors.append(f"route binding must use canonical route filename {expected_route_ref}")
+    route_digest: str | None = None
+    route_path = Path(expected_route_ref)
+    try:
+        loaded_route, route_digest, _route_path = _load_strict_from_bundle(view, route_ref)
+        route_path = Path(route_ref)
+    except (StrictJSONError, TypeError, ValueError) as exc:
+        errors.append(f"referenced route decision is invalid: {exc}")
+        return ExecutionValidationOutcome(
+            ValidationDisposition.INVALID,
+            None,
+            errors=tuple(_normalize_candidate_errors(errors, root)),
+        )
+    if loaded_route != route:
+        errors.append("candidate route bytes do not match the supplied route payload")
+    if not validate_registered_artifact_payload(loaded_route, route_path, errors):
+        return ExecutionValidationOutcome(
+            ValidationDisposition.INVALID,
+            None,
+            errors=tuple(_normalize_candidate_errors(errors, root)),
+        )
+    route_errors = validate_route_contract_from_repository(loaded_route, errors)
+    errors.extend(f"{route_path}: {error}" for error in route_errors)
+
+    predecessors = _load_route_predecessor_chain(
+        loaded_route,
+        root,
+        errors,
+        bundle_io=view,
+    )
+    historical_states = _load_previous_execution_chain(
+        loaded_state,
+        loaded_route,
+        predecessors,
+        root,
+        errors,
+        bundle_io=view,
+    )
+    errors.extend(
+        validate_control_bundle(
+            root,
+            state_path=canonical_state_path,
+            state=loaded_state,
+            route=loaded_route,
+            historical_states=historical_states,
+            predecessor_routes=predecessors,
+            bundle_io=view,
+        )
+    )
+    _validate_structural_artifact_bindings(loaded_state, root, errors, bundle_io=view)
+    for historical_state in historical_states:
+        _validate_structural_artifact_bindings(
+            historical_state,
+            root,
+            errors,
+            bundle_io=view,
+        )
+
+    terminal_verification: tuple[dict, str] | None = None
+    lifecycle_state = loaded_state.get("lifecycle_state")
+    if lifecycle_state in {"verified", "completed"}:
+        terminal_verification = _validate_terminal_verification_schema(
+            loaded_state,
+            root,
+            errors,
+            bundle_io=view,
+        )
+        if terminal_verification is None:
+            terminal_errors = ["terminal verification snapshot is unavailable"]
+        else:
+            verification_document, verification_digest = terminal_verification
+            terminal_errors = validate_terminal_completion(
+                loaded_state,
+                loaded_route,
+                control_root=root,
+                repo_root=repo_root,
+                verification_document=verification_document,
+                verification_document_digest=verification_digest,
+                bundle_io=view,
+            )
+        errors.extend(terminal_errors)
+        result = validate_execution_state_contract(
+            loaded_state,
+            loaded_route,
+            approved_route_digest=approved_route_digest,
+            is_canonical_current=True,
+            authority_mode=True,
+            terminal_validation_passed=not terminal_errors,
+            approved_completion_digest=approved_completion_digest,
+        )
+    else:
+        if approved_completion_digest is not None:
+            errors.append(
+                "approved completion digest is valid only for verified/completed state"
+            )
+        result = validate_execution_state_contract(
+            loaded_state,
+            loaded_route,
+            approved_route_digest=approved_route_digest,
+            is_canonical_current=True,
+            authority_mode=True,
+        )
+
+    candidate_pending = result.candidate_completion_digest is not None
+    if not candidate_pending:
+        errors.extend(result.errors)
+
+    errors.extend(
+        f"final control-bundle capture: {error}"
+        for error in validate_control_bundle(
+            root,
+            state_path=canonical_state_path,
+            state=loaded_state,
+            route=loaded_route,
+            historical_states=historical_states,
+            predecessor_routes=predecessors,
+            bundle_io=view,
+        )
+    )
+    try:
+        if view.sha256("execution-state.json") != state_digest:
+            errors.append("execution-state changed during candidate validation")
+        if view.sha256(route_ref) != route_digest:
+            errors.append("route-decision changed during candidate validation")
+        if terminal_verification is not None:
+            attempt_id = loaded_state.get("current_completion_attempt_id")
+            attempt = next(
+                (
+                    candidate
+                    for candidate in loaded_state.get("completion_attempts", [])
+                    if isinstance(candidate, dict) and candidate.get("attempt_id") == attempt_id
+                ),
+                None,
+            )
+            binding = attempt.get("completion_binding") if isinstance(attempt, dict) else None
+            verification_ref = (
+                binding.get("verification_record_ref") if isinstance(binding, dict) else None
+            )
+            if not isinstance(verification_ref, str):
+                raise ValueError("terminal verification record ref is unavailable")
+            if view.sha256(verification_ref) != terminal_verification[1]:
+                errors.append("terminal verification record changed during candidate validation")
+    except (TypeError, ValueError) as exc:
+        errors.append(f"candidate stability check failed: {exc}")
+
+    if not candidate_pending and result.authority not in {AUTHORITY_GATE, AUTHORITY_TERMINAL}:
+        errors.append("candidate authority result is structural-only")
+
+    normalized_errors = tuple(_normalize_candidate_errors(errors, root))
+    if normalized_errors:
+        return ExecutionValidationOutcome(
+            ValidationDisposition.INVALID,
+            None,
+            errors=normalized_errors,
+        )
+    if candidate_pending:
+        return ExecutionValidationOutcome(
+            ValidationDisposition.APPROVAL_REQUIRED,
+            None,
+            result.candidate_completion_digest,
+        )
+    return ExecutionValidationOutcome(
+        ValidationDisposition.VALID,
+        result.authority,
+    )
+
+
+def _normalize_candidate_errors(errors: list[str], control_root: Path) -> list[str]:
+    """Keep overlay/materialized candidate diagnostics independent of fixture roots."""
+
+    root_text = str(control_root)
+    return [error.replace(root_text, "<control-root>") for error in errors]
 
 
 def authorize_execution_state(

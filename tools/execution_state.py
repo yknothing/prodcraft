@@ -11,7 +11,7 @@ from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
-from typing import Any, BinaryIO, Iterable, Iterator
+from typing import Any, BinaryIO, Iterable, Iterator, Protocol
 
 
 AUTHORITY_STRUCTURAL = "structurally-valid-only"
@@ -63,6 +63,21 @@ class ValidationResult:
     authority: str
     errors: list[str]
     candidate_completion_digest: str | None = None
+
+
+class ControlBundleIO(Protocol):
+    """Read-only control-bundle seam used by semantic validation."""
+
+    @property
+    def control_root(self) -> Path: ...
+
+    def resolve_ref(self, ref: str) -> str: ...
+
+    def read_bytes(self, relative_path: str) -> bytes: ...
+
+    def sha256(self, relative_path: str) -> str: ...
+
+    def iter_relative_files(self) -> tuple[str, ...]: ...
 
 
 def resolve_authority_context(
@@ -241,7 +256,14 @@ def read_protocol_file(path: Path) -> bytes:
         return content
 
 
-def _parse_strict_json_bytes(content: bytes, path: Path) -> dict[str, Any]:
+def parse_strict_json_bytes(content: bytes, path: Path) -> dict[str, Any]:
+    """Parse one already-captured strict JSON byte snapshot."""
+
+    if len(content) > STRICT_JSON_MAX_BYTES:
+        raise StrictJSONError(
+            f"failed to read strict JSON {path}: content-bound file exceeds "
+            f"{STRICT_JSON_MAX_BYTES} bytes: {path}"
+        )
     try:
         text = content.decode("utf-8")
     except UnicodeError as exc:
@@ -274,7 +296,7 @@ def load_strict_json_with_digest(path: Path) -> tuple[dict[str, Any], str]:
         content = _read_regular_file_bytes(path)
     except ValueError as exc:
         raise StrictJSONError(f"failed to read strict JSON {path}: {exc}") from exc
-    payload = _parse_strict_json_bytes(content, path)
+    payload = parse_strict_json_bytes(content, path)
     digest = "sha256:" + hashlib.sha256(content).hexdigest()
     return payload, digest
 
@@ -309,8 +331,8 @@ _URI_SCHEME_RE = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
 _WINDOWS_DRIVE_RE = re.compile(r"^[A-Za-z]:")
 
 
-def resolve_control_ref(control_root: Path, ref: str) -> Path:
-    """Resolve one strict local ref without following any symlink component."""
+def _control_ref_parts(ref: str) -> tuple[str, ...]:
+    """Validate strict local-reference syntax without touching the filesystem."""
 
     if not isinstance(ref, str) or not ref:
         raise ValueError("control reference must be a non-empty string")
@@ -326,8 +348,20 @@ def resolve_control_ref(control_root: Path, ref: str) -> Path:
         raise ValueError("control reference must not use a URI scheme")
     if any(segment in {"", ".", ".."} for segment in ref.split("/")):
         raise ValueError("control reference contains a forbidden path segment")
+    return PurePosixPath(ref).parts
 
-    pure = PurePosixPath(ref)
+
+def validate_control_ref(ref: str) -> str:
+    """Return a strict local reference after syntax-only validation."""
+
+    _control_ref_parts(ref)
+    return ref
+
+
+def resolve_control_ref(control_root: Path, ref: str) -> Path:
+    """Resolve one strict local ref without following any symlink component."""
+
+    parts = _control_ref_parts(ref)
 
     root = control_root.absolute()
     try:
@@ -340,7 +374,7 @@ def resolve_control_ref(control_root: Path, ref: str) -> Path:
         raise ValueError("control root must be a directory")
 
     candidate = root
-    for index, part in enumerate(pure.parts):
+    for index, part in enumerate(parts):
         candidate = candidate / part
         try:
             entry_stat = candidate.lstat()
@@ -348,7 +382,7 @@ def resolve_control_ref(control_root: Path, ref: str) -> Path:
             raise ValueError(f"control reference does not resolve to a readable file: {ref}: {exc}") from exc
         if stat.S_ISLNK(entry_stat.st_mode):
             raise ValueError(f"control reference contains a symlink component: {ref}")
-        if index < len(pure.parts) - 1 and not stat.S_ISDIR(entry_stat.st_mode):
+        if index < len(parts) - 1 and not stat.S_ISDIR(entry_stat.st_mode):
             raise ValueError(f"control reference intermediate component is not a directory: {ref}")
     if not stat.S_ISREG(candidate.lstat().st_mode):
         raise ValueError(f"control reference target must be a regular file: {ref}")
@@ -358,6 +392,79 @@ def resolve_control_ref(control_root: Path, ref: str) -> Path:
     except ValueError as exc:
         raise ValueError(f"control reference escapes the control root: {ref}") from exc
     return candidate
+
+
+@dataclass(frozen=True)
+class FilesystemControlBundleIO:
+    """Current filesystem-backed control-bundle behavior."""
+
+    control_root: Path
+
+    def resolve_ref(self, ref: str) -> str:
+        resolved = resolve_control_ref(self.control_root, ref)
+        return resolved.relative_to(self.control_root.absolute()).as_posix()
+
+    def read_bytes(self, relative_path: str) -> bytes:
+        resolved = resolve_control_ref(self.control_root, relative_path)
+        return _read_regular_file_bytes(resolved)
+
+    def sha256(self, relative_path: str) -> str:
+        resolved = resolve_control_ref(self.control_root, relative_path)
+        return file_sha256(resolved)
+
+    def iter_relative_files(self) -> tuple[str, ...]:
+        root = self.control_root.absolute()
+        try:
+            root_stat = root.lstat()
+        except OSError as exc:
+            raise ValueError(f"control root cannot be enumerated: {exc}") from exc
+        if stat.S_ISLNK(root_stat.st_mode) or not stat.S_ISDIR(root_stat.st_mode):
+            raise ValueError("control root must be a non-symlink directory")
+
+        relative_files: list[str] = []
+        walk_errors: list[OSError] = []
+        for current, dirnames, filenames in os.walk(
+            root,
+            topdown=True,
+            followlinks=False,
+            onerror=walk_errors.append,
+        ):
+            current_path = Path(current)
+            retained_dirs: list[str] = []
+            for dirname in dirnames:
+                directory = current_path / dirname
+                relative = directory.relative_to(root).as_posix()
+                try:
+                    directory_stat = directory.lstat()
+                except OSError as exc:
+                    raise ValueError(
+                        f"control directory cannot be inspected: {relative}: {exc}"
+                    ) from exc
+                if stat.S_ISLNK(directory_stat.st_mode):
+                    raise ValueError(f"control bundle contains a symlink directory: {relative}")
+                if not stat.S_ISDIR(directory_stat.st_mode):
+                    raise ValueError(
+                        f"control bundle contains an unsupported directory entry: {relative}"
+                    )
+                retained_dirs.append(dirname)
+            dirnames[:] = retained_dirs
+            for filename in filenames:
+                path = current_path / filename
+                relative = path.relative_to(root).as_posix()
+                try:
+                    entry_stat = path.lstat()
+                except OSError as exc:
+                    raise ValueError(
+                        f"control file cannot be inspected: {relative}: {exc}"
+                    ) from exc
+                if stat.S_ISLNK(entry_stat.st_mode):
+                    raise ValueError(f"control bundle contains a symlink file: {relative}")
+                if not stat.S_ISREG(entry_stat.st_mode):
+                    raise ValueError(f"control bundle contains an unsupported file type: {relative}")
+                relative_files.append(relative)
+        if walk_errors:
+            raise ValueError(f"control bundle cannot be fully enumerated: {walk_errors[0]}")
+        return tuple(sorted(relative_files))
 
 
 def _run_git(repo_root: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess[bytes]:
@@ -1277,6 +1384,7 @@ def validate_terminal_completion(
     repo_root: Path,
     verification_document: dict[str, Any] | None = None,
     verification_document_digest: str | None = None,
+    bundle_io: ControlBundleIO | None = None,
 ) -> list[str]:
     """Validate content closure and live freshness for verified/completed state."""
 
@@ -1341,8 +1449,15 @@ def validate_terminal_completion(
                 errors.append("preloaded verification record is missing its content digest")
         else:
             try:
-                verification_path = resolve_control_ref(control_root, verification_ref)
-                verification, actual_digest = load_strict_json_with_digest(verification_path)
+                if bundle_io is None:
+                    verification_path = resolve_control_ref(control_root, verification_ref)
+                    verification, actual_digest = load_strict_json_with_digest(verification_path)
+                else:
+                    verification_relative = bundle_io.resolve_ref(verification_ref)
+                    verification_path = control_root / verification_relative
+                    verification_bytes = bundle_io.read_bytes(verification_relative)
+                    verification = parse_strict_json_bytes(verification_bytes, verification_path)
+                    actual_digest = "sha256:" + hashlib.sha256(verification_bytes).hexdigest()
             except (StrictJSONError, ValueError) as exc:
                 errors.append(f"verification record is invalid: {exc}")
                 actual_digest = None
@@ -1409,8 +1524,15 @@ def validate_terminal_completion(
                 continue
             binding_by_id[evidence_id] = evidence_binding
             try:
-                evidence_path = resolve_control_ref(control_root, evidence_binding.get("local_ref"))
-                if file_sha256(evidence_path) != evidence_binding.get("sha256"):
+                if bundle_io is None:
+                    evidence_path = resolve_control_ref(
+                        control_root, evidence_binding.get("local_ref")
+                    )
+                    actual_evidence_digest = file_sha256(evidence_path)
+                else:
+                    evidence_relative = bundle_io.resolve_ref(evidence_binding.get("local_ref"))
+                    actual_evidence_digest = bundle_io.sha256(evidence_relative)
+                if actual_evidence_digest != evidence_binding.get("sha256"):
                     errors.append(f"evidence binding {evidence_id} content digest does not match")
             except (TypeError, ValueError) as exc:
                 errors.append(f"evidence binding {evidence_id} is invalid: {exc}")
@@ -1474,13 +1596,14 @@ def validate_control_bundle(
     route: dict[str, Any],
     historical_states: Iterable[dict[str, Any]] = (),
     predecessor_routes: Iterable[dict[str, Any]] = (),
+    bundle_io: ControlBundleIO | None = None,
 ) -> list[str]:
     """Validate that the excluded control root is a closed content-bound set."""
 
     errors: list[str] = []
     root = control_root.absolute()
-    allowed_paths: set[Path] = set()
-    expected_digests: dict[Path, tuple[str, str]] = {}
+    allowed_paths: set[str] = set()
+    expected_digests: dict[str, tuple[str, str]] = {}
 
     def allow_path(path: Path, label: str, digest: str | None = None) -> None:
         absolute = path.absolute()
@@ -1489,26 +1612,30 @@ def validate_control_bundle(
         except ValueError:
             errors.append(f"{label} escapes the control root")
             return
-        allowed_paths.add(absolute)
+        relative = absolute.relative_to(root).as_posix()
+        allowed_paths.add(relative)
         if digest is not None:
-            previous = expected_digests.get(absolute)
+            previous = expected_digests.get(relative)
             if previous is not None and previous[0] != digest:
                 errors.append(
                     f"{label} conflicts with another digest binding for {absolute.relative_to(root)}"
                 )
             else:
-                expected_digests[absolute] = (digest, label)
+                expected_digests[relative] = (digest, label)
 
     def allow_ref(ref: Any, label: str, digest: Any = None) -> None:
         if not isinstance(ref, str):
             errors.append(f"{label} must be a local reference")
             return
         try:
-            resolved = resolve_control_ref(root, ref)
+            if bundle_io is None:
+                relative = resolve_control_ref(root, ref).relative_to(root).as_posix()
+            else:
+                relative = bundle_io.resolve_ref(ref)
         except ValueError as exc:
             errors.append(f"{label} is invalid: {exc}")
             return
-        allow_path(resolved, label, digest if isinstance(digest, str) else None)
+        allow_path(root / relative, label, digest if isinstance(digest, str) else None)
 
     all_routes = [route, *predecessor_routes]
     all_states = [state, *historical_states]
@@ -1617,16 +1744,28 @@ def validate_control_bundle(
                         evidence.get("sha256"),
                     )
 
-    for path, (expected_digest, label) in expected_digests.items():
+    for relative, (expected_digest, label) in expected_digests.items():
         try:
-            actual_digest = file_sha256(path)
+            if bundle_io is None:
+                actual_digest = file_sha256(root / relative)
+            else:
+                actual_digest = bundle_io.sha256(relative)
         except ValueError as exc:
             errors.append(f"{label} digest cannot be checked: {exc}")
             continue
         if actual_digest != expected_digest:
-            errors.append(
-                f"{label} digest mismatch for {path.relative_to(root).as_posix()}"
-            )
+            errors.append(f"{label} digest mismatch for {relative}")
+
+    if bundle_io is not None:
+        try:
+            relative_files = bundle_io.iter_relative_files()
+        except ValueError as exc:
+            errors.append(str(exc))
+        else:
+            for relative in relative_files:
+                if relative not in allowed_paths:
+                    errors.append(f"unbound control file is not allowed: {relative}")
+        return errors
 
     try:
         root_stat = root.lstat()
@@ -1654,9 +1793,14 @@ def validate_control_bundle(
                 errors.append(f"control directory cannot be inspected: {directory}: {exc}")
                 continue
             if stat.S_ISLNK(directory_stat.st_mode):
-                errors.append(f"control bundle contains a symlink directory: {directory.relative_to(root)}")
+                errors.append(
+                    f"control bundle contains a symlink directory: {directory.relative_to(root)}"
+                )
             elif not stat.S_ISDIR(directory_stat.st_mode):
-                errors.append(f"control bundle contains an unsupported directory entry: {directory.relative_to(root)}")
+                errors.append(
+                    f"control bundle contains an unsupported directory entry: "
+                    f"{directory.relative_to(root)}"
+                )
             else:
                 retained_dirs.append(dirname)
         dirnames[:] = retained_dirs
@@ -1673,7 +1817,7 @@ def validate_control_bundle(
                 errors.append(f"control bundle contains a symlink file: {relative}")
             elif not stat.S_ISREG(entry_stat.st_mode):
                 errors.append(f"control bundle contains an unsupported file type: {relative}")
-            elif path not in allowed_paths:
+            elif relative not in allowed_paths:
                 errors.append(f"unbound control file is not allowed: {relative}")
 
     return errors
