@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prodcraft.dev/schemas/protocol/execution-authoring-result.v1.schema.json",
+  "title": "Prodcraft Execution Authoring Result v1",
+  "type": "object",
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "nullableSha256": {
+      "oneOf": [
+        { "$ref": "#/$defs/sha256" },
+        { "type": "null" }
+      ]
+    },
+    "localRef": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!.*\u0000)(?!/)(?!.*//)(?!.*(?:^|/)(?:\\.|\\.\\.)(?:/|$))(?!.*\\/$)(?![A-Za-z]:)(?!.*\\\\)(?![A-Za-z][A-Za-z0-9+.-]*:).+$"
+    },
+    "mutation": {
+      "type": "object",
+      "required": [
+        "action",
+        "path"
+      ],
+      "properties": {
+        "action": {
+          "enum": [
+            "create",
+            "replace",
+            "remove"
+          ]
+        },
+        "path": {
+          "$ref": "#/$defs/localRef"
+        }
+      },
+      "additionalProperties": false
+    },
+    "capacity": {
+      "type": "object",
+      "required": [
+        "path",
+        "used_bytes",
+        "warning_bytes",
+        "limit_bytes",
+        "remaining_bytes"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/localRef"
+        },
+        "used_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "warning_bytes": {
+          "type": "integer",
+          "const": 12582912
+        },
+        "limit_bytes": {
+          "type": "integer",
+          "const": 16777216
+        },
+        "remaining_bytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "status",
+    "operation",
+    "mutations",
+    "state_revision",
+    "candidate_route_digest",
+    "candidate_completion_digest",
+    "capacities",
+    "warnings",
+    "errors"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "execution-authoring-result.v1"
+    },
+    "status": {
+      "enum": [
+        "written",
+        "candidate",
+        "recovery-required",
+        "invalid"
+      ]
+    },
+    "operation": {
+      "enum": [
+        "route-draft",
+        "state-init",
+        "transition",
+        "phase-event",
+        "artifact-bind",
+        "claim-completion",
+        "record-outcome",
+        "reroute"
+      ]
+    },
+    "mutations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/mutation"
+      }
+    },
+    "state_revision": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 1
+        },
+        { "type": "null" }
+      ]
+    },
+    "candidate_route_digest": {
+      "$ref": "#/$defs/nullableSha256"
+    },
+    "candidate_completion_digest": {
+      "$ref": "#/$defs/nullableSha256"
+    },
+    "capacities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/capacity"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "status": { "const": "written" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "mutations": { "minItems": 1 },
+          "candidate_route_digest": { "type": "null" },
+          "candidate_completion_digest": { "type": "null" },
+          "errors": { "maxItems": 0 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "status": { "const": "candidate" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "mutations": { "minItems": 1 },
+          "errors": { "maxItems": 0 }
+        },
+        "anyOf": [
+          {
+            "properties": {
+              "candidate_route_digest": { "$ref": "#/$defs/sha256" }
+            },
+            "required": ["candidate_route_digest"]
+          },
+          {
+            "properties": {
+              "candidate_completion_digest": { "$ref": "#/$defs/sha256" }
+            },
+            "required": ["candidate_completion_digest"]
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": { "status": { "const": "recovery-required" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "candidate_route_digest": { "type": "null" },
+          "candidate_completion_digest": { "type": "null" },
+          "errors": { "minItems": 1 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "status": { "const": "invalid" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "mutations": { "maxItems": 0 },
+          "candidate_route_digest": { "type": "null" },
+          "candidate_completion_digest": { "type": "null" },
+          "errors": { "minItems": 1 }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

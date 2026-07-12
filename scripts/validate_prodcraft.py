@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
+import stat
 import sys
 import tempfile
 from pathlib import Path
@@ -24,6 +26,11 @@ from tools.execution_validation import (  # noqa: E402
     validate_registered_artifact_payload as validate_registered_artifact_payload,
     validate_verification_record_instance_contract as validate_verification_record_instance_contract,
 )
+from tools.execution_state import (  # noqa: E402
+    STRICT_JSON_MAX_BYTES,
+    StrictJSONError,
+    parse_strict_json_bytes,
+)
 
 SKILLS_DIR = ROOT / "skills"
 CURATED_SKILLS_DIR = SKILLS_DIR / ".curated"
@@ -31,6 +38,7 @@ WORKFLOWS_DIR = ROOT / "workflows"
 MANIFEST_PATH = ROOT / "manifest.yml"
 SCHEMAS_DIR = ROOT / "schemas"
 ARTIFACT_REGISTRY_PATH = SCHEMAS_DIR / "artifacts" / "registry.yml"
+PROTOCOL_RESULT_REGISTRY_PATH = SCHEMAS_DIR / "protocol" / "registry.yml"
 DISTRIBUTION_REGISTRY_PATH = SCHEMAS_DIR / "distribution" / "public-skill-registry.json"
 PUBLIC_SKILL_PORTABILITY_PATH = SCHEMAS_DIR / "distribution" / "public-skill-portability.json"
 MATRIX_PATH = ROOT / "rules" / "cross-cutting-matrix.yml"
@@ -82,10 +90,21 @@ CHECKS = {
     "workflow-skill-refs",
     "artifact-flow",
     "artifact-schema-registry",
+    "protocol-result-registry",
     "cross-cutting-matrix",
     "curated-surface",
     "security-minimal",
 }
+
+
+class _CheckChoices(tuple[str, ...]):
+    """Preserve the legacy argparse listing while accepting additive checks."""
+
+    def __contains__(self, value: object) -> bool:
+        return value in CHECKS
+
+
+LEGACY_CHECK_CHOICES = _CheckChoices(sorted(CHECKS - {"protocol-result-registry"}))
 
 # Zero-width and soft-hyphen characters that may hide injected content.
 _ZERO_WIDTH_CHARS = frozenset("\u200b\u200c\u200d\ufeff\u00ad")
@@ -218,6 +237,149 @@ def load_yaml_file(path: Path, errors: list[str]) -> dict:
         errors.append(f"{path}: expected a YAML mapping")
         return {}
     return payload
+
+
+class _UniqueKeyLoader(yaml.SafeLoader):
+    """Safe YAML loader that rejects mapping-key replacement."""
+
+
+def _construct_unique_mapping(loader: _UniqueKeyLoader, node: yaml.MappingNode, deep: bool = False) -> dict:
+    mapping: dict = {}
+    for key_node, value_node in node.value:
+        key = loader.construct_object(key_node, deep=deep)
+        if key in mapping:
+            raise ValueError(f"duplicate YAML key `{key}`")
+        mapping[key] = loader.construct_object(value_node, deep=deep)
+    return mapping
+
+
+_UniqueKeyLoader.add_constructor(
+    yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+    _construct_unique_mapping,
+)
+
+
+def load_unique_yaml_mapping(path: Path, errors: list[str]) -> dict:
+    try:
+        payload = yaml.load(path.read_text(encoding="utf-8"), Loader=_UniqueKeyLoader) or {}
+    except FileNotFoundError:
+        errors.append(f"{path}: file does not exist")
+        return {}
+    except Exception as exc:
+        errors.append(f"{path}: failed to parse YAML: {exc}")
+        return {}
+    if not isinstance(payload, dict):
+        errors.append(f"{path}: expected a YAML mapping")
+        return {}
+    return payload
+
+
+def resolve_protocol_schema_path(
+    root: Path,
+    schema_rel: object,
+    registry_path: Path,
+    errors: list[str],
+) -> Path | None:
+    if (
+        not isinstance(schema_rel, str)
+        or not schema_rel.startswith("schemas/protocol/")
+        or schema_rel.startswith("/")
+        or "\\" in schema_rel
+        or ":" in schema_rel
+        or "//" in schema_rel
+        or schema_rel.endswith("/")
+        or any(part in {"", ".", ".."} for part in schema_rel.split("/"))
+    ):
+        errors.append(f"{registry_path}: unsafe `schema_path` `{schema_rel}`")
+        return None
+
+    candidate = root
+    parts = schema_rel.split("/")
+    for index, part in enumerate(parts):
+        candidate /= part
+        try:
+            mode = candidate.lstat().st_mode
+        except FileNotFoundError:
+            errors.append(f"{registry_path}: references missing schema `{schema_rel}`")
+            return None
+        except OSError as exc:
+            errors.append(f"{registry_path}: cannot inspect schema path `{schema_rel}`: {exc}")
+            return None
+        if stat.S_ISLNK(mode):
+            errors.append(f"{registry_path}: schema path `{schema_rel}` contains a symlink")
+            return None
+        if index < len(parts) - 1 and not stat.S_ISDIR(mode):
+            errors.append(f"{registry_path}: schema path `{schema_rel}` has a non-directory parent")
+            return None
+        if index == len(parts) - 1 and not stat.S_ISREG(mode):
+            errors.append(f"{registry_path}: schema path `{schema_rel}` must be a regular file")
+            return None
+
+    try:
+        candidate.resolve(strict=True).relative_to(root.resolve(strict=True))
+    except (OSError, ValueError):
+        errors.append(f"{registry_path}: unsafe `schema_path` `{schema_rel}` escapes repository root")
+        return None
+    return candidate
+
+
+def load_protocol_schema_snapshot(root: Path, schema_rel: str, schema_path: Path) -> dict:
+    """Read one schema without following a swapped path component."""
+
+    directory_fd = -1
+    file_fd = -1
+    try:
+        directory_flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0)
+        directory_fd = os.open(root, directory_flags)
+        parts = schema_rel.split("/")
+        for part in parts[:-1]:
+            next_fd = os.open(part, directory_flags, dir_fd=directory_fd)
+            os.close(directory_fd)
+            directory_fd = next_fd
+
+        file_flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0)
+        file_fd = os.open(parts[-1], file_flags, dir_fd=directory_fd)
+        opened_stat = os.fstat(file_fd)
+        if not stat.S_ISREG(opened_stat.st_mode):
+            raise StrictJSONError(f"schema path must be a regular file: {schema_path}")
+        with os.fdopen(file_fd, "rb", closefd=True) as handle:
+            file_fd = -1
+            content = handle.read(STRICT_JSON_MAX_BYTES + 1)
+            final_stat = os.fstat(handle.fileno())
+        if len(content) > STRICT_JSON_MAX_BYTES:
+            raise StrictJSONError(
+                f"schema exceeds {STRICT_JSON_MAX_BYTES} bytes: {schema_path}"
+            )
+        opened_identity = (
+            opened_stat.st_dev,
+            opened_stat.st_ino,
+            opened_stat.st_mode,
+            opened_stat.st_size,
+            opened_stat.st_mtime_ns,
+            opened_stat.st_ctime_ns,
+        )
+        final_identity = (
+            final_stat.st_dev,
+            final_stat.st_ino,
+            final_stat.st_mode,
+            final_stat.st_size,
+            final_stat.st_mtime_ns,
+            final_stat.st_ctime_ns,
+        )
+        if opened_identity != final_identity or len(content) != opened_stat.st_size:
+            raise StrictJSONError(f"schema changed while being read: {schema_path}")
+        return parse_strict_json_bytes(content, schema_path)
+    except StrictJSONError:
+        raise
+    except OSError as exc:
+        raise StrictJSONError(
+            f"schema path changed or contains a symlink: {schema_path}: {exc}"
+        ) from exc
+    finally:
+        if file_fd >= 0:
+            os.close(file_fd)
+        if directory_fd >= 0:
+            os.close(directory_fd)
 
 
 def schema_string_enum(schema: dict, field_name: str, schema_path: Path, errors: list[str]) -> set[str]:
@@ -1295,6 +1457,500 @@ def validate_gateway_phase_skill_references(
                 errors.append(f"{GATEWAY_PATH}: routing table references undefined skill `{token}`")
 
 
+PROTOCOL_RESULT_CONTRACTS = {
+    "execution-authority-result": {
+        "version": "execution-authority-result.v1",
+        "statuses": ("valid", "approval-required", "invalid"),
+        "required": {
+            "schema_version",
+            "status",
+            "authority",
+            "candidate_completion_digest",
+            "errors",
+        },
+    },
+    "execution-authoring-result": {
+        "version": "execution-authoring-result.v1",
+        "statuses": ("written", "candidate", "recovery-required", "invalid"),
+        "required": {
+            "schema_version",
+            "status",
+            "operation",
+            "mutations",
+            "state_revision",
+            "candidate_route_digest",
+            "candidate_completion_digest",
+            "capacities",
+            "warnings",
+            "errors",
+        },
+    },
+}
+
+PROTOCOL_AUTHORING_OPERATIONS = (
+    "route-draft",
+    "state-init",
+    "transition",
+    "phase-event",
+    "artifact-bind",
+    "claim-completion",
+    "record-outcome",
+    "reroute",
+)
+
+PROTOCOL_AUTHORITY_VALUES = ("gate-authorized", "terminal-authorized")
+PROTOCOL_MUTATION_ACTIONS = ("create", "replace", "remove")
+
+
+def validate_closed_schema_objects(schema: object, schema_path: Path, errors: list[str], location: str = "$") -> None:
+    if isinstance(schema, dict):
+        if schema.get("type") == "object" and schema.get("additionalProperties") is not False:
+            errors.append(f"{schema_path}: schema object `{location}` must be a closed object")
+        for key, value in schema.items():
+            validate_closed_schema_objects(value, schema_path, errors, f"{location}/{key}")
+    elif isinstance(schema, list):
+        for index, value in enumerate(schema):
+            validate_closed_schema_objects(value, schema_path, errors, f"{location}/{index}")
+
+
+def validate_protocol_schema_contract(
+    result_name: str,
+    entry: dict,
+    schema: dict,
+    schema_path: Path,
+    errors: list[str],
+) -> None:
+    contract = PROTOCOL_RESULT_CONTRACTS[result_name]
+    version = contract["version"]
+    properties = schema.get("properties")
+    if not isinstance(properties, dict):
+        errors.append(f"{schema_path}: properties must be an object")
+        return
+    schema_version_contract = properties.get("schema_version")
+    schema_version = (
+        schema_version_contract.get("const")
+        if isinstance(schema_version_contract, dict)
+        else None
+    )
+    if entry.get("schema_version") != schema_version:
+        errors.append(
+            f"{PROTOCOL_RESULT_REGISTRY_PATH}: result `{result_name}` registry version "
+            f"`{entry.get('schema_version')}` does not match schema const `{schema_version}`"
+        )
+    if schema_version != version:
+        errors.append(f"{schema_path}: schema_version const must be `{version}`")
+    if schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
+        errors.append(f"{schema_path}: must declare JSON Schema draft 2020-12")
+    if set(schema.get("required", [])) != contract["required"]:
+        errors.append(f"{schema_path}: required result fields must be {sorted(contract['required'])}")
+    if set(properties) != contract["required"]:
+        errors.append(f"{schema_path}: declared result fields must be exactly {sorted(contract['required'])}")
+    status_contract = properties.get("status")
+    status_values = status_contract.get("enum") if isinstance(status_contract, dict) else None
+    if status_values != list(contract["statuses"]):
+        errors.append(f"{schema_path}: status enum must be {sorted(contract['statuses'])}")
+    definitions = schema.get("$defs")
+    if not isinstance(definitions, dict):
+        definitions = {}
+    sha256 = definitions.get("sha256")
+    if sha256 != {"type": "string", "pattern": r"^sha256:[0-9a-f]{64}$"}:
+        errors.append(f"{schema_path}: sha256 must require lowercase prefixed 64-hex digests")
+    validate_closed_schema_objects(schema, schema_path, errors)
+
+    if result_name != "execution-authoring-result":
+        authority_contract = properties.get("authority")
+        authority_branches = (
+            authority_contract.get("oneOf") if isinstance(authority_contract, dict) else None
+        )
+        authority_values = None
+        if (
+            isinstance(authority_branches, list)
+            and authority_branches
+            and isinstance(authority_branches[0], dict)
+        ):
+            authority_values = authority_branches[0].get("enum")
+        if authority_values != list(PROTOCOL_AUTHORITY_VALUES):
+            errors.append(f"{schema_path}: authority enum must be gate-authorized/terminal-authorized")
+        validate_protocol_status_contract(result_name, schema, schema_path, errors)
+        return
+    operation_contract = properties.get("operation")
+    operations = operation_contract.get("enum") if isinstance(operation_contract, dict) else None
+    if operations != list(PROTOCOL_AUTHORING_OPERATIONS):
+        errors.append(f"{schema_path}: operation enum must be {sorted(PROTOCOL_AUTHORING_OPERATIONS)}")
+    revision_contract = properties.get("state_revision")
+    revision_branches = (
+        revision_contract.get("oneOf") if isinstance(revision_contract, dict) else None
+    )
+    if not isinstance(revision_branches, list):
+        revision_branches = []
+    if {"type": "integer", "minimum": 1} not in revision_branches or {"type": "null"} not in revision_branches:
+        errors.append(f"{schema_path}: state_revision must be null or an integer with minimum 1")
+
+    mutation = definitions.get("mutation", {})
+    if not isinstance(mutation, dict):
+        mutation = {}
+    if set(mutation.get("required", [])) != {"action", "path"}:
+        errors.append(f"{schema_path}: mutation must require exactly action and path")
+    mutation_properties = mutation.get("properties")
+    if not isinstance(mutation_properties, dict):
+        mutation_properties = {}
+    if set(mutation_properties) != {"action", "path"}:
+        errors.append(f"{schema_path}: mutation fields must be exactly action and path")
+    action_contract = mutation_properties.get("action")
+    actions = action_contract.get("enum") if isinstance(action_contract, dict) else None
+    if actions != list(PROTOCOL_MUTATION_ACTIONS):
+        errors.append(f"{schema_path}: mutation action enum must be create/replace/remove")
+    capacity = definitions.get("capacity", {})
+    if not isinstance(capacity, dict):
+        capacity = {}
+    expected_capacity_fields = {
+        "path",
+        "used_bytes",
+        "warning_bytes",
+        "limit_bytes",
+        "remaining_bytes",
+    }
+    if set(capacity.get("required", [])) != expected_capacity_fields:
+        errors.append(f"{schema_path}: capacity must require {sorted(expected_capacity_fields)}")
+    capacity_properties = capacity.get("properties")
+    if not isinstance(capacity_properties, dict):
+        capacity_properties = {}
+    if set(capacity_properties) != expected_capacity_fields:
+        errors.append(f"{schema_path}: capacity fields must be exactly {sorted(expected_capacity_fields)}")
+    warning_contract = capacity_properties.get("warning_bytes")
+    warning_bytes = warning_contract.get("const") if isinstance(warning_contract, dict) else None
+    if warning_bytes != 12 * 1024 * 1024:
+        errors.append(f"{schema_path}: capacity warning_bytes must be exactly 12582912")
+    limit_contract = capacity_properties.get("limit_bytes")
+    limit_bytes = limit_contract.get("const") if isinstance(limit_contract, dict) else None
+    if limit_bytes != 16 * 1024 * 1024:
+        errors.append(f"{schema_path}: capacity limit_bytes must be exactly 16777216")
+    validate_protocol_status_contract(result_name, schema, schema_path, errors)
+
+
+def _protocol_status_fixtures(result_name: str) -> tuple[list[dict], list[dict]]:
+    digest = "sha256:" + ("a" * 64)
+    if result_name == "execution-authority-result":
+        valid: list[dict] = [
+            {
+                "schema_version": "execution-authority-result.v1",
+                "status": "valid",
+                "authority": "gate-authorized",
+                "candidate_completion_digest": None,
+                "errors": [],
+            },
+            {
+                "schema_version": "execution-authority-result.v1",
+                "status": "approval-required",
+                "authority": None,
+                "candidate_completion_digest": digest,
+                "errors": ["pin required"],
+            },
+            {
+                "schema_version": "execution-authority-result.v1",
+                "status": "invalid",
+                "authority": None,
+                "candidate_completion_digest": None,
+                "errors": ["invalid"],
+            },
+        ]
+        invalid_fixtures: list[dict] = [
+            {**valid[0], "errors": ["unexpected"]},
+            {**valid[1], "candidate_completion_digest": None},
+            {**valid[1], "authority": "gate-authorized"},
+            {**valid[2], "authority": "gate-authorized"},
+            {**valid[2], "candidate_completion_digest": digest},
+            {**valid[2], "errors": []},
+        ]
+        return valid, invalid_fixtures
+
+    mutation: dict = {
+        "action": "replace",
+        "path": ".prodcraft/artifacts/work-1/execution-state.json",
+    }
+    base: dict = {
+        "schema_version": "execution-authoring-result.v1",
+        "operation": "transition",
+        "state_revision": 2,
+        "candidate_route_digest": None,
+        "candidate_completion_digest": None,
+        "capacities": [],
+        "warnings": [],
+        "errors": [],
+    }
+    written: dict = {**base, "status": "written", "mutations": [mutation]}
+    candidate: dict = {
+        **base,
+        "status": "candidate",
+        "mutations": [mutation],
+        "candidate_route_digest": digest,
+    }
+    completion_candidate: dict = {
+        **base,
+        "status": "candidate",
+        "mutations": [mutation],
+        "candidate_completion_digest": digest,
+    }
+    recovery: dict = {
+        **base,
+        "status": "recovery-required",
+        "mutations": [],
+        "errors": ["manual recovery required"],
+    }
+    invalid_result: dict = {
+        **base,
+        "status": "invalid",
+        "mutations": [],
+        "errors": ["invalid"],
+    }
+    invalid_fixtures = [
+        {**written, "errors": ["unexpected"]},
+        {**written, "candidate_route_digest": digest},
+        {**written, "mutations": []},
+        {**candidate, "candidate_route_digest": None},
+        {**candidate, "errors": ["unexpected"]},
+        {**candidate, "mutations": []},
+        {
+            **candidate,
+            "candidate_route_digest": None,
+            "candidate_completion_digest": digest,
+            "mutations": [],
+        },
+        {**recovery, "candidate_completion_digest": digest},
+        {**recovery, "candidate_route_digest": digest},
+        {**recovery, "errors": []},
+        {**invalid_result, "mutations": [mutation]},
+        {**invalid_result, "candidate_route_digest": digest},
+        {**invalid_result, "candidate_completion_digest": digest},
+        {**invalid_result, "errors": []},
+        {
+            **written,
+            "mutations": [{"action": "replace", "path": "bad\x00path"}],
+        },
+    ]
+    return [written, candidate, completion_candidate, recovery, invalid_result], invalid_fixtures
+
+
+def validate_protocol_status_contract(
+    result_name: str,
+    schema: dict,
+    schema_path: Path,
+    errors: list[str],
+) -> None:
+    import jsonschema  # type: ignore[import-untyped]
+
+    validator = jsonschema.Draft202012Validator(schema)
+    valid_fixtures, invalid_fixtures = _protocol_status_fixtures(result_name)
+    if any(not validator.is_valid(payload) for payload in valid_fixtures):
+        errors.append(f"{schema_path}: status contract rejects a representative valid result")
+    if any(validator.is_valid(payload) for payload in invalid_fixtures):
+        errors.append(f"{schema_path}: status contract accepts a contradictory result")
+
+
+def _load_protocol_result_schema(
+    result_name: str,
+    errors: list[str],
+    *,
+    root: Path,
+    registry_path: Path,
+) -> dict | None:
+    registry = load_unique_yaml_mapping(registry_path, errors)
+    results = registry.get("results", {})
+    if not isinstance(results, dict):
+        errors.append(f"{registry_path}: `results` must be a mapping")
+        return None
+    entry = results.get(result_name)
+    if not isinstance(entry, dict):
+        errors.append(f"{registry_path}: result `{result_name}` is not registered")
+        return None
+    schema_rel = entry.get("schema_path")
+    schema_path = resolve_protocol_schema_path(root, schema_rel, registry_path, errors)
+    if schema_path is None:
+        return None
+    if not isinstance(schema_rel, str):
+        return None
+    try:
+        schema = load_protocol_schema_snapshot(root, schema_rel, schema_path)
+    except StrictJSONError as exc:
+        errors.append(f"{schema_path}: failed to parse JSON schema: {exc}")
+        return None
+    return schema
+
+
+def validate_protocol_result_registry(
+    errors: list[str],
+    *,
+    root: Path = ROOT,
+    registry_path: Path | None = None,
+) -> None:
+    registry_path = registry_path or root / "schemas" / "protocol" / "registry.yml"
+    registry = load_unique_yaml_mapping(registry_path, errors)
+    if not registry:
+        return
+    if set(registry) != {"schema_version", "results"}:
+        errors.append(f"{registry_path}: registry must contain exactly schema_version and results")
+    if registry.get("schema_version") != "protocol-result-registry.v1":
+        errors.append(f"{registry_path}: `schema_version` must be `protocol-result-registry.v1`")
+    results = registry.get("results", {})
+    if not isinstance(results, dict):
+        errors.append(f"{registry_path}: `results` must be a mapping")
+        return
+    if set(results) != set(PROTOCOL_RESULT_CONTRACTS):
+        errors.append(f"{registry_path}: results must be {sorted(PROTOCOL_RESULT_CONTRACTS)}")
+    try:
+        import jsonschema  # type: ignore[import-untyped]
+    except ImportError as exc:
+        errors.append(f"{registry_path}: jsonschema is required to validate protocol schemas: {exc}")
+        return
+
+    for result_name in sorted(PROTOCOL_RESULT_CONTRACTS):
+        entry = results.get(result_name)
+        if not isinstance(entry, dict):
+            errors.append(f"{registry_path}: result `{result_name}` must map to a metadata object")
+            continue
+        if set(entry) != {"schema_version", "schema_path"}:
+            errors.append(f"{registry_path}: result `{result_name}` must contain exactly schema_version and schema_path")
+        expected_path = f"schemas/protocol/{result_name}.v1.schema.json"
+        if entry.get("schema_path") != expected_path:
+            if isinstance(entry.get("schema_path"), str):
+                errors.append(f"{registry_path}: result `{result_name}` must use schema_path `{expected_path}`")
+        schema_rel = entry.get("schema_path")
+        schema_path = resolve_protocol_schema_path(root, schema_rel, registry_path, errors)
+        if schema_path is None:
+            continue
+        if not isinstance(schema_rel, str):
+            continue
+        try:
+            schema = load_protocol_schema_snapshot(root, schema_rel, schema_path)
+        except StrictJSONError as exc:
+            errors.append(f"{schema_path}: failed to parse JSON schema: {exc}")
+            continue
+        try:
+            jsonschema.Draft202012Validator.check_schema(schema)
+        except jsonschema.SchemaError as exc:
+            errors.append(f"{schema_path}: invalid JSON schema: {exc.message}")
+            continue
+        validate_protocol_schema_contract(result_name, entry, schema, schema_path, errors)
+
+
+def validate_protocol_result_status_semantics(
+    result_name: str,
+    payload: dict,
+    errors: list[str],
+) -> None:
+    status = payload.get("status")
+    result_errors = payload.get("errors")
+    has_errors = isinstance(result_errors, list) and bool(result_errors)
+    if result_name == "execution-authority-result":
+        authority = payload.get("authority")
+        candidate = payload.get("candidate_completion_digest")
+        if status == "valid" and (candidate is not None or has_errors):
+            errors.append(f"{result_name}: valid status forbids candidates and errors")
+        elif status == "approval-required" and (
+            authority is not None or candidate is None or not has_errors
+        ):
+            errors.append(
+                f"{result_name}: approval-required status requires only a completion candidate"
+            )
+        elif status == "invalid" and (
+            authority is not None or candidate is not None or not has_errors
+        ):
+            errors.append(f"{result_name}: invalid status forbids authority and candidates")
+        return
+
+    mutations = payload.get("mutations")
+    has_mutations = isinstance(mutations, list) and bool(mutations)
+    route_candidate = payload.get("candidate_route_digest")
+    completion_candidate = payload.get("candidate_completion_digest")
+    has_candidate = route_candidate is not None or completion_candidate is not None
+    if status == "written" and (not has_mutations or has_candidate or has_errors):
+        errors.append(
+            f"{result_name}: written status requires mutations and forbids candidates and errors"
+        )
+    elif status == "candidate" and (not has_mutations or not has_candidate or has_errors):
+        errors.append(
+            f"{result_name}: candidate status requires mutations and a candidate without errors"
+        )
+    elif status == "recovery-required" and (has_candidate or not has_errors):
+        errors.append(
+            f"{result_name}: recovery-required status forbids candidates and requires errors"
+        )
+    elif status == "invalid" and (has_mutations or has_candidate or not has_errors):
+        errors.append(
+            f"{result_name}: invalid status requires empty mutations, no candidates, and errors"
+        )
+
+
+def validate_protocol_result_instance(
+    result_name: str,
+    payload: object,
+    errors: list[str],
+    *,
+    root: Path = ROOT,
+    registry_path: Path | None = None,
+) -> None:
+    registry_path = registry_path or root / "schemas" / "protocol" / "registry.yml"
+    schema = _load_protocol_result_schema(
+        result_name,
+        errors,
+        root=root,
+        registry_path=registry_path,
+    )
+    if schema is None:
+        return
+    try:
+        import jsonschema  # type: ignore[import-untyped]
+    except ImportError as exc:
+        errors.append(f"{registry_path}: jsonschema is required to validate protocol results: {exc}")
+        return
+    try:
+        jsonschema.Draft202012Validator(schema).validate(payload)
+    except jsonschema.ValidationError as exc:
+        location = "/".join(str(part) for part in exc.absolute_path) or "<root>"
+        errors.append(f"{result_name}: invalid result at `{location}`: {exc.message}")
+
+    if not isinstance(payload, dict):
+        return
+    validate_protocol_result_status_semantics(result_name, payload, errors)
+    if result_name != "execution-authoring-result":
+        return
+    for field_name in ("mutations", "capacities"):
+        entries = payload.get(field_name)
+        if not isinstance(entries, list):
+            continue
+        seen_paths: set[str] = set()
+        for entry in entries:
+            if not isinstance(entry, dict) or not isinstance(entry.get("path"), str):
+                continue
+            path = entry["path"]
+            if "\x00" in path:
+                errors.append(f"{result_name}: {field_name} path contains a NUL byte")
+            if path in seen_paths:
+                errors.append(f"{result_name}: duplicate {field_name} path `{path}`")
+            seen_paths.add(path)
+    capacities = payload.get("capacities")
+    if isinstance(capacities, list):
+        for index, capacity in enumerate(capacities):
+            if not isinstance(capacity, dict):
+                continue
+            used = capacity.get("used_bytes")
+            limit = capacity.get("limit_bytes")
+            remaining = capacity.get("remaining_bytes")
+            if (
+                not isinstance(used, int)
+                or isinstance(used, bool)
+                or not isinstance(limit, int)
+                or isinstance(limit, bool)
+                or not isinstance(remaining, int)
+                or isinstance(remaining, bool)
+            ):
+                continue
+            if used > limit:
+                errors.append(f"{result_name}: capacities[{index}] used_bytes exceeds limit_bytes")
+            if remaining != limit - used:
+                errors.append(f"{result_name}: capacities[{index}] remaining_bytes must equal limit_bytes - used_bytes")
+
+
 def validate_artifact_schema_registry(manifest: dict, errors: list[str]) -> None:
     registry = load_yaml_file(ARTIFACT_REGISTRY_PATH, errors)
     artifacts = registry.get("artifacts", {})
@@ -1713,7 +2369,7 @@ def main() -> int:
     parser.add_argument(
         "--check",
         action="append",
-        choices=sorted(CHECKS),
+        choices=LEGACY_CHECK_CHOICES,
         help="Run only the named check. May be repeated. Defaults to all checks.",
     )
     parser.add_argument(
@@ -1793,6 +2449,9 @@ def main() -> int:
 
     if "artifact-schema-registry" in selected_checks and manifest:
         validate_artifact_schema_registry(manifest, errors)
+
+    if "protocol-result-registry" in selected_checks:
+        validate_protocol_result_registry(errors)
 
     if "manifest-files" in selected_checks:
         validate_markdown_script_references(errors)
