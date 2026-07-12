@@ -157,15 +157,17 @@ The minimum complete operation set is:
 | Operation | Atomic protocol effect | Required authority precondition |
 |---|---|---|
 | `route-draft` | Before a live state exists, write a non-authoritative `route-decision.r1.draft.json` and return its candidate route digest. | Declared approval metadata/evidence must validate; the returned digest is not approval. Later revisions are created only by `reroute`. |
-| `state-init` | Install the draft byte-for-byte as immutable `route-decision.r1.json` and create canonical routed state. | Explicit `--approved-route-digest` must match the recomputed canonical route projection digest, while the installed file must remain byte-identical to the reviewed draft. |
+| `state-init` | Install the draft byte-for-byte as immutable `route-decision.r1.json`; append one initial binding for every obligation gating `received -> routed` in route declaration order; append the transition last; and create canonical routed state. | Explicit `--approved-route-digest` must match the recomputed canonical route projection digest; the installed file remains byte-identical to the reviewed draft; closed initial binding requests and transition evidence must satisfy the pinned route. |
 | `transition` | Append one lifecycle transition; when entering/resuming blocked state, update the matching block context in the same mutation. | Expected revision and route pin for authoritative advancement. |
-| `phase-event` | Append one entered/exited workflow event and update the cursor. | State must replay to `executing`; expected revision required. |
-| `artifact-bind` | Append one obligation binding at the next global sequence. | Obligation, artifact, assurance, and evidence must validate. |
+| `phase-event` | Append one entered/exited workflow event and update the cursor. | State must replay to `executing`; expected revision and route pin required. |
+| `artifact-bind` | Append one obligation binding at the next global sequence. | Expected revision and route pin required; obligation, artifact, assurance, and evidence must validate. |
 | `claim-completion` | Capture governed work, bind the already-produced verification record/evidence snapshots, append `executing -> completion_claimed`, and create the immutable attempt in one mutation. | Final phase exited; all reached obligations satisfied; verification record/evidence pass the repository validation service; expected revision and route pin required. |
-| `record-outcome` | Append `completion_claimed -> verified|rejected` or `verified -> completed`; update terminal refs; create/update a completion binding only for verified/completed; return a candidate when appropriate. | Verified/completed authority still requires an external completion pin. Advancing verified to completed must first validate the verified-state pin. A rejected outcome is an explicit reviewer decision and need not contradict an accepted pre-claim verification record. |
+| `record-outcome` | Append `completion_claimed -> verified|rejected` or `verified -> completed`; update terminal refs; create/update a completion binding only for verified/completed; return a candidate when appropriate. | Expected revision and route pin required. Verified/completed authority still requires an external completion pin. Advancing verified to completed must first validate the verified-state pin. A rejected outcome is an explicit reviewer decision and need not contradict an accepted pre-claim verification record. |
 | `reroute` | Recoverably archive the rerouted predecessor, write the next route revision, and replace the canonical routed successor. | Optional Iteration 2B capability. Current route pin required; the next route returns a new candidate route digest. |
 
 Each mutating operation requires the caller's `expected_revision` except initial creation. The authoring layer rejects implicit multi-step repair. If a command requires coupled records to satisfy the protocol, those records are one transformation and one canonical replacement.
+
+`state-init` and `artifact-bind` share one closed binding-request contract. A request contains only obligation ID, local artifact ref, subject digest, and the assurance-specific evidence object; `artifact` and `assurance` are derived from the pinned route obligation rather than accepted as caller overrides. `structural_valid` additionally requires the complete existing structural-evidence object; `approval_accepted` requires the complete existing accepted-approval object. The authoring layer verifies all content refs/digests and subject equality. For initialization it requires exactly the obligations gating `received -> routed`, orders their binding records by route declaration order, then appends the transition as the final record. This preserves the frozen `execution-state.v1` minimum revision, routed-state, and non-empty-transition contracts without bypassing intake approval.
 
 Timestamps may default to current UTC for convenience, but remain actor-claimed metadata. Supplying or defaulting a timestamp does not turn it into trusted time.
 
@@ -188,7 +190,8 @@ For each canonical write, the CLI performs this sequence:
 11. reject above 16 MiB; attach a capacity warning at or above 12 MiB;
 12. re-read the canonical raw digest and reject if a non-cooperating writer changed it after step 4;
 13. write a uniquely created destination-local temporary regular file, flush it, and replace the canonical selector atomically;
-14. release the lock and render a result without storing operator pins.
+14. revalidate the materialized bundle and complete transaction cleanup;
+15. release the lock and render a result without storing operator pins. If any canonical side effect has materialized or may remain and recovery cannot prove either exact predecessor restoration or clean successor completion, render `recovery-required` with only the canonical mutations that can be proven.
 
 The lock is a safe regular file keyed by the canonical control-root identity. It covers recovery, read, expected-revision check, validation, and replacement. It serializes cooperating local authoring CLI processes and makes `expected_revision` a reliable stale-caller guard within that boundary. The CLI fails closed when the platform cannot provide the required local advisory-lock primitive. It is not distributed CAS: a direct filesystem writer that ignores the lock can still race after the final digest comparison, and shared/network filesystems are unsupported. Multi-host or non-cooperating writers are Direction 3 triggers.
 
@@ -196,7 +199,7 @@ Before a live state exists, the shared validation service uses a dedicated creat
 
 The candidate bundle view is a validation input, not stored protocol state. Reads for overridden paths use the exact candidate bytes; other refs use the existing safe descriptor reader. Enumeration is the effective set `(live files - removals) + overrides`, so no temporary or journal name is admitted into closure. The existing validation CLI uses the same service with an empty overlay, preserving current filesystem semantics.
 
-`route-draft` is allowed only before a canonical live state exists. It writes a visibly non-authoritative draft filename and never installs or replaces an immutable route revision. The route pin equals `sha256(canonical_json(route_without_route_digest))`, not the raw file SHA. `state-init` separately requires byte-identical installation of the reviewed draft and writes `execution-state.json` as the initial commit point before removing the draft. Normal later state operations replace only `execution-state.json`, and later route revisions are created only by the reroute transaction.
+`route-draft` is allowed only before a canonical live state exists. It writes a visibly non-authoritative draft filename and never installs or replaces an immutable route revision. The route pin equals `sha256(canonical_json(route_without_route_digest))`, not the raw file SHA. `state-init` separately requires byte-identical installation of the reviewed draft and writes `execution-state.json` as a routed state whose leading bindings satisfy every `received -> routed` obligation and whose final initial record is that transition. The selector is the initial commit point and the draft is removed afterward. Normal later state operations replace only `execution-state.json`, and later route revisions are created only by the reroute transaction.
 
 ### Initial state commit and recovery
 
@@ -206,9 +209,11 @@ The candidate bundle view is a validation input, not stored protocol state. Read
 2. create a destination-local route temporary file and install the immutable route with the atomic no-clobber primitive;
 3. create `execution-state.json` last as the commit point;
 4. remove the draft only when its bytes still match the manifest;
-5. revalidate the actual closed bundle and remove the journal after cleanup is durable.
+5. revalidate the actual closed bundle and remove the journal after cleanup completes.
 
 If recovery sees no canonical state, it removes an installed route only when its bytes match the manifest and leaves the matching draft as the non-authoritative source. If recovery sees the exact successor state, it requires the exact route, removes a matching draft when present, and completes cleanup. Absent not-yet-materialized files are valid before the commit point; any present digest mismatch, unexpected pre-existing canonical path, corrupt journal, or third selector state fails closed for manual review.
+
+The recovery contract covers injected authoring-process termination on a supported local filesystem after completed system calls. It does not claim power-loss, kernel panic, storage-controller, or filesystem-corruption durability. Extending the failure model requires explicit file/directory persistence ordering, platform qualification, and a new reviewed decision; until then those failures use repository backup/manual recovery rather than Direction 2 automatic repair.
 
 ### Reroute commit and recovery
 
@@ -223,6 +228,8 @@ Reroute spans an immutable archive, a new immutable route, and the canonical sta
 7. revalidate the committed bundle and remove temporary files/journal only after success.
 
 Recovery runs under the same lock and is deterministic. If the canonical selector still matches the recorded predecessor, an absent temporary/final path means that phase was not materialized and is acceptable; a present matching path is removed; a present mismatching path fails for manual review. If the selector matches the recorded successor, every immutable final path must be present with the recorded digest, while matching temporary files may be removed and absent temporary files are acceptable. Any third selector state, device change, corrupt/partial journal, unexpected pre-existing final path, or digest mismatch fails closed for manual review. The journal contains paths, phases, initial-absence facts, and content digests, never operator pins. A concurrent validator may reject a transaction interrupted before the commit point, but it cannot authorize the partial bundle.
+
+Reroute has the same process-crash-only recovery boundary as `state-init`; no power-loss durability claim is made.
 
 ## Versioned Authority Result
 
@@ -247,6 +254,8 @@ The existing `text` and `json` formats remain byte/field compatible. The additiv
 The existing `gate-authorized` and `terminal-authorized` values remain the only non-null authority values. Domain-valid authorized results use `status: valid`. Argument parsing errors remain standard `argparse` stderr with exit code 2 and are outside this JSON contract. Domain invalidity and approval-required retain the current nonzero exit behavior.
 
 Diagnostic error strings remain human-facing in v1. Machine consumers must branch on `schema_version`, `status`, `authority`, and the explicit candidate field rather than parse error text.
+
+The shared validation service produces a typed internal disposition. A completion candidate is present if and only if the sole unmet terminal-authority condition is the explicit completion pin; candidate suppression and result projection never compare or parse diagnostic error strings.
 
 ## Versioned Authoring Result
 
@@ -284,9 +293,10 @@ Authoring defaults to concise text for humans and supports `--output-format json
 
 - `written` — the atomic write succeeded and no candidate approval is pending;
 - `candidate` — the write succeeded and an explicit route or completion candidate is returned for separate review;
-- `invalid` — no canonical write occurred.
+- `recovery-required` — canonical side effects exist or may remain, and the command cannot prove either exact predecessor restoration or clean successor completion;
+- `invalid` — no canonical protocol side effect remains and, if materialization began, exact predecessor restoration was proved.
 
-`mutations` contains every repository-relative canonical or draft side effect in commit order. Each item has exactly `action` (`create`, `replace`, or `remove`) and `path`; the array is empty for an invalid result. A normal state mutation has one replace item. `state-init` reports route creation, state creation, then draft removal. Optional reroute reports archive creation, route creation, then selector replacement; operational temporary/journal cleanup is not a protocol mutation. `state_revision` is null for a route-only result. Candidate fields are independently nullable. `capacities` contains one entry for every serialized strict document that will be created/replaced and is empty when no candidate documents could be serialized safely. Warnings never imply authority and errors imply `status: invalid`.
+`mutations` contains every repository-relative canonical or draft side effect in commit order. Each item has exactly `action` (`create`, `replace`, or `remove`) and `path`; the array is empty for an invalid result. A normal state mutation has one replace item. `state-init` reports route creation, state creation, then draft removal. Optional reroute reports archive creation, route creation, then selector replacement; operational temporary/journal cleanup is not a protocol mutation. A `recovery-required` result reports only canonical side effects that can be proved, never intended or merely suspected mutations; its array may be empty when unresolved journal/filesystem state prevents attribution. `state_revision` is null for a route-only result. Candidate fields are independently nullable and are null for `recovery-required`. `capacities` contains one entry for every serialized strict document that will be created/replaced and is empty when no candidate documents could be serialized safely. Warnings never imply authority. A failure is `invalid` only when exact no-net-change/predecessor restoration is proved; unresolved materialization is `recovery-required`. Both are nonzero outcomes.
 
 The two result schemas are listed in `schemas/protocol/registry.yml` with exact schema versions and paths. They are not added to `schemas/artifacts/registry.yml` because command results are not lifecycle artifacts. The repository validator gains a focused protocol-result registry check, and tests load every registered schema and validate all declared statuses.
 
@@ -384,7 +394,7 @@ Rollover, narrower snapshot scope, repin relaxation, further validator decomposi
 | Authoring duplicates canonical semantics | Pure transformations call existing digest/projection helpers; golden mutation matrices compare authored output with validator replay. | A derived field has two independent implementations. |
 | New JSON format drifts from legacy behavior | One validated result is projected into both renderers; legacy golden tests are mandatory. | Existing text/JSON output or exit code changes. |
 | Atomic writer overclaims concurrency | A per-work local lock serializes cooperating CLI writers; expected revision and raw-digest recheck protect that boundary, while non-cooperating/shared-filesystem writers remain explicitly unsupported. | Multi-host or non-cooperating writers become a supported requirement. |
-| State growth reaches the hard limit | Exact byte telemetry and 12 MiB rollout stop. | Any state reaches warning threshold or overflows. |
+| State growth reaches the hard limit | Exact byte telemetry and 12 MiB rollout stop. | Any non-synthetic gray/adoption state reaches the warning threshold or any otherwise-valid operation overflows. |
 | Scope expands into Direction 3 | Event store, identity, scheduler, network API, and distributed/multi-host locks are explicit non-goals. | A required feature cannot be implemented under the locally serialized writer model. |
 
 ## Architecture Fitness Functions
@@ -402,6 +412,6 @@ Rollover, narrower snapshot scope, repin relaxation, further validator decomposi
 
 ## Acceptance Boundary
 
-The core adoption layer is ready for opt-in use only when Iterations 0, 1, 2A, and 3 pass, three fresh adversarial reviewers report no unresolved P0/P1, the self-hosted bundle is regenerated through the authoring CLI rather than a test fixture, and the repository's Python 3.11/3.12, validator, Ruff, mypy, curated, reference, diff, and canary gates remain green. Reroute authoring is advertised only after Iteration 2B passes its separate recovery acceptance.
+The core adoption layer is ready for opt-in use only when Iterations 0, 1, 2A, and 3 pass, three fresh adversarial reviewers report no unresolved P0/P1, the self-hosted bundle is regenerated through the authoring CLI rather than a test fixture, and the repository's Python 3.11/3.12, validator, Ruff, mypy, curated, reference, diff, and canary gates remain green. All tracked acceptance changes are committed before the final self-host regeneration. The ignored bundle is then regenerated and dual-pin authority is checked against that final tracked HEAD; no tracked file changes afterward. Final HEAD, work-snapshot, route pin, and completion pin are reported in the external delivery evidence, not written back into the governed tracked snapshot. Reroute authoring is advertised only after Iteration 2B passes its separate recovery acceptance.
 
 Strict-default rollout and every Iteration 4 item remain outside this acceptance.

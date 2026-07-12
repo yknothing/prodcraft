@@ -44,13 +44,15 @@ Adopt Option B.
 
 1. Authoring is a separate module and CLI. It may construct artifacts, compute candidates, and consume a separately supplied explicit pin as a validation precondition. It cannot designate its own candidate as approved, persist a pin, or auto-forward a candidate into authorization.
 2. Canonical projection helpers remain the single source of digest semantics. Schema/registry/composed validation moves from the validation CLI into a focused repository service consumed by both CLIs; neither CLI imports the other or copies the rules.
-3. Existing validation `text` and `json` outputs remain compatible. New authority and authoring `json-v1` results are separately schema-versioned; authority v1 distinguishes `approval-required` from invalidity.
+3. Existing validation `text` and `json` outputs remain compatible. New authority and authoring `json-v1` results are separately schema-versioned; authority v1 distinguishes `approval-required` from invalidity, and authoring v1 distinguishes proved no-net-change `invalid` from unresolved canonical materialization `recovery-required`.
 4. Every authored candidate reports exact serialized capacity. The 16 MiB hard limit remains; 12 MiB stops rollout and triggers a new rollover ADR.
 5. Full-worktree identity and `verified -> completed` repinning remain unchanged in v1.
 6. New validation, authoring, and result responsibilities enter focused modules. The existing execution semantics module is not split solely to reduce line count.
 7. Direction 3 event/CAS/idempotency details are proposed, non-normative hypotheses. Runtime implementation requires a new intake and ADR set.
 8. A per-work local advisory lock covers recovery, read, revision check, candidate validation, raw-digest recheck, and replacement for cooperating authoring processes. It does not claim distributed CAS or protect against direct writers that ignore the lock.
 9. Completion/retry authoring is the core adoption closure. Reroute journal/recovery is a separately accepted optional iteration and does not block the core gray rollout.
+10. `state-init` preserves `execution-state.v1`: it requires one closed initial binding request for every obligation gating `received -> routed`, derives artifact/assurance from the pinned route, appends those bindings in route declaration order, and appends the transition last. Initialization cannot bypass or weaken the intake gate.
+11. Automatic recovery covers injected authoring-process termination on supported local filesystems. Direction 2 does not claim power-loss, kernel, storage, or filesystem-corruption durability.
 
 ## Consequences
 
@@ -70,6 +72,7 @@ Adopt Option B.
 - a local lock plus expected revision/raw-digest recheck serializes cooperating writers but does not provide multi-host or hostile-writer linearizability;
 - reroute needs a small recoverable local journal because its immutable archive, route, and selector cannot be committed by one filesystem replacement;
 - legacy and versioned JSON outputs must coexist;
+- callers must handle a structured `recovery-required` result and escalate mismatching recovery state for manual review;
 - state rollover remains intentionally unavailable until a trigger is observed.
 
 ## Trust And Authority Boundary
