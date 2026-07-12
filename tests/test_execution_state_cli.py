@@ -22,6 +22,44 @@ from tools.execution_state import (
 
 ROOT = Path(__file__).resolve().parents[1]
 VALIDATOR = ROOT / "scripts" / "validate_prodcraft.py"
+# Task 1A may add json-v1 only to --output-format choice-list text; every other byte stays frozen.
+LEGACY_USAGE = (
+    "usage: validate_prodcraft.py [-h]\n"
+    "                             [--check {artifact-flow,artifact-schema-registry,"
+    "cross-cutting-matrix,curated-surface,manifest-files,manifest-skill-status,"
+    "security-minimal,skill-frontmatter,workflow-entry-gate,workflow-frontmatter,"
+    "workflow-skill-refs}]\n"
+    "                             [--artifact-instance ARTIFACT_INSTANCE]\n"
+    "                             [--authorize-execution-state AUTHORIZE_EXECUTION_STATE]\n"
+    "                             [--approved-route-digest APPROVED_ROUTE_DIGEST]\n"
+    "                             [--approved-completion-digest APPROVED_COMPLETION_DIGEST]\n"
+    "                             [--output-format {text,json}]\n"
+)
+LEGACY_HELP = LEGACY_USAGE + (
+    "\nValidate Prodcraft structure.\n"
+    "\noptions:\n"
+    "  -h, --help            show this help message and exit\n"
+    "  --check {artifact-flow,artifact-schema-registry,cross-cutting-matrix,curated-"
+    "surface,manifest-files,manifest-skill-status,security-minimal,skill-frontmatter,"
+    "workflow-entry-gate,workflow-frontmatter,workflow-skill-refs}\n"
+    "                        Run only the named check. May be repeated. Defaults to\n"
+    "                        all checks.\n"
+    "  --artifact-instance ARTIFACT_INSTANCE\n"
+    "                        Validate a JSON or YAML protocol artifact instance\n"
+    "                        against the artifact registry and schema.\n"
+    "  --authorize-execution-state AUTHORIZE_EXECUTION_STATE\n"
+    "                        Authorize the canonical current execution-state\n"
+    "                        against its bound route and live Git worktree.\n"
+    "  --approved-route-digest APPROVED_ROUTE_DIGEST\n"
+    "                        Operator-supplied sha256 pin for --authorize-\n"
+    "                        execution-state.\n"
+    "  --approved-completion-digest APPROVED_COMPLETION_DIGEST\n"
+    "                        Operator-supplied terminal-authority digest pin for\n"
+    "                        verified/completed state.\n"
+    "  --output-format {text,json}\n"
+    "                        Render the validation result as human-readable text or\n"
+    "                        stable JSON.\n"
+)
 
 
 class ExecutionStateCLITests(unittest.TestCase):
@@ -67,6 +105,265 @@ class ExecutionStateCLITests(unittest.TestCase):
             "completion_attempts": [],
         }
 
+    def test_legacy_cli_characterization_preserves_default_checks_and_argparse(self):
+        default = self.run_validator()
+        self.assertEqual(0, default.returncode)
+        self.assertEqual("Prodcraft validation passed\n", default.stdout)
+        self.assertEqual("", default.stderr)
+
+        repeated_checks = self.run_validator(
+            "--check",
+            "skill-frontmatter",
+            "--check",
+            "security-minimal",
+        )
+        self.assertEqual(0, repeated_checks.returncode)
+        self.assertEqual("Prodcraft validation passed\n", repeated_checks.stdout)
+        self.assertEqual("", repeated_checks.stderr)
+
+        named_check = self.run_validator("--check", "security-minimal")
+        self.assertEqual(0, named_check.returncode)
+        self.assertEqual("Prodcraft validation passed\n", named_check.stdout)
+        self.assertEqual("", named_check.stderr)
+
+        help_result = self.run_validator("--help")
+        self.assertEqual(0, help_result.returncode)
+        self.assertEqual(LEGACY_HELP, help_result.stdout)
+        self.assertEqual("", help_result.stderr)
+
+        invalid_choice = self.run_validator("--output-format", "xml")
+        self.assertEqual(2, invalid_choice.returncode)
+        self.assertEqual("", invalid_choice.stdout)
+        self.assertEqual(
+            LEGACY_USAGE
+            + "validate_prodcraft.py: error: argument --output-format: invalid choice: "
+            "'xml' (choose from 'text', 'json')\n",
+            invalid_choice.stderr,
+        )
+
+        invalid_check = self.run_validator("--check", "nope")
+        self.assertEqual(2, invalid_check.returncode)
+        self.assertEqual("", invalid_check.stdout)
+        self.assertEqual(
+            LEGACY_USAGE
+            + "validate_prodcraft.py: error: argument --check: invalid choice: 'nope' "
+            "(choose from 'artifact-flow', 'artifact-schema-registry', "
+            "'cross-cutting-matrix', 'curated-surface', 'manifest-files', "
+            "'manifest-skill-status', 'security-minimal', 'skill-frontmatter', "
+            "'workflow-entry-gate', 'workflow-frontmatter', 'workflow-skill-refs')\n",
+            invalid_check.stderr,
+        )
+
+        pin_without_authority = self.run_validator(
+            "--approved-route-digest",
+            "sha256:" + "0" * 64,
+        )
+        self.assertEqual(2, pin_without_authority.returncode)
+        self.assertEqual("", pin_without_authority.stdout)
+        self.assertEqual(
+            LEGACY_USAGE
+            + "validate_prodcraft.py: error: --approved-route-digest requires "
+            "--authorize-execution-state\n",
+            pin_without_authority.stderr,
+        )
+
+    def test_legacy_cli_characterization_preserves_artifact_formats_and_composition(self):
+        route_path = self.fixture.control / "route-decision.r1.json"
+        valid_json = self.run_validator("--artifact-instance", str(route_path))
+        self.assertEqual(0, valid_json.returncode)
+        self.assertEqual("Prodcraft validation passed\n", valid_json.stdout)
+        self.assertEqual("", valid_json.stderr)
+
+        duplicate_json_path = self.fixture.repo / "duplicate.json"
+        duplicate_json_path.write_text(
+            '{"artifact":"route-decision","artifact":"execution-state"}\n',
+            encoding="utf-8",
+        )
+        duplicate_json = self.run_validator("--artifact-instance", str(duplicate_json_path))
+        self.assertEqual(1, duplicate_json.returncode)
+        self.assertEqual(
+            f"ERROR: {duplicate_json_path}: failed to parse artifact instance as JSON/YAML: "
+            "duplicate JSON key: artifact\n",
+            duplicate_json.stdout,
+        )
+        self.assertEqual("", duplicate_json.stderr)
+
+        valid_yaml_path = self.fixture.repo / "course-correction-note.yaml"
+        valid_yaml_path.write_text(
+            "\n".join(
+                (
+                    "artifact: course-correction-note",
+                    "schema_version: course-correction-note.v1",
+                    "status: approved",
+                    "source_phase: 04-implementation",
+                    "target_phase: 02-architecture",
+                    "trigger: contract drift",
+                    "evidence_refs: []",
+                    "blocked_artifact: implementation",
+                    "preserved_constraints: []",
+                    "recommended_next_skill: system-design",
+                    "severity: high",
+                    "requires_user_reapproval: true",
+                    "",
+                )
+            ),
+            encoding="utf-8",
+        )
+        valid_yaml = self.run_validator("--artifact-instance", str(valid_yaml_path))
+        self.assertEqual(0, valid_yaml.returncode)
+        self.assertEqual("Prodcraft validation passed\n", valid_yaml.stdout)
+        self.assertEqual("", valid_yaml.stderr)
+
+        invalid_yaml_path = self.fixture.repo / "invalid.yaml"
+        invalid_yaml_path.write_text(
+            "artifact: course-correction-note\n",
+            encoding="utf-8",
+        )
+        invalid_yaml = self.run_validator("--artifact-instance", str(invalid_yaml_path))
+        self.assertEqual(1, invalid_yaml.returncode)
+        self.assertEqual(
+            f"ERROR: {invalid_yaml_path}: artifact instance must include non-empty "
+            "`schema_version`\n",
+            invalid_yaml.stdout,
+        )
+        self.assertEqual("", invalid_yaml.stderr)
+
+        for stale_file in ("verification-record.json", "test-output.txt"):
+            (self.fixture.control / stale_file).unlink()
+        state_path = self.write_state(self.make_routed_state())
+        combined = self.run_validator(
+            "--check",
+            "security-minimal",
+            "--artifact-instance",
+            str(route_path),
+            "--authorize-execution-state",
+            str(state_path),
+            "--approved-route-digest",
+            self.fixture.route["route_digest"],
+        )
+        self.assertEqual(0, combined.returncode)
+        self.assertEqual("gate-authorized\n", combined.stdout)
+        self.assertEqual("", combined.stderr)
+
+        combined_json, combined_payload = self.run_validator_json(
+            "--check",
+            "security-minimal",
+            "--artifact-instance",
+            str(route_path),
+            "--authorize-execution-state",
+            str(state_path),
+            "--approved-route-digest",
+            self.fixture.route["route_digest"],
+        )
+        self.assertEqual(0, combined_json.returncode)
+        self.assertEqual(
+            '{"authority": "gate-authorized", "candidate_completion_digest": null, '
+            '"errors": [], "status": "valid"}\n',
+            combined_json.stdout,
+        )
+        self.assertEqual("", combined_json.stderr)
+        self.assertEqual("gate-authorized", combined_payload["authority"])
+
+    def test_legacy_cli_characterization_preserves_pin_failure_text(self):
+        state_path = self.write_state(self.fixture.state)
+
+        missing_route = self.run_validator(
+            "--authorize-execution-state",
+            str(state_path),
+        )
+        self.assertEqual(1, missing_route.returncode)
+        self.assertEqual(
+            "ERROR: --approved-route-digest is required with "
+            "--authorize-execution-state\n",
+            missing_route.stdout,
+        )
+        self.assertEqual("", missing_route.stderr)
+
+        mismatched_route = self.run_validator(
+            "--authorize-execution-state",
+            str(state_path),
+            "--approved-route-digest",
+            "sha256:" + "0" * 64,
+        )
+        self.assertEqual(1, mismatched_route.returncode)
+        self.assertEqual(
+            f"ERROR: {state_path}: operator pin does not match the approved route digest\n",
+            mismatched_route.stdout,
+        )
+        self.assertEqual("", mismatched_route.stderr)
+
+        completion_digest = terminal_authority_digest(self.fixture.state)
+        missing_completion = self.run_validator(
+            "--authorize-execution-state",
+            str(state_path),
+            "--approved-route-digest",
+            self.fixture.route["route_digest"],
+        )
+        self.assertEqual(1, missing_completion.returncode)
+        self.assertEqual(
+            f"ERROR: {state_path}: terminal authority requires an operator completion pin; "
+            f"candidate completion digest is {completion_digest}\n",
+            missing_completion.stdout,
+        )
+        self.assertEqual("", missing_completion.stderr)
+
+        mismatched_completion = self.run_validator(
+            "--authorize-execution-state",
+            str(state_path),
+            "--approved-route-digest",
+            self.fixture.route["route_digest"],
+            "--approved-completion-digest",
+            "sha256:" + "0" * 64,
+        )
+        self.assertEqual(1, mismatched_completion.returncode)
+        self.assertEqual(
+            f"ERROR: {state_path}: operator completion pin does not match the "
+            "terminal authority digest\n",
+            mismatched_completion.stdout,
+        )
+        self.assertEqual("", mismatched_completion.stderr)
+
+        json_cases = (
+            (
+                (
+                    "--authorize-execution-state",
+                    str(state_path),
+                ),
+                "--approved-route-digest is required with --authorize-execution-state",
+            ),
+            (
+                (
+                    "--authorize-execution-state",
+                    str(state_path),
+                    "--approved-route-digest",
+                    "sha256:" + "0" * 64,
+                ),
+                f"{state_path}: operator pin does not match the approved route digest",
+            ),
+            (
+                (
+                    "--authorize-execution-state",
+                    str(state_path),
+                    "--approved-route-digest",
+                    self.fixture.route["route_digest"],
+                    "--approved-completion-digest",
+                    "sha256:" + "0" * 64,
+                ),
+                f"{state_path}: operator completion pin does not match the "
+                "terminal authority digest",
+            ),
+        )
+        for args, error in json_cases:
+            with self.subTest(error=error):
+                result, _payload = self.run_validator_json(*args)
+                self.assertEqual(1, result.returncode)
+                self.assertEqual(
+                    '{"authority": null, "candidate_completion_digest": null, '
+                    f'"errors": ["{error}"], "status": "invalid"}}\n',
+                    result.stdout,
+                )
+                self.assertEqual("", result.stderr)
+
     def test_authority_mode_emits_machine_distinct_gate_and_terminal_results(self):
         for stale_file in ("verification-record.json", "test-output.txt"):
             (self.fixture.control / stale_file).unlink()
@@ -78,7 +375,8 @@ class ExecutionStateCLITests(unittest.TestCase):
             self.fixture.route["route_digest"],
         )
         self.assertEqual(0, gate.returncode, gate.stdout + gate.stderr)
-        self.assertIn("gate-authorized", gate.stdout)
+        self.assertEqual("gate-authorized\n", gate.stdout)
+        self.assertEqual("", gate.stderr)
 
         self.fixture.write("test-output.txt", "9 tests passed\n", raw=True)
         self.fixture.write("verification-record.json", self.fixture.verification)
@@ -92,7 +390,8 @@ class ExecutionStateCLITests(unittest.TestCase):
             terminal_authority_digest(self.fixture.state),
         )
         self.assertEqual(0, terminal.returncode, terminal.stdout + terminal.stderr)
-        self.assertIn("terminal-authorized", terminal.stdout)
+        self.assertEqual("terminal-authorized\n", terminal.stdout)
+        self.assertEqual("", terminal.stderr)
 
         missing_completion_pin = self.run_validator(
             "--authorize-execution-state",
@@ -119,6 +418,12 @@ class ExecutionStateCLITests(unittest.TestCase):
             },
             structural_payload,
         )
+        self.assertEqual(
+            '{"authority": null, "candidate_completion_digest": null, "errors": [], '
+            '"status": "valid"}\n',
+            structural.stdout,
+        )
+        self.assertEqual("", structural.stderr)
 
         state_path = self.write_state(self.fixture.state)
         completion_digest = terminal_authority_digest(self.fixture.state)
@@ -137,6 +442,14 @@ class ExecutionStateCLITests(unittest.TestCase):
         )
         self.assertEqual(1, len(candidate_payload["errors"]))
         self.assertIn("operator completion pin", candidate_payload["errors"][0])
+        self.assertEqual(
+            '{"authority": null, "candidate_completion_digest": '
+            f'"{completion_digest}", "errors": ["{state_path}: terminal authority requires '
+            "an operator completion pin; candidate completion digest is "
+            f'{completion_digest}"], "status": "invalid"}}\n',
+            candidate.stdout,
+        )
+        self.assertEqual("", candidate.stderr)
 
         self.fixture.write("test-output.txt", "mutated after verification\n", raw=True)
         invalid, invalid_payload = self.run_validator_json(
@@ -203,6 +516,12 @@ class ExecutionStateCLITests(unittest.TestCase):
             },
             terminal_payload,
         )
+        self.assertEqual(
+            '{"authority": "terminal-authorized", "candidate_completion_digest": null, '
+            '"errors": [], "status": "valid"}\n',
+            terminal.stdout,
+        )
+        self.assertEqual("", terminal.stderr)
 
     def test_missing_pin_mismatch_historical_duplicate_json_and_unbound_file_fail_closed(self):
         state_path = self.write_state(self.fixture.state)
