@@ -1,6 +1,6 @@
 # Direction 2 Adoption Architecture
 
-> Status: proposed for written design review — 2026-07-12
+> Status: accepted — 2026-07-12
 >
 > Extends: [`2026-07-10-minimal-execution-loop.md`](./2026-07-10-minimal-execution-loop.md)
 >

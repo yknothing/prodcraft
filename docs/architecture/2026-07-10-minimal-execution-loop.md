@@ -33,7 +33,7 @@ The route/state split prevents mutable execution state from silently weakening a
 | Determinism and safety | Git config, symlinks, special files, submodules, or path ambiguity affect work identity. | A versioned config-independent content algorithm handles or rejects each case deterministically. | Repeated runs match; negative filesystem cases fail closed. | 5 | MEL-P0-08 |
 | Inspectability | Work resumes without conversation history. | The live control bundle exposes route, lifecycle, phase cursor, reached gates, blocks, attempts, and evidence. | A reviewer can reconstruct the declared state from local files. | 6 | MEL-P0-01, MEL-P0-04 |
 | Honest assurance | A schema-valid artifact is semantically poor or approval metadata is forged. | Outputs distinguish structural proof, declared approval, operator pinning, and semantic judgment. | No documentation or error upgrades structural validity into semantic/authentic proof. | 7 | MEL-P0-09 |
-| Runtime extensibility | A later system needs concurrent agents, persistence, scheduling, and identity-aware approvals. | Stable domain semantics sit behind ports and a versioned event envelope. | Direction 3 can change storage authority without silently redefining v1 semantics. | 8 | MEL-P0-10 |
+| Runtime extensibility | A later system needs concurrent agents, persistence, scheduling, and identity-aware approvals. | Stable Direction 2 domain semantics remain portable behind explicit seams without precommitting a future runtime envelope. | A fresh Direction 3 intake can change storage authority without silently redefining v1 semantics. | 8 | MEL-P0-10 |
 
 ## Architecture Style And Alternatives
 
@@ -571,7 +571,7 @@ Text remains the default presentation. After successful argument parsing, `--out
 - remote artifact authenticity;
 - multiple concurrent state writers.
 
-Direction 3 introduces identity, concurrency, and durable event-store boundaries if those become approved requirements.
+A future Direction 3 intake must define identity, concurrency, persistence, and recovery boundaries if those become approved requirements.
 
 ## Compatibility And Public Export
 
@@ -614,17 +614,17 @@ operator or host
 
 No daemon, database, queue, socket, service account, remote API, or public listener is introduced.
 
-## Direction 3 Extension Architecture
+## Proposed Direction 3 Compatibility Hypotheses (Non-Normative)
 
-Direction 3 remains a future standalone runtime. It is not part of this implementation slice.
+Direction 3 remains a possible future standalone runtime. It is not part of this implementation slice, and the shapes below are compatibility hypotheses rather than accepted runtime requirements or implementation contracts.
 
-### Authority transition
+### Proposed authority transition
 
 - Direction 2: canonical live snapshot plus operator-pinned route digest is gate-authoritative; terminal authority additionally requires the externally pinned final completion projection.
-- Direction 3: one append-only work-item event stream becomes authoritative; route and execution snapshots are projections from the same stream, avoiding dual authority.
-- Import uses a versioned `direction2_snapshot_imported` genesis event containing source route/state/evidence digests and operator approval evidence.
+- A future Direction 3 design could make one append-only work-item event stream authoritative, with route and execution snapshots projected from the same stream to avoid dual authority.
+- A possible import shape is a versioned `direction2_snapshot_imported` genesis event containing source route/state/evidence digests and operator approval evidence.
 
-### Future event envelope
+### Proposed event envelope
 
 ```text
 event_schema_version
@@ -646,7 +646,7 @@ payload
 evidence_refs[]
 ```
 
-Normative semantics:
+Proposed, non-normative compatibility hypotheses:
 
 - idempotency compares a canonical request fingerprint over every caller-controlled semantic field: event/payload versions, event type, work/route identity, expected revision, idempotency key, actor, causation/correlation, occurred-at, payload, and evidence refs;
 - append first looks up `(work_id, idempotency_key)`; an existing key with the same fingerprint returns the original event even though current aggregate revision has advanced, while the same key with a different fingerprint is a conflict;
@@ -657,7 +657,7 @@ Normative semantics:
 - rebuild replays the authoritative stream from genesis in aggregate-revision order and must reproduce the same projection digest;
 - `occurred_at` is actor-claimed context; `recorded_at` and aggregate revision establish store order.
 
-### Future ports
+### Proposed ports
 
 | Port | Responsibility | Direction 2 adapter | Direction 3 boundary |
 |---|---|---|---|
@@ -670,7 +670,7 @@ Normative semantics:
 | `SchedulerPort` | Resume queued or blocked work. | Deferred. | Queue/workflow scheduler. |
 | `HostAdapter` | Translate host actions into canonical commands/events. | CLI invocation. | Claude/Codex/Gemini adapters. |
 
-Direction 3 must reject last-write-wins for route, approval, completion, and terminal events.
+A future Direction 3 intake must explicitly define and justify conflict semantics for route, approval, completion, and terminal events; this document does not accept a conflict policy.
 
 ### Deferred Direction 3 choices
 
@@ -715,7 +715,7 @@ Each requires a new approved intake, requirements set, threat model, and decisio
 | Path safety | Test top-level/intermediate/final symlink, traversal, URI, drive, UNC, and backslash forms. | Every escape or ambiguous form fails. |
 | Compatibility | Run the complete discovered pre-change suite plus legacy fixtures. | All prior valid behavior remains green. |
 | Public runtime | Generate the flattened curated tree and validate every frontmatter and packaged relative reference. | Every package loads and every reference resolves. |
-| Direction 3 seam | Test event retry, conflicting idempotency payload, CAS conflict, revision gap, and projection rebuild in architecture fixtures or future implementation. | Semantics are unambiguous; implementation remains deferred. |
+| Direction 3 seam | Before implementation, run a fresh intake and approve requirements/ADRs for identity, concurrency, persistence, recovery, idempotency, migration, and operating boundaries. | No runtime or fixture claims conformance to the hypotheses above until those reviewed contracts exist. |
 
 ## Implementation Boundary
 

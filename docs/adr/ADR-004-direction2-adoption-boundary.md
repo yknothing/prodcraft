@@ -2,11 +2,9 @@
 
 ## Status
 
-Proposed — 2026-07-12
+Accepted — 2026-07-12
 
-This ADR is approved in direction and awaits written design review of [`2026-07-12-direction2-adoption-architecture.md`](../architecture/2026-07-12-direction2-adoption-architecture.md).
-
-It may move to Accepted only in the same documentation batch that labels the existing Direction 3 event/CAS/idempotency details proposed and non-normative and passes cross-document consistency validation.
+Accepted after the linked architecture design, risk register, implementation plan, and adversarial review closed all P0/P1 findings. Direction 3 event/CAS/idempotency details remain proposed and non-normative.
 
 ## Context
 
