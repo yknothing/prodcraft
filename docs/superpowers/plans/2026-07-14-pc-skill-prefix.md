@@ -60,7 +60,7 @@ gateway names.
 - Modify: all renamed `SKILL.md` frontmatter and cross-skill links
 - Modify: `manifest.yml`
 - Modify: `skills/_gateway.md`
-- Modify: `skills/_cross-cutting-matrix.yaml`
+- Modify: `rules/cross-cutting-matrix.yml`
 - Modify: `skills/*/_phase.md`
 - Modify: `workflows/*.md`
 - Modify: active schemas, examples, rules, tests, and documentation that reference canonical skill identities or paths
