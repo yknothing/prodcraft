@@ -17,12 +17,12 @@ class CoreProductionWaveTests(unittest.TestCase):
 
     def test_core_spine_skills_are_now_production_with_security_reviews(self):
         targets = {
-            "intake": "00-discovery",
-            "problem-framing": "00-discovery",
-            "requirements-engineering": "01-specification",
-            "task-breakdown": "03-planning",
-            "tdd": "04-implementation",
-            "verification-before-completion": "cross-cutting",
+            "pc-intake": "00-discovery",
+            "pc-problem-framing": "00-discovery",
+            "pc-requirements-engineering": "01-specification",
+            "pc-task-breakdown": "03-planning",
+            "pc-tdd": "04-implementation",
+            "pc-verification-before-completion": "cross-cutting",
         }
 
         for name, phase in targets.items():
@@ -56,7 +56,7 @@ class CoreProductionWaveTests(unittest.TestCase):
         index = json.loads((REPO_ROOT / "skills" / ".curated" / "index.json").read_text(encoding="utf-8"))
         entries = {entry["name"]: entry for entry in index["skills"]}
 
-        self.assertEqual("core", entries["verification-before-completion"]["readiness"])
+        self.assertEqual("core", entries["pc-verification-before-completion"]["readiness"])
 
 
 if __name__ == "__main__":

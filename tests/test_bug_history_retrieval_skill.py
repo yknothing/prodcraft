@@ -4,10 +4,10 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = REPO_ROOT / "manifest.yml"
-SKILL_PATH = REPO_ROOT / "skills" / "cross-cutting" / "bug-history-retrieval" / "SKILL.md"
-GOTCHAS_PATH = REPO_ROOT / "skills" / "cross-cutting" / "bug-history-retrieval" / "references" / "gotchas.md"
+SKILL_PATH = REPO_ROOT / "skills" / "cross-cutting" / "pc-bug-history-retrieval" / "SKILL.md"
+GOTCHAS_PATH = REPO_ROOT / "skills" / "cross-cutting" / "pc-bug-history-retrieval" / "references" / "gotchas.md"
 
-BUG_HISTORY_SKILL_NAME = "bug-history-retrieval"
+BUG_HISTORY_SKILL_NAME = "pc-bug-history-retrieval"
 EXPECTED_PHASE = "cross-cutting"
 EXPECTED_STATUS = "review"
 MANIFEST_ENTRY_PREFIX = "- name: "
@@ -73,7 +73,7 @@ class BugHistoryRetrievalSkillTests(unittest.TestCase):
         self.assertIn("evaluation_mode: routed", entry_block)
         self.assertIn("structure_validation_path: scripts/validate_prodcraft.py", entry_block)
         self.assertIn(
-            "eval_strategy_path: eval/cross-cutting/bug-history-retrieval/evals/eval-strategy.md",
+            "eval_strategy_path: eval/cross-cutting/pc-bug-history-retrieval/evals/eval-strategy.md",
             entry_block,
         )
 

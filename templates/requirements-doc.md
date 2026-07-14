@@ -1,6 +1,6 @@
 # Requirements Document
 
-Use this template when `requirements-engineering` converts approved upstream direction into a canonical requirements record.
+Use this template when `pc-requirements-engineering` converts approved upstream direction into a canonical requirements record.
 
 ## Required Artifact
 

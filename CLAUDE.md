@@ -6,22 +6,22 @@ Prodcraft is a lifecycle-aware skills system for production-grade software devel
 
 ## MANDATORY ENTRY POINT
 
-**Every new piece of work MUST begin with the `intake` skill** (`skills/00-discovery/intake/SKILL.md`).
+**Every new piece of work MUST begin with the `pc-intake` skill** (`skills/00-discovery/pc-intake/SKILL.md`).
 
 Intake triages the work, determines the lifecycle phase and methodology, and routes to the correct skill sequence. This is a hard gate -- no implementation, architecture, or planning work may begin until intake is complete and the user approves the proposed path.
 
-If intake identifies the route but the problem statement or solution direction is still too fuzzy for clean downstream work, hand off to `skills/00-discovery/problem-framing/SKILL.md` before moving deeper into the lifecycle. Keep intake concise; do not turn it into a full design workshop.
+If intake identifies the route but the problem statement or solution direction is still too fuzzy for clean downstream work, hand off to `skills/00-discovery/pc-problem-framing/SKILL.md` before moving deeper into the lifecycle. Keep intake concise; do not turn it into a full design workshop.
 
 The routing logic is defined in `skills/_gateway.md`, which maps user intent to skill sequences, handles workflow selection, and defines fast-track rules for trivial changes.
 
 Trivial work does not skip intake. Use a lightweight `fast-track` intake decision (`intake_mode=fast-track`) instead of a full routing pass.
 
-For gray-rollout or production cutovers that need Prodcraft to become the authoritative software-development entry system, use `scripts/install_prodcraft_global_skill.py` to install the global `prodcraft` gateway skill under `~/.agents/skills/prodcraft`, and `scripts/archive_superpowers_skills.py` to back up and move conflicting global superpowers skill directories out of `~/.agents/skills`. Both scripts write reversible state and JSONL event logs under `build/` so the cutover remains observable and reversible.
+For gray-rollout or production cutovers that need Prodcraft to become the authoritative software-development entry system, use `scripts/install_prodcraft_global_skill.py` to install the global `pc-prodcraft` gateway skill under `~/.agents/skills/pc-prodcraft`, and `scripts/archive_superpowers_skills.py` to back up and move conflicting global superpowers skill directories out of `~/.agents/skills`. Both scripts write reversible state and JSONL event logs under `build/` so the cutover remains observable and reversible.
 
 ## Key Concepts
 
 - **Gateway** (`skills/_gateway.md`) is the routing logic that connects user intent to the right skill sequence
-- **Intake** (`skills/00-discovery/intake/SKILL.md`) is the mandatory first skill -- triage, classify, route
+- **Intake** (`skills/00-discovery/pc-intake/SKILL.md`) is the mandatory first skill -- triage, classify, route
 - **Skills** (`skills/`) are atomic units of development practice. Each has frontmatter declaring its phase, inputs, outputs, prerequisites, and quality gate.
 - **Workflows** (`workflows/`) orchestrate skills into methodology-specific sequences. Same skills, different composition.
 - **Personas** (`personas/`) define AI agent roles with specific responsibilities and perspectives.

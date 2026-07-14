@@ -16,8 +16,8 @@ class FeatureAndDeploymentStrategyReviewStatusTests(unittest.TestCase):
     def test_manifest_registers_feature_development_and_deployment_strategy_as_critical_tested_routed(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
 
-        feature = entries["feature-development"]
-        deployment = entries["deployment-strategy"]
+        feature = entries["pc-feature-development"]
+        deployment = entries["pc-deployment-strategy"]
 
         self.assertEqual("04-implementation", feature["phase"])
         self.assertEqual("06-delivery", deployment["phase"])
@@ -39,16 +39,16 @@ class FeatureAndDeploymentStrategyReviewStatusTests(unittest.TestCase):
 
     def test_tested_artifacts_exist_for_both_skills(self):
         targets = [
-            REPO_ROOT / "eval" / "04-implementation" / "feature-development" / "findings.md",
-            REPO_ROOT / "eval" / "04-implementation" / "feature-development" / "evals" / "eval-strategy.md",
-            REPO_ROOT / "eval" / "04-implementation" / "feature-development" / "isolated-benchmark-plan.md",
-            REPO_ROOT / "eval" / "04-implementation" / "feature-development" / "isolated-benchmark-review.md",
-            REPO_ROOT / "eval" / "04-implementation" / "feature-development" / "tdd-handoff-review.md",
-            REPO_ROOT / "eval" / "06-delivery" / "deployment-strategy" / "findings.md",
-            REPO_ROOT / "eval" / "06-delivery" / "deployment-strategy" / "evals" / "eval-strategy.md",
-            REPO_ROOT / "eval" / "06-delivery" / "deployment-strategy" / "isolated-benchmark-plan.md",
-            REPO_ROOT / "eval" / "06-delivery" / "deployment-strategy" / "isolated-benchmark-review.md",
-            REPO_ROOT / "eval" / "06-delivery" / "deployment-strategy" / "pipeline-handoff-review.md",
+            REPO_ROOT / "eval" / "04-implementation" / "pc-feature-development" / "findings.md",
+            REPO_ROOT / "eval" / "04-implementation" / "pc-feature-development" / "evals" / "eval-strategy.md",
+            REPO_ROOT / "eval" / "04-implementation" / "pc-feature-development" / "isolated-benchmark-plan.md",
+            REPO_ROOT / "eval" / "04-implementation" / "pc-feature-development" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "04-implementation" / "pc-feature-development" / "tdd-handoff-review.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-deployment-strategy" / "findings.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-deployment-strategy" / "evals" / "eval-strategy.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-deployment-strategy" / "isolated-benchmark-plan.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-deployment-strategy" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-deployment-strategy" / "pipeline-handoff-review.md",
         ]
 
         for path in targets:
@@ -60,17 +60,17 @@ class FeatureAndDeploymentStrategyReviewStatusTests(unittest.TestCase):
         implementation_phase = (REPO_ROOT / "skills" / "04-implementation" / "_phase.md").read_text(encoding="utf-8")
         delivery_phase = (REPO_ROOT / "skills" / "06-delivery" / "_phase.md").read_text(encoding="utf-8")
 
-        self.assertIn("feature-development", gateway)
-        self.assertIn("deployment-strategy", gateway)
-        self.assertIn("feature-development", implementation_phase)
-        self.assertIn("deployment-strategy", delivery_phase)
+        self.assertIn("pc-feature-development", gateway)
+        self.assertIn("pc-deployment-strategy", gateway)
+        self.assertIn("pc-feature-development", implementation_phase)
+        self.assertIn("pc-deployment-strategy", delivery_phase)
 
     def test_findings_record_tested_status(self):
         feature_findings = (
-            REPO_ROOT / "eval" / "04-implementation" / "feature-development" / "findings.md"
+            REPO_ROOT / "eval" / "04-implementation" / "pc-feature-development" / "findings.md"
         ).read_text(encoding="utf-8")
         deployment_findings = (
-            REPO_ROOT / "eval" / "06-delivery" / "deployment-strategy" / "findings.md"
+            REPO_ROOT / "eval" / "06-delivery" / "pc-deployment-strategy" / "findings.md"
         ).read_text(encoding="utf-8")
 
         self.assertIn("Current status: `tested`", feature_findings)

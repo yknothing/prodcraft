@@ -132,7 +132,10 @@
     },
     "scope_assessment": { "enum": ["small", "medium", "large", "xlarge"] },
     "urgency": { "type": "string" },
-    "recommended_next_skill": { "type": "string" },
+    "recommended_next_skill": {
+      "type": "string",
+      "pattern": "^pc-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
     "routing_rationale": { "type": "string" },
     "key_risks": {
       "type": "array",

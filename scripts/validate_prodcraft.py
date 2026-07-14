@@ -42,9 +42,18 @@ PROTOCOL_RESULT_REGISTRY_PATH = SCHEMAS_DIR / "protocol" / "registry.yml"
 DISTRIBUTION_REGISTRY_PATH = SCHEMAS_DIR / "distribution" / "public-skill-registry.json"
 PUBLIC_SKILL_PORTABILITY_PATH = SCHEMAS_DIR / "distribution" / "public-skill-portability.json"
 MATRIX_PATH = ROOT / "rules" / "cross-cutting-matrix.yml"
-INTAKE_SKILL_PATH = SKILLS_DIR / "00-discovery" / "intake" / "SKILL.md"
+INTAKE_SKILL_PATH = SKILLS_DIR / "00-discovery" / "pc-intake" / "SKILL.md"
 GATEWAY_PATH = SKILLS_DIR / "_gateway.md"
 ADR_002_PATH = ROOT / "docs" / "adr" / "ADR-002-cross-phase-course-corrections.md"
+
+SKILL_NAME_PREFIX = "pc-"
+SKILL_NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+MARKDOWN_SKILL_LINK_RE = re.compile(
+    r"\[[^\]]+\]\((?P<target>[^)\s]*SKILL\.md(?:#[^)\s]+)?)\)"
+)
+LOCAL_EVAL_FILE_RE = re.compile(
+    r"`(?P<path>eval/[^`\s]+)`"
+)
 
 SKILL_REQUIRED_FIELDS = [
     "name",
@@ -174,6 +183,20 @@ REQUIRED_SKILL_BODY_HEADINGS = (
 )
 
 QUALITY_GATE_CHECK_ITEM_RE = re.compile(r"^\s*-\s*\[\s*\]\s+.+$", re.MULTILINE)
+
+
+def validate_skill_name(name: object, source: Path, errors: list[str]) -> None:
+    if not isinstance(name, str) or not name:
+        errors.append(f"{source}: skill name must be a non-empty string")
+        return
+    if len(name) > 64:
+        errors.append(f"{source}: skill name `{name}` must be 64 characters or fewer")
+    if not SKILL_NAME_RE.fullmatch(name):
+        errors.append(
+            f"{source}: skill name `{name}` must contain only lowercase letters, numbers, and single hyphens"
+        )
+    if not name.startswith(SKILL_NAME_PREFIX):
+        errors.append(f"{source}: skill name `{name}` must start with `pc-`")
 
 
 def load_frontmatter(path: Path) -> tuple[dict, str]:
@@ -947,6 +970,11 @@ def validate_skill_file(path: Path, errors: list[str]) -> None:
         if field not in frontmatter:
             errors.append(f"{path}: missing required skill field `{field}`")
 
+    name = frontmatter.get("name")
+    validate_skill_name(name, path, errors)
+    if isinstance(name, str) and name != path.parent.name:
+        errors.append(f"{path}: skill name `{name}` must match parent directory `{path.parent.name}`")
+
     description = frontmatter.get("description")
     if not isinstance(description, str):
         errors.append(f"{path}: `description` must be a string")
@@ -974,6 +1002,18 @@ def validate_skill_file(path: Path, errors: list[str]) -> None:
     if actual_phase != expected_phase:
         errors.append(f"{path}: `metadata.phase` must match parent phase directory `{expected_phase}`")
 
+    prerequisites = metadata.get("prerequisites")
+    if not isinstance(prerequisites, list):
+        errors.append(f"{path}: `metadata.prerequisites` must be a list")
+    else:
+        for prerequisite in prerequisites:
+            if not isinstance(prerequisite, str) or not prerequisite.startswith(SKILL_NAME_PREFIX):
+                errors.append(
+                    f"{path}: prerequisite `{prerequisite}` must be a canonical `pc-` skill name"
+                )
+            if isinstance(name, str) and prerequisite == name:
+                errors.append(f"{path}: skill `{name}` must not list itself as a prerequisite")
+
     try:
         frontmatter_raw = raw_frontmatter(path)
     except ValueError as exc:
@@ -997,6 +1037,14 @@ def validate_skill_file(path: Path, errors: list[str]) -> None:
         bundled_path = skill_dir / rel_target[0] / rel_target[1]
         if not bundled_path.exists():
             errors.append(f"{path}: referenced bundled resource `{bundled_path.relative_to(ROOT)}` does not exist")
+
+    for match in MARKDOWN_SKILL_LINK_RE.finditer(body):
+        target = match.group("target").split("#", 1)[0]
+        if target.startswith(("http://", "https://")):
+            continue
+        linked_path = (skill_dir / target).resolve()
+        if not linked_path.is_file():
+            errors.append(f"{path}: referenced skill link `{target}` does not exist")
 
     if "## Gotchas" in body:
         validate_gotchas_block(path, body, errors, source_label="inline gotchas section")
@@ -1077,8 +1125,8 @@ def validate_workflow_file(path: Path, errors: list[str], selected_checks: set[s
             errors.append(f"{path}: `composes_with` must be a non-empty list")
 
     if "workflow-entry-gate" in selected_checks:
-        if frontmatter.get("entry_skill") != "intake":
-            errors.append(f"{path}: `entry_skill` must be `intake`")
+        if frontmatter.get("entry_skill") != "pc-intake":
+            errors.append(f"{path}: `entry_skill` must be `pc-intake`")
 
         required_artifacts = frontmatter.get("required_artifacts", [])
         if not isinstance(required_artifacts, list) or "intake-brief" not in required_artifacts:
@@ -1088,8 +1136,8 @@ def validate_workflow_file(path: Path, errors: list[str], selected_checks: set[s
             errors.append(f"{path}: missing `## Entry Gate` section")
 
         body_lower = body.lower()
-        if "intake" not in body_lower or "intake-brief" not in body_lower:
-            errors.append(f"{path}: entry gate must mention both `intake` and `intake-brief`")
+        if "pc-intake" not in body_lower or "intake-brief" not in body_lower:
+            errors.append(f"{path}: entry gate must mention both `pc-intake` and `intake-brief`")
 
         required_sections = ("Overview", "Phase Sequence", "Quality Gates", "Adaptation Notes")
         for section_name in required_sections:
@@ -1108,10 +1156,23 @@ def validate_manifest(errors: list[str]) -> dict:
         errors.append(f"{MANIFEST_PATH}: failed to parse YAML: {exc}")
         return {}
 
-    for entry in manifest.get("skills", []):
+    skill_entries = manifest.get("skills", [])
+    for entry in skill_entries:
+        validate_skill_name(entry.get("name"), MANIFEST_PATH, errors)
         path = ROOT / entry["file"]
         if not path.exists():
             errors.append(f"{MANIFEST_PATH}: missing referenced skill file `{entry['file']}`")
+            continue
+        try:
+            frontmatter, _body = load_frontmatter(path)
+        except ValueError as exc:
+            errors.append(str(exc))
+            continue
+        if frontmatter.get("name") != entry.get("name"):
+            errors.append(
+                f"{MANIFEST_PATH}: skill `{entry.get('name')}` does not match frontmatter name "
+                f"`{frontmatter.get('name')}` in `{entry['file']}`"
+            )
 
     for entry in manifest.get("workflows", []):
         path = ROOT / entry["file"]
@@ -1124,6 +1185,33 @@ def validate_manifest(errors: list[str]) -> dict:
         if isinstance(entry, dict) and isinstance(entry.get("id"), str)
     }
     skill_names = manifest_skill_names(manifest)
+    source_skill_names: set[str] = set()
+    for path in iter_lifecycle_skill_paths():
+        try:
+            frontmatter, _body = load_frontmatter(path)
+        except ValueError as exc:
+            errors.append(str(exc))
+            continue
+        name = frontmatter.get("name")
+        if isinstance(name, str):
+            source_skill_names.add(name)
+    if source_skill_names != skill_names:
+        missing_from_manifest = sorted(source_skill_names - skill_names)
+        missing_from_source = sorted(skill_names - source_skill_names)
+        if missing_from_manifest:
+            errors.append(f"{MANIFEST_PATH}: source skills missing from manifest {missing_from_manifest}")
+        if missing_from_source:
+            errors.append(f"{MANIFEST_PATH}: manifest skills missing from source tree {missing_from_source}")
+
+    for entry in skill_entries:
+        name = entry.get("name")
+        phase = entry.get("phase")
+        expected_file = f"skills/{phase}/{name}/SKILL.md"
+        if entry.get("file") != expected_file:
+            errors.append(
+                f"{MANIFEST_PATH}: skill `{name}` file must be `{expected_file}`"
+            )
+
     planned_names: set[str] = set()
     planned_skills = manifest.get("planned_skills", [])
     if planned_skills is not None and not isinstance(planned_skills, list):
@@ -1138,6 +1226,7 @@ def validate_manifest(errors: list[str]) -> dict:
         if not isinstance(name, str) or not name:
             errors.append(f"{MANIFEST_PATH}: planned skill entries must include non-empty `name`")
             continue
+        validate_skill_name(name, MANIFEST_PATH, errors)
         if name in planned_names:
             errors.append(f"{MANIFEST_PATH}: duplicate planned skill `{name}`")
         planned_names.add(name)
@@ -1147,6 +1236,98 @@ def validate_manifest(errors: list[str]) -> dict:
             errors.append(f"{MANIFEST_PATH}: planned skill `{name}` has invalid phase `{phase}`")
         if not isinstance(rationale, str) or not rationale:
             errors.append(f"{MANIFEST_PATH}: planned skill `{name}` must include rationale")
+
+        target_file = entry.get("target_file")
+        expected_target_file = f"skills/{phase}/{name}/SKILL.md"
+        if target_file != expected_target_file:
+            errors.append(
+                f"{MANIFEST_PATH}: planned skill `{name}` target_file must be `{expected_target_file}`"
+            )
+
+    for entry in skill_entries:
+        name = entry.get("name")
+        path = ROOT / entry.get("file", "")
+        if not isinstance(name, str) or not path.is_file():
+            continue
+        try:
+            frontmatter, _body = load_frontmatter(path)
+        except ValueError:
+            continue
+        prerequisites = frontmatter.get("metadata", {}).get("prerequisites", [])
+        if not isinstance(prerequisites, list):
+            errors.append(f"{path}: `metadata.prerequisites` must be a list")
+            continue
+        for prerequisite in prerequisites:
+            if prerequisite not in skill_names:
+                errors.append(
+                    f"{path}: prerequisite `{prerequisite}` is not an implemented manifest skill"
+                )
+
+    for edge in manifest.get("iterative_feedback_edges", []):
+        if not isinstance(edge, dict):
+            errors.append(f"{MANIFEST_PATH}: iterative feedback edges must be mappings")
+            continue
+        for field in ("from", "to"):
+            skill_name = edge.get(field)
+            if skill_name not in skill_names:
+                errors.append(
+                    f"{MANIFEST_PATH}: iterative feedback edge `{field}` value `{skill_name}` "
+                    "is not an implemented skill"
+                )
+
+    root_eval_configs = set((ROOT / "eval").glob("*/*/evals.json"))
+    nested_eval_configs = set((ROOT / "eval").glob("*/*/evals/*.json"))
+    for config_path in sorted(root_eval_configs | nested_eval_configs):
+        try:
+            payload = json.loads(config_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+            errors.append(f"{config_path}: active eval config is not valid JSON: {exc}")
+            continue
+        if config_path in root_eval_configs and (
+            not isinstance(payload, dict) or not isinstance(payload.get("skill_name"), str)
+        ):
+            errors.append(f"{config_path}: active root eval config must declare string `skill_name`")
+            continue
+        if not isinstance(payload, dict) or "skill_name" not in payload:
+            continue
+        expected_skill_name = config_path.relative_to(ROOT / "eval").parts[1]
+        if payload["skill_name"] != expected_skill_name:
+            errors.append(
+                f"{config_path}: active eval `skill_name` must be `{expected_skill_name}`, "
+                f"got `{payload['skill_name']}`"
+            )
+
+    active_benchmarks = set((ROOT / "eval").glob("*/*/*benchmark*.json"))
+    active_benchmarks.update((ROOT / "eval").glob("*/*/evals/*benchmark*.json"))
+    for benchmark_path in sorted(active_benchmarks):
+        try:
+            benchmark = json.loads(benchmark_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+            errors.append(f"{benchmark_path}: active benchmark config is not valid JSON: {exc}")
+            continue
+        if not isinstance(benchmark, list):
+            errors.append(f"{benchmark_path}: active benchmark config must be a list")
+            continue
+        for case in benchmark:
+            if not isinstance(case, dict):
+                errors.append(f"{benchmark_path}: benchmark cases must be objects")
+                continue
+            context_files = case.get("context_files", [])
+            if not isinstance(context_files, list):
+                errors.append(f"{benchmark_path}: `context_files` must be a list")
+                continue
+            for context_file in context_files:
+                if not isinstance(context_file, str):
+                    errors.append(f"{benchmark_path}: context file paths must be strings")
+                    continue
+                candidate = (benchmark_path.parent / context_file).resolve()
+                try:
+                    candidate.relative_to((ROOT / "eval").resolve())
+                except ValueError:
+                    errors.append(f"{benchmark_path}: context file escapes eval root: `{context_file}`")
+                    continue
+                if not candidate.is_file():
+                    errors.append(f"{benchmark_path}: missing context file `{context_file}`")
 
     return manifest
 
@@ -1189,6 +1370,17 @@ def validate_manifest_skill_status(manifest: dict, errors: list[str]) -> None:
                     errors.append(
                         f"{MANIFEST_PATH}: skill `{name}` references missing QA artifact `{rel_path}` via `{key}`"
                     )
+                    continue
+                if target.suffix == ".md":
+                    text = target.read_text(encoding="utf-8")
+                    for match in LOCAL_EVAL_FILE_RE.finditer(text):
+                        local_path = match.group("path")
+                        if any(marker in local_path for marker in ("*", "<", ">", "{", "}")):
+                            continue
+                        if not (ROOT / local_path).exists():
+                            errors.append(
+                                f"{target}: references missing local eval artifact `{local_path}`"
+                            )
 
         if status in {"tested", "secure", "production"}:
             if evaluation_mode == "discoverability":
@@ -1375,7 +1567,6 @@ def validate_workflow_skill_references(manifest: dict, errors: list[str]) -> Non
     }
     allowed_non_skill_tokens = {
         "all",
-        "intake",
         "intake-brief",
     }
     allowed_non_skill_tokens.update(workflow_names)
@@ -2203,6 +2394,7 @@ def validate_curated_surface(errors: list[str]) -> None:
         if not isinstance(name, str) or not name:
             errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: each portability entry must include non-empty `name`")
             continue
+        validate_skill_name(name, PUBLIC_SKILL_PORTABILITY_PATH, errors)
         if name in portability_names:
             errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: duplicate portability entry `{name}`")
         portability_names.add(name)
@@ -2261,6 +2453,7 @@ def validate_curated_surface(errors: list[str]) -> None:
             errors.append(f"{DISTRIBUTION_REGISTRY_PATH}: each public skill entry must include `name`, `source`, `stability`, and `readiness`")
             continue
         name = entry["name"]
+        validate_skill_name(name, DISTRIBUTION_REGISTRY_PATH, errors)
         stability = entry["stability"]
         readiness = entry["readiness"]
         if name in names:

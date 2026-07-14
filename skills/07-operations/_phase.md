@@ -28,10 +28,10 @@ SLOs are met over the defined measurement window (typically 30 days). Incident c
 
 | Skill | Purpose | Effort |
 |---|---|---|
-| monitoring-observability | Instrument systems for visibility into health and behavior | large |
-| incident-response | Detect, triage, and resolve production incidents | medium |
-| runbooks | Document procedures for common operational tasks | medium |
-| capacity-planning | Ensure resources match current and projected demand | medium |
+| pc-monitoring-observability | Instrument systems for visibility into health and behavior | large |
+| pc-incident-response | Detect, triage, and resolve production incidents | medium |
+| pc-runbooks | Document procedures for common operational tasks | medium |
+| pc-capacity-planning | Ensure resources match current and projected demand | medium |
 
 ## Typical Duration
 
@@ -40,11 +40,11 @@ Operations is continuous. The phase is "active" from first deployment until the 
 ## Skill Sequence
 
 ```
-monitoring-observability ──> incident-response
-         │
-         └──> runbooks
-         │
-         └──> capacity-planning
+pc-monitoring-observability ──> pc-incident-response
+            │
+            └──> pc-runbooks
+            │
+            └──> pc-capacity-planning
 ```
 
 Monitoring is foundational. Incident response depends on monitoring signals. Runbooks codify operational knowledge. Capacity planning uses monitoring data to project needs.

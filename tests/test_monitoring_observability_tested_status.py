@@ -15,7 +15,7 @@ class MonitoringObservabilityTestedStatusTests(unittest.TestCase):
         self.entries = {entry["name"]: entry for entry in self.manifest["skills"]}
 
     def test_manifest_registers_monitoring_observability_as_tested(self):
-        entry = self.entries["monitoring-observability"]
+        entry = self.entries["pc-monitoring-observability"]
 
         self.assertEqual("07-operations", entry["phase"])
         self.assertEqual("tested", entry["status"])
@@ -32,22 +32,22 @@ class MonitoringObservabilityTestedStatusTests(unittest.TestCase):
 
     def test_tested_packet_files_exist(self):
         targets = [
-            REPO_ROOT / "eval" / "07-operations" / "monitoring-observability" / "evals" / "eval-strategy.md",
-            REPO_ROOT / "eval" / "07-operations" / "monitoring-observability" / "findings.md",
+            REPO_ROOT / "eval" / "07-operations" / "pc-monitoring-observability" / "evals" / "eval-strategy.md",
+            REPO_ROOT / "eval" / "07-operations" / "pc-monitoring-observability" / "findings.md",
             REPO_ROOT
             / "eval"
             / "07-operations"
-            / "monitoring-observability"
+            / "pc-monitoring-observability"
             / "isolated-benchmark-plan.md",
             REPO_ROOT
             / "eval"
             / "07-operations"
-            / "monitoring-observability"
+            / "pc-monitoring-observability"
             / "manual-benchmark-review.md",
             REPO_ROOT
             / "eval"
             / "07-operations"
-            / "monitoring-observability"
+            / "pc-monitoring-observability"
             / "observability-review.md",
         ]
 
@@ -57,7 +57,7 @@ class MonitoringObservabilityTestedStatusTests(unittest.TestCase):
 
     def test_findings_record_narrow_tested_posture(self):
         findings = (
-            REPO_ROOT / "eval" / "07-operations" / "monitoring-observability" / "findings.md"
+            REPO_ROOT / "eval" / "07-operations" / "pc-monitoring-observability" / "findings.md"
         ).read_text(encoding="utf-8")
 
         self.assertIn("Current status: `tested`", findings)

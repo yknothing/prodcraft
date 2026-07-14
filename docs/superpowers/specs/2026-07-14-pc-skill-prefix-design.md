@@ -40,8 +40,10 @@ This is an intentional breaking identity migration.
 - Do not export duplicate unprefixed alias skills.
 - Do not accept unprefixed names in canonical skill registries after migration.
 - Existing flat installations may retain stale unprefixed directories; upgrade
-  documentation must require their removal before reinstalling the curated
-  surface.
+  documentation must require provenance-aware removal before reinstalling the
+  curated surface. When provenance is unavailable, it must require a clean
+  dedicated install root or individual package verification, never basename-only
+  bulk deletion.
 - The global gateway installer automatically removes the legacy `prodcraft`
   directory only when its runtime locator proves that the same canonical
   repository owns it.
@@ -51,6 +53,13 @@ This is an intentional breaking identity migration.
 Repository artifact identifiers such as `intake-brief`, schema versions such as
 `prodcraft-runtime-locator.v1`, product names, script names, and historical
 commit identifiers are not skill identities and are not renamed.
+
+Historical raw eval payloads and observability events retain the identity that
+was recorded when they were produced. New events use `pc-*`. If cross-version
+reporting later needs a continuous series, a versioned read-time normalization
+layer may map proven legacy Prodcraft identities to canonical identities; it
+must not rewrite historical evidence. That reporting adapter is a follow-up
+extension, not part of the canonical write contract in this migration.
 
 ## Architecture Boundaries
 

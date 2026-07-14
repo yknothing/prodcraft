@@ -85,7 +85,7 @@ class CourseCorrectionContractTests(unittest.TestCase):
                 "evidence_refs": ["docs/adr/example.md"],
                 "blocked_artifact": "implementation-plan",
                 "preserved_constraints": ["Existing API surface remains frozen."],
-                "recommended_next_skill": "system-design",
+                "recommended_next_skill": "pc-system-design",
                 "severity": "high",
                 "requires_user_reapproval": True,
             }
@@ -102,7 +102,7 @@ class CourseCorrectionContractTests(unittest.TestCase):
             "evidence_refs": ["docs/adr/example.md"],
             "blocked_artifact": "implementation-plan",
             "preserved_constraints": ["Existing API surface remains frozen."],
-            "recommended_next_skill": "intake",
+            "recommended_next_skill": "pc-intake",
             "severity": "high",
             "requires_user_reapproval": True,
         }

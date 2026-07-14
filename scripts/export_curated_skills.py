@@ -5,9 +5,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import shutil
+import stat
 import sys
+import tempfile
 from pathlib import Path
 
 import yaml
@@ -25,6 +28,10 @@ PORTABILITY_REGISTRY_PATH = REPO_ROOT / "schemas" / "distribution" / "public-ski
 DEFAULT_OUTPUT_ROOT = REPO_ROOT / "skills" / ".curated"
 RESOURCE_DIRS = ("references", "scripts", "assets")
 PORTABILITY_VALUES = {"portable_as_is", "portable_with_caveat", "blocked"}
+PUBLIC_STABILITIES = {"beta", "stable"}
+PUBLIC_READINESS = {"core", "beta", "experimental"}
+SKILL_NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+SKILL_NAME_PREFIX = "pc-"
 MARKDOWN_REFERENCE_RE = re.compile(r"!?\[[^\]]*\]\((?P<target>[^)\s]+)\)")
 MARKDOWN_SKILL_LINK_RE = re.compile(
     r"(?<!!)\[(?P<label>[^\]]+)\]\((?P<target>[^)\s]*SKILL\.md(?:#[^)\s]+)?)\)"
@@ -32,7 +39,15 @@ MARKDOWN_SKILL_LINK_RE = re.compile(
 
 
 def load_frontmatter(path: Path) -> tuple[dict, str]:
-    text = path.read_text(encoding="utf-8")
+    flags = os.O_RDONLY | os.O_NONBLOCK | getattr(os, "O_NOFOLLOW", 0)
+    try:
+        descriptor = os.open(path, flags)
+    except OSError as exc:
+        raise ValueError(f"{path} must be a readable, non-symlink regular file") from exc
+    with os.fdopen(descriptor, "r", encoding="utf-8") as handle:
+        if not stat.S_ISREG(os.fstat(handle.fileno()).st_mode):
+            raise ValueError(f"{path} must be a regular file")
+        text = handle.read()
     parts = text.split("---\n", 2)
     if len(parts) < 3:
         raise ValueError(f"{path} is missing valid YAML frontmatter")
@@ -52,7 +67,7 @@ def copy_resources(source_dir: Path, destination_dir: Path) -> None:
         if target_path.exists():
             shutil.rmtree(target_path)
         if source_path.exists():
-            shutil.copytree(source_path, target_path)
+            shutil.copytree(source_path, target_path, symlinks=True)
 
 
 def rewrite_lifecycle_skill_links(
@@ -81,6 +96,19 @@ def rewrite_lifecycle_skill_links(
 
 
 def validate_exported_surface(output_root: Path) -> None:
+    for current_root, dirnames, filenames in os.walk(output_root, followlinks=False):
+        current = Path(current_root)
+        for dirname in dirnames:
+            path = current / dirname
+            mode = path.lstat().st_mode
+            if stat.S_ISLNK(mode) or not stat.S_ISDIR(mode):
+                raise ValueError(f"curated surface contains a symlink or non-directory: {path}")
+        for filename in filenames:
+            path = current / filename
+            mode = path.lstat().st_mode
+            if stat.S_ISLNK(mode) or not stat.S_ISREG(mode):
+                raise ValueError(f"curated surface contains a symlink or non-regular file: {path}")
+
     packaged_root = output_root.resolve()
     for skill_path in sorted(output_root.glob("*/SKILL.md")):
         frontmatter, body = load_frontmatter(skill_path)
@@ -118,6 +146,121 @@ def curated_note(source_path: str) -> str:
     )
 
 
+def validate_public_skill_name(name: object, *, source: Path) -> str:
+    if not isinstance(name, str) or not name:
+        raise ValueError(f"{source}: public skill name must be a non-empty string")
+    if len(name) > 64 or not SKILL_NAME_RE.fullmatch(name):
+        raise ValueError(f"{source}: public skill name {name!r} must follow Agent Skills name syntax")
+    if not name.startswith(SKILL_NAME_PREFIX):
+        raise ValueError(f"{source}: public skill name {name!r} must start with pc-")
+    return name
+
+
+def validate_public_source_tree(*, repo_root: Path, source: str, registry_path: Path) -> Path:
+    relative = Path(source)
+    if (
+        relative.is_absolute()
+        or "\\" in source
+        or ":" in source
+        or any(part in {"", ".", ".."} for part in relative.parts)
+    ):
+        raise ValueError(f"{registry_path}: public skill source is unsafe: {source}")
+
+    source_dir = repo_root
+    for part in relative.parts:
+        source_dir /= part
+        try:
+            mode = source_dir.lstat().st_mode
+        except FileNotFoundError as exc:
+            raise ValueError(f"{registry_path}: public skill source is missing: {source}") from exc
+        if stat.S_ISLNK(mode):
+            raise ValueError(f"{registry_path}: public skill source contains a symlink: {source}")
+    if not stat.S_ISDIR(source_dir.lstat().st_mode):
+        raise ValueError(f"{registry_path}: public skill source must be a directory: {source}")
+
+    skill_path = source_dir / "SKILL.md"
+    try:
+        skill_mode = skill_path.lstat().st_mode
+    except FileNotFoundError as exc:
+        raise ValueError(f"public skill source is missing {skill_path}") from exc
+    if stat.S_ISLNK(skill_mode) or not stat.S_ISREG(skill_mode):
+        raise ValueError(f"public skill source must contain a regular, non-symlink SKILL.md: {skill_path}")
+
+    for resource_name in RESOURCE_DIRS:
+        resource_root = source_dir / resource_name
+        if not resource_root.exists() and not resource_root.is_symlink():
+            continue
+        resource_mode = resource_root.lstat().st_mode
+        if stat.S_ISLNK(resource_mode) or not stat.S_ISDIR(resource_mode):
+            raise ValueError(f"public skill resource root must be a regular directory: {resource_root}")
+        for current_root, dirnames, filenames in os.walk(resource_root, followlinks=False):
+            current = Path(current_root)
+            for dirname in dirnames:
+                path = current / dirname
+                mode = path.lstat().st_mode
+                if stat.S_ISLNK(mode) or not stat.S_ISDIR(mode):
+                    raise ValueError(f"public skill resource tree contains a symlink or non-directory: {path}")
+            for filename in filenames:
+                path = current / filename
+                mode = path.lstat().st_mode
+                if stat.S_ISLNK(mode) or not stat.S_ISREG(mode):
+                    raise ValueError(f"public skill resource tree contains a symlink or non-regular file: {path}")
+
+    try:
+        source_dir.resolve(strict=True).relative_to(repo_root.resolve(strict=True))
+    except (OSError, ValueError) as exc:
+        raise ValueError(f"public skill source escapes the repository: {source}") from exc
+    return source_dir
+
+
+def load_public_registry(repo_root: Path) -> dict:
+    registry_path = repo_root / REGISTRY_PATH.relative_to(REPO_ROOT)
+    registry = json.loads(registry_path.read_text(encoding="utf-8"))
+    if registry.get("schema_version") != "public-skill-registry.v1":
+        raise ValueError("public skill registry must use schema_version public-skill-registry.v1")
+    entries = registry.get("public_skills")
+    if not isinstance(entries, list):
+        raise ValueError("public skill registry must include a public_skills list")
+
+    seen: set[str] = set()
+    for entry in entries:
+        if not isinstance(entry, dict):
+            raise ValueError("each public skill entry must be an object")
+        missing = {"name", "source", "stability", "readiness"} - set(entry)
+        if missing:
+            raise ValueError(f"public skill entry is missing fields {sorted(missing)}")
+        name = validate_public_skill_name(entry.get("name"), source=registry_path)
+        if name in seen:
+            raise ValueError(f"duplicate public skill entry {name}")
+        seen.add(name)
+        if entry.get("stability") not in PUBLIC_STABILITIES:
+            raise ValueError(f"public skill {name} has invalid stability {entry.get('stability')}")
+        if entry.get("readiness") not in PUBLIC_READINESS:
+            raise ValueError(f"public skill {name} has invalid readiness {entry.get('readiness')}")
+
+        source = entry.get("source")
+        if not isinstance(source, str) or not source:
+            raise ValueError(f"public skill {name} must include a non-empty source")
+        if source == "generated:prodcraft":
+            if name != "pc-prodcraft":
+                raise ValueError("generated:prodcraft must be exported as pc-prodcraft")
+            continue
+
+        source_dir = validate_public_source_tree(
+            repo_root=repo_root,
+            source=source,
+            registry_path=registry_path,
+        )
+        skill_path = source_dir / "SKILL.md"
+        frontmatter, _body = load_frontmatter(skill_path)
+        if frontmatter.get("name") != name:
+            raise ValueError(
+                f"public skill {name} does not match source frontmatter name {frontmatter.get('name')!r}"
+            )
+
+    return registry
+
+
 def load_portability_metadata(repo_root: Path, public_skill_names: set[str]) -> dict[str, dict]:
     registry_path = repo_root / PORTABILITY_REGISTRY_PATH.relative_to(REPO_ROOT)
     registry = json.loads(registry_path.read_text(encoding="utf-8"))
@@ -134,6 +277,7 @@ def load_portability_metadata(repo_root: Path, public_skill_names: set[str]) -> 
         name = entry.get("name")
         if not isinstance(name, str) or not name:
             raise ValueError("each public portability entry must include a non-empty name")
+        validate_public_skill_name(name, source=registry_path)
         if name in entries:
             raise ValueError(f"duplicate public portability entry {name}")
 
@@ -223,39 +367,20 @@ def export_entry(
     copy_resources(source_dir, destination_dir)
 
 
-def export_curated_skills(*, repo_root: Path = REPO_ROOT, output_root: Path = DEFAULT_OUTPUT_ROOT) -> dict[str, list[str]]:
-    registry_path = repo_root / REGISTRY_PATH.relative_to(REPO_ROOT)
-    registry = json.loads(registry_path.read_text(encoding="utf-8"))
-    public_skill_names = {
-        entry["name"]
-        for entry in registry["public_skills"]
-    }
-    canonical_skill_paths = {
-        path.resolve()
-        for path in (repo_root / "skills").glob("*/*/SKILL.md")
-        if ".curated" not in path.parts
-    }
-    exported_skill_names = {
-        (repo_root / entry["source"] / "SKILL.md").resolve(): entry["name"]
-        for entry in registry["public_skills"]
-        if entry["source"] != "generated:prodcraft"
-    }
-    portability = load_portability_metadata(repo_root, public_skill_names)
-    output_root.mkdir(parents=True, exist_ok=True)
-
-    for existing in output_root.iterdir():
-        if existing.is_dir():
-            shutil.rmtree(existing)
-        else:
-            existing.unlink()
-
+def materialize_curated_skills(
+    *,
+    registry: dict,
+    portability: dict[str, dict],
+    repo_root: Path,
+    output_root: Path,
+    canonical_skill_paths: set[Path],
+    exported_skill_names: dict[Path, str],
+) -> list[str]:
+    output_root.mkdir(parents=True, exist_ok=False)
     exported_names: list[str] = []
     index_entries: list[dict[str, object]] = []
     for entry in registry["public_skills"]:
-        portability_entry = portability.get(entry["name"])
-        if portability_entry is None:
-            raise ValueError(f"Missing public portability metadata for {entry['name']}")
-
+        portability_entry = portability[entry["name"]]
         export_entry(
             entry,
             repo_root=repo_root,
@@ -282,6 +407,51 @@ def export_curated_skills(*, repo_root: Path = REPO_ROOT, output_root: Path = DE
         encoding="utf-8",
     )
     validate_exported_surface(output_root)
+    return exported_names
+
+
+def export_curated_skills(*, repo_root: Path = REPO_ROOT, output_root: Path = DEFAULT_OUTPUT_ROOT) -> dict[str, list[str]]:
+    registry = load_public_registry(repo_root)
+    public_skill_names = {
+        entry["name"]
+        for entry in registry["public_skills"]
+    }
+    canonical_skill_paths = {
+        path.resolve()
+        for path in (repo_root / "skills").glob("*/*/SKILL.md")
+        if ".curated" not in path.parts
+    }
+    exported_skill_names = {
+        (repo_root / entry["source"] / "SKILL.md").resolve(): entry["name"]
+        for entry in registry["public_skills"]
+        if entry["source"] != "generated:prodcraft"
+    }
+    portability = load_portability_metadata(repo_root, public_skill_names)
+    output_root.parent.mkdir(parents=True, exist_ok=True)
+
+    with tempfile.TemporaryDirectory(prefix=f".{output_root.name}.staging-", dir=output_root.parent) as tmpdir:
+        transaction_root = Path(tmpdir)
+        staged_root = transaction_root / "surface"
+        exported_names = materialize_curated_skills(
+            registry=registry,
+            portability=portability,
+            repo_root=repo_root,
+            output_root=staged_root,
+            canonical_skill_paths=canonical_skill_paths,
+            exported_skill_names=exported_skill_names,
+        )
+
+        backup_root = transaction_root / "previous"
+        had_previous = output_root.exists()
+        try:
+            if had_previous:
+                output_root.rename(backup_root)
+            staged_root.rename(output_root)
+        except BaseException:
+            if had_previous and backup_root.exists() and not output_root.exists():
+                backup_root.rename(output_root)
+            raise
+
     return {"skills": exported_names}
 
 

@@ -30,7 +30,7 @@ class QualityTargetContextContractTests(unittest.TestCase):
             self.assertIn("Do not assume public HTTP service", text)
 
     def test_source_and_curated_quality_skills_calibrate_agent_internal_targets(self):
-        skill_names = ("code-review", "security-audit", "testing-strategy")
+        skill_names = ("pc-code-review", "pc-security-audit", "pc-testing-strategy")
 
         for skill_name in skill_names:
             with self.subTest(skill=skill_name, surface="source"):
@@ -77,7 +77,7 @@ class QualityTargetContextContractTests(unittest.TestCase):
                 "evidence_refs": ["user screenshot", "repository files"],
             },
             "scope_assessment": "medium",
-            "recommended_next_skill": "code-review",
+            "recommended_next_skill": "pc-code-review",
             "routing_rationale": "The implementation is complete and needs calibrated quality review.",
             "key_risks": ["Overbuilding service controls or under-checking agent boundaries."],
             "questions_asked": [],

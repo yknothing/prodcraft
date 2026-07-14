@@ -270,7 +270,7 @@ Prodcraft uses two QA modes because not every Anthropic-native skill should be j
 
 2. `routed`
    - Use for skills normally invoked by intake, workflow routing, or explicit handoff.
-   - Typical examples: `intake`, `requirements-engineering`, `system-design`, `runbooks`
+- Typical examples: `pc-intake`, `pc-requirements-engineering`, `pc-system-design`, `pc-runbooks`
    - Trigger eval can still be informative, but it is not the main gate
    - Explicit-invocation benchmark and integration evidence are the main gates before `tested`
    - A gateway skill may move from `discoverability` to `routed` when repository contracts enforce explicit entry and the routed evidence better reflects real usage

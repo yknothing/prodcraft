@@ -8,14 +8,14 @@ This document defines how Prodcraft skills are discovered, selected, and compose
 
 **Every interaction starts with skill matching. No exceptions.**
 
-Before generating any response -- even a clarifying question -- check if a Prodcraft skill applies. If one does, invoke it. If uncertain, default to `intake`.
+Before generating any response -- even a clarifying question -- check if a Prodcraft skill applies. If one does, invoke it. If uncertain, default to `pc-intake`.
 
 The intake decision gate is enforced in two layers:
 
-1. **Routing policy** -- default to `intake` for new work or ambiguity.
+1. **Routing policy** -- default to `pc-intake` for new work or ambiguity.
 2. **Workflow contract** -- every workflow requires an approved `intake-brief` before execution, even if the intake mode is `fast-track` or `resume`.
 
-When intake has identified the likely lifecycle path but the problem statement or solution direction is still fuzzy, route next to `problem-framing` before moving into research, specification, or architecture.
+When intake has identified the likely lifecycle path but the problem statement or solution direction is still fuzzy, route next to `pc-problem-framing` before moving into research, specification, or architecture.
 
 ## Skill Selection Priority
 
@@ -27,13 +27,13 @@ These skills MUST be invoked before any work begins:
 
 | Trigger | Skill | Why |
 |---------|-------|-----|
-| New work of any kind | `intake` | Triage and route |
-| Bug, failing test, or unexpected behavior before a fix | `systematic-debugging` | Root cause before code change |
-| Implementation about to start | `tdd` | Tests before code |
-| Code complete, ready for merge | `code-review` | Quality gate |
-| Need to verify delivered intent and scope consistency | `implementation-alignment-review` | Prevent wrong-thing delivery |
-| Need to audit fake-success, low-level, mock, or evidence-honesty risk | `implementation-integrity-audit` | Prevent deceptive implementation |
-| About to claim "done" | `verification-before-completion` | Verify claims |
+| New work of any kind | `pc-intake` | Triage and route |
+| Bug, failing test, or unexpected behavior before a fix | `pc-systematic-debugging` | Root cause before code change |
+| Implementation about to start | `pc-tdd` | Tests before code |
+| Code complete, ready for merge | `pc-code-review` | Quality gate |
+| Need to verify delivered intent and scope consistency | `pc-implementation-alignment-review` | Prevent wrong-thing delivery |
+| Need to audit fake-success, low-level, mock, or evidence-honesty risk | `pc-implementation-integrity-audit` | Prevent deceptive implementation |
+| About to claim "done" | `pc-verification-before-completion` | Verify claims |
 
 ### Priority 2: Phase-Specific Skills (contextual)
 
@@ -41,37 +41,37 @@ Match based on what phase the work is currently in:
 
 | Current Activity | Phase | Likely Skills |
 |------------------|-------|---------------|
-| Exploring a new idea | 00-discovery | problem-framing, market-analysis, user-research, feasibility-study |
-| Defining requirements | 01-specification | requirements-engineering, spec-writing, domain-modeling |
-| Designing system structure | 02-architecture | system-design, api-design, data-modeling, security-design, tech-selection |
-| Breaking down work | 03-planning | task-breakdown, estimation, risk-assessment, sprint-planning |
-| Writing code or tactically executing an approved slice | 04-implementation | task-execution, systematic-debugging, tdd, feature-development, refactoring |
-| Reviewing/testing | 05-quality | implementation-alignment-review, implementation-integrity-audit, code-review, receiving-code-review, testing-strategy, security-audit |
-| Deploying/releasing | 06-delivery | ci-cd, delivery-completion, deployment-strategy, release-management |
-| Monitoring/responding | 07-operations | monitoring-observability, incident-response |
-| Improving/modernizing | 08-evolution | tech-debt-management, migration-strategy (planned), retrospective |
+| Exploring a new idea | 00-discovery | pc-problem-framing, pc-market-analysis, pc-user-research, pc-feasibility-study |
+| Defining requirements | 01-specification | pc-requirements-engineering, pc-spec-writing, pc-domain-modeling |
+| Designing system structure | 02-architecture | pc-system-design, pc-api-design, pc-data-modeling, pc-security-design, pc-tech-selection |
+| Breaking down work | 03-planning | pc-task-breakdown, pc-estimation, pc-risk-assessment, pc-sprint-planning |
+| Writing code or tactically executing an approved slice | 04-implementation | pc-task-execution, pc-systematic-debugging, pc-tdd, pc-feature-development, pc-refactoring |
+| Reviewing/testing | 05-quality | pc-implementation-alignment-review, pc-implementation-integrity-audit, pc-code-review, pc-receiving-code-review, pc-testing-strategy, pc-security-audit |
+| Deploying/releasing | 06-delivery | pc-ci-cd, pc-delivery-completion, pc-deployment-strategy, pc-release-management |
+| Monitoring/responding | 07-operations | pc-monitoring-observability, pc-incident-response |
+| Improving/modernizing | 08-evolution | pc-tech-debt-management, pc-migration-strategy (planned), pc-retrospective |
 
 ### Implementation Routing Quick Map
 
 When the work is already in `04-implementation`, choose the primary skill like this:
 
-- need a short 2-5 minute tactical batch with checkpoints or stop conditions -> `task-execution`
-- need root cause before any code fix -> `systematic-debugging`
-- need a failing test first for new or changed behavior -> `tdd`
-- need to land the already-tested slice as code -> `feature-development`
-- need structural cleanup with protected behavior -> `refactoring`
+- need a short 2-5 minute tactical batch with checkpoints or stop conditions -> `pc-task-execution`
+- need root cause before any code fix -> `pc-systematic-debugging`
+- need a failing test first for new or changed behavior -> `pc-tdd`
+- need to land the already-tested slice as code -> `pc-feature-development`
+- need structural cleanup with protected behavior -> `pc-refactoring`
 
-Do **not** start with `task-execution` when the primary implementation discipline is already obvious and no tactical batching problem exists. It is an optional tactical wrapper, not the default producer of code.
+Do **not** start with `pc-task-execution` when the primary implementation discipline is already obvious and no tactical batching problem exists. It is an optional tactical wrapper, not the default producer of code.
 
 ### Priority 3: Cross-Cutting Skills (always applicable)
 
 These can be invoked at any phase:
 
-- `documentation` -- when documentation is needed
-- `observability` -- when instrumenting code
-- `accessibility` -- when building UI
-- `internationalization` -- when handling user-facing text
-- `compliance` -- when regulatory requirements apply
+- `pc-documentation` -- when documentation is needed
+- `pc-observability` -- when instrumenting code
+- `pc-accessibility` -- when building UI
+- `pc-internationalization` -- when handling user-facing text
+- `pc-compliance` -- when regulatory requirements apply
 
 ## Workflow Selection
 
@@ -114,47 +114,47 @@ Examples:
 Skills execute one after another, each consuming the previous skill's output:
 
 ```
-spec-writing -> system-design -> task-breakdown -> tdd -> feature-development
+pc-spec-writing -> pc-system-design -> pc-task-breakdown -> pc-tdd -> pc-feature-development
 ```
 
 ### Parallel Composition
 Independent skills execute simultaneously:
 
 ```
-                 ┌─> api-design ────────┐
-system-design ──>├─> data-modeling ─────>├─> task-breakdown
-                 └─> security-design ───┘
+                    ┌─> pc-api-design ────────┐
+pc-system-design ──>├─> pc-data-modeling ─────>├─> pc-task-breakdown
+                    └─> pc-security-design ───┘
 ```
 
 ### Iterative Composition
 A skill repeats until its quality gate is met:
 
 ```
-feature-development <──> code-review (loop until approved)
+pc-feature-development <──> pc-code-review (loop until approved)
 ```
 
 ### Conditional Composition
 Skills are included or skipped based on context:
 
 ```
-IF regulated_industry THEN security-audit
-IF user_facing THEN accessibility
-IF multi_language THEN internationalization
+IF regulated_industry THEN pc-security-audit
+IF user_facing THEN pc-accessibility
+IF multi_language THEN pc-internationalization
 ```
 
 ## Entry Stack Rules
 
 Prodcraft's entry stack has two layers:
 
-1. `intake` -- classify the work, choose the phase and route, and create the `intake-brief`
-2. `problem-framing` -- only when the route is known but the problem or direction is still too fuzzy for clean downstream work
+1. `pc-intake` -- classify the work, choose the phase and route, and create the `intake-brief`
+2. `pc-problem-framing` -- only when the route is known but the problem or direction is still too fuzzy for clean downstream work
 
-Use `problem-framing` after intake when:
+Use `pc-problem-framing` after intake when:
 - the request is new work and still underspecified after routing
 - 2-3 viable directions need comparison before requirements or research
 - downstream work would otherwise start by rediscovering the problem statement
 
-Do not use `problem-framing` when:
+Do not use `pc-problem-framing` when:
 - the route and problem are already clear enough for the next skill
 - the work is already in progress
 - the task is trivial enough for an intake fast-track
@@ -171,8 +171,8 @@ Each entry-layer handoff must record:
 ### Entry Stack Usability
 
 Entry skills should minimize user burden:
-- `intake`: default to 1-3 questions, never more than 5
-- `problem-framing`: default to 1-3 additional questions, never more than 5
+- `pc-intake`: default to 1-3 questions, never more than 5
+- `pc-problem-framing`: default to 1-3 additional questions, never more than 5
 - do not ask another question unless its answer could change the route, direction, or risk posture
 
 ## Quality Target Context Gate
@@ -187,7 +187,7 @@ Before entering any `05-quality` skill, confirm the approved `intake-brief` incl
 
 Do not assume public HTTP service from implementation details such as Flask routes, HTTP clients, CORS configuration, model provider adapters, or API-shaped filenames. A codebase can use HTTP internally while the reviewed product target is an agent-internal skill, host runtime tool, or local harness.
 
-If the target context is missing or contradictory, ask one clarifying question when it can change review severity. If the mismatch is discovered after implementation, produce a `course-correction-note` instead of continuing the quality chain. Do not run `security-audit`, `testing-strategy`, or `e2e-scenario-design` as a service-style sequence until the quality target context is explicit.
+If the target context is missing or contradictory, ask one clarifying question when it can change review severity. If the mismatch is discovered after implementation, produce a `course-correction-note` instead of continuing the quality chain. Do not run `pc-security-audit`, `pc-testing-strategy`, or `pc-e2e-scenario-design` as a service-style sequence until the quality target context is explicit.
 
 Use this calibration:
 
@@ -260,8 +260,8 @@ Not every task needs the full lifecycle. Fast-track criteria:
 | Condition | Allowed Shortcut |
 |-----------|-----------------|
 | Typo fix, comment update | Skip directly to implementation, minimal review |
-| Single-file bug fix with clear root cause | Skip to implementation with systematic-debugging + TDD |
-| Documentation-only change | Skip to cross-cutting/documentation |
+| Single-file bug fix with clear root cause | Skip to implementation with pc-systematic-debugging + TDD |
+| Documentation-only change | Skip to cross-cutting/pc-documentation |
 | Dependency update (patch) | Skip to implementation + quality |
 | Configuration change | Skip to implementation + deployment |
 
@@ -288,7 +288,7 @@ Use the matrix to decide which skills are:
 
 1. Check project context (CLAUDE.md, recent work)
 2. Determine if there's an active workflow in progress
-3. If new work: invoke `intake`
+3. If new work: invoke `pc-intake`
 4. If continuing work: resume at the appropriate phase/skill
 
 Do not enter a workflow unless the `intake-brief` exists and the user has approved it.
@@ -311,19 +311,19 @@ Do not enter a workflow unless the `intake-brief` exists and the user has approv
 
 Prodcraft is designed to complement, not replace, existing skill systems. If your environment has skills like `brainstorming`, `systematic-debugging`, or `writing-plans`:
 
-- `brainstorming` maps most closely to `intake` -> `problem-framing` -> discovery or specification skills
-- `systematic-debugging` maps directly to repo-local phase 04 implementation debugging
+- `brainstorming` maps most closely to `pc-intake` -> `pc-problem-framing` -> discovery or specification skills
+- `systematic-debugging` maps directly to repo-local `pc-systematic-debugging`
 - `writing-plans` maps to phase 03 planning skills
-- `executing-plans` maps most closely to repo-local `task-execution` plus the downstream implementation skill for the current batch
+- `executing-plans` maps most closely to repo-local `pc-task-execution` plus the downstream implementation skill for the current batch
 - `requesting-code-review` maps to phase 05 quality skills
-- `receiving-code-review` maps directly to repo-local phase 05 quality review follow-up
-- `verification-before-completion` remains as a repo-local cross-cutting gate
-- `finishing-a-development-branch` maps most closely to repo-local `delivery-completion`, with `release-management` and `deployment-strategy` added only when the work continues toward shipping
+- `receiving-code-review` maps directly to repo-local `pc-receiving-code-review`
+- `verification-before-completion` maps directly to repo-local `pc-verification-before-completion`
+- `finishing-a-development-branch` maps most closely to repo-local `pc-delivery-completion`, with `pc-release-management` and `pc-deployment-strategy` added only when the work continues toward shipping
 
 Use whichever skill system is more appropriate for the context. Prodcraft adds lifecycle awareness; existing skills may have deeper domain-specific guidance.
 
-For repository-local experiments in this repo, Prodcraft may temporarily run in **repo-authoritative mode** for software-development work by installing the global `prodcraft` gateway skill through `scripts/install_prodcraft_global_skill.py` and archiving conflicting global superpowers skill directories through `scripts/archive_superpowers_skills.py`. When that override is active:
+For repository-local experiments in this repo, Prodcraft may temporarily run in **repo-authoritative mode** for software-development work by installing the global `pc-prodcraft` gateway skill through `scripts/install_prodcraft_global_skill.py` and archiving conflicting global superpowers skill directories through `scripts/archive_superpowers_skills.py`. When that override is active:
 
-- `intake` becomes the mandatory first software-development entry point
+- `pc-intake` becomes the mandatory first software-development entry point
 - the override action and restore action must remain observable through the script's JSONL event log
 - non-Prodcraft global skills are still available unless explicitly suppressed separately

@@ -4,7 +4,7 @@ description: "Iterative sprints with just-enough planning and continuous deliver
 cadence: "1-2 week sprints"
 workflow_kind: "primary"
 composes_with: ["greenfield", "brownfield", "hotfix"]
-entry_skill: "intake"
+entry_skill: "pc-intake"
 required_artifacts: ["intake-brief"]
 best_for: ["product-teams", "saas", "startups", "rapid-iteration"]
 phases_included: ["all"]
@@ -24,7 +24,7 @@ This workflow may be paired with overlays such as `greenfield`, `brownfield`, or
 
 ## Entry Gate
 
-This workflow starts only after `intake` is completed and the user approves the proposed path. The required handoff artifact is the `intake-brief`, which records work type, entry phase, workflow selection, scope, and key risks.
+This workflow starts only after `pc-intake` is completed and the user approves the proposed path. The required handoff artifact is the `intake-brief`, which records work type, entry phase, workflow selection, scope, and key risks.
 
 Fast-track work can still use this workflow, but only if intake explicitly documents why a shortened path is appropriate.
 
@@ -40,7 +40,7 @@ A sprint follows a repeating cadence. The phases weave through this rhythm:
 
 **Phases active:** Discovery, Specification, Architecture, Planning.
 
-**Skills:** Apply `requirements-engineering` (lightweight), `acceptance-criteria`, `task-breakdown`, `risk-assessment`, `estimation`, and `sprint-planning`.
+**Skills:** Apply `pc-requirements-engineering` (lightweight), `pc-acceptance-criteria`, `pc-task-breakdown`, `pc-risk-assessment`, `pc-estimation`, and `pc-sprint-planning`.
 
 The product manager brings a prioritized backlog. The team selects work for the sprint based on capacity. Stories are refined just enough to begin work -- detailed design happens during implementation. Architecture decisions are made at the story level, with the architect advising on system-wide implications.
 
@@ -57,7 +57,7 @@ Quick synchronization. Each team member shares progress, plans, and blockers. Th
 
 **Phases active:** Implementation, Quality.
 
-**Skills:** Apply `tdd`, `feature-development`, `refactoring`, `code-review`, and `documentation`.
+**Skills:** Apply `pc-tdd`, `pc-feature-development`, `pc-refactoring`, `pc-code-review`, and `pc-documentation`.
 
 Development and testing happen together, not sequentially. Test-driven development is the default. Code review happens on every pull request. The definition of done includes tests, documentation, and review approval.
 
@@ -70,7 +70,7 @@ Branches are short-lived -- measured in hours or days, not weeks. Continuous int
 
 **Phases active:** Quality.
 
-**Skills:** Apply `testing-strategy`, `security-audit`, and `code-review` (lightweight, throughout the sprint).
+**Skills:** Apply `pc-testing-strategy`, `pc-security-audit`, and `pc-code-review` (lightweight, throughout the sprint).
 
 Quality is not a phase gate -- it is woven into every day. Automated tests run on every commit. QA engineers perform exploratory testing as features are completed, not after all features are done. Defects found in the current sprint are fixed in the current sprint.
 
@@ -78,7 +78,7 @@ Quality is not a phase gate -- it is woven into every day. Automated tests run o
 
 **Phases active:** Delivery.
 
-**Skills:** Apply `ci-cd`, `deployment-strategy`, and `documentation`.
+**Skills:** Apply `pc-ci-cd`, `pc-deployment-strategy`, and `pc-documentation`.
 
 Features ship to production behind feature flags as soon as they pass review and automated testing. Canary releases expose new code to a small percentage of users first. The deployment pipeline is fully automated -- a merge to main triggers the release process.
 
@@ -95,7 +95,7 @@ The team demonstrates completed work to stakeholders. Feedback is captured as ne
 
 **Phases active:** Evolution, Operations.
 
-**Skills:** Apply `retrospective` and `tech-debt-management`.
+**Skills:** Apply `pc-retrospective` and `pc-tech-debt-management`.
 
 The team reflects on how the sprint went. What went well? What could improve? What will we try differently? Action items are concrete, owned, and time-boxed. Operational issues from the sprint (incidents, monitoring gaps) are surfaced here.
 

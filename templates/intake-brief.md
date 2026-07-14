@@ -1,6 +1,6 @@
 # Intake Brief
 
-Use this template whenever `intake` routes new work into a workflow.
+Use this template whenever `pc-intake` routes new work into a workflow.
 
 ## Required Artifact
 
@@ -69,4 +69,4 @@ Use this template whenever `intake` routes new work into a workflow.
 - constraints:
 - open questions:
 - context that downstream skills must preserve:
-- should `problem-framing` run next? yes / no
+- should `pc-problem-framing` run next? yes / no

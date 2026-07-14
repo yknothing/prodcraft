@@ -21,8 +21,8 @@ class UserFacingGuidanceTests(unittest.TestCase):
         self.assertIn("system shape and collaboration quality", content)
 
     def test_entry_skills_call_out_plain_language_and_system_collaboration_signals(self):
-        intake = (REPO_ROOT / "skills" / "00-discovery" / "intake" / "SKILL.md").read_text(encoding="utf-8")
-        framing = (REPO_ROOT / "skills" / "00-discovery" / "problem-framing" / "SKILL.md").read_text(encoding="utf-8")
+        intake = (REPO_ROOT / "skills" / "00-discovery" / "pc-intake" / "SKILL.md").read_text(encoding="utf-8")
+        framing = (REPO_ROOT / "skills" / "00-discovery" / "pc-problem-framing" / "SKILL.md").read_text(encoding="utf-8")
 
         self.assertIn("plain language", intake)
         self.assertIn("system shape", intake)

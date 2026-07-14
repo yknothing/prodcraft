@@ -1,6 +1,6 @@
 # Problem Frame
 
-Use this template when `problem-framing` shapes an approved intake route into a decision-ready direction.
+Use this template when `pc-problem-framing` shapes an approved intake route into a decision-ready direction.
 
 ## Required Artifact
 

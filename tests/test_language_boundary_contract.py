@@ -29,7 +29,7 @@ class LanguageBoundaryContractTests(unittest.TestCase):
             "user_presentation_locale": "zh",
             "problem_statement": "Clarify the problem before spec work starts.",
             "recommended_option": "Option 1",
-            "next_skill_to_invoke": "requirements-engineering",
+            "next_skill_to_invoke": "pc-requirements-engineering",
         }
         requirements_doc = {
             "artifact": "requirements-doc",
@@ -65,7 +65,7 @@ class LanguageBoundaryContractTests(unittest.TestCase):
                     jsonschema.validate(payload, self.load_schema(artifact_name))
 
     def test_curated_entry_skills_do_not_export_operator_language_defaults(self):
-        for skill_name in ("intake", "problem-framing"):
+        for skill_name in ("pc-intake", "pc-problem-framing"):
             with self.subTest(skill=skill_name):
                 content = (
                     REPO_ROOT / "skills" / ".curated" / skill_name / "SKILL.md"

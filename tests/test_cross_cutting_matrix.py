@@ -26,7 +26,7 @@ class CrossCuttingMatrixTests(unittest.TestCase):
             must_produce = {item["skill"] for item in entry.get("must_produce", [])}
             skip_when_fast_track = set(entry.get("skip_when_fast_track", []))
             conditional = {item["skill"] for item in entry.get("conditional", [])}
-            # self.assertIn("documentation", must_consider) # documentation might be draft
+            # self.assertIn("pc-documentation", must_consider) # documentation might be draft
             self.assertTrue(must_consider.isdisjoint(conditional))
             self.assertTrue(must_produce.isdisjoint(conditional))
             self.assertTrue(skip_when_fast_track.issubset(must_consider | must_produce))

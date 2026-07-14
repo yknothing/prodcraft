@@ -30,10 +30,10 @@ When evolution produces a concrete upstream correction, capture it as a `course-
 
 | Skill | Purpose | Effort |
 |---|---|---|
-| tech-debt-management | Catalog, prioritize, and plan debt remediation | medium |
-| migration-strategy | Plan and execute platform/architecture migrations | xlarge |
-| deprecation | Retire features, APIs, and services safely | medium |
-| retrospective | Capture learnings and improve process | small |
+| pc-tech-debt-management | Catalog, prioritize, and plan debt remediation | medium |
+| pc-migration-strategy | Plan and execute platform/architecture migrations | xlarge |
+| pc-deprecation | Retire features, APIs, and services safely | medium |
+| pc-retrospective | Capture learnings and improve process | small |
 
 ## Typical Duration
 

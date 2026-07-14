@@ -77,7 +77,7 @@ word Prodcraft.
 
 Apply the exact mapping to frontmatter names, prerequisite/related-skill
 metadata, manifest names and paths, artifact producer/consumer references,
-workflow and gateway identifiers, matrix entries, Markdown skill links, public
+manifest iterative feedback edges, workflow and gateway identifiers, matrix entries, Markdown skill links, public
 registry source paths, and test expectations. Preserve non-skill artifact IDs
 such as `intake-brief` and protocol IDs such as
 `prodcraft-runtime-locator.v1`.
@@ -107,7 +107,7 @@ python3 scripts/validate_prodcraft.py \
   --check skill-frontmatter \
   --check manifest-files \
   --check manifest-skill-status \
-  --check workflow-skill-references \
+  --check workflow-skill-refs \
   --check cross-cutting-matrix
 ```
 
@@ -167,6 +167,7 @@ Expected: PASS and `skills/.curated/` contains only `pc-*` package directories.
 - Modify: `README.md`
 - Modify: `README.zh-CN.md`
 - Modify: `docs/distribution/npx-skills-compat.md`
+- Modify: `docs/distribution/public-skill-lifecycle.md`
 - Modify: `CLAUDE.md`
 - Modify: tests that assert public installation and gateway documentation
 

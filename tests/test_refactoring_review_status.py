@@ -15,7 +15,7 @@ class RefactoringReviewStatusTests(unittest.TestCase):
 
     def test_manifest_registers_refactoring_as_tested_routed(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
-        refactoring = entries["refactoring"]
+        refactoring = entries["pc-refactoring"]
 
         self.assertEqual("04-implementation", refactoring["phase"])
         self.assertEqual("tested", refactoring["status"])
@@ -32,14 +32,14 @@ class RefactoringReviewStatusTests(unittest.TestCase):
 
     def test_refactoring_tested_artifacts_exist(self):
         targets = [
-            REPO_ROOT / "eval" / "04-implementation" / "refactoring" / "findings.md",
-            REPO_ROOT / "eval" / "04-implementation" / "refactoring" / "evals" / "eval-strategy.md",
-            REPO_ROOT / "eval" / "04-implementation" / "refactoring" / "isolated-benchmark-plan.md",
-            REPO_ROOT / "eval" / "04-implementation" / "refactoring" / "isolated-benchmark-review.md",
-            REPO_ROOT / "eval" / "04-implementation" / "refactoring" / "code-review-handoff-review.md",
-            REPO_ROOT / "eval" / "04-implementation" / "refactoring" / "fixtures" / "reassignment_handlers.py",
-            REPO_ROOT / "eval" / "04-implementation" / "refactoring" / "fixtures" / "test_reassignment_handlers.py",
-            REPO_ROOT / "eval" / "04-implementation" / "refactoring" / "fixtures" / "reassignment-structural-review-report.md",
+            REPO_ROOT / "eval" / "04-implementation" / "pc-refactoring" / "findings.md",
+            REPO_ROOT / "eval" / "04-implementation" / "pc-refactoring" / "evals" / "eval-strategy.md",
+            REPO_ROOT / "eval" / "04-implementation" / "pc-refactoring" / "isolated-benchmark-plan.md",
+            REPO_ROOT / "eval" / "04-implementation" / "pc-refactoring" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "04-implementation" / "pc-refactoring" / "code-review-handoff-review.md",
+            REPO_ROOT / "eval" / "04-implementation" / "pc-refactoring" / "fixtures" / "reassignment_handlers.py",
+            REPO_ROOT / "eval" / "04-implementation" / "pc-refactoring" / "fixtures" / "test_reassignment_handlers.py",
+            REPO_ROOT / "eval" / "04-implementation" / "pc-refactoring" / "fixtures" / "reassignment-structural-review-report.md",
         ]
 
         for path in targets:
@@ -50,12 +50,12 @@ class RefactoringReviewStatusTests(unittest.TestCase):
         gateway = (REPO_ROOT / "skills" / "_gateway.md").read_text(encoding="utf-8")
         implementation_phase = (REPO_ROOT / "skills" / "04-implementation" / "_phase.md").read_text(encoding="utf-8")
 
-        self.assertIn("refactoring", gateway)
-        self.assertIn("refactoring", implementation_phase)
+        self.assertIn("pc-refactoring", gateway)
+        self.assertIn("pc-refactoring", implementation_phase)
 
     def test_findings_record_tested_status(self):
         findings = (
-            REPO_ROOT / "eval" / "04-implementation" / "refactoring" / "findings.md"
+            REPO_ROOT / "eval" / "04-implementation" / "pc-refactoring" / "findings.md"
         ).read_text(encoding="utf-8")
 
         self.assertIn("Current status: `tested`", findings)

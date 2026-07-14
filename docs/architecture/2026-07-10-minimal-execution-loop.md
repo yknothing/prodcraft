@@ -588,7 +588,7 @@ A future Direction 3 intake must define identity, concurrency, persistence, and 
 
 ### Public flattened install
 
-The curated exporter must rewrite canonical lifecycle-tree skill links for the flattened sibling layout. For example, a canonical cross-phase link becomes `../security-audit/SKILL.md` in the installed package.
+The curated exporter must rewrite canonical lifecycle-tree skill links for the flattened sibling layout. For example, a canonical cross-phase link becomes `../pc-security-audit/SKILL.md` in the installed package.
 
 Curated validation must check:
 

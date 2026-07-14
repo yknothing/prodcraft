@@ -2,280 +2,280 @@
   "schema_version": "public-skill-portability.v1",
   "skills": [
     {
-      "name": "prodcraft",
+      "name": "pc-prodcraft",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "intake",
+      "name": "pc-intake",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "problem-framing",
+      "name": "pc-problem-framing",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "user-research",
+      "name": "pc-user-research",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "requirements-engineering",
+      "name": "pc-requirements-engineering",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "spec-writing",
+      "name": "pc-spec-writing",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "domain-modeling",
+      "name": "pc-domain-modeling",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "acceptance-criteria",
+      "name": "pc-acceptance-criteria",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "system-design",
+      "name": "pc-system-design",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "data-modeling",
+      "name": "pc-data-modeling",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "security-design",
+      "name": "pc-security-design",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "tech-selection",
+      "name": "pc-tech-selection",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "api-design",
+      "name": "pc-api-design",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "task-breakdown",
+      "name": "pc-task-breakdown",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "estimation",
+      "name": "pc-estimation",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "risk-assessment",
+      "name": "pc-risk-assessment",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "sprint-planning",
+      "name": "pc-sprint-planning",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "tdd",
+      "name": "pc-tdd",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "systematic-debugging",
+      "name": "pc-systematic-debugging",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "task-execution",
+      "name": "pc-task-execution",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "feature-development",
+      "name": "pc-feature-development",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "refactoring",
+      "name": "pc-refactoring",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "code-review",
+      "name": "pc-code-review",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "receiving-code-review",
+      "name": "pc-receiving-code-review",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "testing-strategy",
+      "name": "pc-testing-strategy",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "e2e-scenario-design",
+      "name": "pc-e2e-scenario-design",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "security-audit",
+      "name": "pc-security-audit",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "ci-cd",
+      "name": "pc-ci-cd",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "release-management",
+      "name": "pc-release-management",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "deployment-strategy",
+      "name": "pc-deployment-strategy",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "delivery-completion",
+      "name": "pc-delivery-completion",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "observability",
+      "name": "pc-observability",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "verification-before-completion",
+      "name": "pc-verification-before-completion",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "accessibility",
+      "name": "pc-accessibility",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "documentation",
+      "name": "pc-documentation",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "monitoring-observability",
+      "name": "pc-monitoring-observability",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "incident-response",
+      "name": "pc-incident-response",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "runbooks",
+      "name": "pc-runbooks",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "tech-debt-management",
+      "name": "pc-tech-debt-management",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "retrospective",
+      "name": "pc-retrospective",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",

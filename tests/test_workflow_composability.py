@@ -42,7 +42,7 @@ class WorkflowComposabilityTests(unittest.TestCase):
 
     def test_intake_template_and_skill_use_primary_plus_overlays(self):
         intake_template = (REPO_ROOT / "templates" / "intake-brief.md").read_text(encoding="utf-8")
-        intake_skill = (REPO_ROOT / "skills" / "00-discovery" / "intake" / "SKILL.md").read_text(encoding="utf-8")
+        intake_skill = (REPO_ROOT / "skills" / "00-discovery" / "pc-intake" / "SKILL.md").read_text(encoding="utf-8")
 
         self.assertIn("workflow_primary", intake_template)
         self.assertIn("workflow_overlays", intake_template)

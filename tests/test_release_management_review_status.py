@@ -15,7 +15,7 @@ class ReleaseManagementReviewStatusTests(unittest.TestCase):
 
     def test_manifest_registers_release_management_as_tested_routed(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
-        entry = entries["release-management"]
+        entry = entries["pc-release-management"]
 
         self.assertEqual("06-delivery", entry["phase"])
         self.assertEqual("tested", entry["status"])
@@ -32,14 +32,14 @@ class ReleaseManagementReviewStatusTests(unittest.TestCase):
 
     def test_tested_artifacts_exist(self):
         targets = [
-            REPO_ROOT / "eval" / "06-delivery" / "release-management" / "findings.md",
-            REPO_ROOT / "eval" / "06-delivery" / "release-management" / "evals" / "eval-strategy.md",
-            REPO_ROOT / "eval" / "06-delivery" / "release-management" / "isolated-benchmark-plan.md",
-            REPO_ROOT / "eval" / "06-delivery" / "release-management" / "isolated-benchmark-review.md",
-            REPO_ROOT / "eval" / "06-delivery" / "release-management" / "delivery-completion-handoff-review.md",
-            REPO_ROOT / "eval" / "06-delivery" / "release-management" / "fixtures" / "access-review-modernization-delivery-decision-record.md",
-            REPO_ROOT / "eval" / "06-delivery" / "release-management" / "fixtures" / "access-review-modernization-test-report.md",
-            REPO_ROOT / "eval" / "06-delivery" / "release-management" / "fixtures" / "access-review-modernization-security-report.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-release-management" / "findings.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-release-management" / "evals" / "eval-strategy.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-release-management" / "isolated-benchmark-plan.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-release-management" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-release-management" / "delivery-completion-handoff-review.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-release-management" / "fixtures" / "access-review-modernization-delivery-decision-record.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-release-management" / "fixtures" / "access-review-modernization-test-report.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-release-management" / "fixtures" / "access-review-modernization-security-report.md",
         ]
 
         for path in targets:
@@ -51,15 +51,15 @@ class ReleaseManagementReviewStatusTests(unittest.TestCase):
         phase_text = (REPO_ROOT / "skills" / "06-delivery" / "_phase.md").read_text(encoding="utf-8")
         gateway = (REPO_ROOT / "skills" / "_gateway.md").read_text(encoding="utf-8")
 
-        self.assertIn("release-management", artifact_flow["delivery-decision-record"]["consumed_by"])
-        self.assertIn("release-management", artifact_flow["ci-cd-pipeline"]["consumed_by"])
-        self.assertEqual("release-management", artifact_flow["release-plan"]["produced_by"])
-        self.assertIn("release-management", phase_text)
-        self.assertIn("release-management", gateway)
+        self.assertIn("pc-release-management", artifact_flow["delivery-decision-record"]["consumed_by"])
+        self.assertIn("pc-release-management", artifact_flow["ci-cd-pipeline"]["consumed_by"])
+        self.assertEqual("pc-release-management", artifact_flow["release-plan"]["produced_by"])
+        self.assertIn("pc-release-management", phase_text)
+        self.assertIn("pc-release-management", gateway)
 
     def test_findings_record_tested_status(self):
         findings = (
-            REPO_ROOT / "eval" / "06-delivery" / "release-management" / "findings.md"
+            REPO_ROOT / "eval" / "06-delivery" / "pc-release-management" / "findings.md"
         ).read_text(encoding="utf-8")
 
         self.assertIn("Current status: `tested`", findings)

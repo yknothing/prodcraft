@@ -2,7 +2,7 @@
 
 Prodcraft enforces a single rule source for magic-value and hardcoding control:
 
-- `skills/05-quality/code-review/SKILL.md`
+- `skills/05-quality/pc-code-review/SKILL.md`
 
 The pre-commit hook is intentionally lightweight and cross-language. It is a blocking guardrail, not a semantic compiler.
 

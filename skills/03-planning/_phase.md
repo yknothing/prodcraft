@@ -25,10 +25,10 @@ All tasks are estimated, assigned, and sequenced. Dependencies are mapped. Risks
 
 | Skill | Purpose | Effort |
 |---|---|---|
-| task-breakdown | Decompose architecture into implementable work items | medium |
-| sprint-planning | Organize work into iteration-sized chunks | small |
-| estimation | Size work items with calibrated confidence | medium |
-| risk-assessment | Identify and mitigate delivery risks | medium |
+| pc-task-breakdown | Decompose architecture into implementable work items | medium |
+| pc-sprint-planning | Organize work into iteration-sized chunks | small |
+| pc-estimation | Size work items with calibrated confidence | medium |
+| pc-risk-assessment | Identify and mitigate delivery risks | medium |
 
 ## Typical Duration
 
@@ -40,9 +40,9 @@ All tasks are estimated, assigned, and sequenced. Dependencies are mapped. Risks
 ## Skill Sequence
 
 ```
-task-breakdown ──> estimation ──> sprint-planning
-                       │
-risk-assessment ───────┘
+pc-task-breakdown ──> pc-estimation ──> pc-sprint-planning
+                          │
+pc-risk-assessment ───────┘
 ```
 
 Break down tasks first, then estimate. Risk assessment informs estimation (add buffers for risky items). Sprint planning uses estimates and risk data to sequence work.

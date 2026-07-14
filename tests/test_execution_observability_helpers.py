@@ -16,14 +16,14 @@ from tools.execution_observability import ExecutionTrace, measure_skill_context,
 class ExecutionObservabilityHelperTests(unittest.TestCase):
     def test_measure_skill_context_records_exact_size_without_token_estimates(self):
         with tempfile.TemporaryDirectory() as tmpdir:
-            skill_dir = Path(tmpdir) / "skills" / "cross-cutting" / "observability"
+            skill_dir = Path(tmpdir) / "skills" / "cross-cutting" / "pc-observability"
             references_dir = skill_dir / "references"
             references_dir.mkdir(parents=True)
             (skill_dir / "SKILL.md").write_text(
                 "\n".join(
                     [
                         "---",
-                        "name: observability",
+                        "name: pc-observability",
                         "description: Use when execution telemetry is needed.",
                         "metadata:",
                         "  phase: cross-cutting",
@@ -41,7 +41,7 @@ class ExecutionObservabilityHelperTests(unittest.TestCase):
 
             measurement = measure_skill_context(skill_dir)
 
-        self.assertEqual("observability", measurement["skill_name"])
+        self.assertEqual("pc-observability", measurement["skill_name"])
         self.assertEqual("cross-cutting", measurement["phase"])
         self.assertEqual("unavailable", measurement["token_count_status"])
         self.assertGreater(measurement["skill_file_char_count"], 0)
@@ -64,7 +64,7 @@ class ExecutionObservabilityHelperTests(unittest.TestCase):
                 output_path=output_path,
                 runner="copilot",
                 model_name="claude-sonnet",
-                skill_name="observability",
+                skill_name="pc-observability",
                 phase="cross-cutting",
                 workflow="benchmark",
             )

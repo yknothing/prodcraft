@@ -4,7 +4,7 @@ description: "New project bootstrap from idea through first deployment"
 cadence: "one-time, days to weeks"
 workflow_kind: "overlay"
 composes_with: ["*"]
-entry_skill: "intake"
+entry_skill: "pc-intake"
 required_artifacts: ["intake-brief"]
 best_for: ["new-products", "proof-of-concept", "hackathon", "side-projects"]
 phases_included: ["all"]
@@ -24,7 +24,7 @@ Greenfield is an overlay. It adjusts assumptions about existing system constrain
 
 ## Entry Gate
 
-This workflow starts only after `intake` classifies the request as new-product or greenfield work and the user approves the path. The required handoff artifact is the `intake-brief`, which anchors the scope, starting assumptions, and initial risks before bootstrap begins.
+This workflow starts only after `pc-intake` classifies the request as new-product or greenfield work and the user approves the path. The required handoff artifact is the `intake-brief`, which anchors the scope, starting assumptions, and initial risks before bootstrap begins.
 
 ## Phase Sequence
 
@@ -32,7 +32,7 @@ This workflow starts only after `intake` classifies the request as new-product o
 
 **Purpose:** Validate the problem is worth solving and define the minimum viable product.
 
-**Skills:** Apply `feasibility-study`, `user-research` (lightweight), and `market-analysis` (quick scan).
+**Skills:** Apply `pc-feasibility-study`, `pc-user-research` (lightweight), and `pc-market-analysis` (quick scan).
 
 This is not a months-long market research phase. The goal is to answer three questions:
 1. **Who** has this problem? Can you name specific people or segments?
@@ -48,7 +48,7 @@ Skip this phase only if you have strong prior evidence (e.g., you are the user, 
 
 **Purpose:** Define what the MVP does -- and crucially, what it does not do.
 
-**Skills:** Apply `requirements-engineering`, `spec-writing` (lightweight), and `acceptance-criteria`.
+**Skills:** Apply `pc-requirements-engineering`, `pc-spec-writing` (lightweight), and `pc-acceptance-criteria`.
 
 Write user stories for the MVP. Be ruthless about scope. For each proposed feature, ask: "Can we launch without this?" If yes, cut it. The specification is a short document, not a comprehensive PRD.
 
@@ -61,7 +61,7 @@ Write user stories for the MVP. Be ruthless about scope. For each proposed featu
 
 **Purpose:** Make the foundational technical decisions that are expensive to change later.
 
-**Skills:** Apply `system-design`, `api-design`, `data-modeling`, `security-design`, and `tech-selection`.
+**Skills:** Apply `pc-system-design`, `pc-api-design`, `pc-data-modeling`, `pc-security-design`, and `pc-tech-selection`.
 
 This is the highest-leverage phase in a greenfield project. Focus decisions on:
 
@@ -88,7 +88,7 @@ This is the highest-leverage phase in a greenfield project. Focus decisions on:
 
 **Purpose:** Sequence the MVP build for maximum learning with minimum waste.
 
-**Skills:** Apply `task-breakdown`, `risk-assessment`, and `estimation`.
+**Skills:** Apply `pc-task-breakdown`, `pc-risk-assessment`, and `pc-estimation`.
 
 Break the MVP into vertical slices -- each slice delivers a working user flow end-to-end. Prioritize slices that validate the riskiest assumptions first.
 
@@ -101,7 +101,7 @@ Break the MVP into vertical slices -- each slice delivers a working user flow en
 
 **Purpose:** Build the MVP in vertical slices, deployed incrementally.
 
-**Skills:** Apply `tdd`, `feature-development`, `refactoring`, `code-review`, `documentation`, and `ci-cd`.
+**Skills:** Apply `pc-tdd`, `pc-feature-development`, `pc-refactoring`, `pc-code-review`, `pc-documentation`, and `pc-ci-cd`.
 
 **Week 1 priorities:**
 1. Repository setup (version control, branching strategy, CI pipeline).
@@ -128,7 +128,7 @@ Break the MVP into vertical slices -- each slice delivers a working user flow en
 
 **Purpose:** Establish the quality baseline that all future work builds on.
 
-**Skills:** Apply `testing-strategy`, `code-review`, `security-audit`, and `documentation` (baseline scan).
+**Skills:** Apply `pc-testing-strategy`, `pc-code-review`, `pc-security-audit`, and `pc-documentation` (baseline scan).
 
 For a greenfield project, quality is about establishing patterns, not exhaustive testing:
 
@@ -144,7 +144,7 @@ For a greenfield project, quality is about establishing patterns, not exhaustive
 
 **Purpose:** Ensure the deployment pipeline is robust and repeatable.
 
-**Skills:** Apply `ci-cd`, `release-management`, `deployment-strategy`, and `documentation`.
+**Skills:** Apply `pc-ci-cd`, `pc-release-management`, `pc-deployment-strategy`, and `pc-documentation`.
 
 If you deployed incrementally during implementation (as recommended), this phase is about hardening what you already have:
 
@@ -162,7 +162,7 @@ Invest here. The deployment pipeline is used every day for the life of the proje
 
 **Purpose:** Observe the system in production and respond to issues.
 
-**Skills:** Apply `incident-response` and `documentation`.
+**Skills:** Apply `pc-incident-response` and `pc-documentation`.
 
 Basic operational readiness from day one:
 
@@ -178,7 +178,7 @@ Basic operational readiness from day one:
 
 **Purpose:** Learn from real usage and plan the next iteration.
 
-**Skills:** Apply `retrospective`, `tech-debt-management`, and `market-analysis`.
+**Skills:** Apply `pc-retrospective`, `pc-tech-debt-management`, and `pc-market-analysis`.
 
 After launch:
 1. **Measure:** Are users doing what you expected? Where do they get stuck?

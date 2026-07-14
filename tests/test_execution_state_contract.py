@@ -36,13 +36,13 @@ class ExecutionStateContractTests(unittest.TestCase):
         )
 
         artifact_flow = {entry["artifact"]: entry for entry in self.manifest["artifact_flow"]}
-        self.assertEqual("intake", artifact_flow["route-decision"]["produced_by"])
+        self.assertEqual("pc-intake", artifact_flow["route-decision"]["produced_by"])
         self.assertEqual(
-            {"intake", "task-execution", "verification-before-completion"},
+            {"pc-intake", "pc-task-execution", "pc-verification-before-completion"},
             set(artifact_flow["execution-state"]["produced_by"]),
         )
-        self.assertIn("verification-before-completion", artifact_flow["route-decision"]["consumed_by"])
-        self.assertIn("verification-before-completion", artifact_flow["execution-state"]["consumed_by"])
+        self.assertIn("pc-verification-before-completion", artifact_flow["route-decision"]["consumed_by"])
+        self.assertIn("pc-verification-before-completion", artifact_flow["execution-state"]["consumed_by"])
 
     def test_route_decision_schema_is_closed_and_authoritative(self):
         schema = json.loads(ROUTE_SCHEMA_PATH.read_text(encoding="utf-8"))

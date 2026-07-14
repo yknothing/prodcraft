@@ -15,7 +15,7 @@ class ApiDesignReviewStatusTests(unittest.TestCase):
 
     def test_manifest_registers_api_design_as_tested_routed(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
-        entry = entries["api-design"]
+        entry = entries["pc-api-design"]
 
         self.assertEqual("02-architecture", entry["phase"])
         self.assertEqual("tested", entry["status"])
@@ -32,11 +32,11 @@ class ApiDesignReviewStatusTests(unittest.TestCase):
 
     def test_tested_artifacts_exist(self):
         targets = [
-            REPO_ROOT / "eval" / "02-architecture" / "api-design" / "findings.md",
-            REPO_ROOT / "eval" / "02-architecture" / "api-design" / "evals" / "eval-strategy.md",
-            REPO_ROOT / "eval" / "02-architecture" / "api-design" / "isolated-benchmark-plan.md",
-            REPO_ROOT / "eval" / "02-architecture" / "api-design" / "manual-benchmark-review.md",
-            REPO_ROOT / "eval" / "02-architecture" / "api-design" / "architecture-handoff-review.md",
+            REPO_ROOT / "eval" / "02-architecture" / "pc-api-design" / "findings.md",
+            REPO_ROOT / "eval" / "02-architecture" / "pc-api-design" / "evals" / "eval-strategy.md",
+            REPO_ROOT / "eval" / "02-architecture" / "pc-api-design" / "isolated-benchmark-plan.md",
+            REPO_ROOT / "eval" / "02-architecture" / "pc-api-design" / "manual-benchmark-review.md",
+            REPO_ROOT / "eval" / "02-architecture" / "pc-api-design" / "architecture-handoff-review.md",
         ]
 
         for path in targets:
@@ -45,10 +45,10 @@ class ApiDesignReviewStatusTests(unittest.TestCase):
 
     def test_findings_and_gateway_record_tested_posture(self):
         findings = (
-            REPO_ROOT / "eval" / "02-architecture" / "api-design" / "findings.md"
+            REPO_ROOT / "eval" / "02-architecture" / "pc-api-design" / "findings.md"
         ).read_text(encoding="utf-8")
         benchmark_review = (
-            REPO_ROOT / "eval" / "02-architecture" / "api-design" / "manual-benchmark-review.md"
+            REPO_ROOT / "eval" / "02-architecture" / "pc-api-design" / "manual-benchmark-review.md"
         ).read_text(encoding="utf-8")
         architecture_phase = (REPO_ROOT / "skills" / "02-architecture" / "_phase.md").read_text(
             encoding="utf-8"
@@ -57,8 +57,8 @@ class ApiDesignReviewStatusTests(unittest.TestCase):
 
         self.assertIn("Current status: `tested`", findings)
         self.assertIn("Recommended status: `tested`", benchmark_review)
-        self.assertIn("api-design", architecture_phase)
-        self.assertIn("api-design", gateway)
+        self.assertIn("pc-api-design", architecture_phase)
+        self.assertIn("pc-api-design", gateway)
 
 
 if __name__ == "__main__":

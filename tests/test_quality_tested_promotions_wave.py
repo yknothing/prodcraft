@@ -16,9 +16,9 @@ class QualityTestedPromotionsWaveTests(unittest.TestCase):
 
     def test_manifest_registers_quality_wave_skills_as_tested(self):
         targets = {
-            "code-review": "05-quality",
-            "testing-strategy": "05-quality",
-            "e2e-scenario-design": "05-quality",
+            "pc-code-review": "05-quality",
+            "pc-testing-strategy": "05-quality",
+            "pc-e2e-scenario-design": "05-quality",
         }
 
         for name, phase in targets.items():
@@ -32,10 +32,10 @@ class QualityTestedPromotionsWaveTests(unittest.TestCase):
 
     def test_tested_quality_findings_exist(self):
         targets = [
-            REPO_ROOT / "eval" / "05-quality" / "code-review" / "findings.md",
-            REPO_ROOT / "eval" / "05-quality" / "testing-strategy" / "findings.md",
-            REPO_ROOT / "eval" / "05-quality" / "testing-strategy" / "isolated-benchmark-review.md",
-            REPO_ROOT / "eval" / "05-quality" / "e2e-scenario-design" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "05-quality" / "pc-code-review" / "findings.md",
+            REPO_ROOT / "eval" / "05-quality" / "pc-testing-strategy" / "findings.md",
+            REPO_ROOT / "eval" / "05-quality" / "pc-testing-strategy" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "05-quality" / "pc-e2e-scenario-design" / "isolated-benchmark-review.md",
         ]
 
         for path in targets:
@@ -44,13 +44,13 @@ class QualityTestedPromotionsWaveTests(unittest.TestCase):
 
     def test_findings_record_narrow_tested_posture(self):
         code_review = (
-            REPO_ROOT / "eval" / "05-quality" / "code-review" / "findings.md"
+            REPO_ROOT / "eval" / "05-quality" / "pc-code-review" / "findings.md"
         ).read_text(encoding="utf-8")
         testing = (
-            REPO_ROOT / "eval" / "05-quality" / "testing-strategy" / "findings.md"
+            REPO_ROOT / "eval" / "05-quality" / "pc-testing-strategy" / "findings.md"
         ).read_text(encoding="utf-8")
         e2e = (
-            REPO_ROOT / "eval" / "05-quality" / "e2e-scenario-design" / "findings.md"
+            REPO_ROOT / "eval" / "05-quality" / "pc-e2e-scenario-design" / "findings.md"
         ).read_text(encoding="utf-8")
 
         self.assertIn("Current status: `tested`", code_review)

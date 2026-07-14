@@ -31,7 +31,7 @@ class SkillGotchasValidationTests(unittest.TestCase):
         self.validator.MANIFEST_PATH = self.temp_root / "manifest.yml"
 
     def write_skill(self, skill_body: str) -> Path:
-        skill_path = self.temp_root / "skills" / "00-discovery" / "example-skill" / "SKILL.md"
+        skill_path = self.temp_root / "skills" / "00-discovery" / "pc-example-skill" / "SKILL.md"
         skill_path.parent.mkdir(parents=True, exist_ok=True)
         skill_path.write_text(skill_body, encoding="utf-8")
         return skill_path
@@ -44,7 +44,7 @@ class SkillGotchasValidationTests(unittest.TestCase):
     def test_inline_gotchas_section_with_required_fields_passes(self):
         skill_path = self.write_skill(
             """---
-name: example-skill
+name: pc-example-skill
 description: Use when a routed workflow needs a concrete example skill for validation
 metadata:
   phase: 00-discovery
@@ -98,7 +98,7 @@ Example process step.
     def test_inline_gotchas_section_missing_required_field_fails(self):
         skill_path = self.write_skill(
             """---
-name: example-skill
+name: pc-example-skill
 description: Use when a routed workflow needs a concrete example skill for validation
 metadata:
   phase: 00-discovery
@@ -153,7 +153,7 @@ Example process step.
     def test_referenced_gotchas_file_with_required_fields_passes(self):
         skill_path = self.write_skill(
             """---
-name: example-skill
+name: pc-example-skill
 description: Use when a routed workflow needs a concrete example skill for validation
 metadata:
   phase: 00-discovery
@@ -216,7 +216,7 @@ See [Gotchas](references/gotchas.md) before acting on copied artifacts or confli
     def test_referenced_gotchas_file_without_required_structure_fails(self):
         skill_path = self.write_skill(
             """---
-name: example-skill
+name: pc-example-skill
 description: Use when a routed workflow needs a concrete example skill for validation
 metadata:
   phase: 00-discovery

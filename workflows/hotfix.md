@@ -4,7 +4,7 @@ description: "Emergency path for critical production issues"
 cadence: "on-demand, hours to 1 day"
 workflow_kind: "overlay"
 composes_with: ["*"]
-entry_skill: "intake"
+entry_skill: "pc-intake"
 required_artifacts: ["intake-brief"]
 best_for: ["production-incidents", "security-vulnerabilities", "data-corruption"]
 phases_included: ["07-operations", "04-implementation", "05-quality", "06-delivery"]
@@ -24,7 +24,7 @@ Hotfix is an overlay. It compresses the normal route around urgency while preser
 
 ## Entry Gate
 
-Even emergency work must start with `intake`. In hotfix cases, intake is intentionally short, but it still must produce and approve an `intake-brief` that records severity, workflow choice, owner, and fast-track rationale before the team enters the compressed implementation path.
+Even emergency work must start with `pc-intake`. In hotfix cases, intake is intentionally short, but it still must produce and approve an `intake-brief` that records severity, workflow choice, owner, and fast-track rationale before the team enters the compressed implementation path.
 
 ## Entry Criteria
 
@@ -44,7 +44,7 @@ If none of these apply, use the standard workflow. Not everything urgent is a ho
 
 **Purpose:** Understand the impact, confirm the hotfix path, assign ownership.
 
-**Skills:** Apply `incident-response`, `bug-history-retrieval` when the failure may have lineage, and `documentation`.
+**Skills:** Apply `pc-incident-response`, `pc-bug-history-retrieval` when the failure may have lineage, and `pc-documentation`.
 
 **Actions:**
 1. Assess severity: who is affected, how many, what is the business impact.
@@ -58,7 +58,7 @@ If none of these apply, use the standard workflow. Not everything urgent is a ho
 
 **Purpose:** Identify the root cause with enough precision to fix it safely.
 
-**Skills:** Apply `incident-response`, `bug-history-retrieval` when historical lineage may matter, `systematic-debugging` after containment, and `documentation`.
+**Skills:** Apply `pc-incident-response`, `pc-bug-history-retrieval` when historical lineage may matter, `pc-systematic-debugging` after containment, and `pc-documentation`.
 
 **Actions:**
 1. Confirm the current containment path and whether user impact is still active.
@@ -75,7 +75,7 @@ If none of these apply, use the standard workflow. Not everything urgent is a ho
 
 **Purpose:** Write the minimal, surgical fix.
 
-**Skills:** Apply `systematic-debugging`, `tdd`, and `feature-development`.
+**Skills:** Apply `pc-systematic-debugging`, `pc-tdd`, and `pc-feature-development`.
 
 **Actions:**
 1. Create a hotfix branch from the production release tag or branch.
@@ -96,7 +96,7 @@ If none of these apply, use the standard workflow. Not everything urgent is a ho
 
 **Purpose:** Verify the fix resolves the issue without introducing regressions.
 
-**Skills:** Apply `testing-strategy`, `code-review`, `verification-before-completion`, and `security-audit` when the hotfix addresses a vulnerability or trust-boundary failure.
+**Skills:** Apply `pc-testing-strategy`, `pc-code-review`, `pc-verification-before-completion`, and `pc-security-audit` when the hotfix addresses a vulnerability or trust-boundary failure.
 
 **Actions:**
 1. Run the automated test suite. All existing tests must pass.
@@ -117,7 +117,7 @@ If none of these apply, use the standard workflow. Not everything urgent is a ho
 
 **Purpose:** Deploy the fix to production with verification.
 
-**Skills:** Apply `ci-cd`, `deployment-strategy`, `verification-before-completion`, and `documentation`.
+**Skills:** Apply `pc-ci-cd`, `pc-deployment-strategy`, `pc-verification-before-completion`, and `pc-documentation`.
 
 **Actions:**
 1. Deploy to production using the standard deployment pipeline (do not bypass it).
@@ -135,7 +135,7 @@ The hotfix is not done when production is stable. The following must happen with
 
 ### Postmortem (within 48 hours)
 
-**Skills:** Apply `retrospective` and `tech-debt-management`.
+**Skills:** Apply `pc-retrospective` and `pc-tech-debt-management`.
 
 Conduct a blameless postmortem covering:
 - Timeline: when detected, when triaged, when fixed, when deployed.

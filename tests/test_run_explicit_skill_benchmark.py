@@ -152,11 +152,11 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
 
     def test_display_path_prefers_repo_relative_paths(self):
         module = load_module()
-        repo_path = REPO_ROOT / "eval" / "01-specification" / "requirements-engineering" / "explicit-benchmark.json"
+        repo_path = REPO_ROOT / "eval" / "01-specification" / "pc-requirements-engineering" / "explicit-benchmark.json"
 
         self.assertEqual(
             module.display_path(repo_path),
-            "eval/01-specification/requirements-engineering/explicit-benchmark.json",
+            "eval/01-specification/pc-requirements-engineering/explicit-benchmark.json",
         )
 
     def test_resolve_context_file_uses_benchmark_parent_for_relative_paths(self):

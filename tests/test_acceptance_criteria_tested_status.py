@@ -15,7 +15,7 @@ class AcceptanceCriteriaTestedStatusTests(unittest.TestCase):
         self.entries = {entry["name"]: entry for entry in self.manifest["skills"]}
 
     def test_manifest_registers_acceptance_criteria_as_tested_routed(self):
-        entry = self.entries["acceptance-criteria"]
+        entry = self.entries["pc-acceptance-criteria"]
 
         self.assertEqual("01-specification", entry["phase"])
         self.assertEqual("tested", entry["status"])
@@ -32,38 +32,38 @@ class AcceptanceCriteriaTestedStatusTests(unittest.TestCase):
 
     def test_tested_artifacts_exist(self):
         targets = [
-            REPO_ROOT / "eval" / "01-specification" / "acceptance-criteria" / "findings.md",
+            REPO_ROOT / "eval" / "01-specification" / "pc-acceptance-criteria" / "findings.md",
             REPO_ROOT
             / "eval"
             / "01-specification"
-            / "acceptance-criteria"
+            / "pc-acceptance-criteria"
             / "evals"
             / "eval-strategy.md",
             REPO_ROOT
             / "eval"
             / "01-specification"
-            / "acceptance-criteria"
+            / "pc-acceptance-criteria"
             / "isolated-benchmark-plan.md",
             REPO_ROOT
             / "eval"
             / "01-specification"
-            / "acceptance-criteria"
+            / "pc-acceptance-criteria"
             / "isolated-benchmark-review.md",
             REPO_ROOT
             / "eval"
             / "01-specification"
-            / "acceptance-criteria"
+            / "pc-acceptance-criteria"
             / "testing-strategy-handoff-review.md",
             REPO_ROOT
             / "eval"
             / "01-specification"
-            / "acceptance-criteria"
+            / "pc-acceptance-criteria"
             / "fixtures"
             / "password-reset-requirements.md",
             REPO_ROOT
             / "eval"
             / "01-specification"
-            / "acceptance-criteria"
+            / "pc-acceptance-criteria"
             / "fixtures"
             / "password-reset-spec.md",
         ]
@@ -74,17 +74,17 @@ class AcceptanceCriteriaTestedStatusTests(unittest.TestCase):
 
     def test_findings_and_artifact_flow_record_tested_promotion(self):
         findings = (
-            REPO_ROOT / "eval" / "01-specification" / "acceptance-criteria" / "findings.md"
+            REPO_ROOT / "eval" / "01-specification" / "pc-acceptance-criteria" / "findings.md"
         ).read_text(encoding="utf-8")
         artifact_flow = {entry["artifact"]: entry for entry in self.manifest["artifact_flow"]}
 
         self.assertIn("Current status: `tested`", findings)
         self.assertIn("isolated benchmark", findings)
         self.assertEqual(
-            "acceptance-criteria", artifact_flow["acceptance-criteria-set"]["produced_by"]
+            "pc-acceptance-criteria", artifact_flow["acceptance-criteria-set"]["produced_by"]
         )
         self.assertIn(
-            "testing-strategy", artifact_flow["acceptance-criteria-set"]["consumed_by"]
+            "pc-testing-strategy", artifact_flow["acceptance-criteria-set"]["consumed_by"]
         )
 
 

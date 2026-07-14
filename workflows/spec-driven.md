@@ -4,7 +4,7 @@ description: "Full specification upfront, phased delivery with formal quality ga
 cadence: "milestone-based"
 workflow_kind: "primary"
 composes_with: ["greenfield", "brownfield", "hotfix"]
-entry_skill: "intake"
+entry_skill: "pc-intake"
 required_artifacts: ["intake-brief"]
 best_for: ["regulated-industries", "safety-critical", "contractual", "large-teams"]
 phases_included: ["all"]
@@ -24,7 +24,7 @@ This workflow may be paired with overlays such as `greenfield`, `brownfield`, or
 
 ## Entry Gate
 
-This workflow may begin only after `intake` is completed, approved, and routed to a spec-driven path. The required artifact is the `intake-brief`, which serves as the formal record of why this higher-rigor workflow was selected.
+This workflow may begin only after `pc-intake` is completed, approved, and routed to a spec-driven path. The required artifact is the `intake-brief`, which serves as the formal record of why this higher-rigor workflow was selected.
 
 If any earlier gate is skipped, the intake brief must document that decision explicitly as accepted process debt.
 
@@ -34,7 +34,7 @@ If any earlier gate is skipped, the intake brief must document that decision exp
 
 **Purpose:** Exhaustive problem analysis and stakeholder alignment.
 
-**Skills:** Apply `user-research`, `market-analysis`, and `feasibility-study`.
+**Skills:** Apply `pc-user-research`, `pc-market-analysis`, and `pc-feasibility-study`.
 
 **Inputs:** Business case, market data, regulatory requirements, stakeholder access.
 **Outputs:** Discovery report, stakeholder map, problem statement, initial risk register.
@@ -52,7 +52,7 @@ All stakeholders must be identified and interviewed. The problem space must be d
 
 **Purpose:** Complete, unambiguous requirements documentation.
 
-**Skills:** Apply `requirements-engineering`, `spec-writing`, `domain-modeling`, and `acceptance-criteria`.
+**Skills:** Apply `pc-requirements-engineering`, `pc-spec-writing`, `pc-domain-modeling`, and `pc-acceptance-criteria`.
 
 **Inputs:** Discovery report, stakeholder map, regulatory constraints.
 **Outputs:** Product Requirements Document (PRD), functional specification, non-functional requirements, acceptance criteria for every requirement.
@@ -70,7 +70,7 @@ Every requirement gets a unique identifier for traceability. Acceptance criteria
 
 **Purpose:** System design that satisfies all specified requirements.
 
-**Skills:** Apply `system-design`, `api-design`, `data-modeling`, `security-design`, and `tech-selection`.
+**Skills:** Apply `pc-system-design`, `pc-api-design`, `pc-data-modeling`, `pc-security-design`, and `pc-tech-selection`.
 
 **Inputs:** PRD, functional specification, non-functional requirements, existing system documentation.
 **Outputs:** Technical Design Document (TDD), Architecture Decision Records (ADRs), API specifications, data model diagrams, infrastructure plan.
@@ -88,7 +88,7 @@ Every architectural decision is recorded as an ADR with full rationale and alter
 
 **Purpose:** Detailed work breakdown, scheduling, and resource allocation.
 
-**Skills:** Apply `task-breakdown`, `risk-assessment`, and `estimation`.
+**Skills:** Apply `pc-task-breakdown`, `pc-risk-assessment`, and `pc-estimation`.
 
 **Inputs:** TDD, ADRs, team capacity, external dependencies.
 **Outputs:** Work breakdown structure, project schedule, resource allocation, dependency map, risk mitigation plan.
@@ -106,7 +106,7 @@ Tasks are traced back to requirements. Every task has an estimate, an owner, and
 
 **Purpose:** Build the system according to specification and architecture.
 
-**Skills:** Apply `tdd`, `feature-development`, `refactoring`, `code-review`, and `documentation`.
+**Skills:** Apply `pc-tdd`, `pc-feature-development`, `pc-refactoring`, `pc-code-review`, and `pc-documentation`.
 
 **Inputs:** TDD, task breakdown, coding standards, test strategy.
 **Outputs:** Working software, unit tests, integration tests, code documentation, implementation notes.
@@ -124,7 +124,7 @@ Code is written against the specification -- deviations require a formal change 
 
 **Purpose:** Comprehensive verification against specification.
 
-**Skills:** Apply `testing-strategy`, `code-review`, `security-audit`, and `documentation`.
+**Skills:** Apply `pc-testing-strategy`, `pc-code-review`, `pc-security-audit`, and `pc-documentation`.
 
 **Inputs:** Working software, specification, acceptance criteria, test plan.
 **Outputs:** Test results, defect reports, performance benchmarks, security scan results, release readiness assessment.
@@ -142,7 +142,7 @@ Every acceptance criterion is verified. Performance is benchmarked against non-f
 
 **Purpose:** Controlled release to production.
 
-**Skills:** Apply `ci-cd`, `release-management`, `deployment-strategy`, and `documentation`.
+**Skills:** Apply `pc-ci-cd`, `pc-release-management`, `pc-deployment-strategy`, and `pc-documentation`.
 
 **Inputs:** Release-ready software, deployment plan, rollback plan, stakeholder communication plan.
 **Outputs:** Production deployment, release notes, stakeholder notification, deployment verification.
@@ -154,7 +154,7 @@ Deployment follows a documented, rehearsed plan. Rollback procedures are tested 
 
 **Purpose:** Monitor, maintain, and support the production system.
 
-**Skills:** Apply `incident-response` and `documentation`.
+**Skills:** Apply `pc-incident-response` and `pc-documentation`.
 
 **Inputs:** Production system, monitoring configuration, runbooks, SLAs.
 **Outputs:** Operational metrics, incident reports, postmortems, maintenance logs.
@@ -166,7 +166,7 @@ Monitoring covers all SLAs. Incident response follows documented procedures. Eve
 
 **Purpose:** Continuous improvement based on operational data and changing needs.
 
-**Skills:** Apply `retrospective`, `tech-debt-management`, and `market-analysis`.
+**Skills:** Apply `pc-retrospective`, `pc-tech-debt-management`, and `pc-market-analysis`.
 
 **Inputs:** Operational metrics, user feedback, market changes, tech debt inventory.
 **Outputs:** Evolution plan, updated roadmap, improvement tickets, process adjustments.

@@ -21,8 +21,12 @@ Prodcraft separates lifecycle authoring from public installation.
 ## Stability Rules
 
 - A public skill keeps a stable canonical `name`.
-- A rename must use `deprecated alias -> new canonical name -> old alias removal`.
+- A rename must normally use `deprecated alias -> new canonical name -> old alias removal`.
 - Removal requires at least one full release cycle of overlap or an explicit migration note.
+- The 2026-07-14 beta-wide `pc-*` migration is the explicit exception: all
+  Prodcraft-authored skills move atomically to one canonical namespace, without
+  unprefixed aliases. This avoids a permanently ambiguous public identity while
+  the distribution surface is still beta.
 - `stability` describes the packaging contract for `npx skills add/update` (`beta` or `stable`).
 - `readiness` describes capability maturity for public users:
   - `core`: part of the public path we can actively stand behind today
@@ -49,4 +53,4 @@ Hidden dependencies stay in the repository registry unless the team intentionall
 - `skills/.curated/` is generated, not edited manually.
 - `python3 scripts/validate_prodcraft.py --check curated-surface` re-exports the surface into a temporary directory and fails if the checked-in tree drifts from the exporter output.
 - Exported skills must keep valid frontmatter and bundle any referenced `references/`, `scripts/`, or `assets/` paths.
-- Generated gateway skills such as `prodcraft` must still point back to the canonical repository contract.
+- Generated gateway skills such as `pc-prodcraft` must still point back to the canonical repository contract.

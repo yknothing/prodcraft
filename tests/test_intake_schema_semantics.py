@@ -14,7 +14,7 @@ except ImportError:  # pragma: no cover - environment guard
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-INTAKE_SKILL_PATH = REPO_ROOT / "skills" / "00-discovery" / "intake" / "SKILL.md"
+INTAKE_SKILL_PATH = REPO_ROOT / "skills" / "00-discovery" / "pc-intake" / "SKILL.md"
 INTAKE_SCHEMA_PATH = REPO_ROOT / "schemas" / "artifacts" / "intake-brief.schema.json"
 WORKFLOWS_DIR = REPO_ROOT / "workflows"
 MANIFEST_PATH = REPO_ROOT / "manifest.yml"
@@ -177,7 +177,7 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
             },
             "workflow_primary": "agile-sprint",
             "scope_assessment": "medium",
-            "recommended_next_skill": "requirements-engineering",
+            "recommended_next_skill": "pc-requirements-engineering",
             "routing_rationale": "Feature work in an existing product starts in specification.",
             "key_risks": ["Approval thresholds may be ambiguous."],
             "questions_asked": ["Does this affect an existing system?"],

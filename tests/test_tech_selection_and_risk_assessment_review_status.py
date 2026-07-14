@@ -16,8 +16,8 @@ class TechSelectionAndRiskAssessmentReviewStatusTests(unittest.TestCase):
     def test_manifest_registers_tech_selection_and_risk_assessment_as_tested(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
 
-        tech = entries["tech-selection"]
-        risk = entries["risk-assessment"]
+        tech = entries["pc-tech-selection"]
+        risk = entries["pc-risk-assessment"]
 
         self.assertEqual("02-architecture", tech["phase"])
         self.assertEqual("03-planning", risk["phase"])
@@ -46,16 +46,16 @@ class TechSelectionAndRiskAssessmentReviewStatusTests(unittest.TestCase):
 
     def test_tested_artifacts_exist(self):
         targets = [
-            REPO_ROOT / "eval" / "02-architecture" / "tech-selection" / "findings.md",
-            REPO_ROOT / "eval" / "02-architecture" / "tech-selection" / "evals" / "eval-strategy.md",
-            REPO_ROOT / "eval" / "02-architecture" / "tech-selection" / "isolated-benchmark-plan.md",
-            REPO_ROOT / "eval" / "02-architecture" / "tech-selection" / "isolated-benchmark-review.md",
-            REPO_ROOT / "eval" / "02-architecture" / "tech-selection" / "system-design-handoff-review.md",
-            REPO_ROOT / "eval" / "03-planning" / "risk-assessment" / "findings.md",
-            REPO_ROOT / "eval" / "03-planning" / "risk-assessment" / "evals" / "eval-strategy.md",
-            REPO_ROOT / "eval" / "03-planning" / "risk-assessment" / "isolated-benchmark-plan.md",
-            REPO_ROOT / "eval" / "03-planning" / "risk-assessment" / "isolated-benchmark-review.md",
-            REPO_ROOT / "eval" / "03-planning" / "risk-assessment" / "task-breakdown-handoff-review.md",
+            REPO_ROOT / "eval" / "02-architecture" / "pc-tech-selection" / "findings.md",
+            REPO_ROOT / "eval" / "02-architecture" / "pc-tech-selection" / "evals" / "eval-strategy.md",
+            REPO_ROOT / "eval" / "02-architecture" / "pc-tech-selection" / "isolated-benchmark-plan.md",
+            REPO_ROOT / "eval" / "02-architecture" / "pc-tech-selection" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "02-architecture" / "pc-tech-selection" / "system-design-handoff-review.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-risk-assessment" / "findings.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-risk-assessment" / "evals" / "eval-strategy.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-risk-assessment" / "isolated-benchmark-plan.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-risk-assessment" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-risk-assessment" / "task-breakdown-handoff-review.md",
         ]
 
         for path in targets:
@@ -68,19 +68,19 @@ class TechSelectionAndRiskAssessmentReviewStatusTests(unittest.TestCase):
         planning_phase = (REPO_ROOT / "skills" / "03-planning" / "_phase.md").read_text(encoding="utf-8")
         gateway = (REPO_ROOT / "skills" / "_gateway.md").read_text(encoding="utf-8")
 
-        self.assertEqual("tech-selection", artifact_flow["tech-decision-record"]["produced_by"])
-        self.assertEqual("risk-assessment", artifact_flow["risk-register"]["produced_by"])
-        self.assertIn("tech-selection", architecture_phase)
-        self.assertIn("risk-assessment", planning_phase)
-        self.assertIn("tech-selection", gateway)
-        self.assertIn("risk-assessment", gateway)
+        self.assertEqual("pc-tech-selection", artifact_flow["tech-decision-record"]["produced_by"])
+        self.assertEqual("pc-risk-assessment", artifact_flow["risk-register"]["produced_by"])
+        self.assertIn("pc-tech-selection", architecture_phase)
+        self.assertIn("pc-risk-assessment", planning_phase)
+        self.assertIn("pc-tech-selection", gateway)
+        self.assertIn("pc-risk-assessment", gateway)
 
     def test_tested_findings_record_tested_status(self):
         tech_findings = (
-            REPO_ROOT / "eval" / "02-architecture" / "tech-selection" / "findings.md"
+            REPO_ROOT / "eval" / "02-architecture" / "pc-tech-selection" / "findings.md"
         ).read_text(encoding="utf-8")
         risk_findings = (
-            REPO_ROOT / "eval" / "03-planning" / "risk-assessment" / "findings.md"
+            REPO_ROOT / "eval" / "03-planning" / "pc-risk-assessment" / "findings.md"
         ).read_text(encoding="utf-8")
 
         self.assertIn("Current status: `tested`", tech_findings)

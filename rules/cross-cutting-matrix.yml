@@ -5,13 +5,13 @@ phases:
   must_produce: []
   skip_when_fast_track: []
   conditional:
-  - skill: observability
+  - skill: pc-observability
     when: discovery changes AI execution paths, eval runners, or workflow boundaries
-  - skill: bug-history-retrieval
+  - skill: pc-bug-history-retrieval
     when: repeated failures or regressions may already be known
-  - skill: compliance
+  - skill: pc-compliance
     when: regulated discovery constraints apply
-  - skill: documentation
+  - skill: pc-documentation
     when: discovery decisions create durable product, workflow, or architecture guidance
       that downstream work must reuse
 - phase_id: 01-specification
@@ -19,13 +19,13 @@ phases:
   must_produce: []
   skip_when_fast_track: []
   conditional:
-  - skill: internationalization
+  - skill: pc-internationalization
     when: new user-facing text or locale behavior is specified
-  - skill: accessibility
+  - skill: pc-accessibility
     when: UI behavior or acceptance criteria are specified
-  - skill: compliance
+  - skill: pc-compliance
     when: regulatory requirements shape the spec
-  - skill: documentation
+  - skill: pc-documentation
     when: specification decisions create durable product, interface, or acceptance
       guidance that downstream work must reuse
 - phase_id: 02-architecture
@@ -33,12 +33,12 @@ phases:
   must_produce: []
   skip_when_fast_track: []
   conditional:
-  - skill: observability
+  - skill: pc-observability
     when: the architecture adds or changes execution boundaries, workflows, or telemetry
       contracts
-  - skill: compliance
+  - skill: pc-compliance
     when: architecture must satisfy regulatory controls
-  - skill: documentation
+  - skill: pc-documentation
     when: architecture decisions change durable diagrams, ADRs, interfaces, or operational
       guidance
 - phase_id: 03-planning
@@ -46,11 +46,11 @@ phases:
   must_produce: []
   skip_when_fast_track: []
   conditional:
-  - skill: observability
+  - skill: pc-observability
     when: planning changes benchmark or workflow execution paths
-  - skill: compliance
+  - skill: pc-compliance
     when: delivery sequencing includes regulatory sign-off
-  - skill: documentation
+  - skill: pc-documentation
     when: planning decisions create durable sequencing, ownership, or rollout guidance
       others must follow
 - phase_id: 04-implementation
@@ -58,35 +58,35 @@ phases:
   must_produce: []
   skip_when_fast_track: []
   conditional:
-  - skill: verification-before-completion
+  - skill: pc-verification-before-completion
     when: the team is about to claim an implementation fix, task slice, or fast-track
       change is complete or ready for handoff
-  - skill: observability
+  - skill: pc-observability
     when: code changes AI execution paths, workflow boundaries, or benchmark runners
-  - skill: accessibility
+  - skill: pc-accessibility
     when: UI code is added or changed
-  - skill: internationalization
+  - skill: pc-internationalization
     when: user-visible copy is added or changed
-  - skill: bug-history-retrieval
+  - skill: pc-bug-history-retrieval
     when: a failure may match historical incidents or regressions
-  - skill: documentation
+  - skill: pc-documentation
     when: code changes require durable user, developer, operator, or migration-facing
-      documentation
+      pc-documentation
 - phase_id: 05-quality
   must_consider: []
   must_produce: []
   skip_when_fast_track: []
   conditional:
-  - skill: verification-before-completion
+  - skill: pc-verification-before-completion
     when: the team is about to claim review, testing, or audit work is complete or
       release-ready
-  - skill: observability
+  - skill: pc-observability
     when: verification depends on execution telemetry or route metadata
-  - skill: accessibility
+  - skill: pc-accessibility
     when: UI behavior is under review
-  - skill: compliance
+  - skill: pc-compliance
     when: release evidence must satisfy regulatory checks
-  - skill: documentation
+  - skill: pc-documentation
     when: verification creates durable release criteria, known limitations, audit
       notes, or recovery guidance
 - phase_id: 06-delivery
@@ -94,14 +94,14 @@ phases:
   must_produce: []
   skip_when_fast_track: []
   conditional:
-  - skill: verification-before-completion
+  - skill: pc-verification-before-completion
     when: the team is about to claim a release, rollout, or deployment handoff is
       complete
-  - skill: observability
+  - skill: pc-observability
     when: release automation, rollout boundaries, or benchmark paths change
-  - skill: compliance
+  - skill: pc-compliance
     when: shipping requires regulatory evidence or approvals
-  - skill: documentation
+  - skill: pc-documentation
     when: shipping changes release, rollout, rollback, or operator instructions that
       others must follow
 - phase_id: 07-operations
@@ -109,32 +109,32 @@ phases:
   must_produce: []
   skip_when_fast_track: []
   conditional:
-  - skill: verification-before-completion
+  - skill: pc-verification-before-completion
     when: the team is about to claim an incident is resolved, a mitigation is sufficient,
       or an operational handoff is complete
-  - skill: observability
-    when: runbooks, alerts, or incident telemetry boundaries change
-  - skill: bug-history-retrieval
+  - skill: pc-observability
+    when: pc-runbooks, alerts, or incident telemetry boundaries change
+  - skill: pc-bug-history-retrieval
     when: operational failures may match known incidents
-  - skill: compliance
+  - skill: pc-compliance
     when: incident handling has regulatory reporting obligations
-  - skill: documentation
-    when: incidents or operational changes modify runbooks, escalation paths, dashboards,
+  - skill: pc-documentation
+    when: incidents or operational changes modify pc-runbooks, escalation paths, dashboards,
       or recovery guidance
 - phase_id: 08-evolution
   must_consider: []
   must_produce: []
   skip_when_fast_track: []
   conditional:
-  - skill: verification-before-completion
-    when: the team is about to claim retrospective, migration, or debt follow-up work
+  - skill: pc-verification-before-completion
+    when: the team is about to claim pc-retrospective, migration, or debt follow-up work
       is complete
-  - skill: observability
-    when: retrospective findings rely on execution telemetry
-  - skill: bug-history-retrieval
+  - skill: pc-observability
+    when: pc-retrospective findings rely on execution telemetry
+  - skill: pc-bug-history-retrieval
     when: repeated failures need historical comparison
-  - skill: compliance
+  - skill: pc-compliance
     when: improvement work changes regulated process obligations
-  - skill: documentation
-    when: retrospective, migration, or deprecation work changes long-lived process
+  - skill: pc-documentation
+    when: pc-retrospective, migration, or pc-deprecation work changes long-lived process
       or transition guidance

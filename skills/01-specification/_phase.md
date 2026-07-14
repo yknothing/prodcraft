@@ -28,10 +28,10 @@ Spec document reviewed and signed off by engineering lead and product owner. All
 
 | Skill | Purpose | Effort |
 |---|---|---|
-| [requirements-engineering](requirements-engineering/SKILL.md) | Capture and prioritize what the product must do | large |
-| [spec-writing](spec-writing/SKILL.md) | Document the detailed design for engineering | large |
-| [domain-modeling](domain-modeling/SKILL.md) | Establish shared language and entity relationships | medium |
-| [acceptance-criteria](acceptance-criteria/SKILL.md) | Define measurable success conditions per requirement | medium |
+| [pc-requirements-engineering](pc-requirements-engineering/SKILL.md) | Capture and prioritize what the product must do | large |
+| [pc-spec-writing](pc-spec-writing/SKILL.md) | Document the detailed design for engineering | large |
+| [pc-domain-modeling](pc-domain-modeling/SKILL.md) | Establish shared language and entity relationships | medium |
+| [pc-acceptance-criteria](pc-acceptance-criteria/SKILL.md) | Define measurable success conditions per requirement | medium |
 
 ## Typical Duration
 
@@ -43,11 +43,11 @@ Spec document reviewed and signed off by engineering lead and product owner. All
 ## Skill Sequence
 
 ```
-requirements-engineering ──┬──> spec-writing
-                           │
-                           └──> domain-modeling ──> spec-writing
-                                                        │
-acceptance-criteria <───────────────────────────────────┘
+pc-requirements-engineering ──┬──> pc-spec-writing
+                              │
+                              └──> pc-domain-modeling ──> pc-spec-writing
+                                                                  │
+pc-acceptance-criteria <──────────────────────────────────────────┘
 ```
 
 Requirements come first. Domain modeling and spec writing can overlap. Acceptance criteria finalize after the spec stabilizes.

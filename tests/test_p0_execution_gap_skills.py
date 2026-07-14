@@ -16,10 +16,10 @@ class P0ExecutionGapSkillTests(unittest.TestCase):
 
     def test_systematic_debugging_and_verification_skill_files_exist_with_gotchas(self):
         targets = [
-            REPO_ROOT / "skills" / "04-implementation" / "systematic-debugging" / "SKILL.md",
-            REPO_ROOT / "skills" / "04-implementation" / "systematic-debugging" / "references" / "gotchas.md",
-            REPO_ROOT / "skills" / "cross-cutting" / "verification-before-completion" / "SKILL.md",
-            REPO_ROOT / "skills" / "cross-cutting" / "verification-before-completion" / "references" / "gotchas.md",
+            REPO_ROOT / "skills" / "04-implementation" / "pc-systematic-debugging" / "SKILL.md",
+            REPO_ROOT / "skills" / "04-implementation" / "pc-systematic-debugging" / "references" / "gotchas.md",
+            REPO_ROOT / "skills" / "cross-cutting" / "pc-verification-before-completion" / "SKILL.md",
+            REPO_ROOT / "skills" / "cross-cutting" / "pc-verification-before-completion" / "references" / "gotchas.md",
         ]
         for path in targets:
             with self.subTest(path=path):
@@ -28,8 +28,8 @@ class P0ExecutionGapSkillTests(unittest.TestCase):
     def test_manifest_registers_both_p0_skills_as_critical_tested_or_better_routed(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
 
-        systematic = entries["systematic-debugging"]
-        verification = entries["verification-before-completion"]
+        systematic = entries["pc-systematic-debugging"]
+        verification = entries["pc-verification-before-completion"]
 
         self.assertEqual("04-implementation", systematic["phase"])
         self.assertEqual("cross-cutting", verification["phase"])
@@ -55,27 +55,27 @@ class P0ExecutionGapSkillTests(unittest.TestCase):
 
         self.assertIn("bug-fix-report", artifact_flow)
         self.assertIn("verification-record", artifact_flow)
-        self.assertIn("systematic-debugging", artifact_flow["course-correction-note"]["produced_by"])
-        self.assertEqual("systematic-debugging", artifact_flow["bug-fix-report"]["produced_by"])
-        self.assertEqual("verification-before-completion", artifact_flow["verification-record"]["produced_by"])
+        self.assertIn("pc-systematic-debugging", artifact_flow["course-correction-note"]["produced_by"])
+        self.assertEqual("pc-systematic-debugging", artifact_flow["bug-fix-report"]["produced_by"])
+        self.assertEqual("pc-verification-before-completion", artifact_flow["verification-record"]["produced_by"])
 
-        self.assertIn("systematic-debugging", artifact_flow["source-code"]["consumed_by"])
-        self.assertIn("systematic-debugging", artifact_flow["test-suite"]["consumed_by"])
-        self.assertIn("systematic-debugging", artifact_flow["historical-defect-context"]["consumed_by"])
-        self.assertIn("systematic-debugging", artifact_flow["fix-lineage-brief"]["consumed_by"])
+        self.assertIn("pc-systematic-debugging", artifact_flow["source-code"]["consumed_by"])
+        self.assertIn("pc-systematic-debugging", artifact_flow["test-suite"]["consumed_by"])
+        self.assertIn("pc-systematic-debugging", artifact_flow["historical-defect-context"]["consumed_by"])
+        self.assertIn("pc-systematic-debugging", artifact_flow["fix-lineage-brief"]["consumed_by"])
 
     def test_gateway_phase_docs_and_hotfix_docs_reference_new_execution_skills(self):
         gateway = (REPO_ROOT / "skills" / "_gateway.md").read_text(encoding="utf-8")
         implementation_phase = (REPO_ROOT / "skills" / "04-implementation" / "_phase.md").read_text(encoding="utf-8")
-        incident_response = (REPO_ROOT / "skills" / "07-operations" / "incident-response" / "SKILL.md").read_text(encoding="utf-8")
+        incident_response = (REPO_ROOT / "skills" / "07-operations" / "pc-incident-response" / "SKILL.md").read_text(encoding="utf-8")
         hotfix = (REPO_ROOT / "workflows" / "hotfix.md").read_text(encoding="utf-8")
 
-        self.assertIn("systematic-debugging", gateway)
-        self.assertIn("verification-before-completion", gateway)
-        self.assertIn("systematic-debugging", implementation_phase)
-        self.assertIn("systematic-debugging", incident_response)
-        self.assertIn("verification-before-completion", hotfix)
-        self.assertIn("systematic-debugging", hotfix)
+        self.assertIn("pc-systematic-debugging", gateway)
+        self.assertIn("pc-verification-before-completion", gateway)
+        self.assertIn("pc-systematic-debugging", implementation_phase)
+        self.assertIn("pc-systematic-debugging", incident_response)
+        self.assertIn("pc-verification-before-completion", hotfix)
+        self.assertIn("pc-systematic-debugging", hotfix)
 
     def test_cross_cutting_matrix_injects_verification_for_execution_heavy_phases(self):
         expected_phases = {"04-implementation", "05-quality", "06-delivery", "07-operations", "08-evolution"}
@@ -84,14 +84,14 @@ class P0ExecutionGapSkillTests(unittest.TestCase):
         for phase_id in expected_phases:
             with self.subTest(phase=phase_id):
                 conditional_skills = {item["skill"] for item in entries[phase_id]["conditional"]}
-                self.assertIn("verification-before-completion", conditional_skills)
+                self.assertIn("pc-verification-before-completion", conditional_skills)
 
     def test_p0_skills_include_quick_reference_discipline_tables(self):
         systematic = (
-            REPO_ROOT / "skills" / "04-implementation" / "systematic-debugging" / "SKILL.md"
+            REPO_ROOT / "skills" / "04-implementation" / "pc-systematic-debugging" / "SKILL.md"
         ).read_text(encoding="utf-8")
         verification = (
-            REPO_ROOT / "skills" / "cross-cutting" / "verification-before-completion" / "SKILL.md"
+            REPO_ROOT / "skills" / "cross-cutting" / "pc-verification-before-completion" / "SKILL.md"
         ).read_text(encoding="utf-8")
 
         self.assertIn("| Failed fix count | Required response |", systematic)

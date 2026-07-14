@@ -28,11 +28,11 @@ Code is deployed to production and verified. Smoke tests pass in production. Mon
 
 | Skill | Purpose | Effort |
 |---|---|---|
-| ci-cd | Automate build, test, and deployment pipelines | medium |
-| delivery-completion | Turn verified work into an explicit merge/PR/keep/discard outcome | small |
-| release-management | Coordinate the release process across teams | medium |
-| deployment-strategy | Choose and execute the right deployment pattern | medium |
-| feature-flags | Control feature rollout independently from deployment | small |
+| pc-ci-cd | Automate build, test, and deployment pipelines | medium |
+| pc-delivery-completion | Turn verified work into an explicit merge/PR/keep/discard outcome | small |
+| pc-release-management | Coordinate the release process across teams | medium |
+| pc-deployment-strategy | Choose and execute the right deployment pattern | medium |
+| pc-feature-flags | Control feature rollout independently from deployment | small |
 
 ## Typical Duration
 
@@ -44,9 +44,9 @@ Code is deployed to production and verified. Smoke tests pass in production. Mon
 ## Skill Sequence
 
 ```
-ci-cd ──> delivery-completion ──> release-management ──> deployment-strategy
-                                                         │
-                                                   feature-flags
+pc-ci-cd ──> pc-delivery-completion ──> pc-release-management ──> pc-deployment-strategy
+                                                                    │
+                                                              pc-feature-flags
 ```
 
 CI/CD is the foundation. Delivery completion makes the verified branch or PR outcome explicit. Release management coordinates the human process and readiness decision. Deployment strategy turns that plan into a concrete rollout and rollback path. Feature flags decouple deployment from release.

@@ -15,7 +15,7 @@ class AccessibilityTestedStatusTests(unittest.TestCase):
         self.entries = {entry["name"]: entry for entry in self.manifest["skills"]}
 
     def test_manifest_registers_accessibility_as_tested_routed(self):
-        entry = self.entries["accessibility"]
+        entry = self.entries["pc-accessibility"]
 
         self.assertEqual("cross-cutting", entry["phase"])
         self.assertEqual("tested", entry["status"])
@@ -32,26 +32,26 @@ class AccessibilityTestedStatusTests(unittest.TestCase):
 
     def test_tested_packet_files_exist(self):
         targets = [
-            REPO_ROOT / "eval" / "cross-cutting" / "accessibility" / "evals" / "eval-strategy.md",
-            REPO_ROOT / "eval" / "cross-cutting" / "accessibility" / "findings.md",
-            REPO_ROOT / "eval" / "cross-cutting" / "accessibility" / "isolated-benchmark-plan.md",
-            REPO_ROOT / "eval" / "cross-cutting" / "accessibility" / "isolated-benchmark-review.md",
-            REPO_ROOT / "eval" / "cross-cutting" / "accessibility" / "isolated-benchmark.json",
+            REPO_ROOT / "eval" / "cross-cutting" / "pc-accessibility" / "evals" / "eval-strategy.md",
+            REPO_ROOT / "eval" / "cross-cutting" / "pc-accessibility" / "findings.md",
+            REPO_ROOT / "eval" / "cross-cutting" / "pc-accessibility" / "isolated-benchmark-plan.md",
+            REPO_ROOT / "eval" / "cross-cutting" / "pc-accessibility" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "cross-cutting" / "pc-accessibility" / "isolated-benchmark.json",
             REPO_ROOT
             / "eval"
             / "cross-cutting"
-            / "accessibility"
+            / "pc-accessibility"
             / "acceptance-criteria-handoff-review.md",
             REPO_ROOT
             / "eval"
             / "cross-cutting"
-            / "accessibility"
+            / "pc-accessibility"
             / "fixtures"
             / "invite-modal-ui-summary.md",
             REPO_ROOT
             / "eval"
             / "cross-cutting"
-            / "accessibility"
+            / "pc-accessibility"
             / "fixtures"
             / "invite-modal-product-constraints.md",
         ]
@@ -62,14 +62,14 @@ class AccessibilityTestedStatusTests(unittest.TestCase):
 
     def test_findings_and_artifact_flow_record_tested_promotion(self):
         findings = (
-            REPO_ROOT / "eval" / "cross-cutting" / "accessibility" / "findings.md"
+            REPO_ROOT / "eval" / "cross-cutting" / "pc-accessibility" / "findings.md"
         ).read_text(encoding="utf-8")
         artifact_flow = {entry["artifact"]: entry for entry in self.manifest["artifact_flow"]}
 
         self.assertIn("Current status: `tested`", findings)
         self.assertIn("isolated benchmark", findings)
-        self.assertEqual("accessibility", artifact_flow["accessibility-guidance"]["produced_by"])
-        self.assertIn("acceptance-criteria", artifact_flow["accessibility-guidance"]["consumed_by"])
+        self.assertEqual("pc-accessibility", artifact_flow["accessibility-guidance"]["produced_by"])
+        self.assertIn("pc-acceptance-criteria", artifact_flow["accessibility-guidance"]["consumed_by"])
 
 
 if __name__ == "__main__":
