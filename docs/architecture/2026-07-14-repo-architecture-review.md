@@ -121,7 +121,7 @@ Recommendation (cheapest closing move, in order):
 1. Declare a canonical session artifact convention (e.g.
    `build/artifacts/<work-id>/<artifact>.json`, gitignored by default,
    committable when evidence should persist).
-2. Ship `scripts/validate_artifact_instance.py <path...>` that dispatches on
+2. Ship `scripts/validate_prodcraft.py --artifact-instance <path>` that dispatches on
    `artifact` + `schema_version` through `schemas/artifacts/registry.yml` and
    also runs the instance-contract functions.
 3. Only then bind host adapters (Claude Code hook, CI job) per AR-03 —
@@ -129,6 +129,11 @@ Recommendation (cheapest closing move, in order):
 4. Resolve the dual representation: either templates gain a machine-readable
    block (YAML frontmatter in the artifact md) that the CLI parses, or the
    JSON instance is canonical and the md is a rendering.
+
+Resolution (2026-07-16): the main-integrated
+`scripts/validate_prodcraft.py --artifact-instance` path is canonical. The
+overlapping standalone wrapper was removed so host adapters, docs, and skills
+share one implementation.
 
 ### F7 (P1, enforcement gap): main-branch pushes bypass all structural gates
 

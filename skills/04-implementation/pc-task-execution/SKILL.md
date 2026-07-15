@@ -33,19 +33,13 @@ metadata:
 
 `pc-task-execution` is the tactical companion to `pc-task-breakdown`.
 
-- `pc-task-breakdown` decides the 1-3 day implementation slice
-- `pc-task-execution` turns that slice into the next batch of 2-5 minute steps, verification points, and stop conditions
+It does **not** replace `pc-feature-development`, `pc-systematic-debugging`, or `pc-tdd`; it governs the batch those skills execute.
 
-This skill exists to prevent a common failure mode: a task is "small enough" on paper, but execution still drifts into long, unverified editing sessions, hidden blockers, or broad opportunistic changes.
-
-It does **not** replace `pc-feature-development`, `pc-systematic-debugging`, or `pc-tdd`. It prepares and governs the batch that those skills will execute.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **task-list** -- The approved implementation slice and done criteria.
-- **dependency-graph** -- Optional but strongly preferred when the task depends on other slices or sequencing constraints.
-- **architecture-doc** -- Needed when execution must preserve component boundaries or brownfield seams.
-- **api-contract** -- Needed when the current batch could change externally visible behavior.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -122,9 +116,7 @@ not advancement authority.
 
 ## Outputs
 
-- **execution-batch-plan** -- The next 2-5 minute step sequence, with files, commands, verification points, and stop conditions.
-- **execution-checkpoint** -- What the batch completed, how it was verified, what remains open, and the next recommended action.
-- **execution-state** -- Optional strict-mode checkpoint with replayable lifecycle, phase, and artifact-binding history.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -133,23 +125,3 @@ not advancement authority.
 - [ ] Stop conditions are explicit
 - [ ] The selected implementation discipline matches the batch type
 - [ ] The checkpoint states what changed and what remains unresolved
-
-## Anti-Patterns
-
-1. **Plan echoing** -- repeating the 1-3 day task in different words without producing executable steps.
-2. **One giant batch** -- turning tactical execution into another half-day plan.
-3. **Skill substitution** -- using `pc-task-execution` to avoid `pc-tdd`, `pc-systematic-debugging`, or `pc-feature-development`.
-4. **Blocker denial** -- continuing after verification fails or the task stops matching the approved slice.
-5. **Checkpoint theater** -- claiming a batch is complete without saying what was verified or what remains open.
-
-## Reference Material
-
-For tactical execution failure modes that cause hidden drift or false progress, see [Gotchas](references/gotchas.md).
-
-## Related Skills
-
-- [pc-task-breakdown](../../03-planning/pc-task-breakdown/SKILL.md) -- defines the 1-3 day slice that this skill tactically executes
-- [pc-systematic-debugging](../pc-systematic-debugging/SKILL.md) -- handles bug-fix batches that need root-cause-first investigation
-- [pc-tdd](../pc-tdd/SKILL.md) -- drives behavior-changing steps with failing tests first
-- [pc-feature-development](../pc-feature-development/SKILL.md) -- implements the approved tested slice
-- [pc-verification-before-completion](../../cross-cutting/pc-verification-before-completion/SKILL.md) -- verifies the batch checkpoint before completion claims

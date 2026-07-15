@@ -1,0 +1,48 @@
+{
+  "scenario_id": "flaky-failure-stabilization",
+  "output_kind": "bug-fix-report",
+  "gate_bypass": false,
+  "bug_fix_report": {
+    "reproduction": "Replace the fixed 200 ms sleep in test_export_ready_notification with a condition-based wait on the observable completion event; this deterministically reproduces the missing wake-up whenever the worker registers after the queue transition.",
+    "root_cause": "Listener registration can occur after the one-shot completion transition, losing the wake-up.",
+    "confirming_evidence": [
+      "All captured failures checked 8–47 ms before worker completion, while passing runs happened to complete within 200 ms.",
+      "With the listener-ordering fix, the stabilized reproduction passed 500 consecutive runs.",
+      "With only the ordering fix removed, the stabilized test failed within 12 runs with the same missing wake-up."
+    ],
+    "fix_boundary": "Register the listener before the transition, leave production behavior otherwise unchanged, and preserve the condition-based test wait while removing the fixed sleep.",
+    "regression_protection": "Keep the condition-based test and hand it to pc-tdd; the stabilized test passed 500/500 runs with the fix and reproduced the same failure within 12 runs when the fix was removed.",
+    "two_way_causality": {
+      "with_fix_passed": true,
+      "fix_removed_failure_returned": true
+    }
+  },
+  "debug_journal": [
+    {
+      "hypothesis": "The fixed 200 ms delay allows the test assertion to run before worker completion.",
+      "prediction": "Failing runs check before worker completion.",
+      "experiment": "Instrument event enqueue and worker completion timestamps without changing the wait.",
+      "result": "All captured failures checked 8–47 ms before completion; passing runs happened to complete inside 200 ms."
+    },
+    {
+      "hypothesis": "A condition-based wait will stabilize the timing race and reveal whether the completion event is eventually emitted.",
+      "prediction": "The race becomes deterministic and exposes whether the event is eventually emitted.",
+      "experiment": "Replace the test's fixed sleep with a condition-based wait on the observable completion event, leaving production code unchanged.",
+      "result": "The test deterministically reproduced a missing wake-up whenever the worker registered after the queue transition."
+    },
+    {
+      "hypothesis": "Registering the listener after the one-shot transition loses the completion wake-up.",
+      "prediction": "Registering the listener before the transition will eliminate the stabilized failure, and removing only that change will restore it.",
+      "experiment": "Change only the worker registration ordering so the listener exists before the transition, then run the stabilized test with and without that change.",
+      "result": "With the fix, 500/500 stabilized runs passed; with only the fix removed, the same missing wake-up returned within 12 runs."
+    }
+  ],
+  "flaky_discipline": {
+    "rerun_until_green_refused": true,
+    "failure_stabilized_before_fix": true,
+    "condition_based_wait": true
+  },
+  "downstream_skills": [
+    "pc-tdd"
+  ]
+}

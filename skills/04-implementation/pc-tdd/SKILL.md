@@ -25,9 +25,9 @@ metadata:
 
 ## Context
 
-TDD is the core implementation discipline in Prodcraft. It ensures every piece of code is born with a test, creating a safety net for refactoring and a living specification of behavior. TDD is not about testing -- it's about design. Writing the test first forces you to think about the interface before the implementation.
+TDD is the core implementation discipline in Prodcraft.
 
-In a lifecycle-aware system, TDD should start from the next planned slice of work, while preserving upstream contract and coexistence boundaries. Do not use implementation pressure as an excuse to skip characterization, contract, or unsupported-flow tests in brownfield work.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## The Iron Law
 
@@ -47,9 +47,7 @@ If you did not watch the relevant test fail first, you do not yet know that the 
 
 ## Inputs
 
-- **task-list** -- Minimum required input. Identifies the next slice to implement and its done criteria.
-- **api-contract** -- Optional but strongly preferred when the task changes public or inter-service behavior.
-- **acceptance-criteria-set** -- Optional amplifying input when formal acceptance criteria already exist.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -152,7 +150,8 @@ If an exception is used, state it explicitly. "We'll add tests later" without a 
 
 ## Outputs
 
-- **test-suite** -- produced by this skill
+Produce only declared outputs at their documented quality boundary.
+
 ## Quality Gate
 
 - [ ] The relevant RED run was observed before implementation code was accepted
@@ -161,22 +160,3 @@ If an exception is used, state it explicitly. "We'll add tests later" without a 
 - [ ] Code coverage meets project threshold (e.g., 80% for new code)
 - [ ] No tests are skipped or ignored
 - [ ] Tests run in < 30 seconds (unit) / < 5 minutes (full suite)
-
-## Anti-Patterns
-
-1. **Test-after rationalization** -- "I'll write tests after I code." You won't, and the design suffers.
-2. **Testing implementation, not behavior** -- Testing that a private method is called is fragile. Test the public behavior.
-3. **Giant test setup** -- If setup is 50 lines, the unit under test is too large. Break it down.
-4. **Ignoring the REFACTOR step** -- RED-GREEN without REFACTOR accumulates design debt rapidly.
-5. **100% coverage obsession** -- Coverage is a guide, not a goal. 80% thoughtful coverage beats 100% mechanical coverage.
-6. **Skipping safety-net tests in brownfield work** -- Writing only the new happy-path test while leaving coexistence, unsupported-flow, or legacy-read behavior unprotected.
-7. **Reference-code cheating** -- Keeping implementation written before RED and "translating" it after the test exists.
-
-## Related Skills
-
-- [pc-acceptance-criteria](../../01-specification/pc-acceptance-criteria/SKILL.md) -- provides the test specifications
-- [pc-systematic-debugging](../pc-systematic-debugging/SKILL.md) -- establishes the bug boundary before TDD drives the fix
-- [pc-feature-development](../pc-feature-development/SKILL.md) -- turns the tested slice into the reviewable implementation increment
-- [pc-refactoring](../pc-refactoring/SKILL.md) -- applies the REFACTOR step more broadly once behavior is protected
-- [pc-code-review](../../05-quality/pc-code-review/SKILL.md) -- reviews both code and tests
-- [pc-verification-before-completion](../../cross-cutting/pc-verification-before-completion/SKILL.md) -- verifies that the claimed green state is backed by fresh evidence

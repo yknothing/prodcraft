@@ -26,15 +26,13 @@ metadata:
 
 ## Context
 
-Data modeling decides what the system remembers, how it relates, and how change propagates through storage over time. In Prodcraft, it bridges domain language and implementation reality: the model must reflect real ownership boundaries, consistency needs, and migration cost.
+Data modeling decides what the system remembers, how it relates, and how change propagates through storage over time.
 
-Use this skill after system design clarifies component boundaries. If storage design is left implicit, implementation invents schema rules piecemeal and migration risk surfaces late.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **architecture-doc** -- Defines component boundaries, data ownership, and integration seams.
-- **domain-model** -- Provides entities, value objects, and relationships that should survive into persistence.
-- **spec-doc** -- Captures workflow rules, constraints, and edge cases that shape state transitions.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -75,7 +73,7 @@ If the data model makes routine change unsafe, revise it now.
 
 ## Outputs
 
-- **data-schema** -- The persistence model, ownership rules, and migration-sensitive notes required for implementation and future evolution.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -84,17 +82,3 @@ If the data model makes routine change unsafe, revise it now.
 - [ ] Consistency and lifecycle rules are documented
 - [ ] Brownfield or migration-sensitive paths are called out explicitly
 - [ ] The model can evolve without avoidable downtime or unsafe backfills
-
-## Anti-Patterns
-
-1. **Schema-first architecture** -- letting database convenience redraw service boundaries.
-2. **One model for every concern** -- forcing write, read, analytics, and migration needs into the same shape.
-3. **Implicit ownership** -- multiple components update the same record without a canonical owner.
-4. **Migration amnesia** -- designing a clean schema that ignores how real data will get there.
-
-## Related Skills
-
-- [pc-system-design](../pc-system-design/SKILL.md) -- provides the component and ownership boundaries
-- [pc-domain-modeling](../../01-specification/pc-domain-modeling/SKILL.md) -- provides the conceptual model
-- [pc-feature-development](../../04-implementation/pc-feature-development/SKILL.md) -- implements against the resulting schema
-- `pc-migration-strategy` (planned) -- handles larger migration programs that depend on the model

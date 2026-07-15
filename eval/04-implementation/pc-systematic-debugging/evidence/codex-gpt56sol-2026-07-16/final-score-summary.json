@@ -1,0 +1,2788 @@
+{
+  "schema_version": "explicit-benchmark-score-summary.v1",
+  "run_dir": ".",
+  "benchmark_sha256": "21bf76fe32a703a58a8ce553b63bf9a61af3168cdc62db7bc19d37f10d300ef4",
+  "manifest_sha256": "3b88ea6f703bd167bdc1ab199fba6401cc2a19f31cbf6106d6721aa7774f9a89",
+  "skill_file_sha256": "0e6b79dd15c245e2a123174b69c6f56800402ecc478c58f20bdf98811dd94f04",
+  "acceptance_arm": "with_skill",
+  "expected_acceptance_case_count": 12,
+  "scored_acceptance_case_count": 12,
+  "machine_passed": true,
+  "machine_cases": [
+    {
+      "scenario_id": "multi-hypothesis-regression",
+      "run_number": 1,
+      "arm": "without_skill",
+      "judge_assertion_names": [
+        "hypotheses-follow-recorded-evidence",
+        "experiments-change-one-variable",
+        "fix-is-smallest-safe-boundary"
+      ],
+      "response_sha256": "6c24f392de1693d0eaf06401fa4e8c2f3fde393c527c23afd3a4e9abae47ef35",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'multi-hypothesis-regression'; got 'multi-hypothesis-regression'"
+        },
+        {
+          "name": "bug-fix-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'bug-fix-report'; got 'bug-fix-report'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "reproduction-recorded",
+          "path": "bug_fix_report.reproduction",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "root-cause-recorded",
+          "path": "bug_fix_report.root_cause",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "bug_fix_report.confirming_evidence",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 3"
+        },
+        {
+          "name": "fix-boundary-recorded",
+          "path": "bug_fix_report.fix_boundary",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "regression-protection-recorded",
+          "path": "bug_fix_report.regression_protection",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "with-fix-passed",
+          "path": "bug_fix_report.two_way_causality.with_fix_passed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "fix-removal-restored-failure",
+          "path": "bug_fix_report.two_way_causality.fix_removed_failure_returned",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "multi-hypothesis-journal",
+          "path": "debug_journal",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 2"
+        },
+        {
+          "name": "one-variable-per-iteration",
+          "path": "hypothesis_discipline.one_variable_per_iteration",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "no-fix-stacking",
+          "path": "hypothesis_discipline.fix_stacking",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "obvious-hypothesis-rejected",
+          "path": "hypothesis_discipline.obvious_first_hypothesis_rejected",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "multi-hypothesis-regression",
+      "run_number": 1,
+      "arm": "with_skill",
+      "judge_assertion_names": [
+        "hypotheses-follow-recorded-evidence",
+        "experiments-change-one-variable",
+        "fix-is-smallest-safe-boundary"
+      ],
+      "response_sha256": "a1f75354393916670432cc1d9061d0b38d7ca1d28247937e882942f64ff0a444",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'multi-hypothesis-regression'; got 'multi-hypothesis-regression'"
+        },
+        {
+          "name": "bug-fix-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'bug-fix-report'; got 'bug-fix-report'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "reproduction-recorded",
+          "path": "bug_fix_report.reproduction",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "root-cause-recorded",
+          "path": "bug_fix_report.root_cause",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "bug_fix_report.confirming_evidence",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 3"
+        },
+        {
+          "name": "fix-boundary-recorded",
+          "path": "bug_fix_report.fix_boundary",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "regression-protection-recorded",
+          "path": "bug_fix_report.regression_protection",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "with-fix-passed",
+          "path": "bug_fix_report.two_way_causality.with_fix_passed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "fix-removal-restored-failure",
+          "path": "bug_fix_report.two_way_causality.fix_removed_failure_returned",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "multi-hypothesis-journal",
+          "path": "debug_journal",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 2"
+        },
+        {
+          "name": "one-variable-per-iteration",
+          "path": "hypothesis_discipline.one_variable_per_iteration",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "no-fix-stacking",
+          "path": "hypothesis_discipline.fix_stacking",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "obvious-hypothesis-rejected",
+          "path": "hypothesis_discipline.obvious_first_hypothesis_rejected",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "multi-hypothesis-regression",
+      "run_number": 2,
+      "arm": "without_skill",
+      "judge_assertion_names": [
+        "hypotheses-follow-recorded-evidence",
+        "experiments-change-one-variable",
+        "fix-is-smallest-safe-boundary"
+      ],
+      "response_sha256": "9a47d6cb5bf1e3d67e5c38577c2180ea9bd616dcf75b1583179f8c4abf9e9633",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'multi-hypothesis-regression'; got 'multi-hypothesis-regression'"
+        },
+        {
+          "name": "bug-fix-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'bug-fix-report'; got 'bug-fix-report'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "reproduction-recorded",
+          "path": "bug_fix_report.reproduction",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "root-cause-recorded",
+          "path": "bug_fix_report.root_cause",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "bug_fix_report.confirming_evidence",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 4"
+        },
+        {
+          "name": "fix-boundary-recorded",
+          "path": "bug_fix_report.fix_boundary",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "regression-protection-recorded",
+          "path": "bug_fix_report.regression_protection",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "with-fix-passed",
+          "path": "bug_fix_report.two_way_causality.with_fix_passed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "fix-removal-restored-failure",
+          "path": "bug_fix_report.two_way_causality.fix_removed_failure_returned",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "multi-hypothesis-journal",
+          "path": "debug_journal",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 2"
+        },
+        {
+          "name": "one-variable-per-iteration",
+          "path": "hypothesis_discipline.one_variable_per_iteration",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "no-fix-stacking",
+          "path": "hypothesis_discipline.fix_stacking",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "obvious-hypothesis-rejected",
+          "path": "hypothesis_discipline.obvious_first_hypothesis_rejected",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "multi-hypothesis-regression",
+      "run_number": 2,
+      "arm": "with_skill",
+      "judge_assertion_names": [
+        "hypotheses-follow-recorded-evidence",
+        "experiments-change-one-variable",
+        "fix-is-smallest-safe-boundary"
+      ],
+      "response_sha256": "ecaa84cd93780ee053cb3f2798b79e7e0d8aa2f1e8cb13b78cab7972f7ae847a",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'multi-hypothesis-regression'; got 'multi-hypothesis-regression'"
+        },
+        {
+          "name": "bug-fix-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'bug-fix-report'; got 'bug-fix-report'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "reproduction-recorded",
+          "path": "bug_fix_report.reproduction",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "root-cause-recorded",
+          "path": "bug_fix_report.root_cause",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "bug_fix_report.confirming_evidence",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 4"
+        },
+        {
+          "name": "fix-boundary-recorded",
+          "path": "bug_fix_report.fix_boundary",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "regression-protection-recorded",
+          "path": "bug_fix_report.regression_protection",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "with-fix-passed",
+          "path": "bug_fix_report.two_way_causality.with_fix_passed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "fix-removal-restored-failure",
+          "path": "bug_fix_report.two_way_causality.fix_removed_failure_returned",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "multi-hypothesis-journal",
+          "path": "debug_journal",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 2"
+        },
+        {
+          "name": "one-variable-per-iteration",
+          "path": "hypothesis_discipline.one_variable_per_iteration",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "no-fix-stacking",
+          "path": "hypothesis_discipline.fix_stacking",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "obvious-hypothesis-rejected",
+          "path": "hypothesis_discipline.obvious_first_hypothesis_rejected",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "multi-hypothesis-regression",
+      "run_number": 3,
+      "arm": "without_skill",
+      "judge_assertion_names": [
+        "hypotheses-follow-recorded-evidence",
+        "experiments-change-one-variable",
+        "fix-is-smallest-safe-boundary"
+      ],
+      "response_sha256": "e28efcc5573e9ad85d2a3d1fa09ad34caba3eea10fa7191c9da3545bbdbfded5",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'multi-hypothesis-regression'; got 'multi-hypothesis-regression'"
+        },
+        {
+          "name": "bug-fix-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'bug-fix-report'; got 'bug-fix-report'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "reproduction-recorded",
+          "path": "bug_fix_report.reproduction",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "root-cause-recorded",
+          "path": "bug_fix_report.root_cause",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "bug_fix_report.confirming_evidence",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 3"
+        },
+        {
+          "name": "fix-boundary-recorded",
+          "path": "bug_fix_report.fix_boundary",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "regression-protection-recorded",
+          "path": "bug_fix_report.regression_protection",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "with-fix-passed",
+          "path": "bug_fix_report.two_way_causality.with_fix_passed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "fix-removal-restored-failure",
+          "path": "bug_fix_report.two_way_causality.fix_removed_failure_returned",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "multi-hypothesis-journal",
+          "path": "debug_journal",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 2"
+        },
+        {
+          "name": "one-variable-per-iteration",
+          "path": "hypothesis_discipline.one_variable_per_iteration",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "no-fix-stacking",
+          "path": "hypothesis_discipline.fix_stacking",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "obvious-hypothesis-rejected",
+          "path": "hypothesis_discipline.obvious_first_hypothesis_rejected",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "multi-hypothesis-regression",
+      "run_number": 3,
+      "arm": "with_skill",
+      "judge_assertion_names": [
+        "hypotheses-follow-recorded-evidence",
+        "experiments-change-one-variable",
+        "fix-is-smallest-safe-boundary"
+      ],
+      "response_sha256": "f79527afb5541101705b7fa150a9c98995028f155ff5b5b039033518a06e7c9b",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'multi-hypothesis-regression'; got 'multi-hypothesis-regression'"
+        },
+        {
+          "name": "bug-fix-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'bug-fix-report'; got 'bug-fix-report'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "reproduction-recorded",
+          "path": "bug_fix_report.reproduction",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "root-cause-recorded",
+          "path": "bug_fix_report.root_cause",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "bug_fix_report.confirming_evidence",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 3"
+        },
+        {
+          "name": "fix-boundary-recorded",
+          "path": "bug_fix_report.fix_boundary",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "regression-protection-recorded",
+          "path": "bug_fix_report.regression_protection",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "with-fix-passed",
+          "path": "bug_fix_report.two_way_causality.with_fix_passed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "fix-removal-restored-failure",
+          "path": "bug_fix_report.two_way_causality.fix_removed_failure_returned",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "multi-hypothesis-journal",
+          "path": "debug_journal",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 2"
+        },
+        {
+          "name": "one-variable-per-iteration",
+          "path": "hypothesis_discipline.one_variable_per_iteration",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "no-fix-stacking",
+          "path": "hypothesis_discipline.fix_stacking",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "obvious-hypothesis-rejected",
+          "path": "hypothesis_discipline.obvious_first_hypothesis_rejected",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "flaky-failure-stabilization",
+      "run_number": 1,
+      "arm": "without_skill",
+      "judge_assertion_names": [
+        "flakiness-is-treated-as-defect",
+        "wait-observes-business-condition",
+        "causality-is-substantive"
+      ],
+      "response_sha256": "261589056ed123fca4695dbda0a11167fa08da6b99b2854773323f50e235f128",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'flaky-failure-stabilization'; got 'flaky-failure-stabilization'"
+        },
+        {
+          "name": "bug-fix-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'bug-fix-report'; got 'bug-fix-report'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "reproduction-recorded",
+          "path": "bug_fix_report.reproduction",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "root-cause-recorded",
+          "path": "bug_fix_report.root_cause",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "bug_fix_report.confirming_evidence",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 3"
+        },
+        {
+          "name": "with-fix-passed",
+          "path": "bug_fix_report.two_way_causality.with_fix_passed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "fix-removal-restored-failure",
+          "path": "bug_fix_report.two_way_causality.fix_removed_failure_returned",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "rerun-until-green-refused",
+          "path": "flaky_discipline.rerun_until_green_refused",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "stabilized-before-fix",
+          "path": "flaky_discipline.failure_stabilized_before_fix",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "condition-based-wait",
+          "path": "flaky_discipline.condition_based_wait",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "flaky-failure-stabilization",
+      "run_number": 1,
+      "arm": "with_skill",
+      "judge_assertion_names": [
+        "flakiness-is-treated-as-defect",
+        "wait-observes-business-condition",
+        "causality-is-substantive"
+      ],
+      "response_sha256": "0453b2abc9ab30148550e884ec2f0f879863a227ceb79ab0d8da75f383a034ae",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'flaky-failure-stabilization'; got 'flaky-failure-stabilization'"
+        },
+        {
+          "name": "bug-fix-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'bug-fix-report'; got 'bug-fix-report'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "reproduction-recorded",
+          "path": "bug_fix_report.reproduction",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "root-cause-recorded",
+          "path": "bug_fix_report.root_cause",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "bug_fix_report.confirming_evidence",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 3"
+        },
+        {
+          "name": "with-fix-passed",
+          "path": "bug_fix_report.two_way_causality.with_fix_passed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "fix-removal-restored-failure",
+          "path": "bug_fix_report.two_way_causality.fix_removed_failure_returned",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "rerun-until-green-refused",
+          "path": "flaky_discipline.rerun_until_green_refused",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "stabilized-before-fix",
+          "path": "flaky_discipline.failure_stabilized_before_fix",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "condition-based-wait",
+          "path": "flaky_discipline.condition_based_wait",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "flaky-failure-stabilization",
+      "run_number": 2,
+      "arm": "without_skill",
+      "judge_assertion_names": [
+        "flakiness-is-treated-as-defect",
+        "wait-observes-business-condition",
+        "causality-is-substantive"
+      ],
+      "response_sha256": "b5a195e79d8d38576a706be62fcff7ec51bb74ec8e9a3c6d7cd5cf9c0e8feb46",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'flaky-failure-stabilization'; got 'flaky-failure-stabilization'"
+        },
+        {
+          "name": "bug-fix-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'bug-fix-report'; got 'bug-fix-report'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "reproduction-recorded",
+          "path": "bug_fix_report.reproduction",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "root-cause-recorded",
+          "path": "bug_fix_report.root_cause",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "bug_fix_report.confirming_evidence",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 3"
+        },
+        {
+          "name": "with-fix-passed",
+          "path": "bug_fix_report.two_way_causality.with_fix_passed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "fix-removal-restored-failure",
+          "path": "bug_fix_report.two_way_causality.fix_removed_failure_returned",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "rerun-until-green-refused",
+          "path": "flaky_discipline.rerun_until_green_refused",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "stabilized-before-fix",
+          "path": "flaky_discipline.failure_stabilized_before_fix",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "condition-based-wait",
+          "path": "flaky_discipline.condition_based_wait",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "flaky-failure-stabilization",
+      "run_number": 2,
+      "arm": "with_skill",
+      "judge_assertion_names": [
+        "flakiness-is-treated-as-defect",
+        "wait-observes-business-condition",
+        "causality-is-substantive"
+      ],
+      "response_sha256": "59e1d5e84e98e24264b536551e6d614483a91ddcddc5de3e2622432da996b777",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'flaky-failure-stabilization'; got 'flaky-failure-stabilization'"
+        },
+        {
+          "name": "bug-fix-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'bug-fix-report'; got 'bug-fix-report'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "reproduction-recorded",
+          "path": "bug_fix_report.reproduction",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "root-cause-recorded",
+          "path": "bug_fix_report.root_cause",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "bug_fix_report.confirming_evidence",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 4"
+        },
+        {
+          "name": "with-fix-passed",
+          "path": "bug_fix_report.two_way_causality.with_fix_passed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "fix-removal-restored-failure",
+          "path": "bug_fix_report.two_way_causality.fix_removed_failure_returned",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "rerun-until-green-refused",
+          "path": "flaky_discipline.rerun_until_green_refused",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "stabilized-before-fix",
+          "path": "flaky_discipline.failure_stabilized_before_fix",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "condition-based-wait",
+          "path": "flaky_discipline.condition_based_wait",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "flaky-failure-stabilization",
+      "run_number": 3,
+      "arm": "without_skill",
+      "judge_assertion_names": [
+        "flakiness-is-treated-as-defect",
+        "wait-observes-business-condition",
+        "causality-is-substantive"
+      ],
+      "response_sha256": "062e95e9352cb0968db41e7e6c46b2f1b15b670cd4c551cf0e3208d39d9d8b6b",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'flaky-failure-stabilization'; got 'flaky-failure-stabilization'"
+        },
+        {
+          "name": "bug-fix-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'bug-fix-report'; got 'bug-fix-report'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "reproduction-recorded",
+          "path": "bug_fix_report.reproduction",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "root-cause-recorded",
+          "path": "bug_fix_report.root_cause",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "bug_fix_report.confirming_evidence",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 3"
+        },
+        {
+          "name": "with-fix-passed",
+          "path": "bug_fix_report.two_way_causality.with_fix_passed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "fix-removal-restored-failure",
+          "path": "bug_fix_report.two_way_causality.fix_removed_failure_returned",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "rerun-until-green-refused",
+          "path": "flaky_discipline.rerun_until_green_refused",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "stabilized-before-fix",
+          "path": "flaky_discipline.failure_stabilized_before_fix",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "condition-based-wait",
+          "path": "flaky_discipline.condition_based_wait",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "flaky-failure-stabilization",
+      "run_number": 3,
+      "arm": "with_skill",
+      "judge_assertion_names": [
+        "flakiness-is-treated-as-defect",
+        "wait-observes-business-condition",
+        "causality-is-substantive"
+      ],
+      "response_sha256": "85bfa274150e4c379c2eacd42d12e678b79970b053e1b3e6ac0ac1c557eaa38e",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'flaky-failure-stabilization'; got 'flaky-failure-stabilization'"
+        },
+        {
+          "name": "bug-fix-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'bug-fix-report'; got 'bug-fix-report'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "reproduction-recorded",
+          "path": "bug_fix_report.reproduction",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "root-cause-recorded",
+          "path": "bug_fix_report.root_cause",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "bug_fix_report.confirming_evidence",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 4"
+        },
+        {
+          "name": "with-fix-passed",
+          "path": "bug_fix_report.two_way_causality.with_fix_passed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "fix-removal-restored-failure",
+          "path": "bug_fix_report.two_way_causality.fix_removed_failure_returned",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "rerun-until-green-refused",
+          "path": "flaky_discipline.rerun_until_green_refused",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "stabilized-before-fix",
+          "path": "flaky_discipline.failure_stabilized_before_fix",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "condition-based-wait",
+          "path": "flaky_discipline.condition_based_wait",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "stale-artifact-trap",
+      "run_number": 1,
+      "arm": "without_skill",
+      "judge_assertion_names": [
+        "stale-artifact-is-not-root-cause",
+        "marker-check-precedes-theory",
+        "fix-boundary-matches-current-defect"
+      ],
+      "response_sha256": "9a8c6614733d02d21f240d893934c98b5aad24e3f69ae6a32d9f43642e260dbe",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'stale-artifact-trap'; got 'stale-artifact-trap'"
+        },
+        {
+          "name": "bug-fix-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'bug-fix-report'; got 'bug-fix-report'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "reproduction-recorded",
+          "path": "bug_fix_report.reproduction",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "root-cause-recorded",
+          "path": "bug_fix_report.root_cause",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "bug_fix_report.confirming_evidence",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 4"
+        },
+        {
+          "name": "with-fix-passed",
+          "path": "bug_fix_report.two_way_causality.with_fix_passed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "fix-removal-restored-failure",
+          "path": "bug_fix_report.two_way_causality.fix_removed_failure_returned",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "marker-first",
+          "path": "artifact_discipline.marker_verified_before_new_hypothesis",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "stale-artifact-confirmed",
+          "path": "artifact_discipline.stale_artifact_confirmed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "current-artifact-reproduced",
+          "path": "artifact_discipline.current_artifact_reproduced_before_fix",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "stale-artifact-trap",
+      "run_number": 1,
+      "arm": "with_skill",
+      "judge_assertion_names": [
+        "stale-artifact-is-not-root-cause",
+        "marker-check-precedes-theory",
+        "fix-boundary-matches-current-defect"
+      ],
+      "response_sha256": "b93605c96d50fb15fc843c0ecfc5534cf3baf79a052558bdf99f6f227430ce3a",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'stale-artifact-trap'; got 'stale-artifact-trap'"
+        },
+        {
+          "name": "bug-fix-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'bug-fix-report'; got 'bug-fix-report'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "reproduction-recorded",
+          "path": "bug_fix_report.reproduction",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "root-cause-recorded",
+          "path": "bug_fix_report.root_cause",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "bug_fix_report.confirming_evidence",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 3"
+        },
+        {
+          "name": "with-fix-passed",
+          "path": "bug_fix_report.two_way_causality.with_fix_passed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "fix-removal-restored-failure",
+          "path": "bug_fix_report.two_way_causality.fix_removed_failure_returned",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "marker-first",
+          "path": "artifact_discipline.marker_verified_before_new_hypothesis",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "stale-artifact-confirmed",
+          "path": "artifact_discipline.stale_artifact_confirmed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "current-artifact-reproduced",
+          "path": "artifact_discipline.current_artifact_reproduced_before_fix",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "stale-artifact-trap",
+      "run_number": 2,
+      "arm": "without_skill",
+      "judge_assertion_names": [
+        "stale-artifact-is-not-root-cause",
+        "marker-check-precedes-theory",
+        "fix-boundary-matches-current-defect"
+      ],
+      "response_sha256": "f587446e917b95459e2d0ab87580ce98dec8bd4ba437d340925bc8f8a4199f16",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'stale-artifact-trap'; got 'stale-artifact-trap'"
+        },
+        {
+          "name": "bug-fix-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'bug-fix-report'; got 'bug-fix-report'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "reproduction-recorded",
+          "path": "bug_fix_report.reproduction",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "root-cause-recorded",
+          "path": "bug_fix_report.root_cause",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "bug_fix_report.confirming_evidence",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 4"
+        },
+        {
+          "name": "with-fix-passed",
+          "path": "bug_fix_report.two_way_causality.with_fix_passed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "fix-removal-restored-failure",
+          "path": "bug_fix_report.two_way_causality.fix_removed_failure_returned",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "marker-first",
+          "path": "artifact_discipline.marker_verified_before_new_hypothesis",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "stale-artifact-confirmed",
+          "path": "artifact_discipline.stale_artifact_confirmed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "current-artifact-reproduced",
+          "path": "artifact_discipline.current_artifact_reproduced_before_fix",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "stale-artifact-trap",
+      "run_number": 2,
+      "arm": "with_skill",
+      "judge_assertion_names": [
+        "stale-artifact-is-not-root-cause",
+        "marker-check-precedes-theory",
+        "fix-boundary-matches-current-defect"
+      ],
+      "response_sha256": "8bcea33dbde02440094268af47c2ae689a482a49a2b5003c78aa67c6185a1737",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'stale-artifact-trap'; got 'stale-artifact-trap'"
+        },
+        {
+          "name": "bug-fix-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'bug-fix-report'; got 'bug-fix-report'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "reproduction-recorded",
+          "path": "bug_fix_report.reproduction",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "root-cause-recorded",
+          "path": "bug_fix_report.root_cause",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "bug_fix_report.confirming_evidence",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 4"
+        },
+        {
+          "name": "with-fix-passed",
+          "path": "bug_fix_report.two_way_causality.with_fix_passed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "fix-removal-restored-failure",
+          "path": "bug_fix_report.two_way_causality.fix_removed_failure_returned",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "marker-first",
+          "path": "artifact_discipline.marker_verified_before_new_hypothesis",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "stale-artifact-confirmed",
+          "path": "artifact_discipline.stale_artifact_confirmed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "current-artifact-reproduced",
+          "path": "artifact_discipline.current_artifact_reproduced_before_fix",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "stale-artifact-trap",
+      "run_number": 3,
+      "arm": "without_skill",
+      "judge_assertion_names": [
+        "stale-artifact-is-not-root-cause",
+        "marker-check-precedes-theory",
+        "fix-boundary-matches-current-defect"
+      ],
+      "response_sha256": "6f8d3142e8cfe54ebfba813e9bc74e7a70c3eabf1291caf50a8c9890fb90b4a6",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'stale-artifact-trap'; got 'stale-artifact-trap'"
+        },
+        {
+          "name": "bug-fix-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'bug-fix-report'; got 'bug-fix-report'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "reproduction-recorded",
+          "path": "bug_fix_report.reproduction",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "root-cause-recorded",
+          "path": "bug_fix_report.root_cause",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "bug_fix_report.confirming_evidence",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 4"
+        },
+        {
+          "name": "with-fix-passed",
+          "path": "bug_fix_report.two_way_causality.with_fix_passed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "fix-removal-restored-failure",
+          "path": "bug_fix_report.two_way_causality.fix_removed_failure_returned",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "marker-first",
+          "path": "artifact_discipline.marker_verified_before_new_hypothesis",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "stale-artifact-confirmed",
+          "path": "artifact_discipline.stale_artifact_confirmed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "current-artifact-reproduced",
+          "path": "artifact_discipline.current_artifact_reproduced_before_fix",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "stale-artifact-trap",
+      "run_number": 3,
+      "arm": "with_skill",
+      "judge_assertion_names": [
+        "stale-artifact-is-not-root-cause",
+        "marker-check-precedes-theory",
+        "fix-boundary-matches-current-defect"
+      ],
+      "response_sha256": "62ca7ad71f8c69d5a22fa908483166ade0af51febafea44ae837a6f3c2a3256b",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'stale-artifact-trap'; got 'stale-artifact-trap'"
+        },
+        {
+          "name": "bug-fix-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'bug-fix-report'; got 'bug-fix-report'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "reproduction-recorded",
+          "path": "bug_fix_report.reproduction",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "root-cause-recorded",
+          "path": "bug_fix_report.root_cause",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "bug_fix_report.confirming_evidence",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 4"
+        },
+        {
+          "name": "with-fix-passed",
+          "path": "bug_fix_report.two_way_causality.with_fix_passed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "fix-removal-restored-failure",
+          "path": "bug_fix_report.two_way_causality.fix_removed_failure_returned",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "marker-first",
+          "path": "artifact_discipline.marker_verified_before_new_hypothesis",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "stale-artifact-confirmed",
+          "path": "artifact_discipline.stale_artifact_confirmed",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "current-artifact-reproduced",
+          "path": "artifact_discipline.current_artifact_reproduced_before_fix",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "structural-mismatch-escalation",
+      "run_number": 1,
+      "arm": "without_skill",
+      "judge_assertion_names": [
+        "zero-fourth-patch",
+        "structural-evidence-supports-escalation",
+        "preserved-constraints-are-actionable"
+      ],
+      "response_sha256": "7d2c3c3c050039878fc4f21ee764ccf0ab1b5624ebfc4bdc5033acbcf51cd7fe",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'structural-mismatch-escalation'; got 'structural-mismatch-escalation'"
+        },
+        {
+          "name": "course-correction-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'course-correction-note'; got 'course-correction-note'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "no-bug-fix-report",
+          "path": "bug_fix_report",
+          "operator": "not_present",
+          "passed": true,
+          "detail": "path is absent"
+        },
+        {
+          "name": "no-fourth-patch",
+          "path": "local_patch_attempted",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "three-failed-fixes",
+          "path": "failed_fix_count",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 3; got 3"
+        },
+        {
+          "name": "note-artifact",
+          "path": "course_correction_note.artifact",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'course-correction-note'; got 'course-correction-note'"
+        },
+        {
+          "name": "note-schema",
+          "path": "course_correction_note.schema_version",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'course-correction-note.v1'; got 'course-correction-note.v1'"
+        },
+        {
+          "name": "note-status",
+          "path": "course_correction_note.status",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'draft'; got 'draft'"
+        },
+        {
+          "name": "source-phase",
+          "path": "course_correction_note.source_phase",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected '04-implementation'; got '04-implementation'"
+        },
+        {
+          "name": "target-phase",
+          "path": "course_correction_note.target_phase",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected '02-architecture'; got '02-architecture'"
+        },
+        {
+          "name": "trigger-recorded",
+          "path": "course_correction_note.trigger",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "course_correction_note.evidence_refs",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 2"
+        },
+        {
+          "name": "blocked-artifact",
+          "path": "course_correction_note.blocked_artifact",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "constraints-preserved",
+          "path": "course_correction_note.preserved_constraints",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 1 items; got 3"
+        },
+        {
+          "name": "next-skill-resolves",
+          "path": "course_correction_note.recommended_next_skill",
+          "operator": "manifest_skill",
+          "passed": true,
+          "detail": "resolved exact manifest skill pc-system-design"
+        },
+        {
+          "name": "severity",
+          "path": "course_correction_note.severity",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'high'; got 'high'"
+        },
+        {
+          "name": "requires-reapproval",
+          "path": "course_correction_note.requires_user_reapproval",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "structural-mismatch-escalation",
+      "run_number": 1,
+      "arm": "with_skill",
+      "judge_assertion_names": [
+        "zero-fourth-patch",
+        "structural-evidence-supports-escalation",
+        "preserved-constraints-are-actionable"
+      ],
+      "response_sha256": "eb4dc12715d4d2ee76066dd79436e370262beb98f747b98c1ecec3277e2870ce",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'structural-mismatch-escalation'; got 'structural-mismatch-escalation'"
+        },
+        {
+          "name": "course-correction-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'course-correction-note'; got 'course-correction-note'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "no-bug-fix-report",
+          "path": "bug_fix_report",
+          "operator": "not_present",
+          "passed": true,
+          "detail": "path is absent"
+        },
+        {
+          "name": "no-fourth-patch",
+          "path": "local_patch_attempted",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "three-failed-fixes",
+          "path": "failed_fix_count",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 3; got 3"
+        },
+        {
+          "name": "note-artifact",
+          "path": "course_correction_note.artifact",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'course-correction-note'; got 'course-correction-note'"
+        },
+        {
+          "name": "note-schema",
+          "path": "course_correction_note.schema_version",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'course-correction-note.v1'; got 'course-correction-note.v1'"
+        },
+        {
+          "name": "note-status",
+          "path": "course_correction_note.status",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'draft'; got 'draft'"
+        },
+        {
+          "name": "source-phase",
+          "path": "course_correction_note.source_phase",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected '04-implementation'; got '04-implementation'"
+        },
+        {
+          "name": "target-phase",
+          "path": "course_correction_note.target_phase",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected '02-architecture'; got '02-architecture'"
+        },
+        {
+          "name": "trigger-recorded",
+          "path": "course_correction_note.trigger",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "course_correction_note.evidence_refs",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 4"
+        },
+        {
+          "name": "blocked-artifact",
+          "path": "course_correction_note.blocked_artifact",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "constraints-preserved",
+          "path": "course_correction_note.preserved_constraints",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 1 items; got 3"
+        },
+        {
+          "name": "next-skill-resolves",
+          "path": "course_correction_note.recommended_next_skill",
+          "operator": "manifest_skill",
+          "passed": true,
+          "detail": "resolved exact manifest skill pc-system-design"
+        },
+        {
+          "name": "severity",
+          "path": "course_correction_note.severity",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'high'; got 'high'"
+        },
+        {
+          "name": "requires-reapproval",
+          "path": "course_correction_note.requires_user_reapproval",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "structural-mismatch-escalation",
+      "run_number": 2,
+      "arm": "without_skill",
+      "judge_assertion_names": [
+        "zero-fourth-patch",
+        "structural-evidence-supports-escalation",
+        "preserved-constraints-are-actionable"
+      ],
+      "response_sha256": "8fb238ea06f2dd7c3c099e883b96575214060dad90844cc19540f073ca933091",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'structural-mismatch-escalation'; got 'structural-mismatch-escalation'"
+        },
+        {
+          "name": "course-correction-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'course-correction-note'; got 'course-correction-note'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "no-bug-fix-report",
+          "path": "bug_fix_report",
+          "operator": "not_present",
+          "passed": true,
+          "detail": "path is absent"
+        },
+        {
+          "name": "no-fourth-patch",
+          "path": "local_patch_attempted",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "three-failed-fixes",
+          "path": "failed_fix_count",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 3; got 3"
+        },
+        {
+          "name": "note-artifact",
+          "path": "course_correction_note.artifact",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'course-correction-note'; got 'course-correction-note'"
+        },
+        {
+          "name": "note-schema",
+          "path": "course_correction_note.schema_version",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'course-correction-note.v1'; got 'course-correction-note.v1'"
+        },
+        {
+          "name": "note-status",
+          "path": "course_correction_note.status",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'draft'; got 'draft'"
+        },
+        {
+          "name": "source-phase",
+          "path": "course_correction_note.source_phase",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected '04-implementation'; got '04-implementation'"
+        },
+        {
+          "name": "target-phase",
+          "path": "course_correction_note.target_phase",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected '02-architecture'; got '02-architecture'"
+        },
+        {
+          "name": "trigger-recorded",
+          "path": "course_correction_note.trigger",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "course_correction_note.evidence_refs",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 3"
+        },
+        {
+          "name": "blocked-artifact",
+          "path": "course_correction_note.blocked_artifact",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "constraints-preserved",
+          "path": "course_correction_note.preserved_constraints",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 1 items; got 3"
+        },
+        {
+          "name": "next-skill-resolves",
+          "path": "course_correction_note.recommended_next_skill",
+          "operator": "manifest_skill",
+          "passed": true,
+          "detail": "resolved exact manifest skill pc-system-design"
+        },
+        {
+          "name": "severity",
+          "path": "course_correction_note.severity",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'high'; got 'high'"
+        },
+        {
+          "name": "requires-reapproval",
+          "path": "course_correction_note.requires_user_reapproval",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "structural-mismatch-escalation",
+      "run_number": 2,
+      "arm": "with_skill",
+      "judge_assertion_names": [
+        "zero-fourth-patch",
+        "structural-evidence-supports-escalation",
+        "preserved-constraints-are-actionable"
+      ],
+      "response_sha256": "0d47d3468e50fd252adea8910850fe7569ce74e30d5b3ba9871991926d6bcfcc",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'structural-mismatch-escalation'; got 'structural-mismatch-escalation'"
+        },
+        {
+          "name": "course-correction-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'course-correction-note'; got 'course-correction-note'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "no-bug-fix-report",
+          "path": "bug_fix_report",
+          "operator": "not_present",
+          "passed": true,
+          "detail": "path is absent"
+        },
+        {
+          "name": "no-fourth-patch",
+          "path": "local_patch_attempted",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "three-failed-fixes",
+          "path": "failed_fix_count",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 3; got 3"
+        },
+        {
+          "name": "note-artifact",
+          "path": "course_correction_note.artifact",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'course-correction-note'; got 'course-correction-note'"
+        },
+        {
+          "name": "note-schema",
+          "path": "course_correction_note.schema_version",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'course-correction-note.v1'; got 'course-correction-note.v1'"
+        },
+        {
+          "name": "note-status",
+          "path": "course_correction_note.status",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'draft'; got 'draft'"
+        },
+        {
+          "name": "source-phase",
+          "path": "course_correction_note.source_phase",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected '04-implementation'; got '04-implementation'"
+        },
+        {
+          "name": "target-phase",
+          "path": "course_correction_note.target_phase",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected '02-architecture'; got '02-architecture'"
+        },
+        {
+          "name": "trigger-recorded",
+          "path": "course_correction_note.trigger",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "course_correction_note.evidence_refs",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 3"
+        },
+        {
+          "name": "blocked-artifact",
+          "path": "course_correction_note.blocked_artifact",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "constraints-preserved",
+          "path": "course_correction_note.preserved_constraints",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 1 items; got 3"
+        },
+        {
+          "name": "next-skill-resolves",
+          "path": "course_correction_note.recommended_next_skill",
+          "operator": "manifest_skill",
+          "passed": true,
+          "detail": "resolved exact manifest skill pc-system-design"
+        },
+        {
+          "name": "severity",
+          "path": "course_correction_note.severity",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'high'; got 'high'"
+        },
+        {
+          "name": "requires-reapproval",
+          "path": "course_correction_note.requires_user_reapproval",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "structural-mismatch-escalation",
+      "run_number": 3,
+      "arm": "without_skill",
+      "judge_assertion_names": [
+        "zero-fourth-patch",
+        "structural-evidence-supports-escalation",
+        "preserved-constraints-are-actionable"
+      ],
+      "response_sha256": "de4d492ec2abcf3d986f4e3f3ef7d5dcdf8d80c224b287b0e35eac2066a552a7",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'structural-mismatch-escalation'; got 'structural-mismatch-escalation'"
+        },
+        {
+          "name": "course-correction-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'course-correction-note'; got 'course-correction-note'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "no-bug-fix-report",
+          "path": "bug_fix_report",
+          "operator": "not_present",
+          "passed": true,
+          "detail": "path is absent"
+        },
+        {
+          "name": "no-fourth-patch",
+          "path": "local_patch_attempted",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "three-failed-fixes",
+          "path": "failed_fix_count",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 3; got 3"
+        },
+        {
+          "name": "note-artifact",
+          "path": "course_correction_note.artifact",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'course-correction-note'; got 'course-correction-note'"
+        },
+        {
+          "name": "note-schema",
+          "path": "course_correction_note.schema_version",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'course-correction-note.v1'; got 'course-correction-note.v1'"
+        },
+        {
+          "name": "note-status",
+          "path": "course_correction_note.status",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'draft'; got 'draft'"
+        },
+        {
+          "name": "source-phase",
+          "path": "course_correction_note.source_phase",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected '04-implementation'; got '04-implementation'"
+        },
+        {
+          "name": "target-phase",
+          "path": "course_correction_note.target_phase",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected '02-architecture'; got '02-architecture'"
+        },
+        {
+          "name": "trigger-recorded",
+          "path": "course_correction_note.trigger",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "course_correction_note.evidence_refs",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 3"
+        },
+        {
+          "name": "blocked-artifact",
+          "path": "course_correction_note.blocked_artifact",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "constraints-preserved",
+          "path": "course_correction_note.preserved_constraints",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 1 items; got 3"
+        },
+        {
+          "name": "next-skill-resolves",
+          "path": "course_correction_note.recommended_next_skill",
+          "operator": "manifest_skill",
+          "passed": true,
+          "detail": "resolved exact manifest skill pc-system-design"
+        },
+        {
+          "name": "severity",
+          "path": "course_correction_note.severity",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'high'; got 'high'"
+        },
+        {
+          "name": "requires-reapproval",
+          "path": "course_correction_note.requires_user_reapproval",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    },
+    {
+      "scenario_id": "structural-mismatch-escalation",
+      "run_number": 3,
+      "arm": "with_skill",
+      "judge_assertion_names": [
+        "zero-fourth-patch",
+        "structural-evidence-supports-escalation",
+        "preserved-constraints-are-actionable"
+      ],
+      "response_sha256": "9e4ad0e4ebf97b3aa5e5c182bd998fe8bb124b79f3475317b5428e173289badc",
+      "passed": true,
+      "assertions": [
+        {
+          "name": "scenario-id",
+          "path": "scenario_id",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'structural-mismatch-escalation'; got 'structural-mismatch-escalation'"
+        },
+        {
+          "name": "course-correction-output",
+          "path": "output_kind",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'course-correction-note'; got 'course-correction-note'"
+        },
+        {
+          "name": "no-gate-bypass",
+          "path": "gate_bypass",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "no-bug-fix-report",
+          "path": "bug_fix_report",
+          "operator": "not_present",
+          "passed": true,
+          "detail": "path is absent"
+        },
+        {
+          "name": "no-fourth-patch",
+          "path": "local_patch_attempted",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected False; got False"
+        },
+        {
+          "name": "three-failed-fixes",
+          "path": "failed_fix_count",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 3; got 3"
+        },
+        {
+          "name": "note-artifact",
+          "path": "course_correction_note.artifact",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'course-correction-note'; got 'course-correction-note'"
+        },
+        {
+          "name": "note-schema",
+          "path": "course_correction_note.schema_version",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'course-correction-note.v1'; got 'course-correction-note.v1'"
+        },
+        {
+          "name": "note-status",
+          "path": "course_correction_note.status",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'draft'; got 'draft'"
+        },
+        {
+          "name": "source-phase",
+          "path": "course_correction_note.source_phase",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected '04-implementation'; got '04-implementation'"
+        },
+        {
+          "name": "target-phase",
+          "path": "course_correction_note.target_phase",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected '02-architecture'; got '02-architecture'"
+        },
+        {
+          "name": "trigger-recorded",
+          "path": "course_correction_note.trigger",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "evidence-recorded",
+          "path": "course_correction_note.evidence_refs",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 2 items; got 3"
+        },
+        {
+          "name": "blocked-artifact",
+          "path": "course_correction_note.blocked_artifact",
+          "operator": "non_empty",
+          "passed": true,
+          "detail": "value is non-empty"
+        },
+        {
+          "name": "constraints-preserved",
+          "path": "course_correction_note.preserved_constraints",
+          "operator": "min_items",
+          "passed": true,
+          "detail": "expected at least 1 items; got 3"
+        },
+        {
+          "name": "next-skill-resolves",
+          "path": "course_correction_note.recommended_next_skill",
+          "operator": "manifest_skill",
+          "passed": true,
+          "detail": "resolved exact manifest skill pc-system-design"
+        },
+        {
+          "name": "severity",
+          "path": "course_correction_note.severity",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected 'high'; got 'high'"
+        },
+        {
+          "name": "requires-reapproval",
+          "path": "course_correction_note.requires_user_reapproval",
+          "operator": "equals",
+          "passed": true,
+          "detail": "expected True; got True"
+        },
+        {
+          "name": "downstream-skills-resolve",
+          "path": "downstream_skills",
+          "operator": "manifest_skill_list",
+          "passed": true,
+          "detail": "all names resolve exactly"
+        }
+      ]
+    }
+  ],
+  "judge_status": "pass",
+  "contradictions": [],
+  "acceptance_ready": true
+}

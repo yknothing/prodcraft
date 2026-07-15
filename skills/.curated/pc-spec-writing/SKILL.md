@@ -33,21 +33,13 @@ metadata:
 
 ## Context
 
-Spec writing is the heaviest specification skill, used primarily in spec-driven and waterfall workflows. In greenfield work, it can be used in a lighter form to lock the first-release contract before architecture begins. In brownfield work, it documents current behavior, target-state boundaries, or modernization constraints that downstream design and implementation must not rediscover from scratch.
+Spec writing is the heaviest specification skill, used primarily in spec-driven and waterfall workflows.
 
-Do not reach for this skill during routine agile story refinement. In day-to-day sprint work, prefer lightweight requirements, acceptance criteria, and task breakdown unless the change is large enough to need a shared written contract.
-
-The core contract of this skill is not "write more detail." It is to freeze the boundary between:
-
-- what release 1 must do
-- what is explicitly out of scope
-- which constraints downstream architecture must preserve
-- which open questions remain visible instead of being silently guessed away
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **requirements-doc** -- produced by the preceding skill in the lifecycle
-- **domain-model** -- produced by the preceding skill in the lifecycle
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -97,28 +89,14 @@ For every feature, explicitly state:
 
 ## Outputs
 
-- **spec-doc** -- produced by this skill
+Produce only declared outputs at their documented quality boundary.
+
 ## Quality Gate
 
 - [ ] All sections of the template completed
 - [ ] Open Questions section is empty (all resolved)
 - [ ] Engineering team has reviewed and has no blocking concerns
 - [ ] Spec is versioned and accessible to all team members
-
-## Anti-Patterns
-
-1. **Spec that's actually a novel** -- If it's over 15 pages, split into smaller specs. No one reads a 50-page spec.
-2. **Spec without non-goals** -- Without explicit non-goals, scope will expand invisibly.
-3. **Spec as waterfall artifact** -- A spec should be a living document, updated as understanding evolves.
-4. **Implementation details in spec** -- Spec defines the contract boundary, not the service classes, schema migrations, or framework internals.
-5. **Open-question laundering** -- Writing as if unresolved sync, compatibility, or rollout assumptions are already closed.
-
-## Related Skills
-
-- [pc-requirements-engineering](../pc-requirements-engineering/SKILL.md) -- provides the requirements to specify
-- [pc-domain-modeling](../pc-domain-modeling/SKILL.md) -- provides domain model referenced in spec
-- [pc-system-design](../pc-system-design/SKILL.md) -- consumes spec for architecture decisions
-- [pc-task-breakdown](../pc-task-breakdown/SKILL.md) -- breaks spec into implementable tasks
 
 ## Distribution
 

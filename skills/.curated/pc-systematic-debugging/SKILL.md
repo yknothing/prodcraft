@@ -41,16 +41,13 @@ If you cannot state what is wrong, predict what evidence would prove you wrong, 
 
 ## Context
 
-Systematic debugging turns a bug report, failing test, or bad runtime behavior into a defensible fix. It exists to stop guess-first patching, repeated failed fixes, and "works on my machine" improvisation.
+Systematic debugging turns a bug report, failing test, or bad runtime behavior into a defensible fix.
 
-It does **not** replace `pc-incident-response`. If production impact is live, contain it there first; root-cause work resumes once the system is safe. Containment (rollback, flag off) is never evidence of root cause.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **source-code** -- Relevant code paths, configuration boundaries, and recent changes near the failure. Minimum required input.
-- **test-suite** -- Existing failing tests or the closest executable safety net.
-- **historical-defect-context** -- Optional. Prior incidents or regressions that may match the symptom.
-- **fix-lineage-brief** -- Optional. Prior fixes, reverts, or workarounds that narrow the search space.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -121,8 +118,7 @@ Produce a `bug-fix-report`: reproduction, root cause, confirming evidence, fix b
 
 ## Outputs
 
-- **bug-fix-report** -- Root cause, supporting evidence, fix boundary, regression protection, and follow-up notes.
-- **course-correction-note** -- Only when evidence shows the problem belongs upstream in specification, architecture, or planning.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -161,27 +157,6 @@ When one of these thoughts appears, treat it as a stop signal:
 - the same file is being patched for the third time this session
 - each fix attempt reveals the same failure in a new costume
 - instrumentation output was never actually read before the next change
-
-## Anti-Patterns
-
-1. **Shotgun debugging** -- changing several things at once and keeping whatever "worked".
-2. **Containment mistaken for root cause** -- assuming rollback or flag-off explains why the bug exists.
-3. **Historical anchoring** -- reusing an old fix because the ticket title looks similar.
-4. **Architecture patch cosplay** -- applying a local workaround after multiple failed fixes even though the evidence points upstream.
-5. **Regression amnesia** -- repairing today's symptom without defining the test that catches it next time.
-
-## Reference Material
-
-- [Techniques](references/techniques.md) -- bisection recipes, differential debugging, instrumentation patterns, flaky-failure stabilization, stale-artifact checklist, multi-bug untangling.
-- [Gotchas](references/gotchas.md) -- recurring failure modes that create false confidence or misroutes.
-
-## Related Skills
-
-- `pc-bug-history-retrieval` -- retrieves canonical defect lineage before a new fix theory hardens
-- [pc-incident-response](../pc-incident-response/SKILL.md) -- contains live production impact before code-level debugging begins
-- [pc-tdd](../pc-tdd/SKILL.md) -- turns the verified bug boundary into reproducing and regression tests
-- [pc-feature-development](../pc-feature-development/SKILL.md) -- implements the smallest safe repair once the test and scope boundary are clear
-- [pc-verification-before-completion](../pc-verification-before-completion/SKILL.md) -- verifies the claimed fix with fresh evidence before completion claims
 
 ## Distribution
 

@@ -35,3 +35,40 @@ The with-skill branch should outperform baseline on at least three of these dime
 ## Current Review Gate
 
 Keep the skill in `review` until at least one routed handoff review exists in addition to the current explicit benchmark evidence.
+
+## Description Discoverability Revalidation
+
+The current description is evaluated separately from explicit output quality via
+`trigger-eval.json`, using the vendored Anthropic harness. The set contains five
+core positives, five overlap cases that distinguish this skill from testing
+strategy, debugging, implementation, and code review, and ten true negatives.
+Run each query three times and preserve both the JSON result and observability
+stream. Trigger results do not replace the explicit benchmark or routed handoff
+evidence above.
+
+```bash
+: "${CLAUDE_TRIGGER_MODEL:?export CLAUDE_TRIGGER_MODEL to a pinned Claude model id}"
+
+python3 tools/anthropic_trigger_eval/run_eval.py \
+  --eval-set eval/05-quality/pc-e2e-scenario-design/evals/trigger-eval.json \
+  --skill-path skills/05-quality/pc-e2e-scenario-design \
+  --runs-per-query 3 \
+  --trigger-threshold 0.5 \
+  --timeout 45 \
+  --num-workers 5 \
+  --model "$CLAUDE_TRIGGER_MODEL" \
+  --observability-output <trigger-observability.jsonl> \
+  > <trigger-results.json>
+```
+
+### Fresh Surrogate Evidence
+
+The sealed packet at
+[`../evidence/codex-trigger-surrogate-gpt56sol-2026-07-16/`](../evidence/codex-trigger-surrogate-gpt56sol-2026-07-16/)
+records a fresh pinned Codex classification of the 20-query set. All 20 labels
+matched, including 5/5 core positives, 5/5 overlap cases, and 10/10 negatives.
+
+This is supplementary evidence only. It used one batched `gpt-5.6-sol` call,
+not the vendored Claude harness or three independent runs per query. The packet
+therefore records `official_trigger_gate_satisfied=false`; the canonical Claude
+trigger gate remains pending until Claude authentication is available.

@@ -73,11 +73,18 @@ Use this template whenever `pc-intake` routes new work into a workflow.
 
 For `intake_mode: micro`, emit the brief as one compact block in the same
 message as the work instead of filling the full template. Every schema-required
-field appears once, one line each:
+field appears once, one line each. Micro is limited to `Documentation`,
+`Enhancement`, `Bug Fix`, or `Refactoring` work on an `agent_internal_skill`,
+`host_runtime_tool`, or `local_dev_harness` with `no_network_listener` or
+`localhost_only` exposure. `questions_asked` must be empty,
+`routing_changed_by_answers` must be `false`, and every route name must be a
+canonical implemented `pc-*` skill:
 
 ```
 artifact: intake-brief | schema_version: intake-brief.v1 | intake_mode: micro
 status: approved | approver: auto (micro policy)
+micro_eligibility: single_revert=true | zero_questions=true | no_external_effect=true |
+  no_security_impact=true | no_irreversible_action=true
 request_summary: fix typo in README quick-start command
 source_language: en | artifact_record_language: en | user_presentation_locale: en
 work_type: Documentation | entry_phase: cross-cutting

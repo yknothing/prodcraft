@@ -1,0 +1,371 @@
+schema_version: skill-evidence-bindings.v1
+algorithm: contract-projection.v2
+bindings:
+- skill: pc-intake
+  evidence_verified_against: contract-sha256:fe01dc30dd81c7e9c100d8f34a0f6b01493a34b66dbc931c634af3087b7800a5
+  verified_at: '2026-07-16'
+  verification_scope: deterministic-contract-revalidation
+  evidence_paths:
+  - eval/00-discovery/pc-intake/contract-revalidation-2026-07-16.md
+- skill: pc-problem-framing
+  evidence_verified_against: contract-sha256:c15e8a3394af79a61aafc7dc3c9f80dfd7abb6060efdf77f836be5c591fd1379
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/00-discovery/pc-problem-framing/findings.md
+  - eval/00-discovery/pc-problem-framing/security-review.md
+  - eval/00-discovery/pc-problem-framing/isolated-benchmark-review.md
+  - eval/00-discovery/pc-problem-framing/intake-handoff-review.md
+  - eval/01-specification/pc-requirements-engineering/problem-framing-handoff-review.md
+  - eval/00-discovery/pc-user-research/problem-framing-handoff-review.md
+- skill: pc-user-research
+  evidence_verified_against: contract-sha256:3b1977a7cf9499e1e1b15bfca3fc8b23ca475ac7072bfc123380f8634fc6ddf9
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/00-discovery/pc-user-research/findings.md
+  - eval/00-discovery/pc-user-research/semi-isolated-benchmark-review.md
+  - eval/00-discovery/pc-user-research/problem-framing-handoff-review.md
+  - eval/01-specification/pc-requirements-engineering/user-research-handoff-review.md
+- skill: pc-requirements-engineering
+  evidence_verified_against: contract-sha256:c6a8a6af40ea243703390c08db563f4bca08192f9eadf1252693db3ca1d549ee
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/01-specification/pc-requirements-engineering/evals/trigger-eval.json
+  - eval/01-specification/pc-requirements-engineering/results-trigger-iter3.json
+  - eval/01-specification/pc-requirements-engineering/findings.md
+  - eval/01-specification/pc-requirements-engineering/security-review.md
+  - eval/01-specification/pc-requirements-engineering/problem-framing-routed-benchmark-review.md
+  - eval/01-specification/pc-requirements-engineering/intake-handoff-review.md
+  - eval/01-specification/pc-requirements-engineering/problem-framing-handoff-review.md
+  - eval/01-specification/pc-requirements-engineering/user-research-handoff-review.md
+  - eval/01-specification/pc-requirements-engineering/user-research-semi-isolated-benchmark-review.md
+- skill: pc-spec-writing
+  evidence_verified_against: contract-sha256:da824adc5b6658e4e6a486772a1257f1ba3faded2eaefdba5683f0f5b79e417d
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/01-specification/pc-spec-writing/manual-benchmark-review.md
+  - eval/01-specification/pc-spec-writing/findings.md
+  - eval/01-specification/pc-spec-writing/api-design-handoff-review.md
+- skill: pc-domain-modeling
+  evidence_verified_against: contract-sha256:745bd8617ed1c35490a089941985c876203e25eb01817ca233f85cfdad30aeb8
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/01-specification/pc-domain-modeling/manual-benchmark-review.md
+  - eval/01-specification/pc-domain-modeling/findings.md
+  - eval/01-specification/pc-domain-modeling/spec-writing-handoff-review.md
+- skill: pc-acceptance-criteria
+  evidence_verified_against: contract-sha256:30b04ce320570e4636d69aae044bf99ab6661657d78514f1a6b1e6edb2a6520c
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/01-specification/pc-acceptance-criteria/isolated-benchmark-review.md
+  - eval/01-specification/pc-acceptance-criteria/findings.md
+  - eval/01-specification/pc-acceptance-criteria/testing-strategy-handoff-review.md
+- skill: pc-data-modeling
+  evidence_verified_against: contract-sha256:915e9f94d8c1905e701ff67dbd0a8da04200ee0293a79e17a951576419068ee4
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/02-architecture/pc-data-modeling/manual-benchmark-review.md
+  - eval/02-architecture/pc-data-modeling/findings.md
+  - eval/02-architecture/pc-data-modeling/feature-development-handoff-review.md
+- skill: pc-security-design
+  evidence_verified_against: contract-sha256:7374bbca96193cb19bbf6c39d564b11f58e59e19914a39aeb88af122b047b2b3
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/02-architecture/pc-security-design/manual-benchmark-review.md
+  - eval/02-architecture/pc-security-design/findings.md
+  - eval/02-architecture/pc-security-design/security-audit-handoff-review.md
+- skill: pc-tech-selection
+  evidence_verified_against: contract-sha256:a3c4ff25142a3675a1a820290205a34fce0a4e85fefe72cad42fe4bb1cace19a
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/02-architecture/pc-tech-selection/isolated-benchmark-review.md
+  - eval/02-architecture/pc-tech-selection/findings.md
+  - eval/02-architecture/pc-tech-selection/system-design-handoff-review.md
+- skill: pc-api-design
+  evidence_verified_against: contract-sha256:46e9d2990275a72d619c85aa24d95ef37b554d4aadbed0d47ca8772edce3d6ec
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/02-architecture/pc-api-design/manual-benchmark-review.md
+  - eval/02-architecture/pc-api-design/findings.md
+  - eval/02-architecture/pc-api-design/architecture-handoff-review.md
+- skill: pc-task-breakdown
+  evidence_verified_against: contract-sha256:4b22e7963a19a8083b58c4f57db29c25d1a4fcf1b144a8ab8e79827e686d377f
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/03-planning/pc-task-breakdown/isolated-benchmark-review.md
+  - eval/03-planning/pc-task-breakdown/findings.md
+  - eval/03-planning/pc-task-breakdown/security-review.md
+  - eval/03-planning/pc-task-breakdown/architecture-handoff-review.md
+- skill: pc-estimation
+  evidence_verified_against: contract-sha256:7811a78afd2ad7c4aede60e8bd6cd42a5795773b2fb673d14b0665365f406efb
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/03-planning/pc-estimation/isolated-benchmark-review.md
+  - eval/03-planning/pc-estimation/findings.md
+  - eval/03-planning/pc-estimation/sprint-planning-handoff-review.md
+- skill: pc-risk-assessment
+  evidence_verified_against: contract-sha256:64d8fd2021152b17bc02ea7036299f6ce5aafd660b790471942a86288b02fb3c
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/03-planning/pc-risk-assessment/isolated-benchmark-review.md
+  - eval/03-planning/pc-risk-assessment/findings.md
+  - eval/03-planning/pc-risk-assessment/task-breakdown-handoff-review.md
+- skill: pc-sprint-planning
+  evidence_verified_against: contract-sha256:b2405b036ed90672e618e0d819cce12bfce3aa5a2ba9b618c45304bc47b5a122
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/03-planning/pc-sprint-planning/isolated-benchmark-review.md
+  - eval/03-planning/pc-sprint-planning/findings.md
+  - eval/03-planning/pc-sprint-planning/estimation-handoff-review.md
+- skill: pc-tdd
+  evidence_verified_against: contract-sha256:bb4ef1f16760738ced9ac0c9b9601bbc6e104fc26d2b36b1323e4708392cf302
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/04-implementation/pc-tdd/isolated-benchmark-review.md
+  - eval/04-implementation/pc-tdd/findings.md
+  - eval/04-implementation/pc-tdd/security-review.md
+  - eval/04-implementation/pc-tdd/task-handoff-review.md
+- skill: pc-task-execution
+  evidence_verified_against: contract-sha256:a0319dd4eadccd6bdc6d5a18eaab7f4c8b19225d4b9761e2f5f6dafc2f02fdf4
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/04-implementation/pc-task-execution/isolated-benchmark-review.md
+  - eval/04-implementation/pc-task-execution/findings.md
+  - eval/04-implementation/pc-task-execution/tactical-batch-review.md
+- skill: pc-feature-development
+  evidence_verified_against: contract-sha256:1256bc941412f9c9564f15fcfa28195884e9ab141d14b8f3be4cee394ee4075b
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/04-implementation/pc-feature-development/isolated-benchmark-review.md
+  - eval/04-implementation/pc-feature-development/findings.md
+  - eval/04-implementation/pc-feature-development/tdd-handoff-review.md
+- skill: pc-refactoring
+  evidence_verified_against: contract-sha256:5373e66ee466dab5f75661452c6adb48a0cbdfcb9463ce77c029966e9e504c86
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/04-implementation/pc-refactoring/isolated-benchmark-review.md
+  - eval/04-implementation/pc-refactoring/findings.md
+  - eval/04-implementation/pc-refactoring/code-review-handoff-review.md
+- skill: pc-code-review
+  evidence_verified_against: contract-sha256:ada324d1cae1aefd376184fd7aba35bb15114ef08ccda9f7d9d0e1e8145d8619
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/05-quality/pc-code-review/isolated-benchmark-review.md
+  - eval/05-quality/pc-code-review/findings.md
+  - eval/05-quality/pc-code-review/changeset-review.md
+- skill: pc-receiving-code-review
+  evidence_verified_against: contract-sha256:bb5b74722f118df5dfb220e7dd51b6f863aaf5be6856c87815de5bfb8953cfba
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/05-quality/pc-receiving-code-review/isolated-benchmark-review.md
+  - eval/05-quality/pc-receiving-code-review/findings.md
+  - eval/05-quality/pc-receiving-code-review/feedback-response-review.md
+- skill: pc-testing-strategy
+  evidence_verified_against: contract-sha256:ec86e964097078aa78dccff36f4569e409b11578a2583eb3f09cef50f80c4126
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/05-quality/pc-testing-strategy/isolated-benchmark-review.md
+  - eval/05-quality/pc-testing-strategy/findings.md
+  - eval/05-quality/pc-testing-strategy/strategy-review.md
+- skill: pc-security-audit
+  evidence_verified_against: contract-sha256:5ef3f43c7ff9a51d30168647361f04c2f9a4166366e6c301d25eac434d2cd307
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/05-quality/pc-security-audit/evals/security-check-evidence.md
+  - eval/05-quality/pc-security-audit/findings.md
+  - eval/05-quality/pc-security-audit/isolated-benchmark-review.md
+  - eval/05-quality/pc-security-audit/release-management-handoff-review.md
+- skill: pc-e2e-scenario-design
+  evidence_verified_against: contract-sha256:ae571bd2eb6a9cae07a50d7772d705ea160e2db0cd48a7ee27293d31c87fe334
+  verified_at: '2026-07-16'
+  verification_scope: current-contract-review-of-existing-evidence
+  evidence_paths:
+  - eval/05-quality/pc-e2e-scenario-design/contract-revalidation-2026-07-16.md
+  - eval/05-quality/pc-e2e-scenario-design/isolated-benchmark-review.md
+  - eval/05-quality/pc-e2e-scenario-design/testing-strategy-handoff-review.md
+  - eval/05-quality/pc-e2e-scenario-design/consumer-review.md
+- skill: pc-ci-cd
+  evidence_verified_against: contract-sha256:a916ef94096cdce3c25d30e45421234ca8871c7ea8e2efead986c5bf1f931921
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/06-delivery/pc-ci-cd/isolated-benchmark-review.md
+  - eval/06-delivery/pc-ci-cd/findings.md
+  - eval/06-delivery/pc-ci-cd/pipeline-review.md
+- skill: pc-delivery-completion
+  evidence_verified_against: contract-sha256:e05fe996929928866bdae25baf561cfd60adc6c7bba5faf11f2e84c1e2f806d1
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/06-delivery/pc-delivery-completion/isolated-benchmark-review.md
+  - eval/06-delivery/pc-delivery-completion/findings.md
+  - eval/06-delivery/pc-delivery-completion/completion-handoff-review.md
+- skill: pc-deployment-strategy
+  evidence_verified_against: contract-sha256:2f9d5ce24c68d1ec700ef58ea3ac8eac33f970c40b7cde705a463a757331ea31
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/06-delivery/pc-deployment-strategy/isolated-benchmark-review.md
+  - eval/06-delivery/pc-deployment-strategy/findings.md
+  - eval/06-delivery/pc-deployment-strategy/pipeline-handoff-review.md
+- skill: pc-release-management
+  evidence_verified_against: contract-sha256:c531049a1f9ff485aa5118981dc09de8d58ebd6350a61d39581df6dab1e9f2c6
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/06-delivery/pc-release-management/isolated-benchmark-review.md
+  - eval/06-delivery/pc-release-management/findings.md
+  - eval/06-delivery/pc-release-management/delivery-completion-handoff-review.md
+- skill: pc-incident-response
+  evidence_verified_against: contract-sha256:839e10dfdbc843ac4e55f6cfb6f4828f08e4108730861e90d30f274e4f8a1bf3
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/07-operations/pc-incident-response/manual-benchmark-review.md
+  - eval/07-operations/pc-incident-response/findings.md
+  - eval/07-operations/pc-incident-response/incident-review.md
+- skill: pc-monitoring-observability
+  evidence_verified_against: contract-sha256:4e5bf3a3f4920a3ac03479b47963caf4b0322350a53ba16a8cf4a75769d946d3
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/07-operations/pc-monitoring-observability/manual-benchmark-review.md
+  - eval/07-operations/pc-monitoring-observability/findings.md
+  - eval/07-operations/pc-monitoring-observability/observability-review.md
+- skill: pc-runbooks
+  evidence_verified_against: contract-sha256:de4687c29125b48b66877b60bf81fb65c7ba12d712eaac7e6fd65da91e4aae84
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/07-operations/pc-runbooks/manual-benchmark-review.md
+  - eval/07-operations/pc-runbooks/findings.md
+  - eval/07-operations/pc-runbooks/runbook-review.md
+- skill: pc-tech-debt-management
+  evidence_verified_against: contract-sha256:d623217c68740b877f88951bf115a055a5f395e73a62785b253a7fe5d4824884
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/08-evolution/pc-tech-debt-management/manual-benchmark-review.md
+  - eval/08-evolution/pc-tech-debt-management/findings.md
+  - eval/08-evolution/pc-tech-debt-management/debt-review.md
+- skill: pc-retrospective
+  evidence_verified_against: contract-sha256:c1024d4b05bb33fd8bb09a84be5ef59a42d08f5f9cca570ff6283d22e2eaeb94
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/08-evolution/pc-retrospective/manual-benchmark-review.md
+  - eval/08-evolution/pc-retrospective/findings.md
+  - eval/08-evolution/pc-retrospective/retro-review.md
+- skill: pc-documentation
+  evidence_verified_against: contract-sha256:f0e06493284dcf0df73f3a4f8303312f9557541e5bbad687def7e66f3fad2a3d
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/cross-cutting/pc-documentation/isolated-benchmark-review.md
+  - eval/cross-cutting/pc-documentation/findings.md
+  - eval/cross-cutting/pc-documentation/documentation-handoff-review.md
+- skill: pc-observability
+  evidence_verified_against: contract-sha256:edae8ad51fbd6c6524806b282145de4f8436355dbb4e458f54635460bac285d8
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/cross-cutting/pc-observability/isolated-benchmark-review.md
+  - eval/cross-cutting/pc-observability/findings.md
+  - eval/cross-cutting/pc-observability/runtime-contract-review.md
+- skill: pc-accessibility
+  evidence_verified_against: contract-sha256:e724c548da23aa4cc4c8bb76d0296cd6bc5de034dc1c0207afb33989eabb8885
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/cross-cutting/pc-accessibility/isolated-benchmark-review.md
+  - eval/cross-cutting/pc-accessibility/findings.md
+  - eval/cross-cutting/pc-accessibility/acceptance-criteria-handoff-review.md
+- skill: pc-verification-before-completion
+  evidence_verified_against: contract-sha256:d83f7f8519f22013fc0bd8635f816f5908385d71bf3c93378a492f00e6d9163c
+  verified_at: '2026-07-16'
+  verification_scope: deterministic-contract-revalidation
+  evidence_paths:
+  - eval/cross-cutting/pc-verification-before-completion/contract-revalidation-2026-07-16.md
+- skill: pc-market-analysis
+  evidence_verified_against: contract-sha256:2fcfc5ef0854203a4c17357cc0c3e4ecf98a9a6197fbb9ea4f83e4952504b936
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/00-discovery/pc-market-analysis/evals/eval-strategy.md
+- skill: pc-feasibility-study
+  evidence_verified_against: contract-sha256:8063a6abbbefe68d1fa423ba6de98d3df3f852cae801b3076b36fc7915affe7c
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/00-discovery/pc-feasibility-study/evals/eval-strategy.md
+- skill: pc-system-design
+  evidence_verified_against: contract-sha256:e91620343ebca8b4c6752169f3396587af06c1b7ed7a10761bbbd8cb6ba09460
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/02-architecture/pc-system-design/findings.md
+  - eval/02-architecture/pc-system-design/isolated-benchmark-review.md
+  - eval/02-architecture/pc-system-design/requirements-handoff-review.md
+- skill: pc-implementation-alignment-review
+  evidence_verified_against: contract-sha256:343c2aa3cc2c71277cc2ecf703df4fff9fb2fd94b945b9138db3f252a3bd9dec
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/05-quality/pc-implementation-alignment-review/findings.md
+  - eval/05-quality/pc-implementation-alignment-review/isolated-benchmark-plan.md
+  - eval/05-quality/pc-implementation-alignment-review/evals/eval-strategy.md
+- skill: pc-implementation-integrity-audit
+  evidence_verified_against: contract-sha256:d9003dc76d1ac78d460deeecb381f1bdfef7e64e4f6bbe27be63ede5e42d680e
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/05-quality/pc-implementation-integrity-audit/findings.md
+  - eval/05-quality/pc-implementation-integrity-audit/isolated-benchmark-plan.md
+  - eval/05-quality/pc-implementation-integrity-audit/evals/eval-strategy.md
+- skill: pc-bug-history-retrieval
+  evidence_verified_against: contract-sha256:ddc07d688fc335120ac4bba12e238a7fb424b47fad0de212c328bc03f56ef408
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/cross-cutting/pc-bug-history-retrieval/evals/eval-strategy.md
+- skill: pc-internationalization
+  evidence_verified_against: contract-sha256:5776093eba3233f301ea9c56dd49ddd9c6d1123a342121adef20d7ef6acd203d
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/cross-cutting/pc-internationalization/evals/eval-strategy.md
+- skill: pc-compliance
+  evidence_verified_against: contract-sha256:10fe87e2cfa86158d24d245effa7a23dfbd6da7c265d0442f66c16e713851ec0
+  verified_at: '2026-07-16'
+  verification_scope: reviewed-existing-evidence
+  evidence_paths:
+  - eval/cross-cutting/pc-compliance/evals/eval-strategy.md
+- skill: pc-systematic-debugging
+  evidence_verified_against: contract-sha256:b8d7ae008a2147415aff2a16b3a8fcc1e4805d3c6a30f9281406803f16a61b0a
+  verified_at: '2026-07-16'
+  verification_scope: sealed-isolated-revalidation-and-brownfield-integration-review
+  evidence_paths:
+  - eval/04-implementation/pc-systematic-debugging/evidence/codex-gpt56sol-2026-07-16/review.md
+  - eval/04-implementation/pc-systematic-debugging/evidence/codex-gpt56sol-2026-07-16/final-score-summary.json
+  - eval/04-implementation/pc-systematic-debugging/history-debugging-tdd-integration-review.md

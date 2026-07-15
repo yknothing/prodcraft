@@ -97,6 +97,91 @@ class CuratedDistributionSurfaceTests(unittest.TestCase):
             self.assertTrue((output_root / "pc-intake" / "SKILL.md").exists())
             self.assertEqual(self.snapshot_file_tree(output_root), self.snapshot_file_tree(CURATED_DIR))
 
+    def test_export_generates_portable_routing_map_and_gateway_links_it(self):
+        module = load_module()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_root = Path(tmpdir)
+            module.export_curated_skills(repo_root=REPO_ROOT, output_root=output_root)
+
+            gateway = (output_root / "pc-prodcraft" / "SKILL.md").read_text(encoding="utf-8")
+            routing_path = output_root / "pc-prodcraft" / "references" / "routing-map.md"
+            routing = routing_path.read_text(encoding="utf-8")
+            public_names = {
+                entry["name"]
+                for entry in json.loads((output_root / "index.json").read_text(encoding="utf-8"))["skills"]
+            }
+
+            self.assertIn("[portable routing map](references/routing-map.md)", gateway)
+            self.assertIn("## Skill Selection Priority", routing)
+            self.assertIn("## Workflow Selection", routing)
+            self.assertIn("## Fast-Track Rules", routing)
+            self.assertIn("`micro`", routing)
+            self.assertIn("not included in this curated surface", routing)
+            self.assertNotIn("skills/00-discovery/", routing)
+            linked_skills = set(re.findall(r"\.\./\.\./(pc-[a-z0-9-]+)/SKILL\.md", routing))
+            self.assertTrue(linked_skills)
+            self.assertLessEqual(linked_skills, public_names)
+
+    def test_routing_map_reflects_gateway_mutation_and_rejects_incomplete_source(self):
+        module = load_module()
+        gateway = (REPO_ROOT / "skills" / "_gateway.md").read_text(encoding="utf-8")
+        injected = gateway.replace(
+            "## Workflow Selection",
+            "| Mutation probe | `pc-intake` | Generated digest must preserve this row |\n\n## Workflow Selection",
+            1,
+        )
+        registry = json.loads(
+            (REPO_ROOT / "schemas" / "distribution" / "public-skill-registry.json").read_text(encoding="utf-8")
+        )
+        public_names = {entry["name"] for entry in registry["public_skills"]}
+        manifest = module.yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
+        manifest_names = {entry["name"] for entry in manifest["skills"]}
+        planned_names = {entry["name"] for entry in manifest.get("planned_skills", [])}
+
+        rendered = module.render_portable_routing_map(
+            injected,
+            public_skill_names=public_names,
+            manifest_skill_names=manifest_names,
+            planned_skill_names=planned_names,
+        )
+
+        self.assertIn("Mutation probe", rendered)
+        self.assertIn("`pc-compliance`[^not-included]", rendered)
+        with self.assertRaisesRegex(ValueError, "missing required routing section"):
+            module.render_portable_routing_map(
+                "## Skill Selection Priority\n\nOnly one section.",
+                public_skill_names=public_names,
+                manifest_skill_names=manifest_names,
+                planned_skill_names=planned_names,
+            )
+
+        for leaked_path in (
+            "cross-cutting/pc-documentation",
+            "../cross-cutting/pc-documentation",
+            "../../02-architecture/pc-system-design",
+        ):
+            with self.subTest(leaked_path=leaked_path):
+                repo_only = gateway.replace(
+                    "## Workflow Selection",
+                    f"| Repo-only probe | {leaked_path} | Must be rejected |\n\n## Workflow Selection",
+                    1,
+                )
+                with self.assertRaisesRegex(ValueError, "repo-only lifecycle path"):
+                    module.render_portable_routing_map(
+                        repo_only,
+                        public_skill_names=public_names,
+                        manifest_skill_names=manifest_names,
+                        planned_skill_names=planned_names,
+                    )
+
+        self.assertNotRegex(
+            (REPO_ROOT / "skills" / ".curated" / "pc-prodcraft" / "references" / "routing-map.md").read_text(
+                encoding="utf-8"
+            ),
+            r"(?:[0-9]{2}-[a-z0-9-]+|cross-cutting)/pc-[a-z0-9-]+",
+        )
+
     def test_invalid_registry_fails_before_mutating_output_tree(self):
         module = load_module()
 
@@ -339,11 +424,18 @@ class CuratedDistributionSurfaceTests(unittest.TestCase):
             output_root = Path(tmpdir)
             module.export_curated_skills(repo_root=REPO_ROOT, output_root=output_root)
 
-            system_design = (output_root / "pc-system-design" / "SKILL.md").read_text(encoding="utf-8")
             problem_framing = (output_root / "pc-problem-framing" / "SKILL.md").read_text(encoding="utf-8")
 
-            self.assertIn("[pc-spec-writing](../pc-spec-writing/SKILL.md)", system_design)
-            self.assertNotIn("../../01-specification/pc-spec-writing/SKILL.md", system_design)
+            source_dir = REPO_ROOT / "skills" / "02-architecture" / "pc-system-design"
+            target = (source_dir / "../../01-specification/pc-spec-writing/SKILL.md").resolve()
+            rewritten = module.rewrite_lifecycle_skill_links(
+                "Use [pc-spec-writing](../../01-specification/pc-spec-writing/SKILL.md).",
+                source_dir=source_dir,
+                canonical_skill_paths={target},
+                exported_skill_names={target: "pc-spec-writing"},
+            )
+
+            self.assertEqual("Use [pc-spec-writing](../pc-spec-writing/SKILL.md).", rewritten)
             self.assertIn("`pc-market-analysis`", problem_framing)
             self.assertNotRegex(problem_framing, r"\[market-analysis\]\([^)]+SKILL\.md\)")
 

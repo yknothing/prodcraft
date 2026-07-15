@@ -1,103 +1,143 @@
 # Workflow Schema
 
-This document defines the required format for all workflow files in the `workflows/` directory.
+This document defines the canonical `workflow.v2` format for files in `workflows/`.
 
-## Frontmatter (YAML)
+Workflow semantics live in structured YAML frontmatter. The Markdown body contains only short adaptation guidance. This removes prose-parser ambiguity while keeping the lifecycle route, skills, artifacts, gates, approvals, and overlay effects independently verifiable.
 
-Every workflow file MUST begin with YAML frontmatter containing these fields:
+## Canonical Shape
 
 ```yaml
 ---
-name: kebab-case-name           # Unique identifier, matches filename without extension
-description: "Short sentence"   # What this workflow does, in quotes
-cadence: "description"          # Timing pattern (e.g., "1-2 week sprints", "on-demand")
-workflow_kind: "primary"        # "primary" or "overlay"
-composes_with:                  # Which other workflows this one can layer with
-  - "greenfield"
-  - "brownfield"
-  - "hotfix"
-entry_skill: "pc-intake"           # Mandatory lifecycle entry gate
-required_artifacts:             # Artifacts that must exist before the workflow starts
-  - "intake-brief"
-best_for:                       # List of ideal use cases
-  - "use-case-one"
-  - "use-case-two"
-phases_included:                # Which phases this workflow uses
-  - "00-discovery"              # Use "all" shorthand or list specific phases
-  - "04-implementation"
+name: example-workflow
+description: Short one-line purpose
+cadence: on demand
+workflow_kind: primary
+composes_with: [greenfield, brownfield]
+entry_skill: pc-intake
+required_artifacts: [intake-brief]
+best_for: [example-context]
+phases_included: [04-implementation]
+contract:
+  version: workflow.v2
+  overview:
+    summary: What the workflow accomplishes.
+    distinctive: How its governance differs from other workflows.
+  entry_gate:
+    summary: Start only after intake approval.
+    artifact: intake-brief
+    approval_required: true
+    fast_track_rule: Only the approved intake route may shorten the sequence.
+  phase_sequence:
+    - id: 04-implementation
+      name: Implementation
+      purpose: Build the approved slice.
+      skills: [pc-tdd, pc-feature-development]
+      inputs: [approved task slice]
+      outputs: [tested implementation]
+      duration: one iteration
+  quality_gates:
+    - name: Implementation complete
+      after: 04-implementation
+      criteria: [focused tests pass, peer review approved]
+      approvers: [tech lead]
+      enforcement: blocking
 ---
+
+# Example Workflow
+
+## Adaptation Notes
+
+- Keep only context-specific tailoring here.
 ```
 
-### Field Reference
+## Top-Level Fields
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `name` | string | yes | Kebab-case identifier matching filename |
-| `description` | string | yes | One-line summary of the workflow approach |
-| `cadence` | string | yes | How time is structured in this workflow |
-| `workflow_kind` | string | yes | `primary` governance workflow or `overlay` modifier |
-| `composes_with` | list | yes | Names this workflow can legally layer with |
-| `entry_skill` | string | yes | Must be `pc-intake`; workflows begin only after intake approval |
-| `required_artifacts` | list | yes | Must include `intake-brief` to enforce the hard gate |
-| `best_for` | list | yes | Scenarios where this workflow excels |
-| `phases_included` | list | yes | Phases used; `["all"]` means all 9 phases |
+| Field | Type | Contract |
+|-------|------|----------|
+| `name` | string | Kebab-case identifier; matches the workflow filename. |
+| `description` | string | One-line statement of when and why to use the workflow. |
+| `cadence` | string | Timing pattern. |
+| `workflow_kind` | string | `primary` or `overlay`. |
+| `composes_with` | list | Workflows this route may layer with. |
+| `entry_skill` | string | Must be `pc-intake`. |
+| `required_artifacts` | list | Must include `intake-brief`. |
+| `best_for` | list | Contexts where the workflow is appropriate. |
+| `phases_included` | list | Lifecycle phases used, or `[all]`. |
+| `contract` | mapping | Required machine-readable `workflow.v2` semantics. |
 
-## Body Structure
-
-### Entry Gate
-
-Every workflow MUST start with an explicit entry gate section that:
-
-- states that the workflow only begins after `pc-intake` is completed and approved
-- names the required artifact (`intake-brief`)
-- explains any fast-track rule or phase skip in terms of intake-approved routing
-
-This keeps the intake hard gate as a system rule, not a suggestion.
-
-The `intake-brief` should record explicit workflow composition rather than collapsing everything into a single workflow string:
-
-- record `workflow_primary` when the approved route needs explicit primary governance
-- record `workflow_overlays[]` only when one or more overlays are active
+## Structured Semantics
 
 ### Overview
 
-A 2-4 paragraph summary of the workflow philosophy, when to use it, and what makes it distinct from other workflows.
+`contract.overview` replaces the narrative `## Overview` section:
+
+- `summary` states the workflow outcome and philosophy.
+- `distinctive` states how the workflow differs from nearby choices.
+
+### Entry Gate
+
+`contract.entry_gate` replaces the narrative `## Entry Gate` section:
+
+- `artifact` must be `intake-brief` and must also appear in `required_artifacts`.
+- `approval_required` must be `true`.
+- `summary` states the approval boundary.
+- `fast_track_rule` explains how intake may shorten the route without silently waiving governance.
 
 ### Phase Sequence
 
-For each included phase, describe:
+`contract.phase_sequence` replaces the narrative `## Phase Sequence` section. It must contain at least one phase. Every phase requires:
 
-- **Phase name and purpose** within this workflow's context
-- **Skills applied** -- reference skills from `skills/` by name (e.g., "use `user-story-writing` and `requirements-gathering`")
-- **Expected inputs** -- what artifacts or decisions feed into this phase
-- **Expected outputs** -- what this phase produces
-- **Typical duration** -- how long this phase takes in this workflow
+- unique `id` and non-empty `name`;
+- `purpose` and `duration`;
+- one or more canonical `pc-*` skill names;
+- one or more explicit `inputs` and `outputs`.
+
+The sequence composes skills; it must not reproduce skill instructions. Structured skill references are the only workflow dependency surface checked against the manifest and skill methodology tags.
 
 ### Quality Gates
 
-Between each phase transition, define:
+`contract.quality_gates` replaces the narrative `## Quality Gates` section. It must contain at least one gate. Every gate requires:
 
-- **Gate name** -- a descriptive label for the checkpoint
-- **Criteria** -- specific, verifiable conditions that must be met
-- **Approvers** -- which personas or roles approve passage through the gate
-- **Blocking vs advisory** -- whether the gate blocks progress or is informational
+- unique `name`;
+- `after`, naming the transition or event being governed;
+- one or more falsifiable `criteria`;
+- one or more accountable `approvers`;
+- `enforcement`, either `blocking` or `advisory`.
 
-### Adaptation Notes
+### Overlay Delta
 
-Guidance for tailoring the workflow to different contexts:
+Every overlay must define `contract.overlay_delta`; primary workflows must not define it.
 
-- Team size variations (solo, small team, large team)
-- Domain-specific adjustments (B2B, B2C, internal tooling)
-- Regulatory or compliance overlays
-- Remote vs co-located considerations
+```yaml
+overlay_delta:
+  applies_to: [agile-sprint, spec-driven, iterative-waterfall]
+  changes:
+    - dimension: delivery
+      effect: Describe the exact change to primary governance.
+```
 
-## Key Principle: Workflows COMPOSE Skills
+Each change requires a non-empty `dimension` and `effect`. An overlay changes assumptions, phase emphasis, cadence, or evidence requirements; it does not replace the selected primary workflow.
 
-Workflows orchestrate existing skills from `skills/` -- they never duplicate skill content. A workflow says *when* and *in what order* to apply skills, not *how* to perform the skill itself.
+## Markdown Body
 
-Referenced skills should also declare methodology tags compatible with the workflow that uses them. If a workflow invokes a skill as a routed exception, that exception should be explicit in the skill's `metadata.methodologies` rather than left as an undocumented assumption.
+The body must contain exactly one H2 section: `## Adaptation Notes`. It must include non-empty guidance for team size, domain, regulatory, operating-model, or other context-specific tailoring.
 
-**Do:** "During the specification phase, apply the `pc-spec-writing` skill to produce the PRD."
-**Don't:** Reproduce the full spec-writing process inline in the workflow file.
+Do not retain empty `Entry Gate`, `Overview`, `Phase Sequence`, or `Quality Gates` headings. Those headings are not compatibility placeholders; their semantics moved to `contract`.
 
-This keeps workflows lightweight and ensures skill improvements automatically benefit all workflows that reference them.
+## Validation
+
+`tools/workflow_contract.py` is the shared loader and semantic validator. `scripts/validate_prodcraft.py` uses it for repository checks and reads skill dependencies from `contract.phase_sequence[].skills`.
+
+Validation fails independently when any required phase, skill list, gate, artifact binding, approver list, or overlay delta is missing. Run:
+
+```bash
+python3 -m unittest tests.test_workflow_composability
+python3 scripts/validate_prodcraft.py \
+  --check workflow-frontmatter \
+  --check workflow-entry-gate \
+  --check workflow-skill-refs
+```
+
+## Key Principle
+
+Workflows compose existing skills. They define when skills run, which artifacts cross boundaries, and what evidence authorizes progression. Skill files remain the source of truth for how to perform the work.

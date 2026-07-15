@@ -23,6 +23,7 @@ on:
       - 'scripts/**'
       - 'templates/**'
       - 'tools/**'
+      - '.claude/**'
   pull_request:
     paths:
       - 'skills/**'
@@ -42,6 +43,7 @@ on:
       - 'scripts/**'
       - 'templates/**'
       - 'tools/**'
+      - '.claude/**'
 
 jobs:
   validate-structure:
@@ -56,6 +58,9 @@ jobs:
 
       - name: Validate Prodcraft structure
         run: python scripts/validate_prodcraft.py
+
+      - name: Enforce aggregate context budget
+        run: python scripts/measure_context_cost.py --check
 
       - name: Run contract tests
         run: python -m unittest discover tests

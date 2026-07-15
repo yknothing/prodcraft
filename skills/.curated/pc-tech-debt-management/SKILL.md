@@ -33,15 +33,14 @@ metadata:
 
 ## Context
 
-Every codebase accumulates technical debt -- shortcuts taken, technologies that aged, architectures that evolved beyond their original design. The problem isn't debt itself (it's sometimes a rational trade-off), but unmanaged debt that silently drains velocity and increases risk.
+Every codebase accumulates technical debt -- shortcuts taken, technologies that aged, architectures that evolved beyond their original design.
 
-In a lifecycle-aware system, technical debt should be grounded in evidence. Do not dump every annoyance into a debt bucket. Focus on structural issues that repeatedly show up in reviews, incidents, slow delivery, or brittle coexistence boundaries.
+See [context notes](references/context.md).
 
 ## Inputs
 
-- **review-report** -- produced by the preceding skill in the lifecycle
-- **retrospective-report** -- produced by the preceding skill in the lifecycle
-- **postmortem-report** -- produced by the preceding skill in the lifecycle
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
+
 ## Process
 
 ### Step 1: Identify Debt from Repeated Evidence
@@ -103,8 +102,8 @@ For each top debt item, define:
 
 ## Outputs
 
-- **tech-debt-registry** -- produced by this skill
-- **remediation-plan** -- produced by this skill
+Produce only declared outputs at their documented quality boundary.
+
 ## Quality Gate
 
 - [ ] Debt registry is current and accessible to the team
@@ -120,13 +119,6 @@ For each top debt item, define:
 3. **Tracking without acting** -- A beautiful Jira board of debt items that never gets worked on.
 4. **Gold-plating as debt reduction** -- Rewriting working code for aesthetic reasons is not debt reduction. Focus on items with measurable impact.
 5. **Debt bucket for every annoyance** -- If everything is debt, nothing is prioritized. Use evidence and recurrence, not frustration alone.
-
-## Related Skills
-
-- [pc-code-review](../pc-code-review/SKILL.md) -- identifies debt during review
-- [pc-refactoring](../pc-refactoring/SKILL.md) -- the primary tool for paying down debt
-- [pc-retrospective](../pc-retrospective/SKILL.md) -- surfaces systemic debt issues
-- `pc-migration-strategy` (planned) -- for large-scale debt remediation
 
 ## Distribution
 

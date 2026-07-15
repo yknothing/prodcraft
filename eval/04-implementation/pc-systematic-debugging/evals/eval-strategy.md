@@ -13,9 +13,9 @@ This is the largest repo-local execution gap between Prodcraft and Superpowers. 
 - uses historical defect retrieval without anchoring blindly
 - escalates structural mismatches through `course-correction-note`
 
-## Initial Evaluation Mode
+## Evaluation Mode
 
-The first evaluation is a routed manual review using two scenarios:
+Historical routed review used two scenarios:
 
 1. a failing test in normal implementation flow
 2. a contained hotfix where the code fix must follow incident containment
@@ -40,5 +40,8 @@ Treat the skill as strong review-stage evidence if it consistently outperforms a
 
 ## Next QA Step
 
-- add an isolated benchmark with repeated-fix and hotfix fixtures
-- compare against a generic implementation baseline and the Superpowers debugging skill
+- run the implemented four-scenario isolated benchmark with the Gemini runner,
+  both arms, and N>=3 per scenario per arm
+- run deterministic machine scoring before the content-hash-bound judge lane
+- add the brownfield `pc-bug-history-retrieval -> pc-systematic-debugging -> pc-tdd`
+  integration review after isolated revalidation passes

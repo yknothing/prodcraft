@@ -25,6 +25,7 @@ __pycache__/
 .conductor/
 .orch/
 .prodcraft/artifacts/prodcraft-direction2/
+.prodcraft/artifacts/*/intake-brief.json
 
 # Build artifacts
 dist/

@@ -24,19 +24,13 @@ metadata:
 
 ## Context
 
-Domain modeling turns reviewed requirements into a stable business-language contract. Its job is to reduce ambiguity before later phases lock in schema, API, or implementation decisions.
+Domain modeling turns reviewed requirements into a stable business-language contract.
 
-In Prodcraft, this skill is most valuable when:
-
-- the same noun may mean different things to product, operations, and engineering
-- brownfield work must preserve legacy terms without letting them silently define the new model
-- downstream skills need to know which concepts are authoritative, derived, transitional, or still unresolved
-
-This is not database design, API design, or task planning. Stay at the domain layer.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **requirements-doc** -- produced by the preceding skill in the lifecycle
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -89,7 +83,7 @@ The model should make those scenarios easier to explain without leaking into sch
 
 ## Outputs
 
-- **domain-model** -- shared glossary, core entities, relationships, authoritative boundaries, and any justified bounded contexts
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -97,16 +91,3 @@ The model should make those scenarios easier to explain without leaking into sch
 - [ ] Ubiquitous language glossary created with team agreement
 - [ ] Bounded contexts identified (if system is complex enough to warrant them)
 - [ ] Model validated against at least 3 real business scenarios
-
-## Anti-Patterns
-
-1. **Database-first modeling** -- Design the domain model, then derive the database schema. Not the reverse.
-2. **Bounded contexts by reflex** -- Splitting the model into contexts before the requirements prove the split.
-3. **Premature optimization** -- Don't model for query performance. Model for clarity. Performance comes later.
-4. **Legacy term capture** -- Letting transitional brownfield vocabulary silently become the canonical future model.
-
-## Related Skills
-
-- [pc-requirements-engineering](../pc-requirements-engineering/SKILL.md) -- provides requirements to model
-- [pc-data-modeling](../../02-architecture/pc-data-modeling/SKILL.md) -- translates domain model to data schema
-- [pc-api-design](../../02-architecture/pc-api-design/SKILL.md) -- uses domain language for API resources

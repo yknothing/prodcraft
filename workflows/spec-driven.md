@@ -1,224 +1,120 @@
 ---
 name: spec-driven
-description: "Full specification upfront, phased delivery with formal quality gates"
-cadence: "milestone-based"
-workflow_kind: "primary"
-composes_with: ["greenfield", "brownfield", "hotfix"]
-entry_skill: "pc-intake"
-required_artifacts: ["intake-brief"]
-best_for: ["regulated-industries", "safety-critical", "contractual", "large-teams"]
-phases_included: ["all"]
+description: Rigorous sequential development with formal specifications and blocking gates
+cadence: sequential phases, weeks to months
+workflow_kind: primary
+composes_with: [greenfield, brownfield, hotfix]
+entry_skill: pc-intake
+required_artifacts: [intake-brief]
+best_for: [regulated, safety-critical, large-teams, contractual]
+phases_included: [all]
+contract:
+  version: workflow.v2
+  overview:
+    summary: Execute lifecycle phases sequentially and require reviewed, traceable artifacts before downstream work begins.
+    distinctive: Specification and formal approval carry more weight than delivery speed because the cost of ambiguity or non-compliance is high.
+  entry_gate:
+    summary: Begin only after pc-intake selects and the user approves the higher-rigor spec-driven route.
+    artifact: intake-brief
+    approval_required: true
+    fast_track_rule: Phase compression requires an amended intake approval and may not waive mandatory regulatory or contractual evidence.
+  phase_sequence:
+    - id: 00-discovery
+      name: Discovery
+      purpose: Establish the problem, stakeholders, constraints, regulatory context, and initial risks.
+      skills: [pc-user-research, pc-market-analysis, pc-feasibility-study]
+      inputs: [business case, market data, regulatory requirements, stakeholder access]
+      outputs: [discovery report, stakeholder map, problem statement, initial risk register]
+      duration: until stakeholder discovery is complete
+    - id: 01-specification
+      name: Specification
+      purpose: Produce complete, uniquely identified, testable requirements with explicit non-functional constraints.
+      skills: [pc-requirements-engineering, pc-spec-writing, pc-domain-modeling, pc-acceptance-criteria]
+      inputs: [approved discovery report, stakeholder map, regulatory constraints]
+      outputs: [PRD, functional specification, non-functional requirements, acceptance criteria, traceability matrix]
+      duration: until specification review closes all blocking questions
+    - id: 02-architecture
+      name: Architecture
+      purpose: Design a system that maps every material requirement to a reviewed technical decision.
+      skills: [pc-system-design, pc-api-design, pc-data-modeling, pc-security-design, pc-tech-selection]
+      inputs: [approved specification, non-functional requirements, existing-system constraints]
+      outputs: [technical design, ADRs, API specifications, data model, infrastructure plan, threat model]
+      duration: until architecture review approval
+    - id: 03-planning
+      name: Planning
+      purpose: Map approved requirements and architecture to owned tasks, dependencies, schedule, and risk treatment.
+      skills: [pc-task-breakdown, pc-risk-assessment, pc-estimation]
+      inputs: [technical design, ADRs, team capacity, external dependencies]
+      outputs: [work breakdown, schedule, resource allocation, dependency map, risk mitigation plan]
+      duration: until plan approval
+    - id: 04-implementation
+      name: Implementation
+      purpose: Build exactly the approved specification and record all deviations through change control.
+      skills: [pc-tdd, pc-feature-development, pc-refactoring, pc-code-review, pc-documentation]
+      inputs: [approved plan, technical design, coding standards, test strategy]
+      outputs: [working software, unit and integration tests, code documentation, deviation log]
+      duration: according to approved project plan
+    - id: 05-quality
+      name: Quality
+      purpose: Verify the implementation against requirements, acceptance criteria, security, and performance commitments.
+      skills: [pc-testing-strategy, pc-code-review, pc-security-audit, pc-documentation]
+      inputs: [working software, approved specification, acceptance criteria, test plan]
+      outputs: [test report, defect report, performance evidence, security results, release recommendation]
+      duration: until release-readiness criteria pass
+    - id: 06-delivery
+      name: Delivery
+      purpose: Release the approved candidate through a controlled, reversible production deployment.
+      skills: [pc-ci-cd, pc-release-management, pc-deployment-strategy, pc-documentation]
+      inputs: [release-ready software, deployment plan, rollback plan, communication plan]
+      outputs: [production deployment, release notes, stakeholder notification, deployment verification]
+      duration: approved release window
+    - id: 07-operations
+      name: Operations
+      purpose: Operate the production system against agreed service and support commitments.
+      skills: [pc-incident-response, pc-documentation]
+      inputs: [production system, monitoring configuration, runbooks, SLAs]
+      outputs: [operational metrics, incident reports, postmortems, maintenance records]
+      duration: ongoing
+    - id: 08-evolution
+      name: Evolution
+      purpose: Convert operational evidence and changed needs into a reviewed next lifecycle route.
+      skills: [pc-retrospective, pc-tech-debt-management, pc-market-analysis]
+      inputs: [operational metrics, user feedback, market changes, tech-debt inventory]
+      outputs: [evolution plan, updated roadmap, improvement tickets, process adjustments]
+      duration: planned review cadence
+  quality_gates:
+    - name: Discovery approval
+      after: 00-discovery
+      criteria: [problem and stakeholders approved, regulatory constraints catalogued, initial risks reviewed]
+      approvers: [product manager, project sponsor, compliance officer when applicable]
+      enforcement: blocking
+    - name: Specification review
+      after: 01-specification
+      criteria: [requirements uniquely identified, acceptance criteria testable, traceability complete, open questions resolved]
+      approvers: [product manager, architect, QA lead, affected stakeholders]
+      enforcement: blocking
+    - name: Architecture approval
+      after: 02-architecture
+      criteria: [technical design peer-reviewed, ADRs complete, security and non-functional requirements addressed]
+      approvers: [architect, tech lead, security lead]
+      enforcement: blocking
+    - name: Code complete
+      after: 04-implementation
+      criteria: [approved scope implemented, reviews complete, test threshold met, no open critical or high defects]
+      approvers: [tech lead, QA lead]
+      enforcement: blocking
+    - name: Release readiness
+      after: 05-quality
+      criteria: [acceptance criteria verified, performance commitments met, regression suite passing, security findings resolved or formally accepted]
+      approvers: [QA engineer, product manager, security lead]
+      enforcement: blocking
 ---
 
 # Spec-Driven Workflow
 
-## Overview
-
-The spec-driven workflow is the most rigorous approach in the Prodcraft system. Every phase executes sequentially with formal quality gates that block progression until criteria are met. Nothing is built until it is fully specified, reviewed, and approved.
-
-This workflow is designed for contexts where the cost of getting it wrong is high: regulated industries, safety-critical systems, contractual obligations, and large teams where alignment is expensive to achieve after the fact. The upfront investment in specification and review pays dividends by catching defects early, when they are cheapest to fix.
-
-Choose this workflow when requirements are knowable upfront, when regulatory or contractual compliance demands traceability, or when the team is large enough that informal coordination breaks down.
-
-This workflow may be paired with overlays such as `greenfield`, `brownfield`, or `hotfix` when system state or urgency changes the route but formal governance remains primary.
-
-## Entry Gate
-
-This workflow may begin only after `pc-intake` is completed, approved, and routed to a spec-driven path. The required artifact is the `intake-brief`, which serves as the formal record of why this higher-rigor workflow was selected.
-
-If any earlier gate is skipped, the intake brief must document that decision explicitly as accepted process debt.
-
-## Phase Sequence
-
-### Phase 0: Discovery
-
-**Purpose:** Exhaustive problem analysis and stakeholder alignment.
-
-**Skills:** Apply `pc-user-research`, `pc-market-analysis`, and `pc-feasibility-study`.
-
-**Inputs:** Business case, market data, regulatory requirements, stakeholder access.
-**Outputs:** Discovery report, stakeholder map, problem statement, initial risk register.
-**Duration:** 1-4 weeks depending on domain complexity.
-
-All stakeholders must be identified and interviewed. The problem space must be documented thoroughly before any solution is proposed. Regulatory constraints are catalogued here and tracked through every subsequent phase.
-
-### Gate: Discovery Approval
-
-- **Criteria:** Problem statement signed off by all stakeholders. Risk register reviewed. Regulatory landscape documented.
-- **Approvers:** Product manager, sponsor, compliance officer (if applicable).
-- **Type:** BLOCKING -- no specification work begins without this gate.
-
-### Phase 1: Specification
-
-**Purpose:** Complete, unambiguous requirements documentation.
-
-**Skills:** Apply `pc-requirements-engineering`, `pc-spec-writing`, `pc-domain-modeling`, and `pc-acceptance-criteria`.
-
-**Inputs:** Discovery report, stakeholder map, regulatory constraints.
-**Outputs:** Product Requirements Document (PRD), functional specification, non-functional requirements, acceptance criteria for every requirement.
-**Duration:** 2-6 weeks.
-
-Every requirement gets a unique identifier for traceability. Acceptance criteria are written for every functional requirement. Non-functional requirements (performance, security, accessibility) are quantified with measurable thresholds.
-
-### Gate: Specification Review
-
-- **Criteria:** All requirements have unique IDs. Acceptance criteria exist for every functional requirement. Non-functional requirements are quantified. Stakeholder sign-off obtained. No unresolved open questions.
-- **Approvers:** Product manager, architect, QA engineer, legal/compliance (if applicable).
-- **Type:** BLOCKING.
-
-### Phase 2: Architecture
-
-**Purpose:** System design that satisfies all specified requirements.
-
-**Skills:** Apply `pc-system-design`, `pc-api-design`, `pc-data-modeling`, `pc-security-design`, and `pc-tech-selection`.
-
-**Inputs:** PRD, functional specification, non-functional requirements, existing system documentation.
-**Outputs:** Technical Design Document (TDD), Architecture Decision Records (ADRs), API specifications, data model diagrams, infrastructure plan.
-**Duration:** 2-4 weeks.
-
-Every architectural decision is recorded as an ADR with full rationale and alternatives considered. The architecture must demonstrably satisfy every non-functional requirement. Security threat modeling is mandatory.
-
-### Gate: Architecture Review Board
-
-- **Criteria:** TDD complete and peer-reviewed. All ADRs documented. Security threat model complete. Infrastructure cost estimate provided. Architecture maps to all non-functional requirements with justification.
-- **Approvers:** Architect, tech lead, security lead, infrastructure lead.
-- **Type:** BLOCKING.
-
-### Phase 3: Planning
-
-**Purpose:** Detailed work breakdown, scheduling, and resource allocation.
-
-**Skills:** Apply `pc-task-breakdown`, `pc-risk-assessment`, and `pc-estimation`.
-
-**Inputs:** TDD, ADRs, team capacity, external dependencies.
-**Outputs:** Work breakdown structure, project schedule, resource allocation, dependency map, risk mitigation plan.
-**Duration:** 1-2 weeks.
-
-Tasks are traced back to requirements. Every task has an estimate, an owner, and identified dependencies. The critical path is identified and monitored. Milestones align with quality gates.
-
-### Gate: Plan Approval
-
-- **Criteria:** All requirements mapped to tasks. Critical path identified. Resources allocated. Risks mitigated or accepted with documented rationale.
-- **Approvers:** Tech lead, product manager, project sponsor.
-- **Type:** BLOCKING.
-
-### Phase 4: Implementation
-
-**Purpose:** Build the system according to specification and architecture.
-
-**Skills:** Apply `pc-tdd`, `pc-feature-development`, `pc-refactoring`, `pc-code-review`, and `pc-documentation`.
-
-**Inputs:** TDD, task breakdown, coding standards, test strategy.
-**Outputs:** Working software, unit tests, integration tests, code documentation, implementation notes.
-**Duration:** 4-16 weeks depending on scope.
-
-Code is written against the specification -- deviations require a formal change request. All code is peer-reviewed before merge. Test coverage targets are enforced. Implementation notes document any specification ambiguities encountered.
-
-### Gate: Code Complete
-
-- **Criteria:** All planned features implemented. Code review completed for all changes. Unit test coverage meets threshold. No critical or high-severity defects open. All change requests resolved.
-- **Approvers:** Tech lead, reviewer.
-- **Type:** BLOCKING.
-
-### Phase 5: Quality
-
-**Purpose:** Comprehensive verification against specification.
-
-**Skills:** Apply `pc-testing-strategy`, `pc-code-review`, `pc-security-audit`, and `pc-documentation`.
-
-**Inputs:** Working software, specification, acceptance criteria, test plan.
-**Outputs:** Test results, defect reports, performance benchmarks, security scan results, release readiness assessment.
-**Duration:** 2-4 weeks.
-
-Every acceptance criterion is verified. Performance is benchmarked against non-functional requirements. Security scanning is run and findings triaged. Regression testing covers all critical paths. Exploratory testing targets risk areas.
-
-### Gate: Release Readiness
-
-- **Criteria:** All acceptance criteria verified. Performance meets benchmarks. No critical or high-severity defects. Security scan clean or findings accepted. Regression suite passing.
-- **Approvers:** QA engineer, product manager, security lead.
-- **Type:** BLOCKING.
-
-### Phase 6: Delivery
-
-**Purpose:** Controlled release to production.
-
-**Skills:** Apply `pc-ci-cd`, `pc-release-management`, `pc-deployment-strategy`, and `pc-documentation`.
-
-**Inputs:** Release-ready software, deployment plan, rollback plan, stakeholder communication plan.
-**Outputs:** Production deployment, release notes, stakeholder notification, deployment verification.
-**Duration:** 1-3 days.
-
-Deployment follows a documented, rehearsed plan. Rollback procedures are tested before go-live. Stakeholders are notified at each stage. Post-deployment verification confirms the release is healthy.
-
-### Phase 7: Operations
-
-**Purpose:** Monitor, maintain, and support the production system.
-
-**Skills:** Apply `pc-incident-response` and `pc-documentation`.
-
-**Inputs:** Production system, monitoring configuration, runbooks, SLAs.
-**Outputs:** Operational metrics, incident reports, postmortems, maintenance logs.
-**Duration:** Ongoing.
-
-Monitoring covers all SLAs. Incident response follows documented procedures. Every production incident gets a postmortem. Operational findings feed back into the evolution phase.
-
-### Phase 8: Evolution
-
-**Purpose:** Continuous improvement based on operational data and changing needs.
-
-**Skills:** Apply `pc-retrospective`, `pc-tech-debt-management`, and `pc-market-analysis`.
-
-**Inputs:** Operational metrics, user feedback, market changes, tech debt inventory.
-**Outputs:** Evolution plan, updated roadmap, improvement tickets, process adjustments.
-**Duration:** Periodic reviews (monthly or quarterly).
-
-## Quality Gates
-
-Spec-driven gates are formal and BLOCKING. No phase begins until its predecessor gate is cleared.
-
-### Discovery Approval
-
-- **Criteria:** Problem statement signed off. Stakeholder map complete. Regulatory constraints catalogued. Risk register reviewed.
-- **Approvers:** Product manager, project sponsor, compliance officer (if applicable).
-- **Type:** BLOCKING.
-
-### Specification Review
-
-- **Criteria:** Requirements complete, unambiguous, and reviewed by all stakeholders. Acceptance criteria testable and signed off. Traceability matrix in place.
-- **Approvers:** Product manager, QA lead, stakeholders.
-- **Type:** BLOCKING.
-
-### Architecture Approval
-
-- **Criteria:** Architecture documented and reviewed. Non-functional requirements addressed. Security design reviewed. ADR log complete.
-- **Approvers:** Architect, tech lead, security lead.
-- **Type:** BLOCKING.
-
-### Code Complete
-
-- **Criteria:** All features implemented to spec. Code review complete for all changes. Unit test coverage meets target. No critical or high-severity defects open. All change requests resolved.
-- **Approvers:** Tech lead, QA lead.
-- **Type:** BLOCKING.
-
-### Release Readiness
-
-- **Criteria:** All acceptance criteria verified. Performance meets benchmarks. No critical defects. Security scan clean or findings accepted with documented rationale. Regression suite passing.
-- **Approvers:** QA engineer, product manager, security lead.
-- **Type:** BLOCKING.
-
-## Change Control
-
-In this workflow, scope changes after the Specification Review gate require a formal change request:
-
-1. Change request submitted with rationale, impact analysis, and effort estimate.
-2. Impact assessment by architect and tech lead.
-3. Approval by product manager and project sponsor.
-4. Specification, architecture, and plan updated to reflect the change.
-5. Traceability maintained -- the change is linked to affected requirements.
-
 ## Adaptation Notes
 
-- **Small teams (2-5):** Gates can be lighter (a meeting rather than a formal board) but still must be documented.
-- **Solo developer:** Self-review using checklists that cover each gate's criteria. Document decisions even if you are the only audience.
-- **Distributed teams:** Asynchronous gate reviews with explicit approval deadlines. Use shared documents with comment threads.
-- **Compliance overlay:** Map gate criteria to specific regulatory requirements. Maintain an audit trail of gate approvals.
+- Scope changes after specification approval require impact analysis, updated artifacts, affected re-approval, and a recorded change decision.
+- Small teams may combine roles, but must preserve independent evidence and explicit approvals.
+- Regulated work adds domain-specific traceability and retention without weakening the common gates.
+- Distributed teams should use asynchronous reviews with recorded decisions and clear response deadlines.

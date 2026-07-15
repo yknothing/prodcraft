@@ -214,9 +214,71 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
             "work_type": "Documentation",
             "entry_phase": "cross-cutting",
             "approver": "auto (micro policy)",
-            "proposed_path": ["documentation"],
+            "questions_asked": [],
+            "routing_changed_by_answers": False,
+            "quality_target_context": {
+                **valid_fast_track_payload["quality_target_context"],
+                "runtime_context": "agent_internal_skill",
+                "exposure_profile": "no_network_listener",
+            },
+            "proposed_path": ["pc-documentation"],
+            "micro_eligibility": {
+                "single_revert": True,
+                "zero_questions": True,
+                "no_external_effect": True,
+                "no_security_impact": True,
+                "no_irreversible_action": True,
+            },
         }
         jsonschema.validate(valid_micro_payload, self.schema)
+
+        with self.assertRaises(jsonschema.ValidationError, msg="micro eligibility is required"):
+            payload = dict(valid_micro_payload)
+            payload.pop("micro_eligibility")
+            jsonschema.validate(payload, self.schema)
+
+        for invalid_patch in (
+            {"scope_assessment": "medium"},
+            {"status": "draft"},
+            {"approver": "user"},
+            {"workflow_primary": "agile-sprint"},
+        ):
+            with self.assertRaises(jsonschema.ValidationError, msg=str(invalid_patch)):
+                jsonschema.validate({**valid_micro_payload, **invalid_patch}, self.schema)
+
+        for eligibility_field in valid_micro_payload["micro_eligibility"]:
+            payload = dict(valid_micro_payload)
+            payload["micro_eligibility"] = dict(payload["micro_eligibility"])
+            payload["micro_eligibility"][eligibility_field] = False
+            with self.assertRaises(jsonschema.ValidationError, msg=eligibility_field):
+                jsonschema.validate(payload, self.schema)
+
+        contradictory_micro_patches = (
+            {"questions_asked": ["Should this touch production?"]},
+            {"routing_changed_by_answers": True},
+            {"work_type": "Hotfix"},
+            {
+                "quality_target_context": {
+                    **valid_micro_payload["quality_target_context"],
+                    "runtime_context": "public_service",
+                }
+            },
+            {
+                "quality_target_context": {
+                    **valid_micro_payload["quality_target_context"],
+                    "exposure_profile": "public_internet",
+                }
+            },
+        )
+        for invalid_patch in contradictory_micro_patches:
+            with self.assertRaises(jsonschema.ValidationError, msg=str(invalid_patch)):
+                jsonschema.validate({**valid_micro_payload, **invalid_patch}, self.schema)
+
+        with self.assertRaises(jsonschema.ValidationError, msg="non-micro must omit micro eligibility"):
+            jsonschema.validate(
+                {**valid_fast_track_payload, "micro_eligibility": valid_micro_payload["micro_eligibility"]},
+                self.schema,
+            )
 
         invalid_cases = (
             ("work_type", "New Feture"),

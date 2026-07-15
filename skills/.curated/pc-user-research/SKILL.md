@@ -32,15 +32,14 @@ metadata:
 
 ## Context
 
-User research transforms market understanding into actionable user profiles. It can run in parallel with market-analysis but ideally uses market insights to focus the research scope.
+User research transforms market understanding into actionable user profiles.
 
-When invoked immediately after [pc-problem-framing](../pc-problem-framing/SKILL.md), the first responsibility is to turn the upstream open questions into a concrete research plan. Do **not** invent personas or "validated" findings before real user evidence exists.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **intake-brief** -- produced by the preceding skill in the lifecycle
-- **problem-frame** -- produced by the preceding skill in the lifecycle
-- **market-research-report** -- produced by the preceding skill in the lifecycle
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
+
 ## Process
 
 ### Step 1: Define Research Questions
@@ -97,11 +96,7 @@ If the research has not yet been executed, do **not** fake this step. Record tha
 
 ## Outputs
 
-- **research-plan** -- The immediate planning artifact when the skill is invoked before evidence collection. It should name the target segments, hypotheses, methods, evidence threshold, and what question blocks downstream requirements.
-- **user-persona-set** -- Evidence-backed personas produced only after research is actually run.
-- **user-journey-map** -- Journey map produced only after research evidence is sufficient to describe the primary workflow credibly.
-
-If only `research-plan` exists, the discovery work is better framed but the skill's full quality gate is still open. Do not pretend that planning alone equals validated research.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -110,22 +105,6 @@ If only `research-plan` exists, the discovery work is better framed but the skil
 - [ ] User journey mapped for primary persona
 - [ ] Pain points prioritized by frequency and severity
 - [ ] Upstream discovery questions are either answered or explicitly carried forward
-
-## Anti-Patterns
-
-1. **Designing for yourself** -- You are not your user. Even if you're in the target market, your expertise makes you atypical.
-2. **Too many personas** -- More than 5 personas dilutes focus. Consolidate similar users.
-3. **Demographic-only personas** -- "25-35 year old male" is not a useful persona. Focus on goals and behaviors.
-4. **One-time research** -- User understanding should be continuously refined, not a one-time exercise.
-5. **Inventing validated users from framing alone** -- A problem frame can sharpen what to learn, but it is not evidence. If research has not been run, output a research plan and keep the quality gate open.
-6. **Ignoring upstream non-goals** -- Research should test the chosen direction and its boundaries, not silently reopen scope the framing step already ruled out.
-
-## Related Skills
-
-- [pc-problem-framing](../pc-problem-framing/SKILL.md) -- shapes the problem and open questions before research starts
-- `pc-market-analysis` -- provides market context for targeting research
-- [pc-requirements-engineering](../pc-requirements-engineering/SKILL.md) -- consumes personas and journey maps
-- [pc-acceptance-criteria](../pc-acceptance-criteria/SKILL.md) -- uses persona scenarios
 
 ## Distribution
 

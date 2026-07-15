@@ -20,6 +20,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from prodcraft_gateway_skill import render_prodcraft_skill  # noqa: E402
+from gateway_routing import render_portable_routing_map  # noqa: E402
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -354,6 +355,31 @@ def export_entry(
             f"{rendered.rstrip()}\n{portability_note(portability_entry)}",
             encoding="utf-8",
         )
+        manifest = yaml.safe_load((repo_root / "manifest.yml").read_text(encoding="utf-8")) or {}
+        manifest_skill_names = {
+            item["name"]
+            for item in manifest.get("skills", [])
+            if isinstance(item, dict) and isinstance(item.get("name"), str)
+        }
+        planned_skill_names = {
+            item["name"]
+            for item in manifest.get("planned_skills", [])
+            if isinstance(item, dict) and isinstance(item.get("name"), str)
+        }
+        public_registry = load_public_registry(repo_root)
+        public_skill_names = {
+            item["name"]
+            for item in public_registry["public_skills"]
+        }
+        routing_map = render_portable_routing_map(
+            (repo_root / "skills" / "_gateway.md").read_text(encoding="utf-8"),
+            public_skill_names=public_skill_names,
+            manifest_skill_names=manifest_skill_names,
+            planned_skill_names=planned_skill_names,
+        )
+        references_dir = destination_dir / "references"
+        references_dir.mkdir(parents=True, exist_ok=True)
+        (references_dir / "routing-map.md").write_text(routing_map, encoding="utf-8")
         return
 
     source_dir = repo_root / entry["source"]

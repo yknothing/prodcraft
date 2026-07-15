@@ -29,9 +29,9 @@ def render_prodcraft_skill(
     if install_surface == "curated":
         intake_ref = "`pc-intake`"
         problem_framing_ref = "`pc-problem-framing`"
-        gateway_ref = "`skills/_gateway.md` in the source repository"
-        workflows_ref = "`workflows/` in the source repository"
-        repo_source_line = "- Canonical repo source: see the source repository"
+        gateway_ref = "the [portable routing map](references/routing-map.md)"
+        workflows_ref = "that generated routing map"
+        repo_source_line = "- Canonical repo source: see the generated routing map provenance"
         locator_note = (
             "- No machine-specific locator is bundled with the curated package; if the source repository is not "
             "available, rely only on sibling public skill packages that are actually installed."

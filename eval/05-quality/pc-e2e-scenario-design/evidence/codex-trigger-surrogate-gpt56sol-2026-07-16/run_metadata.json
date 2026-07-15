@@ -1,0 +1,20 @@
+{
+  "schema_version": "codex-trigger-surrogate-run-metadata.v1",
+  "runner": "codex",
+  "model": "gpt-5.6-sol",
+  "codex_cli_version": "codex-cli 0.144.4",
+  "official_trigger_semantics": false,
+  "batching": "one model call for 20 queries",
+  "runs_per_query": 1,
+  "prompt_sha256": "985b24124bdd7dfb1bdf0b7399192f5e02e3699b1e338a1eefa46f03b55caa15",
+  "raw_results_sha256": "05b3a8c1651dc9288efd72dad92893726aa25c6ac3001c13385cfe31a789e155",
+  "runner_home_isolation": {
+    "mode": "per-case-temporary-auth-only",
+    "auth_exposure": "auth.json-symlink",
+    "source_user_config_loaded": false,
+    "forbidden_path_fragment": "systematic-debugging",
+    "preflight_forbidden_path_matches": 0,
+    "postflight_forbidden_path_matches": 0,
+    "cleanup": "automatic-after-each-case"
+  }
+}

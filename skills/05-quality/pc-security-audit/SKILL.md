@@ -28,16 +28,13 @@ metadata:
 
 ## Context
 
-Security audit is the focused quality pass for abuse resistance. It is narrower than full security architecture work and deeper than ordinary code review. Use it when a change crosses trust boundaries, handles sensitive data, touches authn/authz, introduces new dependencies, or materially changes deployment exposure.
+Security audit is the focused quality pass for abuse resistance.
 
-In Prodcraft, security audit exists to stop avoidable release risk. It should produce concrete findings tied to the current slice, not a generic list of best practices.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **source-code** -- The implementation under audit, including configuration and integration points visible in the change.
-- **architecture-doc** -- Trust boundaries, component interactions, and intended control points.
-- **threat-model** -- Known attacker capabilities, abuse cases, and assumptions to verify when one exists.
-- **intake-brief** -- Must include `quality_target_context` with `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs`.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -75,7 +72,7 @@ Every finding should point to the affected boundary, evidence, and expected reme
 
 ## Outputs
 
-- **security-report** -- Findings, risk classification, evidence, remediation guidance, and explicit release recommendation.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -84,17 +81,3 @@ Every finding should point to the affected boundary, evidence, and expected reme
 - [ ] Sensitive data handling and secret exposure were checked
 - [ ] Dependency and configuration changes were reviewed for security impact
 - [ ] The release recommendation is explicit: pass, conditional pass, or block
-
-## Anti-Patterns
-
-1. **Scanner-only audit** -- treating tool output as the entire audit.
-2. **Checklist without context** -- reporting generic issues that do not apply to the actual slice.
-3. **Security as post-release paperwork** -- auditing after the rollout decision is already made.
-4. **Severity without exploit path** -- labeling issues without explaining how the system could actually be abused.
-
-## Related Skills
-
-- [pc-code-review](../pc-code-review/SKILL.md) -- catches general correctness and maintainability issues before the deeper security pass
-- [pc-testing-strategy](../pc-testing-strategy/SKILL.md) -- incorporates security checks into the broader verification plan
-- [pc-deployment-strategy](../../06-delivery/pc-deployment-strategy/SKILL.md) -- consumes the audit when rollout risk or blast radius must be constrained
-- [pc-security-design](../../02-architecture/pc-security-design/SKILL.md) -- provides deeper threat modeling and control design upstream

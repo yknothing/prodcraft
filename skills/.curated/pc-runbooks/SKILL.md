@@ -32,15 +32,14 @@ metadata:
 
 ## Context
 
-Runbooks convert operational knowledge into executable procedures. They are not long theory documents. They are concise operational guides for situations where time, clarity, and safety matter more than perfect prose.
+Runbooks convert operational knowledge into executable procedures.
 
-In a lifecycle-aware system, runbooks should encode the same release boundaries the team reviewed earlier. For brownfield systems, that often means explicit rollback, fail-closed behavior, and coexistence-safe fallback steps.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **incident-playbook** -- produced by the preceding skill in the lifecycle
-- **monitoring-config** -- produced by the preceding skill in the lifecycle
-- **ci-cd-pipeline** -- produced by the preceding skill in the lifecycle
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
+
 ## Process
 
 ### Step 1: Define the Trigger and Owner
@@ -85,8 +84,8 @@ Validate that someone other than the author can follow it. Update the runbook af
 
 ## Outputs
 
-- **operational-runbook** -- produced by this skill
-- **escalation-checklist** -- produced by this skill
+Produce only declared outputs at their documented quality boundary.
+
 ## Quality Gate
 
 - [ ] Trigger and intended owner are explicit
@@ -94,21 +93,6 @@ Validate that someone other than the author can follow it. Update the runbook af
 - [ ] Rollback or fail-closed path is included where applicable
 - [ ] Recovery verification and communication steps are included
 - [ ] Another responder could execute the procedure without improvising major steps
-
-## Anti-Patterns
-
-1. **Narrative instead of procedure** -- If every step has to be inferred, it is not a runbook.
-2. **Author-only knowledge** -- A runbook that depends on tribal memory is already failing.
-3. **No rollback or safe-stop branch** -- Procedures that assume the happy path are dangerous under pressure.
-4. **Outdated environment details** -- Old commands and links are silent operational hazards.
-5. **Missing communication checkpoints** -- Recovery can still fail if stakeholders do not know the current state.
-6. **Magic thresholds** -- Saying "if the threshold is exceeded" without naming the threshold or policy source forces responders to guess.
-
-## Related Skills
-
-- [pc-monitoring-observability](../pc-monitoring-observability/SKILL.md) -- provides the signals that trigger runbooks
-- [pc-incident-response](../pc-incident-response/SKILL.md) -- defines containment and command structure
-- [pc-retrospective](../pc-retrospective/SKILL.md) -- improves runbooks after incidents
 
 ## Distribution
 

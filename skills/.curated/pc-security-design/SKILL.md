@@ -31,14 +31,13 @@ metadata:
 
 ## Context
 
-Security design identifies what must be protected, who might abuse the system, and which controls must exist at each boundary. It sits upstream of security audit: the goal here is to design the defenses, not just inspect the code later.
+Security design identifies what must be protected, who might abuse the system, and which controls must exist at each boundary.
 
-In Prodcraft, security design is most valuable when the system adds new trust boundaries, handles sensitive data, or depends on brownfield coexistence where old and new controls may differ.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **architecture-doc** -- Defines the system boundaries, deployment topology, and interaction patterns.
-- **api-contract** -- Identifies externally visible actions, data entry points, and policy-sensitive operations.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -71,7 +70,7 @@ Capture attacker assumptions, control decisions, unresolved risks, and the check
 
 ## Outputs
 
-- **threat-model** -- Assets, trust boundaries, abuse paths, required controls, and explicit residual risks.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -80,20 +79,6 @@ Capture attacker assumptions, control decisions, unresolved risks, and the check
 - [ ] Required controls are assigned per boundary
 - [ ] Logging and fail-closed expectations are clear
 - [ ] Residual risks and unresolved assumptions are recorded for audit or follow-up
-
-## Anti-Patterns
-
-1. **Security by generic checklist** -- controls that ignore the real boundaries of the system.
-2. **Auth-only thinking** -- focusing on login while ignoring authorization, secret handling, or data leakage.
-3. **Invisible residual risk** -- acting as if security is complete when key assumptions remain open.
-4. **Brownfield blind spot** -- designing new controls without modeling weaker legacy paths still in service.
-
-## Related Skills
-
-- [pc-system-design](../pc-system-design/SKILL.md) -- supplies the structural boundaries to secure
-- [pc-security-audit](../pc-security-audit/SKILL.md) -- verifies the implementation against this design
-- [pc-deployment-strategy](../pc-deployment-strategy/SKILL.md) -- uses the threat model when rollout posture affects exposure
-- [pc-monitoring-observability](../pc-monitoring-observability/SKILL.md) -- exposes the signals needed to detect security-relevant failure modes
 
 ## Distribution
 

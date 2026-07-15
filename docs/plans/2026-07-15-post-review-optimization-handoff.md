@@ -29,7 +29,7 @@ Eight batches, each green on `scripts/validate_prodcraft.py` plus the full
    (`artifact_record_language` stays const `en`).
 5. `micro` intake tier: compact one-block brief, notify-and-proceed, strict
    conjunctive eligibility; schema, gateway, template, and CLAUDE.md aligned.
-6. Operational tools: `scripts/validate_artifact_instance.py` (validates real
+6. Operational tools: `scripts/validate_prodcraft.py --artifact-instance` (validates real
    artifact records incl. verification-record claim bindings) and
    `scripts/measure_context_cost.py` (context budget accounting).
 7. Adversarial-review fix round (schema allOf vs micro contradiction, regex
@@ -104,7 +104,8 @@ contracts), so there is no second source of truth.
 
 ## Task 4 (P1): Host adapter first foothold (AR-03, review-doc F6 step 3)
 
-`scripts/validate_artifact_instance.py` exists; bind it to a host:
+The canonical `scripts/validate_prodcraft.py --artifact-instance` path exists;
+bind it to a host:
 
 - A Claude Code `PreToolUse` hook (repo-local `.claude/` config) that blocks
   Edit/Write when no approved intake-brief instance exists for the session's
@@ -156,10 +157,9 @@ budget, gateway-refs/doc-script-refs checks, portability-note-in-body, and
 the pc-systematic-debugging rewrite were grafted onto main's structure. One
 extra follow-up from the reconciliation:
 
-- `validate_prodcraft.py --artifact-instance` (main) and
-  `scripts/validate_artifact_instance.py` (this branch) overlap; unify on one
-  implementation and delete the other, keeping the verification-record
-  completion-claim binding checks.
+- Resolved 2026-07-16: `validate_prodcraft.py --artifact-instance` is the
+  single implementation. The overlapping standalone wrapper was removed while
+  preserving the verification-record completion-claim binding checks.
 - Gitignored eval run directories (`eval/**/run-*/`) are now tolerated as
   declared operator-local artifacts by both the validator and
   test_skill_identity_prefix; if the team wants committed evidence instead,
@@ -167,17 +167,19 @@ extra follow-up from the reconciliation:
 
 ## Task 7 (P2): Known accepted risks to keep an eye on
 
-- Gateway planned-name check can false-positive on ordinary English use of a
-  planned skill name (e.g. the word "deprecation" in prose). It fails loudly
-  with a clear message; rephrase prose or mark the skill. If it recurs
-  often, scope the check to backticked tokens and table rows.
-- `micro` notify-and-proceed weakens the blocking-approval invariant by
-  design; watch the first real usages for scope creep (anything beyond
-  single-revert trivia must fall back to `fast-track`).
-- Description budget (350 hard / 280 soft) and the cost meter are not yet
-  connected: the meter measures, the validator caps individual descriptions,
-  but no check fails on total-budget regressions. Wire a threshold once a
-  baseline history exists.
+- Closed 2026-07-16: the mandatory `pc-` identity prefix prevents ordinary
+  English uses such as "deprecation" from matching `pc-deprecation`; regression
+  tests retain standalone-token and per-occurrence marker enforcement.
+- Mechanically constrained 2026-07-16: `micro_eligibility` now requires five
+  true assertions, plus `approved`, `small`, `auto (micro policy)`, zero asked
+  questions, an unchanged route, internal/local runtime and exposure allowlists,
+  and implemented canonical route names. Schema and artifact-instance tests
+  reject contradictory or unknown routes. Notify-and-proceed remains the
+  deliberate approval trade-off, and the Claude blocking adapter does not
+  accept it as authority.
+- Closed 2026-07-16: `schemas/context-budget.json` records the merge baseline
+  and aggregate caps; `measure_context_cost.py --check`, contract tests, and CI
+  now fail on description, entry-stack, workflow, or skill-body regression.
 
 ## Suggested Order
 

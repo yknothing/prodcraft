@@ -32,17 +32,13 @@ metadata:
 
 ## Context
 
-Use this skill when the existing test strategy is directionally correct, but the scenario depth is still too thin for real confidence. The failure mode it targets is not "there are no tests." It is "the tests pass, but the product still breaks under realistic extended use."
+Use this skill when the existing test strategy is directionally correct, but the scenario depth is still too thin for real confidence.
 
-If every test in the suite can be described as "open X, do Y, see Z" in one sentence, the suite is shallow. It mostly verifies what the developer already checked manually. Real production failures happen at state accumulation, cross-boundary navigation, session re-entry, input boundaries, and mid-session dependency failure.
-
-This skill does not replace [pc-testing-strategy](../pc-testing-strategy/SKILL.md). `pc-testing-strategy` decides the test layers and coverage priorities. `pc-e2e-scenario-design` deepens the scenario and edge-case layers once that strategy exists.
+See [context notes](references/context.md).
 
 ## Inputs
 
-- **source-code** -- The product surface and implementation seams that the scenarios must exercise realistically.
-- **task-list** -- The current slice, risk boundary, or release scope that the scenarios must protect.
-- **test-strategy-doc** -- The upstream decision on which layers matter now, which risks are critical, and which flows belong in E2E versus lower layers.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -108,8 +104,7 @@ For platform-specific gotchas that cause silent failures:
 
 ## Outputs
 
-- **test-suite** -- Scenario and edge-case tests that cover at least one extended stateful journey for each critical persona or release boundary in scope.
-- **test-report** -- What scenarios were added or exercised, which risk boundaries they protect, and any remaining blind spots or deferred coverage.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -126,11 +121,6 @@ For platform-specific gotchas that cause silent failures:
 3. **State reset blindness** -- never leaving and re-entering the flow, so session or persistence bugs stay invisible.
 4. **Framework cargo cult** -- copying platform-specific tooling advice without tying it to the current product risk.
 5. **Sleep-based timing** -- adding fixed waits instead of deterministic state or network-based synchronization.
-
-## Related Skills
-
-- [pc-testing-strategy](../pc-testing-strategy/SKILL.md) — defines pyramid ratios and CI integration; this skill implements the scenario and edge-case layers
-- [pc-tdd](../pc-tdd/SKILL.md) — test-first discipline that prevents the shallow test trap at the unit layer
 
 ## Distribution
 

@@ -1,0 +1,24 @@
+[
+  {"category": "core-positive", "query": "Our Playwright suite has 40 green happy-path tests, but production still breaks after users move between checkout, account, and order-history screens. Design deep stateful E2E journeys with persistence and failure-boundary assertions.", "should_trigger": true},
+  {"category": "core-positive", "query": "Design extended mobile E2E scenarios for a project app where users background the app, return later, switch views, and expect server state to remain consistent across the session.", "should_trigger": true},
+  {"category": "core-positive", "query": "Our Cypress tests cover individual collaboration features. I need multi-user scenarios for invite, concurrent edit, reconnect, and cross-client consistency rather than another flat feature checklist.", "should_trigger": true},
+  {"category": "core-positive", "query": "The desktop test suite passes, yet long-running sessions fail after workspace switching and offline recovery. Help turn the critical personas into multi-step state-machine scenarios.", "should_trigger": true},
+  {"category": "core-positive", "query": "We already chose the E2E layer and release risks. Now deepen it with realistic user journeys, re-entry checks, dependency failure edges, and business-state assertions.", "should_trigger": true},
+
+  {"category": "overlap", "query": "We have an approved test strategy. The remaining gap is one 15-step checkout journey across login, cart, payment retry, reload, and order history. Design that stateful E2E scenario and its invariants.", "should_trigger": true},
+  {"category": "overlap", "query": "Decide our overall unit, integration, contract, and E2E test pyramid ratios for a new service and tell us what belongs in CI.", "should_trigger": false},
+  {"category": "overlap", "query": "One Playwright test intermittently times out on a locator. Diagnose the root cause of that specific flaky failure before changing the test.", "should_trigger": false},
+  {"category": "overlap", "query": "Implement a Playwright page object and selectors for the existing single checkout smoke test.", "should_trigger": false},
+  {"category": "overlap", "query": "Review this Cypress pull request for correctness and maintainability; the scenario design is already approved.", "should_trigger": false},
+
+  {"category": "negative", "query": "Write unit tests for calculateDiscount, including negative prices, zero quantity, and expired coupons.", "should_trigger": false},
+  {"category": "negative", "query": "Design the REST API contract for creating and cancelling an order.", "should_trigger": false},
+  {"category": "negative", "query": "Create a load-testing plan for 20,000 requests per second and identify saturation metrics.", "should_trigger": false},
+  {"category": "negative", "query": "Threat-model the OAuth callback and review CSRF, redirect URI, and token leakage risks.", "should_trigger": false},
+  {"category": "negative", "query": "Configure CI to shard our existing Playwright suite across four workers and upload traces on failure.", "should_trigger": false},
+  {"category": "negative", "query": "Add a single smoke test that opens the home page and checks the navigation bar is visible.", "should_trigger": false},
+  {"category": "negative", "query": "Debug why the production API returns HTTP 500 for one customer after yesterday's deploy.", "should_trigger": false},
+  {"category": "negative", "query": "Review this database migration for backward compatibility and lock duration.", "should_trigger": false},
+  {"category": "negative", "query": "Write acceptance criteria for password reset before implementation starts.", "should_trigger": false},
+  {"category": "negative", "query": "Audit the checkout UI for keyboard navigation, focus order, and screen-reader labels.", "should_trigger": false}
+]

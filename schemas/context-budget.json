@@ -1,0 +1,22 @@
+{
+  "schema_version": "prodcraft-context-budget.v1",
+  "baseline_ref": "main@b41e032",
+  "baseline_chars": {
+    "skill_descriptions": 10330,
+    "entry_stack": 38279,
+    "workflows": 68556,
+    "skill_bodies": 235790
+  },
+  "max_chars": {
+    "skill_descriptions": 10847,
+    "entry_stack": 38279,
+    "workflows": 41133,
+    "skill_bodies": 165053
+  },
+  "policy": {
+    "skill_descriptions": "Five percent aggregate headroom from the recorded baseline.",
+    "entry_stack": "Must not regress above the recorded baseline.",
+    "workflows": "Preserve at least a forty percent reduction from the recorded baseline.",
+    "skill_bodies": "Preserve at least a thirty percent reduction from the recorded baseline."
+  }
+}

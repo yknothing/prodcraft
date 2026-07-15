@@ -29,15 +29,14 @@ metadata:
 
 ## Context
 
-Incident response is the skill of managing production failures under pressure. It combines technical diagnosis with communication discipline. The goal is not to find the perfect fix immediately -- it's to stop the bleeding, then investigate properly.
+Incident response is the skill of managing production failures under pressure.
 
-In a lifecycle-aware system, incident response must preserve the release boundary that just shipped. Do not widen scope into redesign during the incident. For brownfield systems, prefer mitigations that fail closed, preserve coexistence, and protect data integrity even if the temporary user experience becomes narrower.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **ci-cd-pipeline** -- produced by the preceding skill in the lifecycle
-- **architecture-doc** -- produced by the preceding skill in the lifecycle
-- **service-alerts** -- produced by the preceding skill in the lifecycle
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
+
 ## Process
 
 ### Step 1: Confirm the Incident and Current Boundary
@@ -124,9 +123,8 @@ Blameless postmortem -- focus on systems, not people:
 
 ## Outputs
 
-- **incident-playbook** -- produced by this skill
-- **incident-timeline** -- produced by this skill
-- **postmortem-report** -- produced by this skill
+Produce only declared outputs at their documented quality boundary.
+
 ## Quality Gate
 
 - [ ] Severity and current user impact are explicit
@@ -134,20 +132,3 @@ Blameless postmortem -- focus on systems, not people:
 - [ ] Incident timeline and evidence sources are captured
 - [ ] Stakeholder communication cadence and owner are explicit
 - [ ] Post-incident follow-up actions and owners are defined
-
-## Anti-Patterns
-
-1. **Blame culture** -- "Who broke it?" kills incident reporting. Focus on "what broke and why."
-2. **Hero culture** -- One person always fixes everything. This is a single point of failure.
-3. **Postmortem without action items** -- A postmortem that identifies problems but assigns no fixes will see the same incident again.
-4. **Skipping postmortem for "small" incidents** -- Small incidents reveal systemic issues. Review them.
-5. **Debug-first incident handling** -- Spending 45 minutes proving root cause while user impact continues. Contain first.
-6. **Unsafe availability bias** -- Keeping a risky path live instead of failing closed at the reviewed release boundary.
-
-## Related Skills
-
-- [pc-ci-cd](../../06-delivery/pc-ci-cd/SKILL.md) -- provides rollout, rollback, and release-boundary context
-- [pc-monitoring-observability](../pc-monitoring-observability/SKILL.md) -- provides the alerting that triggers response
-- [pc-systematic-debugging](../../04-implementation/pc-systematic-debugging/SKILL.md) -- takes over after containment when the next move is a code-level fix
-- [pc-runbooks](../pc-runbooks/SKILL.md) -- provides step-by-step response procedures
-- [pc-retrospective](../../08-evolution/pc-retrospective/SKILL.md) -- broader process improvement from incident patterns

@@ -14,6 +14,7 @@ Usage:
     python scripts/measure_context_cost.py           # human-readable table
     python scripts/measure_context_cost.py --json    # machine-readable
     python scripts/measure_context_cost.py --top 10  # N largest skill bodies
+    python scripts/measure_context_cost.py --check   # fail on aggregate regressions
 """
 
 from __future__ import annotations
@@ -27,9 +28,8 @@ _SCRIPTS_DIR = Path(__file__).resolve().parent
 if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
-from validate_prodcraft import (
+from validate_prodcraft import (  # noqa: E402
     ROOT as REPO_ROOT,
-    SKILLS_DIR,
     WORKFLOWS_DIR,
     iter_lifecycle_skill_paths,
     load_frontmatter,
@@ -45,6 +45,7 @@ ENTRY_STACK_FILES = (
     "skills/00-discovery/pc-intake/references/gotchas.md",
     "templates/intake-brief.md",
 )
+CONTEXT_BUDGET_PATH = REPO_ROOT / "schemas" / "context-budget.json"
 
 
 def est_tokens(chars: int) -> int:
@@ -118,6 +119,33 @@ def measure() -> dict:
     }
 
 
+def evaluate_budget(report: dict, budget: dict) -> list[str]:
+    """Return deterministic aggregate context-budget violations."""
+
+    if budget.get("schema_version") != "prodcraft-context-budget.v1":
+        return ["context budget has an unsupported or missing schema_version"]
+    limits = budget.get("max_chars")
+    if not isinstance(limits, dict):
+        return ["context budget must define max_chars"]
+
+    actual = {
+        "skill_descriptions": report["always_on"]["description_chars"],
+        "entry_stack": report["entry_stack"]["total_chars"],
+        "workflows": sum(item["chars"] for item in report["workflows"]),
+        "skill_bodies": sum(item["body_chars"] for item in report["skills"]),
+    }
+    errors: list[str] = []
+    for surface, chars in actual.items():
+        limit = limits.get(surface)
+        if not isinstance(limit, int) or isinstance(limit, bool) or limit < 0:
+            errors.append(f"context budget max_chars.{surface} must be a non-negative integer")
+        elif chars > limit:
+            errors.append(
+                f"context budget {surface} exceeds {limit} chars: measured {chars} chars"
+            )
+    return errors
+
+
 def print_human(report: dict, top: int) -> None:
     always_on = report["always_on"]
     print(
@@ -151,6 +179,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Measure static Prodcraft context cost.")
     parser.add_argument("--json", action="store_true", help="Emit the full report as JSON.")
     parser.add_argument("--top", type=int, default=8, help="How many largest skill bodies to list.")
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Fail when aggregate measurements exceed schemas/context-budget.json.",
+    )
     args = parser.parse_args()
 
     report = measure()
@@ -158,7 +191,18 @@ def main() -> int:
         print(json.dumps(report, indent=2))
     else:
         print_human(report, args.top)
-    return 0
+    if not args.check:
+        return 0
+
+    try:
+        budget = json.loads(CONTEXT_BUDGET_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"ERROR: failed to load context budget: {exc}", file=sys.stderr)
+        return 1
+    errors = evaluate_budget(report, budget)
+    for error in errors:
+        print(f"ERROR: {error}", file=sys.stderr)
+    return 1 if errors else 0
 
 
 if __name__ == "__main__":

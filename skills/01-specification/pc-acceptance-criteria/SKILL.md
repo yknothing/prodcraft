@@ -25,12 +25,14 @@ metadata:
 
 ## Context
 
-Acceptance criteria bridge the gap between "what we want" (requirements) and "how we verify it works" (tests). They are the contract between product and QA, and the foundation for TDD in the implementation phase.
+Acceptance criteria bridge the gap between "what we want" (requirements) and "how we verify it works" (tests).
+
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **requirements-doc** -- produced by the preceding skill in the lifecycle
-- **spec-doc** -- produced by the preceding skill in the lifecycle
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
+
 ## Process
 
 ### Step 1: Choose a Format
@@ -71,23 +73,11 @@ QA engineers are expert at finding missing edge cases. Review criteria with them
 
 ## Outputs
 
-- **acceptance-criteria-set** -- produced by this skill
+Produce only declared outputs at their documented quality boundary.
+
 ## Quality Gate
 
 - [ ] Every P0/P1 requirement has at least one acceptance criterion
 - [ ] Happy path, edge cases, and error paths covered for critical features
 - [ ] All criteria are measurable and testable
 - [ ] QA team has reviewed and approved
-
-## Anti-Patterns
-
-1. **Too vague** -- "System works correctly" is not acceptance criteria.
-2. **Too implementation-specific** -- "Redis cache TTL is 300s" is an implementation detail, not acceptance criteria.
-3. **Missing negative cases** -- Only testing the happy path. What happens when things go wrong?
-4. **Criteria written after implementation** -- Write criteria BEFORE coding. They guide development, not just verify it.
-
-## Related Skills
-
-- [pc-requirements-engineering](../pc-requirements-engineering/SKILL.md) -- provides requirements to create criteria for
-- [pc-tdd](../../04-implementation/pc-tdd/SKILL.md) -- uses acceptance criteria to drive test writing
-- [pc-testing-strategy](../../05-quality/pc-testing-strategy/SKILL.md) -- builds test plan from acceptance criteria

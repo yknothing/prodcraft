@@ -19,7 +19,7 @@ For new, unclear, or cross-phase software-development work:
 
 1. Start with `pc-intake`
 2. If the route is clear but the problem direction is still fuzzy, continue with `pc-problem-framing`
-3. Use `skills/_gateway.md` in the source repository to select downstream skills and `workflows/` in the source repository to pick the workflow
+3. Use the [portable routing map](references/routing-map.md) to select downstream skills and that generated routing map to pick the workflow
 
 For clearly tactical software-development work, route quickly but keep the lifecycle decision observable instead of silently bypassing Prodcraft.
 
@@ -78,8 +78,8 @@ When Prodcraft is chosen, preserve routing observability:
 - Install surface: `curated`
 - Packaging stability: `beta`
 - Capability readiness: `core`
-- Canonical repo source: see the source repository
-- Gateway contract: `skills/_gateway.md` in the source repository
+- Canonical repo source: see the generated routing map provenance
+- Gateway contract: the [portable routing map](references/routing-map.md)
 - No machine-specific locator is bundled with the curated package; if the source repository is not available, rely only on sibling public skill packages that are actually installed.
 - Portability: `portable_with_caveat`
 - Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

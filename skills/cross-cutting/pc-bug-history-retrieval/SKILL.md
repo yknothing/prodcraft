@@ -27,29 +27,13 @@ metadata:
 
 This skill exists to keep bug investigation grounded in **source-of-truth systems** rather than in memory, copied notes, or a shadow knowledge base.
 
-Use it when the current problem may already have a known lineage in:
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
-- an internal bug tracker
-- incident or postmortem records
-- error monitoring systems
-- release notes and deployment records
-- git history, including fix, revert, and follow-up commits
-
-This skill does **not** replace debugging. It provides historical context that makes downstream debugging, incident response, or planning more accurate.
-
-Prefer direct access to the canonical system through available tools, MCP integrations, or approved internal APIs. Do not duplicate authoritative bug records into local docs unless another skill explicitly asks for a durable summary.
+Review [Gotchas](references/gotchas.md) before accepting a historical match.
 
 ## Inputs
 
-Bring the strongest current signal you have. Typical starting points:
-
-- error message, exception class, or stack fragment
-- incident symptom and affected user flow
-- service, component, or subsystem name
-- regression window or release identifier
-- suspicious commit, rollback, or feature flag
-
-If none of these exist, do not force historical retrieval. Route back to direct debugging or intake instead.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -136,8 +120,7 @@ Recommended next moves usually look like:
 
 ## Outputs
 
-- **historical-defect-context** -- Ranked candidate matches from canonical systems, with evidence and confidence
-- **fix-lineage-brief** -- Linked versions, commits, reverts, workarounds, and the most defensible next action
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -146,22 +129,3 @@ Recommended next moves usually look like:
 - [ ] Candidate matches are separated into probable match, useful analog, or noise
 - [ ] Fix lineage includes version or commit history when the source provides it
 - [ ] The output ends with an explicit next action instead of "investigate more"
-
-## Anti-Patterns
-
-1. **Local wiki first** -- Starting from copied notes or stale summaries when a live bug system exists.
-2. **Keyword cosplay** -- Declaring a match because two tickets share one noun.
-3. **Closed means solved** -- Assuming a closed bug is fixed in the currently affected release or branch.
-4. **History as authority** -- Letting an old workaround override the current workflow, approval path, or safety boundary.
-5. **Corpus hoarding** -- Copying tracker contents into a parallel knowledge base just to make retrieval easier.
-
-## Reference Material
-
-For retrieval edge cases that commonly create false matches or stale conclusions, see [Gotchas](references/gotchas.md).
-
-## Related Skills
-
-- [pc-incident-response](../../07-operations/pc-incident-response/SKILL.md) -- use when the current issue is live and requires containment, coordination, and evidence capture
-- [pc-documentation](../pc-documentation/SKILL.md) -- use when the retrieved history needs a durable summary, runbook update, or postmortem addendum
-- [pc-retrospective](../../08-evolution/pc-retrospective/SKILL.md) -- uses repeated bug patterns to produce owned improvements
-- [pc-tech-debt-management](../../08-evolution/pc-tech-debt-management/SKILL.md) -- turns recurring defect classes into prioritized remediation work

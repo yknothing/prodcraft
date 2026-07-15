@@ -32,16 +32,13 @@ metadata:
 
 ## Context
 
-Feature development is where plans become working behavior. In Prodcraft, it sits between test-first design and formal review: the task is not "write a lot of code," but "land the smallest useful slice that satisfies the current plan and keeps downstream delivery safe."
+Feature development is where plans become working behavior.
 
-This skill is especially important when the architecture, contract, and release boundary are already known. It prevents implementation from drifting into hidden scope expansion, accidental product decisions, or broad rewrites disguised as progress.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **task-list** -- Defines the current slice, scope boundary, and success criteria.
-- **test-suite** -- Gives the executable safety net that the implementation must satisfy.
-- **architecture-doc** -- Provides component boundaries and constraints.
-- **api-contract** -- Protects externally visible behavior when the slice changes a public or inter-service interface.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -72,7 +69,7 @@ Clean up obvious naming, dead code, and accidental noise that would distract rev
 
 ## Outputs
 
-- **source-code** -- The implementation for the planned slice, ready for code review and downstream quality checks.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -81,20 +78,6 @@ Clean up obvious naming, dead code, and accidental noise that would distract rev
 - [ ] Scope, unsupported behavior, and release boundaries remain explicit
 - [ ] Public contract changes are intentional and documented
 - [ ] The diff is small enough for effective review
-
-## Anti-Patterns
-
-1. **Scope creep by implementation** -- quietly adding adjacent features because the code is nearby.
-2. **Framework-first progress** -- building scaffolding for future work instead of landing a usable slice now.
-3. **Contract drift** -- changing externally visible behavior without updating tests and reviewers.
-4. **Cleanup avalanche** -- turning a feature slice into a broad refactor that hides the real change.
-
-## Related Skills
-
-- [pc-tdd](../pc-tdd/SKILL.md) -- provides the test-first guardrail for the slice
-- [pc-refactoring](../pc-refactoring/SKILL.md) -- improves structure after behavior is working and protected
-- [pc-code-review](../pc-code-review/SKILL.md) -- validates correctness, maintainability, and scope discipline
-- [pc-ci-cd](../pc-ci-cd/SKILL.md) -- consumes the resulting code in automated delivery
 
 ## Distribution
 

@@ -23,13 +23,13 @@ metadata:
 
 ## Context
 
-Use this skill when UI work, interaction design, content structure, or acceptance criteria need explicit accessibility treatment. The goal is to make requirements concrete enough that implementation and review can verify them.
+Use this skill when UI work, interaction design, content structure, or acceptance criteria need explicit accessibility treatment.
+
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- Current UI scope, flow, or requirement set
-- Known assistive-technology expectations
-- Existing design or component constraints
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -57,22 +57,10 @@ If gaps already exist, document the minimum remediation sequence and who owns ea
 
 ## Outputs
 
-- **accessibility-guidance** -- the concrete accessibility contract, checks, and remediation notes for the affected surface
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
 - [ ] Affected UI surfaces are named explicitly
 - [ ] Keyboard, semantics, feedback, and contrast expectations are documented
 - [ ] Reviewers can verify the result without inventing extra rules
-
-## Anti-Patterns
-
-1. **Accessibility as a final sweep** -- waiting until the end guarantees rework.
-2. **Checklist without scope** -- generic standards are not enough if the affected UI is undefined.
-3. **Visual-only acceptance** -- a screen can look correct and still fail users badly.
-
-## Related Skills
-
-- [pc-requirements-engineering](../../01-specification/pc-requirements-engineering/SKILL.md) -- captures accessibility requirements early
-- [pc-feature-development](../../04-implementation/pc-feature-development/SKILL.md) -- implements the required behavior
-- [pc-testing-strategy](../../05-quality/pc-testing-strategy/SKILL.md) -- verifies accessibility checks

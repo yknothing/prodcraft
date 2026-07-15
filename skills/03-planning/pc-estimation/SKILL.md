@@ -25,14 +25,13 @@ metadata:
 
 ## Context
 
-Estimation converts a task list into a planning signal the team can actually use. Good estimates make assumptions explicit, separate known work from uncertainty, and prevent schedules from quietly becoming fiction.
+Estimation converts a task list into a planning signal the team can actually use.
 
-In Prodcraft, estimation follows task breakdown and should be informed by identified risks. The goal is calibrated planning, not false precision.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **task-list** -- The reviewed implementation slices to size.
-- **risk-register** -- Known delivery, integration, and scope risks that should affect confidence or contingency.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -65,7 +64,7 @@ Package the estimates in a form sprint or milestone planning can consume directl
 
 ## Outputs
 
-- **estimate-set** -- A structured set of estimates with confidence and assumptions for each planned task.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -74,17 +73,3 @@ Package the estimates in a form sprint or milestone planning can consume directl
 - [ ] Key assumptions and blockers are recorded
 - [ ] Risk materially changes estimates where appropriate
 - [ ] The output is usable by downstream sprint or milestone planning
-
-## Anti-Patterns
-
-1. **Single-number theater** -- one precise number hiding wide uncertainty.
-2. **Estimate equals commitment** -- treating a planning signal as a promise.
-3. **Ignoring coordination cost** -- sizing coding work but not integration, review, or waiting time.
-4. **Optimism by silence** -- leaving assumptions unstated so the smallest number wins.
-
-## Related Skills
-
-- [pc-task-breakdown](../pc-task-breakdown/SKILL.md) -- provides the work items to size
-- [pc-risk-assessment](../pc-risk-assessment/SKILL.md) -- surfaces the uncertainties that affect confidence
-- [pc-sprint-planning](../pc-sprint-planning/SKILL.md) -- consumes the estimate set to choose realistic scope
-- [pc-retrospective](../../08-evolution/pc-retrospective/SKILL.md) -- can compare actuals vs estimates for calibration

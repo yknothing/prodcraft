@@ -1,0 +1,57 @@
+{
+  "schema_version": "codex-trigger-surrogate-evidence-index.v1",
+  "packet_id": "codex-trigger-surrogate-gpt56sol-2026-07-16",
+  "generated_on": "2026-07-16",
+  "semantics": "surrogate-not-vendored-claude-trigger-harness",
+  "official_trigger_gate_satisfied": false,
+  "runner": "codex",
+  "model": "gpt-5.6-sol",
+  "codex_cli_version": "codex-cli 0.144.4",
+  "runner_home_isolation": {
+    "mode": "per-case-temporary-auth-only",
+    "auth_exposure": "auth.json-symlink",
+    "source_user_config_loaded": false,
+    "forbidden_path_fragment": "systematic-debugging",
+    "preflight_forbidden_path_matches": 0,
+    "postflight_forbidden_path_matches": 0,
+    "cleanup": "automatic-after-each-case"
+  },
+  "results": {
+    "case_count": 20,
+    "matched_count": 20,
+    "accuracy": 1.0
+  },
+  "indexed_file_count": 6,
+  "files": [
+    {
+      "path": "SKILL.md",
+      "sha256": "c360a2a905d6de4ac6e0ce5710224bd0872810b716ff1486f5ca5d9c301bc3aa",
+      "size_bytes": 5488
+    },
+    {
+      "path": "raw-classifications.json",
+      "sha256": "05b3a8c1651dc9288efd72dad92893726aa25c6ac3001c13385cfe31a789e155",
+      "size_bytes": 2861
+    },
+    {
+      "path": "results.json",
+      "sha256": "0d23ea9da9018a503048ec1e0699254be9326931b9852ca0278b5365b12d706e",
+      "size_bytes": 8754
+    },
+    {
+      "path": "review.md",
+      "sha256": "9debc01e7e7dbb7e79be2f4d7a83453eb1dcf92dabf86599ea73fb3284b4a4ed",
+      "size_bytes": 1438
+    },
+    {
+      "path": "run_metadata.json",
+      "sha256": "6a2f88e125fad8e06b1785d6a3a1636adba14cb35ed2a3ba5512096a16ad8f2d",
+      "size_bytes": 790
+    },
+    {
+      "path": "trigger-eval.json",
+      "sha256": "8d42401f0703a5811971438d9f7942aa9660cec085c34e3b09aef03b95c0a832",
+      "size_bytes": 3826
+    }
+  ]
+}

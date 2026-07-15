@@ -102,7 +102,7 @@ class EvalArtifactPathTests(unittest.TestCase):
             if is_local_ignored_eval_artifact(path):
                 continue
             data = json.loads(path.read_text(encoding="utf-8"))
-            if data.get("runner") not in {"gemini", "claude", "copilot"}:
+            if data.get("runner") not in {"gemini", "claude", "codex", "copilot"}:
                 offenders.append(str(path.relative_to(REPO_ROOT)))
         self.assertEqual([], offenders)
 

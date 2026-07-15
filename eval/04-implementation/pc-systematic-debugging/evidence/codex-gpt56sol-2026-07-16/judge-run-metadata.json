@@ -1,0 +1,21 @@
+{
+  "schema_version": "explicit-benchmark-judge-run-metadata.v1",
+  "provider": "openai-codex",
+  "codex_cli_version": "codex-cli 0.144.4",
+  "evaluator_model": "gpt-5.6-sol",
+  "judge_model": "gpt-5.4-mini",
+  "independence_limit": "Same provider and CLI, distinct pinned model; judge received no machine verdicts.",
+  "case_count": 24,
+  "prompt_sha256": "003dcf2316d5f986351c56ad9bd1fff0f2fcf79ab511b4e2521559ee98ba45dc",
+  "judge_results_sha256": "9b7a3ae574f4134c8f30a7d6398370a27cca40752b9ab2e434e577a4b60cec8a",
+  "runner_home_isolation": {
+    "mode": "per-case-temporary-auth-only",
+    "auth_exposure": "auth.json-symlink",
+    "source_user_config_loaded": false,
+    "forbidden_path_fragment": "systematic-debugging",
+    "preflight_forbidden_path_matches": 0,
+    "postflight_forbidden_path_matches": 0,
+    "cleanup": "automatic-after-each-case"
+  },
+  "returncode": 0
+}

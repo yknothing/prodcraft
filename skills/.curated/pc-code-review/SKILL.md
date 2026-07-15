@@ -34,18 +34,13 @@ metadata:
 
 ## Context
 
-Code review is the last quality gate before code enters the shared codebase. It catches bugs that automated tests miss, prevents security vulnerabilities from reaching production, distributes system knowledge across the team, and maintains architectural consistency. Effective reviews balance thoroughness with turnaround speed -- a review that takes three days damages velocity more than the bugs it catches.
+Code review is the last quality gate before code enters the shared codebase. Calibrate `quality_target_context`, `runtime_context`, and `exposure_profile`; Inventing blockers from suspicion alone violates the evidence boundary.
+
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **source-code**: The diff or changeset under review, with sufficient context to understand the change.
-- **test-suite**: Accompanying tests that validate the change. Verify they exist and are meaningful.
-- **task-list**: The reviewed implementation slice or task context that defines what was actually supposed to land now.
-- **api-contract**: The contract or externally visible behavior that the changeset must preserve or implement.
-- **architecture-doc**: System design context to verify the change aligns with architectural decisions.
-- **intake-brief**: Must include `quality_target_context` with `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs`.
-
-In a lifecycle-aware system, review should not silently approve code that closes unresolved upstream questions by accident. Brownfield coexistence, unsupported release-1 flows, and contract boundaries are review concerns, not "later" concerns.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -169,13 +164,7 @@ git config core.hooksPath .githooks
 
 ## Outputs
 
-- **review-report**: Written feedback on the changeset with classified issues and any follow-up actions. Unless explicitly requested, the default output is a concise findings list rather than an approval verdict.
-
-Default review-report shape when approval state is not requested:
-
-1. prioritized findings only
-2. brief assumptions or open questions only if they materially affect the review
-3. no remediation appendix, no patch sketch, and no approval footer
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -186,18 +175,6 @@ Default review-report shape when approval state is not requested:
 - [ ] CI pipeline passes after final changes
 - [ ] No unapproved magic values or hardcoded configuration remain in the changeset
 
-## Anti-Patterns
-
-1. **Rubber-stamp reviews**: Approving without reading the code. This provides false confidence and defeats the purpose of review entirely.
-2. **Gatekeeping**: Using reviews to enforce personal preferences rather than team standards. Reviews should apply agreed-upon conventions, not individual taste.
-3. **Review bombing**: Dumping 50 comments at once without prioritization. Classify by severity so the author knows what matters.
-4. **Scope creep**: Requesting large refactors unrelated to the change. Open a separate issue for broader improvements.
-5. **Delayed reviews**: Letting PRs sit for days. Aim for initial review within 4 business hours for small changes, 1 business day for large changes.
-6. **Approving guessed behavior**: Letting a changeset merge even though it resolves unsupported or unresolved release-1 behavior by assumption.
-7. **Turning the checklist into the output**: The checklist is an internal review aid, not a requirement to emit every item as a separate finding.
-8. **Solving instead of reviewing**: Supplying implementation patches, code snippets, or merge-verdict theatrics when the prompt asked for review feedback only.
-9. **Inventing blockers from suspicion alone**: Escalating a hypothetical regression or unsupported interpretation that the provided fixture does not actually demonstrate.
-
 ## Gotchas
 
 See [Gotchas](references/gotchas.md) before debating scanner noise, approving one-off literals, or "cleaning up" hardcoded values by renaming variables.
@@ -207,13 +184,6 @@ See [Gotchas](references/gotchas.md) before debating scanner noise, approving on
 - Failure mode: The team disables blocking checks globally to land one change.
 - What to do: Keep blocking checks enabled and annotate only the constrained line with `ALLOW_MAGIC_NUMBER: reason, ticket`.
 - Escalate when: The same contract literal appears in multiple files and should become a shared constant wrapper.
-
-## Related Skills
-
-- [pc-feature-development](../pc-feature-development/SKILL.md) -- produces the code under review
-- [pc-testing-strategy](../pc-testing-strategy/SKILL.md) -- defines the testing standards applied during review
-- [pc-security-audit](../pc-security-audit/SKILL.md) -- deeper security analysis for high-risk changes
-- [pc-tech-debt-management](../pc-tech-debt-management/SKILL.md) -- consumes review findings to track systemic issues
 
 ## Distribution
 

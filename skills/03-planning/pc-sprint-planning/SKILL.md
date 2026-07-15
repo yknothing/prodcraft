@@ -26,15 +26,13 @@ metadata:
 
 ## Context
 
-Sprint planning turns a backlog of valid work into a realistic short-horizon commitment. It is where business priority, engineering capacity, and delivery risk are forced into one explicit decision.
+Sprint planning turns a backlog of valid work into a realistic short-horizon commitment.
 
-In Prodcraft, sprint planning should consume actual task, estimate, and risk artifacts. If it runs on optimism or memory, the system has already lost planning discipline.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **task-list** -- Candidate work for the iteration.
-- **estimate-set** -- Size and confidence data for each task.
-- **risk-register** -- The risks that should constrain commitment or sequencing.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -66,7 +64,7 @@ The output should let anyone understand what the team is betting on, what was de
 
 ## Outputs
 
-- **sprint-plan** -- Iteration scope, ordering, owners, stretch work, and explicit planning assumptions.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -75,17 +73,3 @@ The output should let anyone understand what the team is betting on, what was de
 - [ ] Stretch work is distinguished from committed work
 - [ ] Deferred items are explicit
 - [ ] The team can explain why the sprint is achievable
-
-## Anti-Patterns
-
-1. **Backlog stuffing** -- filling the sprint until capacity disappears.
-2. **Risk-blind commitment** -- scheduling too many uncertain items at once.
-3. **Invisible carry-over** -- pretending unfinished work from last sprint does not consume capacity.
-4. **Priority without sequence** -- knowing what matters but not what must happen first.
-
-## Related Skills
-
-- [pc-estimation](../pc-estimation/SKILL.md) -- provides size and confidence data
-- [pc-risk-assessment](../pc-risk-assessment/SKILL.md) -- keeps the plan honest about uncertainty
-- [pc-task-breakdown](../pc-task-breakdown/SKILL.md) -- supplies the candidate task set
-- [pc-retrospective](../../08-evolution/pc-retrospective/SKILL.md) -- feeds learnings into the next sprint plan
