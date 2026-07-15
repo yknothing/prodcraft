@@ -14,7 +14,7 @@ If intake identifies the route but the problem statement or solution direction i
 
 The routing logic is defined in `skills/_gateway.md`, which maps user intent to skill sequences, handles workflow selection, and defines fast-track rules for trivial changes.
 
-Trivial work does not skip intake. Use a lightweight `fast-track` intake decision (`intake_mode=fast-track`) instead of a full routing pass.
+Trivial work does not skip intake. Use a lightweight intake decision instead of a full routing pass: `intake_mode=micro` (compact brief, notify-and-proceed) for reversible one-file trivia, or `intake_mode=fast-track` for small clear work that still warrants a blocking approval.
 
 For gray-rollout or production cutovers that need Prodcraft to become the authoritative software-development entry system, use `scripts/install_prodcraft_global_skill.py` to install the global `prodcraft` gateway skill under `~/.agents/skills/prodcraft`, and `scripts/archive_superpowers_skills.py` to back up and move conflicting global superpowers skill directories out of `~/.agents/skills`. Both scripts write reversible state and JSONL event logs under `build/` so the cutover remains observable and reversible.
 

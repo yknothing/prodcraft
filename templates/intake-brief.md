@@ -26,7 +26,7 @@ Use this template whenever `intake` routes new work into a workflow.
     -
   - evidence_refs:
     -
-- workflow_primary: `required for full/resume; omit when fast-track routing keeps the primary workflow implicit`
+- workflow_primary: `required for full/resume; omit when fast-track or micro routing keeps the primary workflow implicit`
 - workflow_overlays: `omit when no overlay is active`
 - scope_assessment:
 - urgency:
@@ -36,9 +36,7 @@ Use this template whenever `intake` routes new work into a workflow.
 - recommended_next_skill:
 - routing_rationale:
 - why intake was used:
-- recommended first skill output:
-- second skill:
-- third skill:
+- proposed_path: `ordered skill names, when more than the next skill is already clear`
 
 ## Question Budget
 
@@ -70,3 +68,21 @@ Use this template whenever `intake` routes new work into a workflow.
 - open questions:
 - context that downstream skills must preserve:
 - should `problem-framing` run next? yes / no
+
+## Micro Mode Compact Form
+
+For `intake_mode: micro`, emit the brief as one compact block in the same
+message as the work instead of filling the full template. Every schema-required
+field appears once, one line each:
+
+```
+intake-brief (micro) | status: approved | approver: auto (micro policy)
+request_summary: fix typo in README quick-start command
+source_language: en | artifact_record_language: en | user_presentation_locale: en
+work_type: Documentation | entry_phase: cross-cutting | intake_mode: micro
+quality_target_context: runtime_context=agent_internal_skill, exposure_profile=no_network_listener,
+  production_target=repo docs, non_targets=[behavior change], evidence_refs=[README.md diff]
+scope_assessment: small | recommended_next_skill: documentation
+routing_rationale: single-line reversible doc fix, unambiguous route
+key_risks: none beyond doc accuracy | questions_asked: [] | routing_changed_by_answers: false
+```

@@ -56,6 +56,7 @@
       "enum": [
         "full",
         "fast-track",
+        "micro",
         "resume"
       ]
     },

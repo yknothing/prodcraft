@@ -40,7 +40,7 @@ Intake is the control plane for all engineering work in Prodcraft. Every piece o
 
 ## Quality Gate
 
-- [ ] Intake brief produced and approved by the user, covering work type, entry phase, any explicit workflow metadata needed for the route, and key risks.
+- [ ] Intake brief produced and approved (blocking confirmation, or notify-and-proceed for `micro`), covering work type, entry phase, any explicit workflow metadata needed for the route, and key risks.
 - [ ] Next skill to invoke is explicitly named in the brief (not a generic phase label).
 - [ ] Fast-track rationale documented if intake was shortened.
 
@@ -54,15 +54,29 @@ Intake is the **control plane** for entry, not the full discovery workshop. Its 
 
 ## Hard Gate
 
-No implementation, architecture, or planning work may begin until an intake decision is complete and the user approves the proposed path.
+No implementation, architecture, or planning work may begin until an intake decision is complete and approved. Approval is a blocking user confirmation for `full`, `fast-track`, and `resume`; `micro` mode uses notify-and-proceed as defined below.
 
 Use one of these intake modes:
 
 - `full` -- new, ambiguous, risky, or high-impact work
 - `fast-track` -- small and clear work where the route is obvious
+- `micro` -- trivial, reversible work; compact brief, notify-and-proceed
 - `resume` -- continuing an already approved route without changing the route
 
-Trivial work is not an exception to intake. It uses a lightweight `fast-track` intake decision instead of a full routing pass.
+Trivial work is not an exception to intake. It uses a `micro` or `fast-track` intake decision instead of a full routing pass. Governance weight scales with risk; the gate itself is universal.
+
+### Micro Mode (Tier 0)
+
+Use `micro` only when **all** of these hold:
+
+- the change is reversible with a single revert (no data migration, no external side effects, no new security surface)
+- the blast radius is one file or a few clearly-scoped lines (typo, comment, doc wording, isolated config value)
+- no new dependency, contract, schema, or public behavior change
+- the route is unambiguous without asking any question
+
+Micro mode emits the brief as one compact block (all schema-required fields, one line each) **in the same message as the work**, then proceeds immediately: notify-and-proceed instead of a blocking approval round. Record `approver` as `auto (micro policy)`. Any user objection at any point converts the route into a normal `fast-track` or `full` re-route.
+
+Never use micro for anything irreversible or externally visible (deploy, publish, release, force-push, data deletion), for security-adjacent changes, or when any eligibility point is in doubt -- doubt means `fast-track`.
 
 ## Process
 
@@ -177,6 +191,8 @@ Wait for user confirmation. Accept:
 - **Approval** -> proceed with proposed path
 - **Adjustment** -> modify and re-present
 - **"Skip to X"** -> translate into a reviewed `fast-track` or `resume` intake decision, then log any skipped gates as tech debt
+
+Exception: `micro` mode uses notify-and-proceed (see Micro Mode above) -- present the compact brief and continue in the same turn instead of blocking on confirmation.
 
 ### Step 6: Handoff
 
