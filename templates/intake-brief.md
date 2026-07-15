@@ -76,10 +76,11 @@ message as the work instead of filling the full template. Every schema-required
 field appears once, one line each:
 
 ```
-intake-brief (micro) | status: approved | approver: auto (micro policy)
+artifact: intake-brief | schema_version: intake-brief.v1 | intake_mode: micro
+status: approved | approver: auto (micro policy)
 request_summary: fix typo in README quick-start command
 source_language: en | artifact_record_language: en | user_presentation_locale: en
-work_type: Documentation | entry_phase: cross-cutting | intake_mode: micro
+work_type: Documentation | entry_phase: cross-cutting
 quality_target_context: runtime_context=agent_internal_skill, exposure_profile=no_network_listener,
   production_target=repo docs, non_targets=[behavior change], evidence_refs=[README.md diff]
 scope_assessment: small | recommended_next_skill: documentation

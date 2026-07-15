@@ -190,6 +190,15 @@
     },
     "approver": {
       "type": "string"
+    },
+    "proposed_path": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Ordered downstream skill names when more than the next skill is already clear."
     }
   },
   "additionalProperties": false,
@@ -225,7 +234,10 @@
       "then": {
         "properties": {
           "intake_mode": {
-            "const": "fast-track"
+            "enum": [
+              "fast-track",
+              "micro"
+            ]
           }
         },
         "required": [

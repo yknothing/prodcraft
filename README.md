@@ -346,7 +346,7 @@ For routine local QA, prefer the installed `gemini` CLI where this repository as
 
 ## Contributing
 
-1. Start with `intake`, even for small work. Use fast-track only when the route is clear.
+1. Start with `intake`, even for small work. Use `micro` for reversible trivia and `fast-track` when the route is clear but the change still warrants blocking approval.
 2. Keep canonical repository artifacts in English.
 3. Put user-facing localized guidance in explicitly named companion docs only when needed.
 4. Follow `skills/_schema.md` and the relevant artifact schemas.

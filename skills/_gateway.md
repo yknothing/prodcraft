@@ -247,7 +247,7 @@ Not every task needs the full lifecycle. Governance weight scales with the risk 
 | Dependency update (patch) | `fast-track` | Skip to implementation + quality |
 | Configuration change with deploy impact | `fast-track` | Skip to implementation + deployment |
 
-`micro` eligibility is strict: reversible with a single revert, one-file/few-line blast radius, no new dependency or contract or security surface, route unambiguous without questions. Doubt on any point means `fast-track`. Micro never applies to irreversible or externally visible actions.
+`micro` eligibility and its notify-and-proceed semantics are owned by the intake skill's Micro Mode section -- see `skills/00-discovery/intake/SKILL.md`. Gateway summary: reversible single-revert trivia only, zero questions, never for irreversible or externally visible actions; doubt on any point means `fast-track`.
 
 Fast-track still requires:
 - an approved `intake-brief`

@@ -76,10 +76,13 @@ CHECKS = {
     "curated-surface",
     "security-minimal",
     "doc-script-refs",
+    "gateway-refs",
 }
 
 # Repository-root script references in prose, e.g. `scripts/validate_prodcraft.py`.
-_SCRIPT_REF_RE = re.compile(r"\bscripts/[A-Za-z0-9_\-/]+\.py\b")
+# The lookbehind stops the regex from matching the tail of a longer nested path
+# such as `tools/anthropic_trigger_eval/scripts/run_eval.py`.
+_SCRIPT_REF_RE = re.compile(r"(?<![\w/])scripts/[A-Za-z0-9_\-/]+\.py\b")
 
 # Discovery descriptions share one context budget across every installed skill.
 # Soft guidance is 280 characters; this is the enforced hard cap.
@@ -1018,6 +1021,23 @@ def manifest_skill_names(manifest: dict) -> set[str]:
     return {item["name"] for item in manifest.get("skills", []) if isinstance(item, dict) and "name" in item}
 
 
+def manifest_planned_skill_names(manifest: dict) -> set[str]:
+    return {
+        entry.get("name")
+        for entry in manifest.get("planned_skills", [])
+        if isinstance(entry, dict) and isinstance(entry.get("name"), str)
+    }
+
+
+def maturity_marker_violation(status: object, marker_present: bool) -> str | None:
+    """Shared policy: how a skill's manifest status constrains prose maturity markers."""
+    if status == "draft" and not marker_present:
+        return "is referenced without being explicitly marked as (experimental) or (planned)"
+    if status in {"tested", "secure", "production"} and marker_present:
+        return f"has manifest status `{status}` and must not carry a stale (experimental) or (planned) label"
+    return None
+
+
 def validate_manifest(errors: list[str]) -> dict:
     try:
         manifest = yaml.safe_load(MANIFEST_PATH.read_text()) or {}
@@ -1144,11 +1164,7 @@ def validate_artifact_flow(manifest: dict, errors: list[str]) -> None:
 
     # Graph closure: every producer/consumer must resolve to a manifest skill or a
     # declared planned skill, so the artifact graph cannot silently reference ghosts.
-    resolvable_names = manifest_skill_names(manifest) | {
-        entry.get("name")
-        for entry in manifest.get("planned_skills", [])
-        if isinstance(entry, dict) and isinstance(entry.get("name"), str)
-    }
+    resolvable_names = manifest_skill_names(manifest) | manifest_planned_skill_names(manifest)
     for artifact_name, flow_entry in artifact_flow.items():
         for producer in sorted(flow_entry["produced_by"] - resolvable_names):
             errors.append(
@@ -1262,14 +1278,12 @@ def validate_workflow_skill_references(manifest: dict, errors: list[str]) -> Non
                     )
                 elif ref in skills:
                     skill_status = manifest_skills.get(ref, {}).get("status")
-                    if skill_status == "draft":
-                        if not re.search(rf"`{re.escape(ref)}`\s*\((?:experimental|planned)\)", line, re.IGNORECASE):
-                            errors.append(f"{path}: draft skill `{ref}` is referenced without being explicitly marked as (experimental) or (planned)")
-                    elif skill_status in {"tested", "secure", "production"}:
-                        if re.search(rf"`{re.escape(ref)}`\s*\((?:experimental|planned)\)", line, re.IGNORECASE):
-                            errors.append(
-                                f"{path}: skill `{ref}` has manifest status `{skill_status}` and must not carry a stale (experimental) or (planned) label"
-                            )
+                    marker_present = bool(
+                        re.search(rf"`{re.escape(ref)}`\s*\((?:experimental|planned)\)", line, re.IGNORECASE)
+                    )
+                    violation = maturity_marker_violation(skill_status, marker_present)
+                    if violation:
+                        errors.append(f"{path}: skill `{ref}` {violation}")
 
         refs = extract_backtick_refs(body)
         compatibility_tags = workflow_compatibility_tags(frontmatter.get("name", ""))
@@ -1281,13 +1295,32 @@ def validate_workflow_skill_references(manifest: dict, errors: list[str]) -> Non
                 )
 
 
+def _skill_name_occurrences(name: str, line: str) -> list[re.Match]:
+    """Occurrences of a skill name as a standalone token.
+
+    Lookarounds treat `-` as part of the token, so `migration-strategy` does
+    not match inside `data-migration-strategy`. Ordinary-English collisions
+    with a planned skill name (e.g. prose using the word `deprecation`) can
+    still fire; that is an accepted loud false positive -- rephrase the prose
+    or mark the skill.
+    """
+    pattern = rf"(?<![\w-])`?{re.escape(name)}`?(?![\w-])"
+    return list(re.finditer(pattern, line))
+
+
+def _occurrence_has_marker(line: str, match: re.Match) -> bool:
+    return bool(re.match(r"\s*\((?:experimental|planned)\)", line[match.end():], re.IGNORECASE))
+
+
 def validate_gateway_references(manifest: dict, errors: list[str]) -> None:
     """Keep gateway routing honest about skill maturity.
 
     The gateway is the highest-frequency routing document, so a skill name that
     does not resolve (or resolves to an unshipped skill without a marker) sends
     agents to a dead end. Prose uses many non-skill tokens, so this check only
-    asserts on names that are known manifest or planned skills.
+    asserts on names that are known manifest or planned skills, and each
+    occurrence must carry its own marker (a marker elsewhere on the line does
+    not exempt it).
     """
     text = GATEWAY_PATH.read_text(encoding="utf-8")
     manifest_skills = {
@@ -1295,30 +1328,20 @@ def validate_gateway_references(manifest: dict, errors: list[str]) -> None:
         for entry in manifest.get("skills", [])
         if isinstance(entry, dict) and "name" in entry
     }
-    planned_names = {
-        entry.get("name")
-        for entry in manifest.get("planned_skills", [])
-        if isinstance(entry, dict) and isinstance(entry.get("name"), str)
-    }
+    planned_names = manifest_planned_skill_names(manifest)
     for line_number, line in enumerate(text.splitlines(), start=1):
         for name in sorted(planned_names):
-            if re.search(rf"\b{re.escape(name)}\b", line) and "(planned)" not in line:
-                errors.append(
-                    f"{GATEWAY_PATH}:{line_number}: planned skill `{name}` must be marked (planned) where the gateway mentions it"
-                )
+            for match in _skill_name_occurrences(name, line):
+                if not _occurrence_has_marker(line, match):
+                    errors.append(
+                        f"{GATEWAY_PATH}:{line_number}: planned skill `{name}` must be marked (planned) where the gateway mentions it"
+                    )
         for name, entry in manifest_skills.items():
             status = entry.get("status")
-            marker_re = rf"`?{re.escape(name)}`?\s*\((?:experimental|planned)\)"
-            if status == "draft":
-                if re.search(rf"\b{re.escape(name)}\b", line) and not re.search(marker_re, line, re.IGNORECASE):
-                    errors.append(
-                        f"{GATEWAY_PATH}:{line_number}: draft skill `{name}` must be marked (experimental) or (planned)"
-                    )
-            elif status in {"tested", "secure", "production"}:
-                if re.search(marker_re, line, re.IGNORECASE):
-                    errors.append(
-                        f"{GATEWAY_PATH}:{line_number}: skill `{name}` has manifest status `{status}` and must not carry a stale (experimental) or (planned) label"
-                    )
+            for match in _skill_name_occurrences(name, line):
+                violation = maturity_marker_violation(status, _occurrence_has_marker(line, match))
+                if violation:
+                    errors.append(f"{GATEWAY_PATH}:{line_number}: skill `{name}` {violation}")
 
 
 def validate_doc_script_refs(errors: list[str]) -> None:
@@ -1747,6 +1770,7 @@ def main() -> int:
     _MANIFEST_DEPENDENT_CHECKS = {
         "manifest-files",
         "workflow-skill-refs",
+        "gateway-refs",
         "manifest-skill-status",
         "artifact-flow",
         "artifact-schema-registry",
@@ -1773,6 +1797,8 @@ def main() -> int:
 
     if "workflow-skill-refs" in selected_checks and manifest:
         validate_workflow_skill_references(manifest, errors)
+
+    if "gateway-refs" in selected_checks and manifest:
         validate_gateway_references(manifest, errors)
 
     if "doc-script-refs" in selected_checks:

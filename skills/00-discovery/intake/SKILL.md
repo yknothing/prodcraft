@@ -115,7 +115,7 @@ For new-work routing, use the **Entry Phase** tokens above verbatim. `cross-cutt
 
 Use the declared primary workflow name verbatim when recording `workflow_primary` (`agile-sprint`, `spec-driven`, or `iterative-waterfall`).
 
-For `fast-track`, omit `workflow_primary` when the route stays direct enough that the primary workflow does not materially change the handoff. Keep it explicit for `full` and `resume`.
+For `fast-track` and `micro`, omit `workflow_primary` when the route stays direct enough that the primary workflow does not materially change the handoff. Keep it explicit for `full` and `resume`.
 
 Record `workflow_overlays` only when one or more overlays are active. Omit the field instead of emitting an empty list.
 
@@ -165,7 +165,7 @@ Name concrete Prodcraft skills whenever the next step is already known. Avoid ge
 
 **Work type**: [classification from Step 2]
 **Entry phase**: [which lifecycle phase]
-**Intake mode**: [full / fast-track / resume]
+**Intake mode**: [full / fast-track / micro / resume]
 **workflow_primary**: [primary governance workflow, if explicit for this route]
 **workflow_overlays**: [[overlay list], omit when none]
 **quality_target_context**: [runtime_context, exposure_profile, production_target, non_targets, evidence_refs]
@@ -221,7 +221,7 @@ This keeps routing decisions auditable without forcing downstream skills to reco
 
 ## Anti-Patterns
 
-1. **Treating trivial work as "outside intake"** -- Even simple changes still need a lightweight `fast-track` intake decision.
+1. **Treating trivial work as "outside intake"** -- Even simple changes still need a lightweight `micro` or `fast-track` intake decision.
 2. **Over-questioning** -- Intake should take 1-5 minutes, not 30. If you need 5+ questions, you're in discovery territory -- recommend moving there.
 3. **Guessing the methodology** -- Don't assume agile because it's popular. Match methodology to constraints and context.
 4. **Rigid phase assignment** -- The lifecycle is a guide, not a prison. A bug fix might need architecture review if it reveals a design flaw.

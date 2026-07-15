@@ -20,13 +20,20 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
-import yaml
+_SCRIPTS_DIR = Path(__file__).resolve().parent
+if str(_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS_DIR))
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-SKILLS_DIR = REPO_ROOT / "skills"
-WORKFLOWS_DIR = REPO_ROOT / "workflows"
+from validate_prodcraft import (
+    ROOT as REPO_ROOT,
+    SKILLS_DIR,
+    WORKFLOWS_DIR,
+    iter_lifecycle_skill_paths,
+    load_frontmatter,
+)
 
 # Rough chars-per-token for mixed English/Markdown prose.
 CHARS_PER_TOKEN = 3.8
@@ -44,24 +51,14 @@ def est_tokens(chars: int) -> int:
     return round(chars / CHARS_PER_TOKEN)
 
 
-def split_skill(path: Path) -> tuple[dict, str]:
-    text = path.read_text(encoding="utf-8")
-    parts = text.split("---\n", 2)
-    if len(parts) < 3:
-        return {}, text
-    return (yaml.safe_load(parts[1]) or {}), parts[2]
-
-
-def lifecycle_skill_paths() -> list[Path]:
-    return sorted(
-        path for path in SKILLS_DIR.rglob("SKILL.md") if ".curated" not in path.parts
-    )
-
-
 def measure() -> dict:
     skills = []
-    for path in lifecycle_skill_paths():
-        frontmatter, body = split_skill(path)
+    for path in iter_lifecycle_skill_paths():
+        try:
+            frontmatter, body = load_frontmatter(path)
+        except ValueError as exc:
+            print(f"WARNING: skipping unparseable skill file: {exc}", file=sys.stderr)
+            continue
         description = frontmatter.get("description", "") or ""
         references = sorted(path.parent.glob("references/*.md"))
         references_chars = sum(len(ref.read_text(encoding="utf-8")) for ref in references)

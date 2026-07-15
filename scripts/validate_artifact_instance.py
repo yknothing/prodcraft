@@ -17,8 +17,9 @@ instance's `artifact` field unless `--artifact-type` overrides it. For
 `verification-record` instances the completion-claim bindings that JSON Schema
 cannot express (evidence/work-state freshness and identity) are also checked.
 
-Exit codes: 0 all instances valid, 1 validation errors, 2 environment or
-usage errors (missing jsonschema, unreadable file, unknown artifact type).
+Exit codes: 0 all instances valid, 1 validation errors (including instances
+that fail to parse or name an unknown artifact type), 2 environment or usage
+errors (missing jsonschema dependency, missing file, unreadable registry).
 """
 
 from __future__ import annotations
@@ -34,10 +35,11 @@ _SCRIPTS_DIR = Path(__file__).resolve().parent
 if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
-from validate_prodcraft import validate_verification_record_instance_contract
-
-REPO_ROOT = Path(__file__).resolve().parents[1]
-REGISTRY_PATH = REPO_ROOT / "schemas" / "artifacts" / "registry.yml"
+from validate_prodcraft import (
+    ARTIFACT_REGISTRY_PATH as REGISTRY_PATH,
+    ROOT as REPO_ROOT,
+    validate_verification_record_instance_contract,
+)
 
 try:
     import jsonschema
@@ -113,7 +115,9 @@ def validate_instance(
     if artifact_type == "verification-record":
         validate_verification_record_instance_contract(instance, source, errors)
 
-    return errors
+    # Overlapping subschemas (e.g. allOf branches) can report the same defect
+    # twice; keep first occurrences in order.
+    return list(dict.fromkeys(errors))
 
 
 def main() -> int:

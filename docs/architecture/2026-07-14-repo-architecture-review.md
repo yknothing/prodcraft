@@ -34,7 +34,7 @@ sibling links (`../requirements-engineering/SKILL.md`) are dead.
 The failure is silent twice over: inside the repo the links happen to resolve
 (to the source tree, not the curated tree), and
 `validate_curated_surface` only checks bundled
-`(references|scripts|assets)/` links (`scripts/validate_prodcraft.py:1583`),
+`(references|scripts|assets)/` links (`validate_curated_surface` in `scripts/validate_prodcraft.py`),
 so no check can ever fire.
 
 Recommendation:
@@ -93,7 +93,7 @@ Editing a `SKILL.md` after promotion leaves status and evidence untouched —
 the exact "evidence freshness masquerade" the state bundle warns about for
 downstream work applies, unchecked, to the repository's own governance loop.
 Note the contrast: `verification-record.v1` instances *are* required to bind
-evidence to `work_state_ref` (`scripts/validate_prodcraft.py:720-793`), so the
+evidence to `work_state_ref` (`validate_verification_record_instance_contract` in `scripts/validate_prodcraft.py`), so the
 repository already knows how to do this correctly.
 
 Recommendation: add an optional `content_ref` (git blob hash of `SKILL.md`)
@@ -200,7 +200,7 @@ Recommendation: add a `GEMINI.md` pointer file mirroring `AGENTS.md`.
 `validate_workflow_skill_references` treats every backticked kebab-case token
 in a workflow body as a skill reference; the only non-skill tokens allowed are
 `all`, `intake`, `intake-brief`, and workflow names
-(`scripts/validate_prodcraft.py:1207`). A future workflow edit that backticks
+(`validate_workflow_skill_references` in `scripts/validate_prodcraft.py`). A future workflow edit that backticks
 a registered artifact (`course-correction-note`, `problem-frame`) fails with a
 misleading "undefined skills/tokens" error.
 
