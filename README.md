@@ -200,10 +200,10 @@ prodcraft/
     02-architecture/         # System design, API design, data modeling, security
     03-planning/             # Task breakdown, estimation, risk, sprint planning
     04-implementation/       # TDD, feature development, refactoring
-    05-quality/              # Review, testing, audit, performance
+    05-quality/              # Review, testing, audit, E2E scenario design
     06-delivery/             # CI/CD, deployment, release, verification
-    07-operations/           # Monitoring, incidents, runbooks, capacity
-    08-evolution/            # Tech debt, migration, deprecation, retrospectives
+    07-operations/           # Monitoring, incidents, runbooks
+    08-evolution/            # Tech debt, retrospectives
     cross-cutting/           # Documentation, observability, accessibility, compliance
     .curated/                # Generated public install surface
   workflows/                 # Primary methodology workflows and overlays

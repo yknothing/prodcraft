@@ -86,7 +86,7 @@ Do NOT output this exploration. Internalize it to inform your questions.
 ### Step 2: Classify Work Type
 
 | Type | Description | Entry Phase | Default Primary Workflow | Likely Overlay |
-|------|-------------|-------------|------------------|
+|------|-------------|-------------|--------------------------|----------------|
 | **New Product** | Building from scratch | 00-discovery | agile-sprint | greenfield |
 | **New Product (regulated/complex)** | Formal specs or contractual delivery required | 00-discovery | spec-driven | greenfield |
 | **New Feature** | Adding capability to existing system | 01-specification | agile-sprint | none |

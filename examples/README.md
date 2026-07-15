@@ -1,6 +1,6 @@
 # Examples
 
-This directory contains real-world usage examples demonstrating how Prodcraft skills compose into complete development workflows.
+This directory will contain real-world usage examples demonstrating how Prodcraft skills compose into complete development workflows. No examples are checked in yet; the entries below are the planned set. Skills marked `(planned)` are not yet implemented -- see `planned_skills` in `manifest.yml`.
 
 ## Planned Examples
 
@@ -12,12 +12,12 @@ A greenfield SaaS product built from idea to first deployment using the agile-sp
 ### api-migration/
 Migrating a REST API from v1 to v2 while maintaining backward compatibility.
 - Demonstrates: brownfield workflow with deprecation
-- Key skills: intake, api-design, migration-strategy, feature-flags, deprecation
+- Key skills: intake, api-design, migration-strategy (planned), feature-flags (planned), deprecation (planned)
 
 ### performance-optimization/
 Diagnosing and fixing a performance regression in a production system.
 - Demonstrates: hotfix workflow transitioning to agile-sprint for proper fix
-- Key skills: intake, performance-audit, refactoring, monitoring-observability
+- Key skills: intake, performance-audit (planned), refactoring, monitoring-observability
 
 ## Contributing Examples
 

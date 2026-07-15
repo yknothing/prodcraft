@@ -46,8 +46,8 @@ Match based on what phase the work is currently in:
 | Writing code or tactically executing an approved slice | 04-implementation | task-execution, systematic-debugging, tdd, feature-development, refactoring |
 | Reviewing/testing | 05-quality | code-review, receiving-code-review, testing-strategy, security-audit |
 | Deploying/releasing | 06-delivery | ci-cd, delivery-completion, deployment-strategy, release-management |
-| Monitoring/responding | 07-operations | monitoring-observability, incident-response |
-| Improving/modernizing | 08-evolution | tech-debt-management, migration-strategy, retrospective |
+| Monitoring/responding | 07-operations | monitoring-observability, incident-response, runbooks |
+| Improving/modernizing | 08-evolution | tech-debt-management, retrospective, migration-strategy (planned) |
 
 ### Implementation Routing Quick Map
 
@@ -302,7 +302,7 @@ Prodcraft is designed to complement, not replace, existing skill systems. If you
 
 Use whichever skill system is more appropriate for the context. Prodcraft adds lifecycle awareness; existing skills may have deeper domain-specific guidance.
 
-For repository-local experiments in this repo, Prodcraft may temporarily run in **repo-authoritative mode** for software-development work by installing the global `prodcraft` gateway skill through `scripts/install_prodcraft_global_skill.py` and disabling the global `brainstorming` skill through `scripts/manage_brainstorming_gate.py`. When that override is active:
+For repository-local experiments in this repo, Prodcraft may temporarily run in **repo-authoritative mode** for software-development work by installing the global `prodcraft` gateway skill through `scripts/install_prodcraft_global_skill.py` and archiving conflicting global superpowers skills (including `brainstorming`) through `scripts/archive_superpowers_skills.py`. When that override is active:
 
 - `intake` becomes the mandatory first software-development entry point
 - the override action and restore action must remain observable through the script's JSONL event log
