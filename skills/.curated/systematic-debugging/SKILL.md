@@ -12,7 +12,7 @@ metadata:
   - bug-fix-report
   - course-correction-note
   prerequisites: []
-  quality_gate: Root cause is evidenced, the chosen fix is the smallest safe change, regression coverage exists, and structural mismatches are escalated instead of patched around
+  quality_gate: Root cause is evidenced, fix causality is proven both ways, the chosen fix is the smallest safe change, regression coverage exists, and structural mismatches are escalated instead of patched around
   roles:
   - developer
   - tech-lead
@@ -31,74 +31,70 @@ metadata:
 
 > No code fix without an evidenced root cause for the specific behavior being changed.
 
+## The Iron Law
+
+```
+NO FIX WITHOUT A REPRODUCED FAILURE AND A FALSIFIABLE ROOT CAUSE
+```
+
+If you cannot state what is wrong, predict what evidence would prove you wrong, and reproduce the failure on demand, you are guessing -- and a guess that happens to make the symptom disappear is still a guess.
+
 ## Context
 
-Systematic debugging is the implementation-side discipline for turning a bug report, failing test, or bad runtime behavior into a defensible fix. It exists to stop guess-first patching, repeated failed fixes, and "works on my machine" improvisation.
+Systematic debugging turns a bug report, failing test, or bad runtime behavior into a defensible fix. It exists to stop guess-first patching, repeated failed fixes, and "works on my machine" improvisation.
 
-This skill belongs in `04-implementation` because its primary output is a code-level fix path: isolate the failing boundary, identify the real cause, decide whether the problem is local or structural, and then hand off to `tdd` and `feature-development` for the smallest safe change.
-
-It does **not** replace `incident-response`. If the issue is still live in production and user impact is active, contain it first through `incident-response`. Once the system is in a safe mode, use this skill to establish the root cause before writing the code fix.
+It does **not** replace `incident-response`. If production impact is live, contain it there first; root-cause work resumes once the system is safe. Containment (rollback, flag off) is never evidence of root cause.
 
 ## Inputs
 
-- **source-code** -- The relevant code paths, configuration boundaries, and recent changes near the failure.
-- **test-suite** -- Existing failing tests, regression coverage, or the closest executable safety net.
-- **historical-defect-context** -- Optional. Prior incidents, defects, or regressions that may match the current symptom.
-- **fix-lineage-brief** -- Optional. Prior fixes, reverts, or workarounds that may narrow the search space.
+- **source-code** -- Relevant code paths, configuration boundaries, and recent changes near the failure. Minimum required input.
+- **test-suite** -- Existing failing tests or the closest executable safety net.
+- **historical-defect-context** -- Optional. Prior incidents or regressions that may match the symptom.
+- **fix-lineage-brief** -- Optional. Prior fixes, reverts, or workarounds that narrow the search space.
 
 ## Process
 
-### Step 1: Establish the Current Failure Boundary
+### Step 1: Read the Evidence You Already Have
 
-Write down the concrete failure first:
+Before forming any theory:
 
-- what is failing now
-- where it fails
-- how to reproduce it
-- whether the issue is local, integration-boundary, or release-boundary sensitive
+1. Read the **entire** error message and the **full** stack trace, not the first line. Error text frequently names the exact cause, file, and line -- treating it as noise is the single most common debugging failure.
+2. Confirm you are observing the code you think you are: right branch, right environment, rebuilt artifacts, cleared caches, correct deploy target. If a print statement or deliberate syntax error at the failure site does not show up, stop -- you are debugging the wrong code.
+3. Check what changed recently: `git log`/`git diff` around the failure window, dependency bumps, config and environment changes.
 
-If the issue is a live production incident and containment has not happened yet, stop and route through `incident-response` before continuing. Do not confuse containment with root-cause work.
+### Step 2: Pin the Failure Boundary
 
-### Step 2: Pull Historical Context Before Reinventing Theory
+Write down concretely: what fails, where it fails, expected vs actual behavior, and how to trigger it. Classify whether the failure is local, integration-boundary, or release-boundary sensitive. If the symptom plausibly has lineage, invoke `bug-history-retrieval` now -- use matches to narrow the search, never to skip the investigation.
 
-If the symptom might match a known regression, incident, or revert pattern, invoke `bug-history-retrieval` before guessing. Use historical matches to focus the search space, not to skip the investigation.
+### Step 3: Reproduce, Then Minimize
 
-Search for:
+Get a reproduction you can run on demand -- a failing automated test when possible, a deterministic manual repro otherwise. Then shrink it: smaller input, fewer components, shorter path to failure. A minimal repro is usually most of the diagnosis.
 
-- the same exception or error signature
-- the same component boundary
-- the same release or deploy window
-- prior workarounds that were later reverted
+- Regression with a known-good past? Bisect the history (`git bisect` or manual halving).
+- Works in one environment, fails in another? Diff the two configurations and halve the differences.
+- Failure is intermittent? Treat the flakiness itself as the bug. Do not rerun until green -- make the race, ordering, or state dependency deterministic first.
 
-### Step 3: Reproduce and Gather Evidence
+Concrete recipes are in [references/techniques.md](references/techniques.md). Do not move to fixes while the reproduction is unstable.
 
-Reproduce the failure with the smallest reliable loop available:
+### Step 4: Run the Hypothesis Loop
 
-- a failing automated test when possible
-- a deterministic manual repro when automation does not exist yet
-- instrumentation at component boundaries when the failure crosses services, queues, jobs, or async hops
+One hypothesis at a time, cheapest test first:
 
-Do not move to fixes while the reproduction is unstable or the evidence is still vague.
+1. State a single falsifiable hypothesis: "X causes Y because Z."
+2. Predict what a specific observation will show if the hypothesis is true -- and what would disprove it.
+3. Test with the least invasive instrument: read the code path, then add targeted logging or assertions at component boundaries, capturing **actual runtime values** rather than reasoning from memory of the code.
+4. Record hypothesis, prediction, and result in a short debug journal before the next iteration. Change one variable per experiment.
 
-### Step 4: Isolate Root Cause, Not Just Symptom
+If evidence disproves the hypothesis, discard it fully -- do not stack a patch for the old theory under a new one.
 
-Identify the narrowest cause that explains the observed failure. Check:
+### Step 5: Confirm Root Cause and Classify It
 
-- recent code or config changes
-- broken assumptions at contract or compatibility boundaries
-- missing regression coverage
-- environment or rollout differences
-- incorrect workarounds copied from earlier incidents
+State the narrowest cause that explains **all** observed evidence, not just the headline symptom. Then classify:
 
-If the evidence shows a planning, requirements, or architecture mismatch rather than a local code defect, do not keep patching. Produce a `course-correction-note` and route upstream.
+- **Local defect** -- proceed to Step 6.
+- **Structural mismatch** (requirements, architecture, or planning contradiction) -- stop patching, produce a `course-correction-note`, and route upstream.
 
-Use this escalation rule:
-
-- first failed fix attempt: gather more evidence
-- second failed fix attempt: challenge the current hypothesis explicitly
-- third failed fix attempt: assume a structural mismatch until disproven and prepare `course-correction-note`
-
-Make that escalation visible, not implicit:
+Escalation rule across failed fix attempts:
 
 | Failed fix count | Required response |
 |------------------|-------------------|
@@ -106,39 +102,35 @@ Make that escalation visible, not implicit:
 | second | challenge the current hypothesis in writing and identify what evidence would falsify it |
 | third or more | stop local patching, assume a structural mismatch until disproven, and prepare `course-correction-note` |
 
-### Step 5: Choose the Smallest Safe Fix Path
+Distinguish outcomes precisely: the **same** failure persisting after a fix means the hypothesis was wrong; a **new, different** failure appearing often means the first fix was correct and a second bug is now exposed. The first resets your hypothesis; the second is progress -- start a fresh loop for the new failure instead of reverting blindly.
 
-Once root cause is clear, define the smallest safe change:
+### Step 6: Fix Once, Prove Causality Both Ways
 
-- what exact behavior changes now
-- what must remain unchanged
-- what brownfield seam, compatibility rule, or release boundary must stay protected
-- whether the immediate repair is a permanent fix or an explicit workaround
+Define the smallest safe change for the verified cause: what changes, what must not change, which brownfield seam or compatibility boundary stays protected, and whether this is a permanent fix or a declared workaround. Hand off to `tdd` so a reproducing test exists before implementation expands.
 
-Then hand off to `tdd` to write the reproducing or regression test before implementation code changes expand.
+Then prove causality in both directions:
 
-### Step 6: Record the Debugging Result
+- **Fix applied** -- the original reproduction passes, plus the surrounding test scope.
+- **Fix removed** -- the original failure returns.
 
-Produce a `bug-fix-report` that captures:
+If removing the fix does not bring the failure back, you have not fixed the cause; something else moved. Return to Step 4.
 
-- reproduction steps or failing test
-- root cause
-- evidence used to confirm it
-- chosen fix scope
-- regression or characterization tests required
-- any follow-up debt if a workaround shipped instead of the full repair
+### Step 7: Record the Result
+
+Produce a `bug-fix-report`: reproduction, root cause, confirming evidence, fix boundary, regression protection, and any follow-up debt if a workaround shipped. Keep the debug journal reference when the session had multiple attempts -- failed hypotheses are lineage for the next debugger.
 
 ## Outputs
 
-- **bug-fix-report** -- Root cause, supporting evidence, fix boundary, regression protection, and follow-up notes for the chosen repair path.
-- **course-correction-note** -- Produced only when repeated failed fixes or hard evidence reveal that the problem belongs upstream in specification, architecture, or planning rather than in local code.
+- **bug-fix-report** -- Root cause, supporting evidence, fix boundary, regression protection, and follow-up notes.
+- **course-correction-note** -- Only when evidence shows the problem belongs upstream in specification, architecture, or planning.
 
 ## Quality Gate
 
-- [ ] The current failure is reproducible or otherwise evidenced with concrete signals
-- [ ] Root cause is stated as a falsifiable explanation, not a symptom label
+- [ ] The full error output was read and the failure is reproducible on demand
+- [ ] The observed code path is confirmed current (no stale build, cache, or wrong environment)
+- [ ] Root cause is stated as a falsifiable explanation that accounts for all evidence, not a symptom label
 - [ ] Historical matches were checked when the symptom plausibly had lineage
-- [ ] The chosen fix path is the smallest safe change for the verified root cause
+- [ ] Fix causality is proven both ways: repro passes with the fix, fails again without it
 - [ ] Regression or characterization protection is defined before broader implementation proceeds
 - [ ] Structural mismatches are escalated through `course-correction-note` instead of patched around
 
@@ -149,27 +141,39 @@ When one of these thoughts appears, treat it as a stop signal:
 | Excuse | Required response |
 |--------|-------------------|
 | "I'll try the obvious fix first and investigate if it fails" | Stop. Return to reproduction and evidence gathering before changing code. |
+| "The error message is generic, no point reading the rest" | Read all of it, including the trace bottom and caused-by chain. It usually names the culprit. |
 | "I saw this bug before, so I know the cause" | Use history to narrow the search, then prove the current root cause anyway. |
 | "Rollback fixed it, so we know what happened" | Containment is not explanation; identify why the bad behavior existed. |
 | "The repro is flaky, but I can still patch around it" | Stabilize the failure boundary or instrument it before writing the fix. |
-| "This is probably just environment weirdness" | Name the environment difference and gather evidence that it explains the symptom. |
+| "Rerunning made it pass, so it's fine" | An unexplained pass is the same bug waiting; find the nondeterminism. |
+| "This is probably just environment weirdness" | Name the environment difference and prove it explains the symptom. |
+| "It's too hard to reproduce, I'll fix it by inspection" | Inspection produces hypotheses, not proof; instrument the boundary instead. |
 | "I'll make the broad fix now and tighten it later" | Choose the smallest safe change for the evidenced root cause. |
 | "This is the third try, but I think this version will work" | Stop local patching and prepare `course-correction-note`. |
-| "The workaround is enough; we can find root cause later" | Record it explicitly as a workaround only after the current cause is still evidenced. |
-| "The failing path is too edge-casey to justify tests" | Edge cases still need regression or characterization coverage. |
+| "The test passes now, so the fix works" | Also remove the fix and watch the failure return; otherwise causality is unproven. |
 | "Another agent already investigated this" | Read the evidence yourself before accepting the conclusion. |
+
+## Red Flags -- Stop and Restart the Loop
+
+- code changed before the failure was reproduced
+- more than one variable changed per experiment
+- a fix explanation contains "probably", "somehow", or "should"
+- the same file is being patched for the third time this session
+- each fix attempt reveals the same failure in a new costume
+- instrumentation output was never actually read before the next change
 
 ## Anti-Patterns
 
-1. **Fix-first thrashing** -- changing code before the failure is reproducible or the cause is understood.
-2. **Containment mistaken for root cause** -- assuming rollback or flag disable explains why the bug exists.
+1. **Shotgun debugging** -- changing several things at once and keeping whatever "worked".
+2. **Containment mistaken for root cause** -- assuming rollback or flag-off explains why the bug exists.
 3. **Historical anchoring** -- reusing an old fix because the ticket title looks similar.
 4. **Architecture patch cosplay** -- applying a local workaround after multiple failed fixes even though the evidence points upstream.
-5. **Regression amnesia** -- repairing today's symptom without defining the test that would catch it next time.
+5. **Regression amnesia** -- repairing today's symptom without defining the test that catches it next time.
 
 ## Reference Material
 
-For recurring debugging failure modes that create false confidence or repeated misroutes, see [Gotchas](references/gotchas.md).
+- [Techniques](references/techniques.md) -- bisection recipes, differential debugging, instrumentation patterns, flaky-failure stabilization, stale-artifact checklist, multi-bug untangling.
+- [Gotchas](references/gotchas.md) -- recurring failure modes that create false confidence or misroutes.
 
 ## Related Skills
 
