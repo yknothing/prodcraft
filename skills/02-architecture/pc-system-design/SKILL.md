@@ -27,15 +27,13 @@ metadata:
 
 ## Context
 
-System design translates requirements and domain knowledge into a technical blueprint. A well-designed architecture absorbs change gracefully -- poor design decisions compound over time and become exponentially expensive to reverse. Invest here before writing code. Every subsequent skill in the architecture and implementation phases depends on the decisions made here.
+System design translates requirements and domain knowledge into a technical blueprint.
 
-In spec-driven work, system design often starts from a reviewed spec package. In agile and brownfield work, it may start from a reviewed requirements document with open questions still visible. Do not silently "fix" requirement ambiguity inside the architecture. Preserve unresolved scope, compatibility, and quality-bound questions as design constraints or architectural open questions.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **requirements-doc** -- Minimum required input. Functional and non-functional requirements with priority rankings, scope boundaries, and unresolved questions. Pay special attention to quality attributes (latency, throughput, availability, consistency) and brownfield coexistence constraints.
-- **spec-doc** -- Optional amplifying input when spec-driven or waterfall work produces a detailed specification.
-- **domain-model** -- Optional amplifying input when the problem has enough domain complexity that entity boundaries or ubiquitous language should shape component boundaries.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -156,8 +154,7 @@ If the team cannot define a real fitness function yet, record the missing inform
 
 ## Outputs
 
-- **architecture-doc** -- Written document covering the ranked quality attribute table, architectural style, component boundaries, communication patterns, deployment topology, significant ADRs, and the fitness functions that will validate the most important decisions. Must be understandable by any developer joining the team.
-- **component-diagram** -- C4 diagrams at context, container, and component levels. Use a tool that supports version control (Structurizr DSL, Mermaid, PlantUML).
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -171,27 +168,3 @@ If the team cannot define a real fitness function yet, record the missing inform
 - [ ] Deployment topology accounts for failure modes
 - [ ] C4 diagrams at context, container, and component levels exist
 - [ ] No circular dependencies between components
-
-## Anti-Patterns
-
-1. **Resume-Driven Architecture** -- Choosing technologies because they look impressive rather than because they solve the problem. Always start from drivers, not from tools.
-2. **Big Design Up Front** -- Trying to nail every detail before writing code. Design to the level of certainty you have; mark unknowns as spikes for validation during implementation.
-3. **Distributed Monolith** -- Splitting into microservices without achieving independent deployability. If services must deploy together, they are not separate services.
-4. **Ignoring the "-ilities"** -- Focusing only on functional requirements. Non-functional requirements (scalability, observability, security) are architectural concerns -- they rarely emerge from good intentions alone.
-5. **Architecture Astronautics** -- Over-abstracting and over-generalizing for hypothetical future needs. Design for today's known requirements with extension points for likely changes.
-6. **Closing open questions by accident** -- Turning unresolved compatibility, synchronization, or rollout questions into assumed architecture facts without labeling them as assumptions or follow-up decisions.
-7. **Irreversible bets without an exit story** -- Choosing a platform, decomposition, or migration path that is expensive to unwind without documenting why the lock-in is acceptable and how failure would be detected.
-
-## Reference Material
-
-For worked architecture-style comparisons and an ADR example, see [decision-examples](references/decision-examples.md). Keep the core skill focused on drivers, boundaries, and trade-offs; use the reference when the team needs examples to calibrate the artifact shape.
-
-## Related Skills
-
-- [pc-spec-writing](../../01-specification/pc-spec-writing/SKILL.md) -- Provides the spec-doc input
-- [pc-domain-modeling](../../01-specification/pc-domain-modeling/SKILL.md) -- Provides bounded contexts that inform component boundaries
-- [pc-api-design](../pc-api-design/SKILL.md) -- Designs the interfaces between components defined here
-- [pc-data-modeling](../pc-data-modeling/SKILL.md) -- Translates the domain model into storage schemas within this architecture
-- [pc-security-design](../pc-security-design/SKILL.md) -- Layers security controls onto the architecture
-- [pc-tech-selection](../pc-tech-selection/SKILL.md) -- Evaluates concrete technologies for the components defined here
-- [pc-task-breakdown](../../03-planning/pc-task-breakdown/SKILL.md) -- Decomposes the architecture into implementable tasks

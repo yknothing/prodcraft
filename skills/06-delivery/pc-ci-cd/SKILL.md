@@ -28,16 +28,14 @@ metadata:
 
 ## Context
 
-CI/CD is the backbone of reliable delivery. Continuous Integration ensures every code change is validated automatically. Continuous Delivery ensures validated code can be deployed to production at any time. Together, they reduce the risk of releases from "big scary event" to "routine operation."
+CI/CD is the backbone of reliable delivery.
 
-In a lifecycle-aware system, CI/CD must preserve upstream quality and rollout constraints. It should not flatten unresolved brownfield risks into a generic "deploy after tests pass" pipeline.
+See [context notes](references/context.md).
 
 ## Inputs
 
-- **source-code** -- produced by the preceding skill in the lifecycle
-- **test-strategy-doc** -- produced by the preceding skill in the lifecycle
-- **architecture-doc** -- produced by the preceding skill in the lifecycle
-- **task-list** -- produced by the preceding skill in the lifecycle
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
+
 ## Process
 
 ### Step 1: Design Pipeline Stages
@@ -90,8 +88,8 @@ If release boundaries or sync semantics remain constrained, use staging and gate
 
 ## Outputs
 
-- **ci-cd-pipeline** -- produced by this skill
-- **build-artifacts** -- produced by this skill
+Produce only declared outputs at their documented quality boundary.
+
 ## Quality Gate
 
 - [ ] Pipeline runs on every PR and merge to main
@@ -109,10 +107,3 @@ If release boundaries or sync semantics remain constrained, use staging and gate
 4. **Manual deployment steps** -- "SSH into the server and run this script" is not CI/CD.
 5. **No rollback plan** -- Every deployment must have a tested rollback path.
 6. **Pipeline that ignores release boundaries** -- Shipping a generic pipeline that never verifies unsupported-flow behavior, coexistence, or rollback readiness for the current slice.
-
-## Related Skills
-
-- [pc-testing-strategy](../../05-quality/pc-testing-strategy/SKILL.md) -- defines what tests to run in the pipeline
-- [pc-deployment-strategy](../pc-deployment-strategy/SKILL.md) -- defines deployment patterns (blue-green, canary)
-- [pc-release-management](../pc-release-management/SKILL.md) -- coordinates release process
-- [pc-monitoring-observability](../../07-operations/pc-monitoring-observability/SKILL.md) -- post-deployment validation

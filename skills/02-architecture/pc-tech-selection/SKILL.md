@@ -26,14 +26,13 @@ metadata:
 
 ## Context
 
-Tech selection turns a structural design into a concrete stack. The right decision makes implementation straightforward and operations predictable. The wrong decision can hard-code skill gaps, cost surprises, and migration pain into the program.
+Tech selection turns a structural design into a concrete stack.
 
-Use this skill when the architecture is stable enough to evaluate real options. If the team skips explicit selection, those choices get made implicitly under delivery pressure and become harder to revisit.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **requirements-doc** -- The functional and non-functional requirements that constrain viable technology choices.
-- **architecture-doc** -- The architecture drivers, boundaries, deployment model, and quality constraints the technologies must satisfy.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -72,7 +71,7 @@ Document why the option won, what trade-offs were accepted, and what future cond
 
 ## Outputs
 
-- **tech-decision-record** -- The selected technologies, alternatives considered, rationale, trade-offs, and triggers for re-evaluation.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -81,17 +80,3 @@ Document why the option won, what trade-offs were accepted, and what future cond
 - [ ] Team capability and operational cost were considered
 - [ ] Rejected alternatives and trade-offs are recorded
 - [ ] Revisit triggers are documented for high-consequence choices
-
-## Anti-Patterns
-
-1. **Trend chasing** -- choosing tools for novelty instead of fit.
-2. **Implicit stack choice** -- letting the first implementer decide by convenience.
-3. **Resume-driven architecture** -- optimizing for engineer preference over product needs.
-4. **Tool sprawl** -- adding multiple overlapping platforms where one would do.
-
-## Related Skills
-
-- [pc-system-design](../pc-system-design/SKILL.md) -- provides the drivers that technologies must satisfy
-- [pc-ci-cd](../../06-delivery/pc-ci-cd/SKILL.md) -- operationalizes the selected toolchain in delivery
-- [pc-feature-development](../../04-implementation/pc-feature-development/SKILL.md) -- builds within the chosen stack constraints
-- [pc-feasibility-study](../../00-discovery/pc-feasibility-study/SKILL.md) -- may surface technical feasibility questions before final selection

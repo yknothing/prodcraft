@@ -1,0 +1,21 @@
+{
+  "benchmark": "eval/04-implementation/pc-systematic-debugging/isolated-benchmark.json",
+  "skill_path": "skills/04-implementation/pc-systematic-debugging",
+  "runner": "codex",
+  "model": "gpt-5.6-sol",
+  "run_started_at": "2026-07-16T01:52:06",
+  "scenario_count": 4,
+  "runs_per_scenario": 3,
+  "expected_case_count": 24,
+  "benchmark_sha256": "21bf76fe32a703a58a8ce553b63bf9a61af3168cdc62db7bc19d37f10d300ef4",
+  "skill_file_sha256": "0e6b79dd15c245e2a123174b69c6f56800402ecc478c58f20bdf98811dd94f04",
+  "runner_home_isolation": {
+    "mode": "per-case-temporary-auth-only",
+    "auth_exposure": "auth.json-symlink",
+    "source_user_config_loaded": false,
+    "forbidden_path_fragment": "systematic-debugging",
+    "preflight_forbidden_path_matches": 0,
+    "postflight_forbidden_path_matches": 0,
+    "cleanup": "automatic-after-each-case"
+  }
+}

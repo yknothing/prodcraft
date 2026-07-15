@@ -26,18 +26,13 @@ metadata:
 
 ## Context
 
-This skill is an adversarial quality audit for implementation honesty. It looks for bugs that are easy to miss when the diff appears complete: fake green paths, mocks with production names, handler failures logged as success, tests that assert fixtures rather than behavior, swallowed errors, and runtime evidence that does not prove the claim being made.
+This skill is an adversarial quality audit for implementation honesty.
 
-Use it when a previous review missed obvious issues, when agent-generated code may have optimized for passing tests, or when mocks/fakes/simulated runtimes are present near a production-facing boundary.
+See [context notes](references/context.md).
 
 ## Inputs
 
-- **intake-brief**: Target context, evidence requirements, non-targets, and safety constraints.
-- **source-code**: The implementation diff and related runtime boundaries.
-- **test-suite**: Unit, integration, E2E, fixture, smoke, and benchmark evidence.
-- **task-list**: The exact work items and priority sequence.
-
-Also inspect logs, debug records, runbooks, mocks, fixture data, generated artifacts, and quality reports when available.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -67,14 +62,7 @@ Prioritize findings by blast radius and deception risk. Include file and line re
 
 ## Outputs
 
-Produce a `review-report` with:
-
-- trust-boundary map
-- mock/fixture inventory
-- low-level defect findings
-- deceptive-success or improper-mock findings
-- test-integrity gaps
-- prioritized repairs and regression guards
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 

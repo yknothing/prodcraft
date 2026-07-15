@@ -1,0 +1,48 @@
+{
+  "scenario_id": "flaky-failure-stabilization",
+  "output_kind": "bug-fix-report",
+  "gate_bypass": false,
+  "bug_fix_report": {
+    "reproduction": "Replace the fixed 200 ms sleep with a condition-based wait on the observable completion event; this deterministically reproduces the missing wake-up whenever the worker registers after the queue transition.",
+    "root_cause": "Listener registration can occur after the one-shot completion transition, causing the wake-up to be lost.",
+    "confirming_evidence": [
+      "All captured failures checked 8–47 ms before worker completion, while passing runs happened to complete within 200 ms.",
+      "With the listener-ordering fix, 500/500 stabilized runs passed.",
+      "With only the ordering fix removed, the stabilized test failed within 12 runs with the same missing wake-up."
+    ],
+    "fix_boundary": "Register the listener before the transition, leave production behavior otherwise unchanged, keep the condition-based test wait, and remove the fixed sleep.",
+    "regression_protection": "Keep the condition-based test and hand it to pc-tdd; the stabilized check passed 500 consecutive runs with the fix.",
+    "two_way_causality": {
+      "with_fix_passed": true,
+      "fix_removed_failure_returned": true
+    }
+  },
+  "debug_journal": [
+    {
+      "hypothesis": "The fixed 200 ms sleep permits the assertion to run before worker completion.",
+      "prediction": "Failing runs check before worker completion.",
+      "experiment": "Instrument event enqueue and worker completion timestamps without changing the wait.",
+      "result": "All captured failures checked 8–47 ms before completion; passing runs happened to complete inside 200 ms."
+    },
+    {
+      "hypothesis": "A condition-based wait will stabilize the race and reveal whether the completion event is eventually emitted.",
+      "prediction": "The stabilized test will expose a missing wake-up when the worker registers after the queue transition.",
+      "experiment": "Replace only the fixed sleep with a condition-based wait on the observable completion event, leaving production code unchanged.",
+      "result": "The test reproduced a missing wake-up whenever the worker registered after the queue transition."
+    },
+    {
+      "hypothesis": "Registering the listener before the transition prevents the one-shot wake-up from being lost.",
+      "prediction": "The stabilized reproduction will pass with the ordering fix and fail again when only that fix is removed.",
+      "experiment": "Change only worker registration ordering, run 500 stabilized checks, then remove only the ordering fix and rerun.",
+      "result": "The fix passed 500/500 runs; removing only the fix returned the same missing-wake-up failure within 12 runs."
+    }
+  ],
+  "flaky_discipline": {
+    "rerun_until_green_refused": true,
+    "failure_stabilized_before_fix": true,
+    "condition_based_wait": true
+  },
+  "downstream_skills": [
+    "pc-tdd"
+  ]
+}

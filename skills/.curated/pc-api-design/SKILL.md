@@ -32,15 +32,13 @@ metadata:
 
 ## Context
 
-API design defines how system components communicate. A well-designed API is intuitive, consistent, and evolvable. A poorly designed API creates coupling, breaks clients, and generates support burden for years.
+API design defines how system components communicate.
 
-In a lifecycle-aware system, API design must preserve upstream architecture boundaries and unresolved questions. Do not smuggle rollout plans, migration choreography, or internal data-model assumptions into the contract unless they are true contract requirements.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **architecture-doc** -- Required. Defines component boundaries, interaction patterns, and explicit coexistence or compatibility constraints.
-- **requirements-doc** -- Required. Defines required behaviors, authorization expectations, and contract-level non-functional requirements.
-- **domain-model** -- Optional amplifying input when resource naming or entity boundaries need stronger domain vocabulary.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -110,8 +108,8 @@ record those as explicit contract assumptions, deferred fields, or open question
 
 ## Outputs
 
-- **api-contract** -- produced by this skill
-- **api-documentation** -- produced by this skill
+Produce only declared outputs at their documented quality boundary.
+
 ## Quality Gate
 
 - [ ] API contract specified in OpenAPI/protobuf/GraphQL schema
@@ -119,21 +117,6 @@ record those as explicit contract assumptions, deferred fields, or open question
 - [ ] Versioning strategy documented
 - [ ] Authentication and authorization specified per endpoint
 - [ ] Backward compatibility policy defined
-
-## Anti-Patterns
-
-1. **Chatty APIs** -- Requiring 10 calls to render one page. Design for client use cases.
-2. **Leaking implementation** -- Exposing internal IDs, database column names, or internal service structure.
-3. **Ignoring pagination** -- Every list endpoint must paginate. No unbounded responses.
-4. **Breaking changes without versioning** -- Renaming a field breaks every client. Plan for evolution.
-5. **Closing architecture questions inside the API** -- Turning unresolved sync, rollout, or compatibility questions into fixed contract behavior without labeling them.
-
-## Related Skills
-
-- [pc-system-design](../pc-system-design/SKILL.md) -- defines the components that need APIs
-- [pc-domain-modeling](../pc-domain-modeling/SKILL.md) -- provides the resource model
-- [pc-feature-development](../pc-feature-development/SKILL.md) -- implements the API
-- [pc-testing-strategy](../pc-testing-strategy/SKILL.md) -- contract testing for APIs
 
 ## Distribution
 

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -31,6 +32,11 @@ from tools.execution_state import (  # noqa: E402
     StrictJSONError,
     parse_strict_json_bytes,
 )
+from tools.workflow_contract import (  # noqa: E402
+    validate_workflow_contract,
+    workflow_skill_references,
+)
+from scripts.gateway_routing import extract_portable_routing_sections  # noqa: E402
 
 SKILLS_DIR = ROOT / "skills"
 CURATED_SKILLS_DIR = SKILLS_DIR / ".curated"
@@ -99,19 +105,6 @@ SKILL_METADATA_REQUIRED_FIELDS = [
 SKILL_METADATA_OPTIONAL_FIELDS = [
     "quality_gate",
 ]
-
-WORKFLOW_REQUIRED_FIELDS = [
-    "name",
-    "description",
-    "cadence",
-    "workflow_kind",
-    "composes_with",
-    "entry_skill",
-    "required_artifacts",
-    "best_for",
-    "phases_included",
-]
-
 
 CHECKS = {
     "skill-frontmatter",
@@ -203,9 +196,20 @@ CRITICAL_REVIEW_DEPTH_PATHS = {
     "trigger_eval_results_path",
 }
 
-WORKFLOW_KINDS = {
-    "primary",
-    "overlay",
+EVIDENCE_BINDING_REQUIRED_STATUSES = {"review", "tested", "secure", "production"}
+EVIDENCE_BINDING_PREFIX = "contract-sha256:"
+EVIDENCE_BINDING_RE = re.compile(r"^contract-sha256:[0-9a-f]{64}$")
+EVIDENCE_BINDING_RECORD_RELATIVE_PATH = Path("eval/meta/skill-evidence-bindings.yml")
+EVIDENCE_BINDING_RECORD_SCHEMA = "skill-evidence-bindings.v1"
+EVIDENCE_BINDING_ALGORITHM = "contract-projection.v2"
+EVIDENCE_BINDING_NON_CONTRACT_HEADINGS = {
+    "Context",
+    "Inputs",
+    "Outputs",
+    "Anti-Patterns",
+    "Reference Material",
+    "Related Skills",
+    "Distribution",
 }
 
 REQUIRED_SKILL_BODY_HEADINGS = (
@@ -271,6 +275,42 @@ def extract_markdown_section(text: str, heading: str) -> str | None:
     if next_heading:
         return remainder[: next_heading.start()].strip()
     return remainder.strip()
+
+
+def compute_skill_contract_digest(path: Path) -> str:
+    """Hash the skill contract while excluding non-contract prose.
+
+    The binding covers complete YAML frontmatter plus every H2 section except
+    explicitly informational/artifact-index sections. This keeps Context and
+    Anti-Patterns pruning outside the digest while retaining Hard Gate, Iron
+    Law, stop-signal, gotcha, Process, and Quality Gate contracts.
+    """
+
+    frontmatter = raw_frontmatter(path).replace("\r\n", "\n").strip()
+    _metadata, body = load_frontmatter(path)
+    heading_matches = list(re.finditer(r"^##\s+(.+?)\s*$", body, re.MULTILINE))
+    sections: list[tuple[str, str]] = []
+    seen_headings: set[str] = set()
+    for index, match in enumerate(heading_matches):
+        heading = match.group(1).strip()
+        if heading in seen_headings:
+            raise ValueError(f"{path}: duplicate H2 heading `{heading}` makes the contract projection ambiguous")
+        seen_headings.add(heading)
+        start = match.end()
+        end = heading_matches[index + 1].start() if index + 1 < len(heading_matches) else len(body)
+        if heading not in EVIDENCE_BINDING_NON_CONTRACT_HEADINGS:
+            sections.append((heading, body[start:end].strip()))
+
+    missing = sorted({"Process", "Quality Gate"} - seen_headings)
+    if missing:
+        raise ValueError(f"{path}: cannot compute contract digest; missing sections {missing}")
+
+    contract_parts = ["frontmatter.v2", frontmatter]
+    for heading, section in sections:
+        contract_parts.extend((f"section:{heading}", section))
+    contract = "\n".join((*contract_parts, ""))
+    digest = hashlib.sha256(contract.encode("utf-8")).hexdigest()
+    return f"{EVIDENCE_BINDING_PREFIX}{digest}"
 
 
 def iter_lifecycle_skill_paths() -> list[Path]:
@@ -1147,43 +1187,8 @@ def validate_skill_security_minimal(path: Path, errors: list[str]) -> None:
 def validate_workflow_file(path: Path, errors: list[str], selected_checks: set[str]) -> None:
     if path.name.startswith("_"):
         return
-
-    try:
-        frontmatter, body = load_frontmatter(path)
-    except ValueError as exc:
-        errors.append(str(exc))
-        return
-
-    if "workflow-frontmatter" in selected_checks:
-        for field in WORKFLOW_REQUIRED_FIELDS:
-            if field not in frontmatter:
-                errors.append(f"{path}: missing required workflow field `{field}`")
-        workflow_kind = frontmatter.get("workflow_kind")
-        if workflow_kind not in WORKFLOW_KINDS:
-            errors.append(f"{path}: `workflow_kind` must be one of {sorted(WORKFLOW_KINDS)}")
-        composes_with = frontmatter.get("composes_with")
-        if not isinstance(composes_with, list) or not composes_with:
-            errors.append(f"{path}: `composes_with` must be a non-empty list")
-
-    if "workflow-entry-gate" in selected_checks:
-        if frontmatter.get("entry_skill") != "pc-intake":
-            errors.append(f"{path}: `entry_skill` must be `pc-intake`")
-
-        required_artifacts = frontmatter.get("required_artifacts", [])
-        if not isinstance(required_artifacts, list) or "intake-brief" not in required_artifacts:
-            errors.append(f"{path}: `required_artifacts` must include `intake-brief`")
-
-        if "## Entry Gate" not in body:
-            errors.append(f"{path}: missing `## Entry Gate` section")
-
-        body_lower = body.lower()
-        if "pc-intake" not in body_lower or "intake-brief" not in body_lower:
-            errors.append(f"{path}: entry gate must mention both `pc-intake` and `intake-brief`")
-
-        required_sections = ("Overview", "Phase Sequence", "Quality Gates", "Adaptation Notes")
-        for section_name in required_sections:
-            if not re.search(rf"^##\s+{re.escape(section_name)}\s*$", body, re.MULTILINE):
-                errors.append(f"{path}: missing required workflow section `## {section_name}`")
+    if {"workflow-frontmatter", "workflow-entry-gate"}.intersection(selected_checks):
+        errors.extend(validate_workflow_contract(path))
 
 
 def manifest_skill_names(manifest: dict) -> set[str]:
@@ -1490,6 +1495,134 @@ def validate_manifest_skill_status(manifest: dict, errors: list[str]) -> None:
                 )
 
 
+def validate_manifest_evidence_bindings(manifest: dict, errors: list[str]) -> None:
+    """Reject silent QA-evidence drift from the current skill contract."""
+
+    record_path = ROOT / EVIDENCE_BINDING_RECORD_RELATIVE_PATH
+    record_entries: dict[str, dict] = {}
+    bound_manifest_names = {
+        entry.get("name")
+        for entry in manifest.get("skills", [])
+        if isinstance(entry, dict) and entry.get("evidence_verified_against") is not None
+    }
+    if bound_manifest_names:
+        if record_path.is_symlink():
+            errors.append(f"{record_path}: evidence binding record must not be a symlink")
+        elif not record_path.is_file():
+            errors.append(f"{record_path}: evidence binding record is missing")
+        else:
+            try:
+                record = yaml.safe_load(record_path.read_text(encoding="utf-8")) or {}
+            except (OSError, UnicodeDecodeError, yaml.YAMLError) as exc:
+                errors.append(f"{record_path}: failed to parse evidence binding record: {exc}")
+                record = {}
+            if not isinstance(record, dict):
+                errors.append(f"{record_path}: evidence binding record must be a mapping")
+                record = {}
+            if record.get("schema_version") != EVIDENCE_BINDING_RECORD_SCHEMA:
+                errors.append(
+                    f"{record_path}: `schema_version` must be `{EVIDENCE_BINDING_RECORD_SCHEMA}`"
+                )
+            if record.get("algorithm") != EVIDENCE_BINDING_ALGORITHM:
+                errors.append(f"{record_path}: `algorithm` must be `{EVIDENCE_BINDING_ALGORITHM}`")
+            raw_bindings = record.get("bindings", [])
+            if not isinstance(raw_bindings, list):
+                errors.append(f"{record_path}: `bindings` must be a list")
+                raw_bindings = []
+            for item in raw_bindings:
+                if not isinstance(item, dict) or not isinstance(item.get("skill"), str):
+                    errors.append(f"{record_path}: every binding must be a mapping with string `skill`")
+                    continue
+                skill_name = item["skill"]
+                if skill_name in record_entries:
+                    errors.append(f"{record_path}: duplicate binding for `{skill_name}`")
+                    continue
+                record_entries[skill_name] = item
+
+            extra_records = sorted(set(record_entries) - bound_manifest_names)
+            if extra_records:
+                errors.append(f"{record_path}: bindings without matching manifest digest {extra_records}")
+
+    for entry in manifest.get("skills", []):
+        if not isinstance(entry, dict):
+            continue
+        name = entry.get("name", "<unknown>")
+        status = entry.get("status")
+        binding = entry.get("evidence_verified_against")
+        if binding is None:
+            if status in EVIDENCE_BINDING_REQUIRED_STATUSES:
+                errors.append(
+                    f"{MANIFEST_PATH}: skill `{name}` with status `{status}` is missing "
+                    "`evidence_verified_against`"
+                )
+            continue
+        if not isinstance(binding, str) or not EVIDENCE_BINDING_RE.fullmatch(binding):
+            errors.append(
+                f"{MANIFEST_PATH}: skill `{name}` has invalid `evidence_verified_against`; "
+                f"expected `{EVIDENCE_BINDING_PREFIX}<64 lowercase hex characters>`"
+            )
+            continue
+
+        rel_path = entry.get("file")
+        if not isinstance(rel_path, str):
+            continue
+        path = ROOT / rel_path
+        if not path.is_file():
+            continue
+        try:
+            current = compute_skill_contract_digest(path)
+        except (OSError, UnicodeDecodeError, ValueError) as exc:
+            errors.append(str(exc))
+            continue
+        if binding != current:
+            errors.append(
+                f"{MANIFEST_PATH}: skill `{name}` has stale QA evidence binding "
+                f"`{binding}`; current contract is `{current}`"
+            )
+        record_entry = record_entries.get(name)
+        if record_entry is None:
+            if record_path.is_file():
+                errors.append(f"{record_path}: missing evidence binding record for `{name}`")
+            continue
+        if record_entry.get("evidence_verified_against") != binding:
+            errors.append(f"{record_path}: binding for `{name}` does not match manifest digest")
+        verified_at = record_entry.get("verified_at")
+        if not isinstance(verified_at, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", verified_at):
+            errors.append(f"{record_path}: binding for `{name}` must include YYYY-MM-DD `verified_at`")
+        evidence_paths = record_entry.get("evidence_paths")
+        if not isinstance(evidence_paths, list) or not evidence_paths:
+            errors.append(f"{record_path}: binding for `{name}` must include non-empty `evidence_paths`")
+            continue
+        seen_evidence_paths: set[str] = set()
+        for raw_path in evidence_paths:
+            if not isinstance(raw_path, str) or not raw_path:
+                errors.append(f"{record_path}: binding for `{name}` has invalid evidence path")
+                continue
+            if raw_path in seen_evidence_paths:
+                errors.append(
+                    f"{record_path}: binding for `{name}` has duplicate evidence path `{raw_path}`"
+                )
+                continue
+            seen_evidence_paths.add(raw_path)
+            relative_path = Path(raw_path)
+            if relative_path.is_absolute() or ".." in relative_path.parts:
+                errors.append(f"{record_path}: binding for `{name}` has unsafe evidence path `{raw_path}`")
+                continue
+            target = ROOT / relative_path
+            current = ROOT
+            symlinked_component = False
+            for part in relative_path.parts:
+                current = current / part
+                if current.is_symlink():
+                    symlinked_component = True
+                    break
+            if symlinked_component:
+                errors.append(f"{record_path}: binding for `{name}` has unsafe evidence path `{raw_path}`")
+                continue
+            if not target.is_file():
+                errors.append(f"{record_path}: binding for `{name}` references missing evidence `{raw_path}`")
+
+
 def validate_artifact_flow(manifest: dict, errors: list[str]) -> None:
     # Most artifacts have a single canonical producer, but implementation artifacts like
     # `source-code` may legitimately come from more than one skill.
@@ -1614,39 +1747,24 @@ def validate_workflow_skill_references(manifest: dict, errors: list[str]) -> Non
         for entry in manifest.get("skills", [])
         if isinstance(entry, dict) and "name" in entry
     }
-    workflow_names = {
-        entry.get("name")
-        for entry in manifest.get("workflows", [])
-        if isinstance(entry, dict) and isinstance(entry.get("name"), str)
-    }
-    allowed_non_skill_tokens = {
-        "all",
-        "intake-brief",
-    }
-    allowed_non_skill_tokens.update(workflow_names)
     for path in sorted(WORKFLOWS_DIR.glob("*.md")):
         if path.name.startswith("_"):
             continue
-        frontmatter, body = load_frontmatter(path)
-        
-        for line in body.splitlines():
-            refs = extract_backtick_refs(line)
-            for ref in refs:
-                if ref not in skills and ref not in allowed_non_skill_tokens:
-                    errors.append(
-                        f"{path}: references undefined skills/tokens `{ref}`"
-                    )
-                elif ref in skills:
-                    skill_status = manifest_skills.get(ref, {}).get("status")
-                    if skill_status == "draft":
-                        if not re.search(rf"`{re.escape(ref)}`\s*\((?:experimental|planned)\)", line, re.IGNORECASE):
-                            errors.append(f"{path}: draft skill `{ref}` is referenced without being explicitly marked as (experimental) or (planned)")
-                    elif re.search(rf"`{re.escape(ref)}`\s*\((?:experimental|planned)\)", line, re.IGNORECASE):
-                        errors.append(
-                            f"{path}: non-draft skill `{ref}` is marked experimental/planned; sync the label with manifest status `{skill_status}`"
-                        )
+        try:
+            frontmatter, _body = load_frontmatter(path)
+        except ValueError as exc:
+            errors.append(str(exc))
+            continue
+        refs = workflow_skill_references(frontmatter)
+        for ref in refs:
+            if ref not in skills:
+                errors.append(f"{path}: references undefined skill `{ref}`")
+                continue
+            if manifest_skills.get(ref, {}).get("status") == "draft":
+                errors.append(
+                    f"{path}: structured workflow contract must not depend on draft skill `{ref}`"
+                )
 
-        refs = extract_backtick_refs(body)
         compatibility_tags = workflow_compatibility_tags(frontmatter.get("name", ""))
         for ref in sorted(ref for ref in refs if ref in skills):
             methods = skill_methods.get(ref, [])
@@ -2199,11 +2317,10 @@ def validate_protocol_result_instance(
 def _skill_name_occurrences(name: str, line: str) -> list[re.Match]:
     """Occurrences of a skill name as a standalone token.
 
-    Lookarounds treat `-` as part of the token, so `migration-strategy` does
-    not match inside `data-migration-strategy`. Ordinary-English collisions
-    with a planned skill name (e.g. prose using the word `deprecation`) can
-    still fire; that is an accepted loud false positive -- rephrase the prose
-    or mark the skill.
+    Lookarounds treat `-` as part of the token, so `pc-migration-strategy` does
+    not match inside `pre-pc-migration-strategy`. The mandatory `pc-` identity
+    prefix also prevents ordinary-English prose such as `deprecation policy`
+    from colliding with a planned skill name.
     """
     pattern = rf"(?<![\w-])`?{re.escape(name)}`?(?![\w-])"
     return list(re.finditer(pattern, line))
@@ -2224,6 +2341,10 @@ def validate_gateway_references(manifest: dict, errors: list[str]) -> None:
     not exempt it).
     """
     text = GATEWAY_PATH.read_text(encoding="utf-8")
+    try:
+        extract_portable_routing_sections(text)
+    except ValueError as exc:
+        errors.append(f"{GATEWAY_PATH}: {exc}")
     manifest_skills = {
         entry["name"]: entry
         for entry in manifest.get("skills", [])
@@ -2755,10 +2876,8 @@ def main() -> int:
     if args.approved_completion_digest and args.authorize_execution_state is None:
         parser.error("--approved-completion-digest requires --authorize-execution-state")
 
-    selected_checks = set(
-        args.check
-        or ([] if args.authorize_execution_state is not None and not args.artifact_instance else CHECKS)
-    )
+    operation_requested = bool(args.artifact_instance) or args.authorize_execution_state is not None
+    selected_checks = set(args.check or ([] if operation_requested else CHECKS))
     errors: list[str] = []
 
     _MANIFEST_DEPENDENT_CHECKS = {
@@ -2800,6 +2919,7 @@ def main() -> int:
 
     if "manifest-skill-status" in selected_checks and manifest:
         validate_manifest_skill_status(manifest, errors)
+        validate_manifest_evidence_bindings(manifest, errors)
 
     if "artifact-flow" in selected_checks and manifest:
         validate_artifact_flow(manifest, errors)

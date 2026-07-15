@@ -263,11 +263,11 @@ Not every task needs the full lifecycle. Governance weight scales with the risk 
 | Typo fix, comment update, doc wording | `micro` | Compact brief, notify-and-proceed, straight to the change |
 | Isolated reversible config value | `micro` | Compact brief, notify-and-proceed |
 | Single-file bug fix with clear root cause | `fast-track` | Skip to implementation with pc-systematic-debugging + TDD |
-| Documentation restructuring | `fast-track` | Skip to cross-cutting/pc-documentation |
+| Documentation restructuring | `fast-track` | Skip to `pc-documentation` |
 | Dependency update (patch) | `fast-track` | Skip to implementation + quality |
 | Configuration change with deploy impact | `fast-track` | Skip to implementation + deployment |
 
-`micro` eligibility and its notify-and-proceed semantics are owned by the intake skill's Micro Mode section -- see `skills/00-discovery/pc-intake/SKILL.md`. Gateway summary: reversible single-revert trivia only, zero questions, never for irreversible or externally visible actions; doubt on any point means `fast-track`.
+`micro` eligibility and its notify-and-proceed semantics are owned by `pc-intake`'s Micro Mode section. Gateway summary: reversible single-revert trivia only, zero questions, never for irreversible or externally visible actions; doubt on any point means `fast-track`.
 
 Fast-track still requires:
 - an approved `intake-brief`

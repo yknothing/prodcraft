@@ -25,11 +25,11 @@ metadata:
 
 Use this skill when the work introduces or changes user-facing text, date and number formatting, pluralization, locale selection, or language fallback behavior.
 
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
+
 ## Inputs
 
-- The affected user-facing flows or interfaces
-- Supported locales, if already known
-- Existing copy and formatting constraints
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -51,22 +51,10 @@ Describe what implementation and QA must verify before release.
 
 ## Outputs
 
-- **localization-guidance** -- translation scope, formatting rules, fallback behavior, and QA checks for the affected surface
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
 - [ ] Affected user-facing strings and locale-sensitive formats are identified
 - [ ] Fallback behavior is explicit
 - [ ] Reviewers can verify locale behavior without inventing policy during QA
-
-## Anti-Patterns
-
-1. **String extraction only** -- moving text to resource files does not solve locale behavior.
-2. **English-first assumptions** -- hard-coded length, grammar, or format rules break quickly.
-3. **No fallback policy** -- missing translations become runtime chaos if not designed upfront.
-
-## Related Skills
-
-- [pc-requirements-engineering](../../01-specification/pc-requirements-engineering/SKILL.md) -- records locale expectations in the spec
-- [pc-feature-development](../../04-implementation/pc-feature-development/SKILL.md) -- implements the locale contract
-- [pc-documentation](../pc-documentation/SKILL.md) -- records supported locale policy

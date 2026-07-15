@@ -26,12 +26,14 @@ metadata:
 
 ## Context
 
-Feasibility is the gate between "interesting idea" and "committed project." It prevents wasting months on ideas that are technically impossible, economically unviable, or operationally unsustainable. The output is a go/no-go/pivot decision.
+Feasibility is the gate between "interesting idea" and "committed project." It prevents wasting months on ideas that are technically impossible, economically unviable, or operationally unsustainable.
+
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **market-research-report** -- produced by the preceding skill in the lifecycle
-- **user-persona-set** -- produced by the preceding skill in the lifecycle
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
+
 ## Process
 
 ### Step 1: Technical Feasibility
@@ -77,24 +79,11 @@ Write a clear go/no-go/pivot recommendation:
 
 ## Outputs
 
-- **feasibility-report** -- produced by this skill
+Produce only declared outputs at their documented quality boundary.
+
 ## Quality Gate
 
 - [ ] All four feasibility dimensions assessed
 - [ ] Highest-risk technical assumption validated with POC or research
 - [ ] Cost/revenue model documented with assumptions explicit
 - [ ] Clear go/no-go/pivot recommendation with rationale
-
-## Anti-Patterns
-
-1. **Feasibility theater** -- Going through the motions when the decision is already made.
-2. **Only checking technical feasibility** -- A technically brilliant product that no one will pay for is still a failure.
-3. **Ignoring operational costs** -- Building is 20% of total cost. Operating, maintaining, and supporting is 80%.
-4. **Binary thinking** -- "Can we build it?" is less useful than "What's the simplest version we can build?"
-
-## Related Skills
-
-- [pc-market-analysis](../pc-market-analysis/SKILL.md) -- provides market context
-- [pc-user-research](../pc-user-research/SKILL.md) -- provides user validation
-- [pc-requirements-engineering](../../01-specification/pc-requirements-engineering/SKILL.md) -- next step if go decision
-- [pc-tech-selection](../../02-architecture/pc-tech-selection/SKILL.md) -- builds on technical feasibility findings

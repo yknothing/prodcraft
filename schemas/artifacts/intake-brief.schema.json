@@ -195,14 +195,44 @@
       "type": "boolean"
     },
     "approver": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "micro_eligibility": {
+      "type": "object",
+      "required": [
+        "single_revert",
+        "zero_questions",
+        "no_external_effect",
+        "no_security_impact",
+        "no_irreversible_action"
+      ],
+      "properties": {
+        "single_revert": {
+          "const": true
+        },
+        "zero_questions": {
+          "const": true
+        },
+        "no_external_effect": {
+          "const": true
+        },
+        "no_security_impact": {
+          "const": true
+        },
+        "no_irreversible_action": {
+          "const": true
+        }
+      },
+      "additionalProperties": false
     },
     "proposed_path": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "string",
-        "minLength": 1
+        "pattern": "^pc-[a-z0-9]+(?:-[a-z0-9]+)*$"
       },
       "description": "Ordered downstream skill names when more than the next skill is already clear."
     }
@@ -249,6 +279,91 @@
         "required": [
           "intake_mode"
         ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "intake_mode": {
+            "const": "micro"
+          }
+        },
+        "required": [
+          "intake_mode"
+        ]
+      },
+      "then": {
+        "required": [
+          "micro_eligibility"
+        ],
+        "properties": {
+          "status": {
+            "const": "approved"
+          },
+          "scope_assessment": {
+            "const": "small"
+          },
+          "approver": {
+            "const": "auto (micro policy)"
+          },
+          "questions_asked": {
+            "maxItems": 0
+          },
+          "routing_changed_by_answers": {
+            "const": false
+          },
+          "work_type": {
+            "enum": [
+              "Enhancement",
+              "Bug Fix",
+              "Refactoring",
+              "Documentation"
+            ]
+          },
+          "quality_target_context": {
+            "properties": {
+              "runtime_context": {
+                "enum": [
+                  "agent_internal_skill",
+                  "host_runtime_tool",
+                  "local_dev_harness"
+                ]
+              },
+              "exposure_profile": {
+                "enum": [
+                  "no_network_listener",
+                  "localhost_only"
+                ]
+              }
+            }
+          }
+        },
+        "not": {
+          "required": [
+            "workflow_primary"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "intake_mode": {
+            "not": {
+              "const": "micro"
+            }
+          }
+        },
+        "required": [
+          "intake_mode"
+        ]
+      },
+      "then": {
+        "not": {
+          "required": [
+            "micro_eligibility"
+          ]
+        }
       }
     }
   ]

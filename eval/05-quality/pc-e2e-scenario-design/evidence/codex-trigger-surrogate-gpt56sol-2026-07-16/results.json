@@ -1,0 +1,225 @@
+{
+  "schema_version": "codex-trigger-surrogate-score.v1",
+  "semantics": "surrogate-not-vendored-claude-trigger-harness",
+  "official_trigger_gate_satisfied": false,
+  "model": "gpt-5.6-sol",
+  "case_count": 20,
+  "matched_count": 20,
+  "accuracy": 1.0,
+  "category_results": {
+    "core-positive": {
+      "case_count": 5,
+      "matched_count": 5
+    },
+    "negative": {
+      "case_count": 10,
+      "matched_count": 10
+    },
+    "overlap": {
+      "case_count": 5,
+      "matched_count": 5
+    }
+  },
+  "results": [
+    {
+      "id": 1,
+      "category": "core-positive",
+      "query": "Our Playwright suite has 40 green happy-path tests, but production still breaks after users move between checkout, account, and order-history screens. Design deep stateful E2E journeys with persistence and failure-boundary assertions.",
+      "expected_trigger": true,
+      "predicted_trigger": true,
+      "matched": true,
+      "confidence": 0.99,
+      "rationale": "Explicitly requests deep stateful E2E journeys across screens, persistence, and failure boundaries."
+    },
+    {
+      "id": 2,
+      "category": "core-positive",
+      "query": "Design extended mobile E2E scenarios for a project app where users background the app, return later, switch views, and expect server state to remain consistent across the session.",
+      "expected_trigger": true,
+      "predicted_trigger": true,
+      "matched": true,
+      "confidence": 0.99,
+      "rationale": "Requests extended stateful mobile E2E scenarios spanning backgrounding, re-entry, views, and server consistency."
+    },
+    {
+      "id": 3,
+      "category": "core-positive",
+      "query": "Our Cypress tests cover individual collaboration features. I need multi-user scenarios for invite, concurrent edit, reconnect, and cross-client consistency rather than another flat feature checklist.",
+      "expected_trigger": true,
+      "predicted_trigger": true,
+      "matched": true,
+      "confidence": 0.99,
+      "rationale": "Requests multi-user, reconnect, and cross-client consistency scenarios beyond shallow feature checks."
+    },
+    {
+      "id": 4,
+      "category": "core-positive",
+      "query": "The desktop test suite passes, yet long-running sessions fail after workspace switching and offline recovery. Help turn the critical personas into multi-step state-machine scenarios.",
+      "expected_trigger": true,
+      "predicted_trigger": true,
+      "matched": true,
+      "confidence": 0.99,
+      "rationale": "Production failures despite a passing suite and a request for multi-step state-machine scenarios directly match the skill."
+    },
+    {
+      "id": 5,
+      "category": "core-positive",
+      "query": "We already chose the E2E layer and release risks. Now deepen it with realistic user journeys, re-entry checks, dependency failure edges, and business-state assertions.",
+      "expected_trigger": true,
+      "predicted_trigger": true,
+      "matched": true,
+      "confidence": 0.99,
+      "rationale": "Explicitly asks to deepen E2E coverage with journeys, re-entry, failure edges, and business-state assertions."
+    },
+    {
+      "id": 6,
+      "category": "overlap",
+      "query": "We have an approved test strategy. The remaining gap is one 15-step checkout journey across login, cart, payment retry, reload, and order history. Design that stateful E2E scenario and its invariants.",
+      "expected_trigger": true,
+      "predicted_trigger": true,
+      "matched": true,
+      "confidence": 0.99,
+      "rationale": "Requests design of a long, stateful E2E checkout journey and its invariants."
+    },
+    {
+      "id": 7,
+      "category": "overlap",
+      "query": "Decide our overall unit, integration, contract, and E2E test pyramid ratios for a new service and tell us what belongs in CI.",
+      "expected_trigger": false,
+      "predicted_trigger": false,
+      "matched": true,
+      "confidence": 0.99,
+      "rationale": "This is overall testing strategy and CI allocation, not deep E2E scenario design."
+    },
+    {
+      "id": 8,
+      "category": "overlap",
+      "query": "One Playwright test intermittently times out on a locator. Diagnose the root cause of that specific flaky failure before changing the test.",
+      "expected_trigger": false,
+      "predicted_trigger": false,
+      "matched": true,
+      "confidence": 0.99,
+      "rationale": "This asks for diagnosis of one flaky test, which is debugging rather than scenario design."
+    },
+    {
+      "id": 9,
+      "category": "overlap",
+      "query": "Implement a Playwright page object and selectors for the existing single checkout smoke test.",
+      "expected_trigger": false,
+      "predicted_trigger": false,
+      "matched": true,
+      "confidence": 0.99,
+      "rationale": "This is implementation of test infrastructure for an existing smoke test."
+    },
+    {
+      "id": 10,
+      "category": "overlap",
+      "query": "Review this Cypress pull request for correctness and maintainability; the scenario design is already approved.",
+      "expected_trigger": false,
+      "predicted_trigger": false,
+      "matched": true,
+      "confidence": 0.99,
+      "rationale": "This is code review, and the scenario design is already approved."
+    },
+    {
+      "id": 11,
+      "category": "negative",
+      "query": "Write unit tests for calculateDiscount, including negative prices, zero quantity, and expired coupons.",
+      "expected_trigger": false,
+      "predicted_trigger": false,
+      "matched": true,
+      "confidence": 1,
+      "rationale": "This requests unit tests, not E2E scenario design."
+    },
+    {
+      "id": 12,
+      "category": "negative",
+      "query": "Design the REST API contract for creating and cancelling an order.",
+      "expected_trigger": false,
+      "predicted_trigger": false,
+      "matched": true,
+      "confidence": 1,
+      "rationale": "This requests API contract design."
+    },
+    {
+      "id": 13,
+      "category": "negative",
+      "query": "Create a load-testing plan for 20,000 requests per second and identify saturation metrics.",
+      "expected_trigger": false,
+      "predicted_trigger": false,
+      "matched": true,
+      "confidence": 1,
+      "rationale": "This requests performance and load-testing strategy."
+    },
+    {
+      "id": 14,
+      "category": "negative",
+      "query": "Threat-model the OAuth callback and review CSRF, redirect URI, and token leakage risks.",
+      "expected_trigger": false,
+      "predicted_trigger": false,
+      "matched": true,
+      "confidence": 1,
+      "rationale": "This requests security threat modeling."
+    },
+    {
+      "id": 15,
+      "category": "negative",
+      "query": "Configure CI to shard our existing Playwright suite across four workers and upload traces on failure.",
+      "expected_trigger": false,
+      "predicted_trigger": false,
+      "matched": true,
+      "confidence": 1,
+      "rationale": "This requests CI configuration for an existing suite."
+    },
+    {
+      "id": 16,
+      "category": "negative",
+      "query": "Add a single smoke test that opens the home page and checks the navigation bar is visible.",
+      "expected_trigger": false,
+      "predicted_trigger": false,
+      "matched": true,
+      "confidence": 1,
+      "rationale": "This requests a shallow single smoke test, explicitly outside the skill's deep scenario scope."
+    },
+    {
+      "id": 17,
+      "category": "negative",
+      "query": "Debug why the production API returns HTTP 500 for one customer after yesterday's deploy.",
+      "expected_trigger": false,
+      "predicted_trigger": false,
+      "matched": true,
+      "confidence": 1,
+      "rationale": "This is production debugging unrelated to E2E scenario design."
+    },
+    {
+      "id": 18,
+      "category": "negative",
+      "query": "Review this database migration for backward compatibility and lock duration.",
+      "expected_trigger": false,
+      "predicted_trigger": false,
+      "matched": true,
+      "confidence": 1,
+      "rationale": "This is a database migration review."
+    },
+    {
+      "id": 19,
+      "category": "negative",
+      "query": "Write acceptance criteria for password reset before implementation starts.",
+      "expected_trigger": false,
+      "predicted_trigger": false,
+      "matched": true,
+      "confidence": 1,
+      "rationale": "This requests acceptance criteria rather than E2E scenario design."
+    },
+    {
+      "id": 20,
+      "category": "negative",
+      "query": "Audit the checkout UI for keyboard navigation, focus order, and screen-reader labels.",
+      "expected_trigger": false,
+      "predicted_trigger": false,
+      "matched": true,
+      "confidence": 1,
+      "rationale": "This requests an accessibility audit."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": "explicit-benchmark-sealed-packet-metadata.v1",
+  "packet_id": "codex-gpt56sol-2026-07-16",
+  "source_run_kind": "sealed-full",
+  "source_execution_summary_sha256": "762151cd46eabd1b36177c1b8c99f604a3714b556a795de14e0e258c292e4af1",
+  "source_machine_summary_sha256": "1bb494a61c536aec161703b0e405c2bf87b5ebcdbdcae5d7711cb284ee7b9ff8",
+  "source_final_score_summary_sha256": "e5885896de1f1126ea62f681731e3868fdc4d64e909cacc16bf3531c64cf8a50",
+  "excluded_non_evidence_runs": [
+    "discarded-default-codex-home-smoke",
+    "discarded-default-codex-home-full",
+    "discarded-preflight-only-smoke"
+  ],
+  "raw_response_count": 24
+}

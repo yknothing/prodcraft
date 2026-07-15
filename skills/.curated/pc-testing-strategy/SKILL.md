@@ -34,17 +34,13 @@ metadata:
 
 ## Context
 
-A testing strategy defines what to test, at what layer, and with what tools. Without it, teams either over-test at the wrong layer (slow, brittle E2E suites) or under-test critical paths (production incidents). The strategy aligns testing effort with risk: high-risk paths get more coverage, low-risk paths get less. It also determines how tests integrate into CI/CD, how test data is managed, and how the team prevents test suite rot.
+A testing strategy defines what to test, at what layer, and with what tools.
+
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **source-code**: The codebase under test, including its module boundaries and dependency graph.
-- **task-list**: The reviewed implementation slice or change scope that defines what must be verified now.
-- **architecture-doc**: System topology that determines integration points and test boundaries.
-- **api-contract**: API specifications (OpenAPI, GraphQL schema) that drive contract tests.
-- **intake-brief**: Must include `quality_target_context` with `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs`.
-
-In a lifecycle-aware system, testing strategy must preserve upstream scope boundaries. Do not hide unsupported release-1 behavior, coexistence risks, or unresolved contract questions under a generic "we have E2E tests" answer.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -120,8 +116,7 @@ Establish practices to prevent and manage flaky tests:
 
 ## Outputs
 
-- **test-report**: Results from executing the test strategy, including coverage metrics, pass/fail status, and identified gaps.
-- **test-strategy-doc**: Written document describing the layers, coverage targets, CI integration plan, and test data approach.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -132,23 +127,6 @@ Establish practices to prevent and manage flaky tests:
 - [ ] No quarantined tests older than 30 days without a fix plan
 - [ ] Contract tests exist for all inter-service APIs
 - [ ] Brownfield coexistence and unsupported release-boundary behavior have explicit coverage where applicable
-
-## Anti-Patterns
-
-1. **Ice cream cone**: Inverted pyramid with most tests at the E2E layer. Produces slow, brittle, expensive suites that nobody trusts.
-2. **Testing implementation, not behavior**: Tests that break on every refactor because they assert on internal method calls instead of outputs. Test the contract, not the wiring.
-3. **Shared mutable test state**: Tests that depend on execution order or shared database rows. Each test must set up and tear down its own state.
-4. **Ignoring flaky tests**: Treating intermittent failures as "just flaky" instead of fixing them. Flaky tests erode confidence in the entire suite.
-5. **Coverage theater**: Writing tests solely to hit a coverage number without asserting meaningful behavior. Coverage measures execution, not correctness.
-6. **Happy-path-only strategy**: Claiming confidence while unsupported flows, coexistence boundaries, or contract failures have no explicit coverage.
-
-## Related Skills
-
-- [pc-tdd](../pc-tdd/SKILL.md) -- provides the test-first discipline that feeds into strategy
-- [pc-code-review](../pc-code-review/SKILL.md) -- reviews test quality alongside code quality
-- [pc-security-audit](../pc-security-audit/SKILL.md) -- security testing integrates into the strategy
-- `pc-performance-audit` (planned) -- performance testing as part of the overall approach
-- [pc-ci-cd](../pc-ci-cd/SKILL.md) -- consumes the strategy to configure pipeline test stages
 
 ## Distribution
 

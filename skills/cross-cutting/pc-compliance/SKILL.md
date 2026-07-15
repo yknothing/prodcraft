@@ -25,11 +25,11 @@ metadata:
 
 Use this skill when regulatory duties, customer contracts, data handling rules, or internal controls materially affect architecture, delivery, or operations.
 
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
+
 ## Inputs
 
-- The relevant policy, contract, or regulatory requirement
-- Affected systems, workflows, and environments
-- Current evidence or control gaps
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -51,22 +51,10 @@ If the current plan cannot satisfy the requirement, document the gap, the risk o
 
 ## Outputs
 
-- **compliance-guidance** -- the mapped obligations, required controls, evidence expectations, and approval checkpoints
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
 - [ ] Binding obligations are identified with source context
 - [ ] Required controls are mapped to engineering work
 - [ ] Release evidence and approval checkpoints are explicit
-
-## Anti-Patterns
-
-1. **Compliance by slogan** -- naming a standard without mapping controls changes nothing.
-2. **Late legal surprise** -- waiting until release review to interpret obligations causes avoidable churn.
-3. **Evidence after the fact** -- if proof is not planned early, it is usually missing when needed.
-
-## Related Skills
-
-- [pc-requirements-engineering](../../01-specification/pc-requirements-engineering/SKILL.md) -- captures regulated requirements
-- [pc-system-design](../../02-architecture/pc-system-design/SKILL.md) -- maps controls into architecture
-- [pc-deployment-strategy](../../06-delivery/pc-deployment-strategy/SKILL.md) -- enforces release approvals

@@ -27,14 +27,13 @@ metadata:
 
 ## Context
 
-Delivery completion is the narrow bridge between "the work is verified" and "the work has an explicit fate." It does **not** replace release management or deployment strategy. It answers a smaller question first: what should happen to this verified branch or change set right now?
+Delivery completion is the narrow bridge between "the work is verified" and "the work has an explicit fate." It does **not** replace release management or deployment strategy.
 
-Use this skill when implementation and review are complete, verification evidence is fresh, and the team needs an explicit completion outcome instead of an implied next step.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **verification-record** -- Fresh evidence from `pc-verification-before-completion`. If the evidence is stale, stop and re-run verification before making any completion claim.
-- **execution-checkpoint** -- Optional batch context when the work was executed through `pc-task-execution`.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -107,7 +106,7 @@ Do not offer vague "what do you want to do next?" prompts. Completion should end
 
 ## Outputs
 
-- **delivery-decision-record** -- The chosen completion outcome, verification evidence used, branch/PR target, cleanup action taken, and whether the work hands off to `pc-release-management` or stops here.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -116,20 +115,3 @@ Do not offer vague "what do you want to do next?" prompts. Completion should end
 - [ ] Discard path requires typed confirmation
 - [ ] Cleanup behavior matches the chosen outcome
 - [ ] Downstream release handoff is explicit when the work continues toward shipping
-
-## Anti-Patterns
-
-1. **Completion by implication** -- saying "done" without stating whether the work was merged, pushed, kept, or discarded.
-2. **Stale verification evidence** -- trusting an old passing run after the verified surface changed.
-3. **Silent discard** -- deleting work without an explicit record or typed confirmation.
-4. **Completion as release management** -- trying to fold stakeholder coordination or rollout design into this skill instead of handing off to the actual delivery skills.
-
-## Reference Material
-
-See [gotchas](references/gotchas.md) for branch-policy edge cases, discard safety, and stale-verification recovery.
-
-## Related Skills
-
-- [pc-verification-before-completion](../../cross-cutting/pc-verification-before-completion/SKILL.md) -- provides the fresh evidence required before completion claims
-- [pc-release-management](../pc-release-management/SKILL.md) -- takes over once verified work needs coordinated release handling
-- [pc-deployment-strategy](../pc-deployment-strategy/SKILL.md) -- decides the rollout and rollback path after release coordination exists

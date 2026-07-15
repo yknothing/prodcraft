@@ -22,9 +22,9 @@ metadata:
 
 ## Context
 
-Documentation is a cross-cutting concern that applies at every lifecycle phase. Good documentation reduces onboarding time, prevents knowledge loss, and enables async collaboration. The Diataxis framework provides a useful structure.
+Documentation is a cross-cutting concern that applies at every lifecycle phase.
 
-In the phase matrix, `pc-documentation` is always a `must_consider` concern. It only becomes a `must_produce` obligation when the change creates durable knowledge another person or later phase must rely on. Approved `intake_mode=fast-track` work may waive routine documentation updates, but it does not waive durable docs when the change would otherwise leave important knowledge implicit.
+See [context notes](references/context.md).
 
 ## Diataxis Framework
 
@@ -39,7 +39,8 @@ Organize documentation into four types:
 
 ## Inputs
 
-None required. This skill can begin from the project context alone.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
+
 ## Process
 
 ### Step 1: Identify the Need
@@ -77,7 +78,8 @@ Before writing, classify the need explicitly:
 
 ## Outputs
 
-- **documentation-artifact** -- produced by this skill
+Produce only declared outputs at their documented quality boundary.
+
 ## Quality Gate
 
 - [ ] Target audience can complete their task using only the documentation
@@ -91,11 +93,3 @@ Before writing, classify the need explicitly:
 2. **Documentation dump** -- A 200-page doc no one reads. Keep it focused and findable.
 3. **Separate documentation system** -- If docs aren't next to code, they won't be updated with code.
 4. **No documentation at all** -- "The code is self-documenting" is only true for WHAT, never for WHY.
-
-## Related Skills
-
-This skill applies at every phase. Key integration points:
-- [pc-spec-writing](../../01-specification/pc-spec-writing/SKILL.md) -- specification is documentation
-- [pc-system-design](../../02-architecture/pc-system-design/SKILL.md) -- architecture docs
-- [pc-runbooks](../../07-operations/pc-runbooks/SKILL.md) -- operational documentation
-- [pc-retrospective](../../08-evolution/pc-retrospective/SKILL.md) -- process documentation

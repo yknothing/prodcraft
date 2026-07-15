@@ -31,15 +31,14 @@ metadata:
 
 ## Context
 
-Retrospective is the skill that completes the lifecycle loop. It feeds insights from operations and evolution back into discovery, making the next cycle better than the last. Without it, teams repeat the same mistakes and miss improvement opportunities.
+Retrospective is the skill that completes the lifecycle loop.
 
-In a lifecycle-aware system, a retrospective is not a generic feelings exercise. It must turn concrete evidence from postmortems, reviews, and delivery outcomes into a small number of changes the team will actually route back through intake and planning.
+See [context notes](references/context.md).
 
 ## Inputs
 
-- **incident-timeline** -- produced by the preceding skill in the lifecycle
-- **postmortem-report** -- produced by the preceding skill in the lifecycle
-- **review-report** -- produced by the preceding skill in the lifecycle
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
+
 ## Process
 
 ### Step 1: Set the Stage (5 min)
@@ -87,8 +86,8 @@ Prefer actions that reduce recurrence risk and improve future handoffs instead o
 
 ## Outputs
 
-- **retrospective-report** -- produced by this skill
-- **improvement-actions** -- produced by this skill
+Produce only declared outputs at their documented quality boundary.
+
 ## Quality Gate
 
 - [ ] No more than 5 improvement actions chosen
@@ -106,13 +105,6 @@ Prefer actions that reduce recurrence risk and improve future handoffs instead o
 4. **Skipping retro when things went well** -- Good sprints have learnings too. What made it good? How do we replicate it?
 5. **Same format every time** -- Rotate formats to prevent staleness (sailboat, timeline, mad/sad/glad).
 6. **Action items with no route back into the system** -- If follow-ups never become planned work, the retro is theater.
-
-## Related Skills
-
-- [pc-incident-response](../pc-incident-response/SKILL.md) -- postmortems feed into retrospectives
-- [pc-tech-debt-management](../pc-tech-debt-management/SKILL.md) -- retro surfaces debt patterns
-- [pc-sprint-planning](../pc-sprint-planning/SKILL.md) -- retro improvements feed into next sprint
-- [pc-intake](../pc-intake/SKILL.md) -- retro insights trigger new work via intake
 
 ## Distribution
 

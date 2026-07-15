@@ -31,18 +31,13 @@ metadata:
 
 ## Context
 
-`pc-receiving-code-review` is the author-side companion to reviewer-side `pc-code-review`. Its job is to stop two failure modes:
+`pc-receiving-code-review` is the author-side companion to reviewer-side `pc-code-review`.
 
-- blind implementation of feedback that breaks the real codebase
-- performative agreement that sounds collaborative but skips technical verification
-
-In Prodcraft, review reception must preserve brownfield constraints, existing contracts, release boundaries, and upstream decisions. External feedback is useful input, not automatic truth.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **review-report** -- The reviewer comments, blocking issues, questions, and requested changes.
-- **source-code** -- The current implementation and surrounding codebase reality that the feedback must fit.
-- **test-suite** -- The existing safety net used to verify each accepted change.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -117,7 +112,7 @@ Produce a `review-response-record` that captures:
 
 ## Outputs
 
-- **review-response-record** -- Item-by-item disposition of review feedback, with evidence, implementation status, and remaining questions.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -127,24 +122,6 @@ Produce a `review-response-record` that captures:
 - [ ] Pushback, when needed, is technical and evidence-based
 - [ ] Relevant tests are rerun after accepted changes
 - [ ] The final response states what changed and what remains unresolved
-
-## Anti-Patterns
-
-1. **Performative agreement** -- sounding agreeable before verifying whether the comment is even correct.
-2. **External-reviewer obedience** -- treating outside feedback as an order instead of a hypothesis.
-3. **Partial understanding, partial implementation** -- fixing the easy comments while the important ambiguous ones remain unclear.
-4. **Batch-and-pray** -- applying many comments at once with no per-item verification.
-5. **Context amnesia** -- implementing a suggestion that breaks an upstream architecture, contract, or compatibility constraint.
-
-## Reference Material
-
-For common feedback-handling traps, see [Gotchas](references/gotchas.md).
-
-## Related Skills
-
-- [pc-code-review](../pc-code-review/SKILL.md) -- produces the reviewer-side findings that this skill processes
-- [pc-tdd](../pc-tdd/SKILL.md) -- supplies the test discipline used to verify accepted review changes
-- [pc-verification-before-completion](../pc-verification-before-completion/SKILL.md) -- verifies that claimed review follow-up is actually complete
 
 ## Distribution
 

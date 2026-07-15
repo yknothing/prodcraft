@@ -28,16 +28,13 @@ metadata:
 
 ## Context
 
-Release management decides whether the current candidate should ship now, under what constraints, and with which communication and ownership model. It is broader than deployment strategy: deployment answers how code rolls out, while release management answers whether the organization is ready to do it.
+Release management decides whether the current candidate should ship now, under what constraints, and with which communication and ownership model.
 
-Use this skill when a release has external coordination cost, meaningful risk, or stakeholders who need a single plan instead of scattered quality artifacts.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **delivery-decision-record** -- Optional but preferred handoff when `pc-delivery-completion` already decided the branch outcome and preserved the exact verification evidence used.
-- **test-report** -- Functional readiness and known quality gaps.
-- **security-report** -- Security findings and any accepted release risk.
-- **performance-report** -- Performance readiness and capacity-sensitive concerns when one exists.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -65,7 +62,7 @@ Produce a release plan that downstream deployment planning can execute. The plan
 
 ## Outputs
 
-- **release-plan** -- Scope, go/no-go status, owners, release window, communications, and gating expectations for deployment.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -74,17 +71,3 @@ Produce a release plan that downstream deployment planning can execute. The plan
 - [ ] Owners, approvers, and escalation path are named
 - [ ] Communication moments and success criteria are defined
 - [ ] The plan is concrete enough for deployment strategy to execute
-
-## Anti-Patterns
-
-1. **Deployment as release management** -- assuming the pipeline alone coordinates people, timing, and risk.
-2. **Implicit go/no-go** -- shipping because nobody objected rather than because readiness was decided.
-3. **No communication owner** -- technical readiness exists, but stakeholders do not know what is happening.
-4. **Carrying unresolved findings silently** -- letting accepted risk exist only in meeting memory.
-
-## Related Skills
-
-- [pc-testing-strategy](../../05-quality/pc-testing-strategy/SKILL.md) -- provides the core quality evidence
-- [pc-security-audit](../../05-quality/pc-security-audit/SKILL.md) -- surfaces release-blocking or accepted security findings
-- [pc-deployment-strategy](../pc-deployment-strategy/SKILL.md) -- executes the release with a concrete rollout plan
-- [pc-runbooks](../../07-operations/pc-runbooks/SKILL.md) -- receives the deployment and escalation procedures required during release

@@ -32,15 +32,13 @@ metadata:
 
 ## Context
 
-Task breakdown turns architecture and specs into actionable work items. It is the critical bridge between "what to build" and "how to build it incrementally." Good breakdown enables parallelism, reduces risk, and provides clear progress signals.
+Task breakdown turns architecture and specs into actionable work items.
 
-In a lifecycle-aware system, task breakdown must preserve upstream boundaries. Do not turn unresolved architecture questions into implementation commitments. Do not decompose a brownfield modernization as if it were a clean-slate rewrite.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **architecture-doc** -- Required. Provides component boundaries, seam decisions, and coexistence constraints.
-- **api-contract** -- Optional but strongly preferred when implementation work includes API-facing changes or compatibility surfaces.
-- **spec-doc** -- Optional amplifying input for spec-driven or waterfall paths.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -108,8 +106,8 @@ When the work is modernization or migration:
 
 ## Outputs
 
-- **task-list** -- produced by this skill
-- **dependency-graph** -- produced by this skill
+Produce only declared outputs at their documented quality boundary.
+
 ## Quality Gate
 
 - [ ] Every task is 1-3 days of effort
@@ -118,21 +116,6 @@ When the work is modernization or migration:
 - [ ] Each task has clear done criteria
 - [ ] Tasks are sequenced for maximum parallelism
 - [ ] Brownfield tasks preserve coexistence and reversibility constraints where applicable
-
-## Anti-Patterns
-
-1. **Horizontal slicing** -- "Build all the database layer, then all the API layer, then all the UI." Vertical slices (one feature end-to-end) deliver value faster.
-2. **Mega-tasks** -- "Implement authentication" is not a task. Break into: registration, login, password reset, session management, etc.
-3. **No dependencies mapped** -- Developers blocked waiting for other tasks creates idle time and frustration.
-4. **Over-decomposition** -- Tasks smaller than 2 hours create overhead. Find the sweet spot.
-5. **Planning as rewrite fantasy** -- Turning a coexistence architecture into a replacement-only task plan that ignores rollback and compatibility work.
-
-## Related Skills
-
-- [pc-system-design](../pc-system-design/SKILL.md) -- provides the architecture to decompose
-- [pc-estimation](../pc-estimation/SKILL.md) -- estimates effort for each task
-- [pc-sprint-planning](../pc-sprint-planning/SKILL.md) -- selects tasks for the sprint
-- [pc-tdd](../pc-tdd/SKILL.md) -- implements tasks test-first
 
 ## Distribution
 

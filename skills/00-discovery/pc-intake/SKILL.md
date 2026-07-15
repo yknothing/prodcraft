@@ -27,20 +27,17 @@ metadata:
 
 ## Context
 
-Intake is the control plane for all engineering work in Prodcraft. Every piece of work — feature, bug fix, refactoring, migration, or research — enters the lifecycle through intake. Its job is to classify the work type, route to the correct lifecycle phase and methodology, and produce the `intake-brief` that anchors every downstream skill. It is triage, not a design session.
+Intake is the control plane for all engineering work in Prodcraft.
+
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **user-request** -- the raw description of the work to be done
-- **existing-context** -- project documentation, recent commits, open issues (read silently before asking questions)
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Outputs
 
-- **intake-brief** -- structured routing record: request summary, `source_language`, `artifact_record_language`, `user_presentation_locale`, intake mode, work type, entry phase, `quality_target_context`, workflow metadata (`workflow_primary` when governance is explicit, `workflow_overlays` when an overlay is active), next skill, routing rationale, key risks
-- **phase-recommendation** -- the lifecycle phase where work should begin
-- **workflow-recommendation** -- the methodology best suited to the work
-- **route-decision** -- optional strict-mode approved route, workflow focus, obligations, revision, and operator-pinned digest
-- **execution-state** -- optional strict-mode initial routed state bound to that route decision
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -78,7 +75,7 @@ Use `micro` only when **all** of these hold:
 - no new dependency, contract, schema, or public behavior change
 - the route is unambiguous without asking any question
 
-Micro mode emits the brief as one compact block (all schema-required fields, one line each) **in the same message as the work**, then proceeds immediately: notify-and-proceed instead of a blocking approval round. Record `approver` as `auto (micro policy)`. Any user objection at any point converts the route into a normal `fast-track` or `full` re-route.
+Micro mode emits the brief as one compact block (all schema-required fields, one line each) **in the same message as the work**, then proceeds immediately: notify-and-proceed instead of a blocking approval round. Record `approver` as `auto (micro policy)` and record every `micro_eligibility` field (`single_revert`, `zero_questions`, `no_external_effect`, `no_security_impact`, and `no_irreversible_action`) as `true`. If any field cannot be asserted, the brief is not micro-eligible. Any user objection at any point converts the route into a normal `fast-track` or `full` re-route.
 
 Never use micro for anything irreversible or externally visible (deploy, publish, release, force-push, data deletion), for security-adjacent changes, or when any eligibility point is in doubt -- doubt means `fast-track`.
 
@@ -225,6 +222,7 @@ The `intake-brief` must capture:
 - `user_presentation_locale` (BCP-47-style locale) for the language used when presenting the intake result to the user
 - why intake was invoked, fast-tracked, or resumed
 - `intake_mode`
+- `micro_eligibility` when `intake_mode` is `micro`
 - `quality_target_context`, including `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs`
 - the key questions asked and the answers that changed routing
 - `workflow_primary` when the route depends on explicit primary governance, and `workflow_overlays` when overlays are active
@@ -232,18 +230,3 @@ The `intake-brief` must capture:
 - the next skill to invoke and the reason it is next
 
 This keeps routing decisions auditable without forcing downstream skills to reconstruct the conversation.
-
-## Anti-Patterns
-
-1. **Treating trivial work as "outside intake"** -- Even simple changes still need a lightweight `micro` or `fast-track` intake decision.
-2. **Over-questioning** -- Intake should take 1-5 minutes, not 30. If you need 5+ questions, you're in discovery territory -- recommend moving there.
-3. **Guessing the methodology** -- Don't assume agile because it's popular. Match methodology to constraints and context.
-4. **Rigid phase assignment** -- The lifecycle is a guide, not a prison. A bug fix might need architecture review if it reveals a design flaw.
-5. **Ignoring existing context** -- If the project has CLAUDE.md, existing specs, or established conventions, incorporate them.
-6. **Turning intake into a full design session** -- Intake should decide the route. If the work needs option exploration or concept shaping, route to problem-framing instead of expanding intake indefinitely.
-
-## Reference Material
-
-For methodology selection signals and worked intake examples, see [routing-signals-and-examples](references/routing-signals-and-examples.md). Keep the main skill focused on routing discipline; use the reference only when a path decision needs more comparison detail.
-
-For edge cases that commonly derail intake routing under pressure, see [Gotchas](references/gotchas.md).

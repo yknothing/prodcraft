@@ -29,33 +29,13 @@ metadata:
 
 ## Context
 
-Requirements engineering bridges discovery and design. It takes the "what users need" from discovery and turns it into "what the system must do" for architecture. Poor requirements are the #1 cause of project failure -- not because requirements are missing, but because they're ambiguous, contradictory, or incomplete.
+Requirements engineering bridges discovery and design.
 
-This skill may start from more than one upstream shape:
-
-- a discovery evidence set such as market research, personas, and feasibility findings
-- a routed entry-stack handoff such as `problem-frame` and `design-direction`
-- an `intake-brief` that records constraints, open questions, and the intended next step
-
-Do not force every route through the same upstream artifact bundle. Start from the approved upstream direction that actually exists, then preserve its constraints faithfully.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **design-direction** -- Preferred directional input when [pc-problem-framing](../../00-discovery/pc-problem-framing/SKILL.md) has already compared options and selected a path. Treat this as the strongest signal for what release or iteration direction should be converted into requirements.
-- **problem-frame** -- Clarifies the problem statement, non-goals, assumptions, open questions, and language-boundary context that requirements must preserve rather than silently resolve.
-- **intake-brief** -- Supplemental routing and scope context. Useful for preserving work type, urgency, methodology choice, handoff risks, and the upstream language boundary.
-- **market-research-report** -- Market context, competitor gaps, or opportunity framing when the work is still anchored in discovery evidence.
-- **user-persona-set** -- User goals, pain points, and behavior patterns that requirements should trace back to.
-- **feasibility-report** -- Go/no-go and risk context. Use especially when viability, operational constraints, or timeline limits shape what can become a requirement.
-
-Minimum expectation:
-
-- either an approved `design-direction`, or
-- a reviewed discovery evidence set that makes the problem and target user clear enough to write requirements without guessing
-
-If neither exists, stop and route back upstream instead of inventing requirements from vague intent.
-
-When upstream artifacts declare `source_language`, `artifact_record_language`, and `user_presentation_locale`, copy those fields forward instead of re-deciding them implicitly.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -109,7 +89,8 @@ If a metric, SLA, or retention bound is not directly supported by the source mat
 
 ## Outputs
 
-- **requirements-doc** -- produced by this skill
+Produce only declared outputs at their documented quality boundary.
+
 ## Quality Gate
 
 - [ ] All P0/P1 requirements documented with clear acceptance criteria
@@ -117,18 +98,3 @@ If a metric, SLA, or retention bound is not directly supported by the source mat
 - [ ] No unresolved contradictions between requirements
 - [ ] Stakeholders have reviewed and signed off
 - [ ] Requirements are traceable to user needs
-
-## Anti-Patterns
-
-1. **Solution masquerading as requirement** -- "Use Redis for caching" is a solution, not a requirement. The requirement is "cache frequently accessed data to achieve < 50ms read latency."
-2. **Vague requirements** -- "The system should be fast" is untestable. Quantify everything.
-3. **Invented precision** -- Turning "must remain responsive" into "p99 < 800ms" without a source or approved assumption creates false certainty. Mark unknown bounds as open questions.
-4. **Requirements by committee** -- Too many stakeholders without a single owner leads to bloat. One person owns the requirements doc.
-5. **Scope creep via "just one more"** -- Each new requirement has a cost. Evaluate against the backlog, don't just add.
-
-## Related Skills
-
-- [pc-problem-framing](../../00-discovery/pc-problem-framing/SKILL.md) -- provides approved direction, non-goals, and open questions when the route is known but the solution direction was fuzzy
-- [pc-spec-writing](../pc-spec-writing/SKILL.md) -- transforms requirements into detailed specification
-- [pc-domain-modeling](../pc-domain-modeling/SKILL.md) -- runs in parallel to model the domain
-- [pc-acceptance-criteria](../pc-acceptance-criteria/SKILL.md) -- creates testable criteria from requirements

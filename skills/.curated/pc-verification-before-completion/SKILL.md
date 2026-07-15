@@ -32,21 +32,13 @@ metadata:
 
 ## Context
 
-`pc-verification-before-completion` is the cross-cutting gate that protects Prodcraft from false completion claims. It exists because implementation success, review approval, or deployment confidence often drifts into assertion before evidence.
+`pc-verification-before-completion` is the cross-cutting gate that protects Prodcraft from false completion claims.
 
-This skill does not replace the phase-local quality work. It is the final honesty check before saying:
-
-- the bug is fixed
-- the phase is complete
-- the tests pass
-- the release is ready
-- the handoff is safe
-
-Fast-track work may shorten the verification surface, but it does not waive this gate. The Iron Law stays the same.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-No fixed artifact is required up front. Start from the current claim and the strongest available verification command, artifact, or checklist for that claim.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -151,7 +143,7 @@ Produce a `verification-record` that states:
 When the Prodcraft source repository (or a repository that vendored its validators) is available, validate the structured record instead of eyeballing it:
 
 ```bash
-python scripts/validate_artifact_instance.py <verification-record file>
+python scripts/validate_prodcraft.py --artifact-instance <verification-record file>
 ```
 
 This checks the schema contract plus the completion-claim bindings (evidence freshness against the recorded work state). Outside that context, check the record manually against the `verification-record.v1` fields and say so explicitly.
@@ -160,8 +152,7 @@ Only after this step may the workflow say the work is complete, fixed, passing, 
 
 ## Outputs
 
-- **verification-record** -- Fresh evidence for the specific completion claim, including commands run, artifact checks, and any remaining gaps.
-- **execution-state** -- Optional strict-mode completion attempt and content-bound verification envelope.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -171,25 +162,6 @@ Only after this step may the workflow say the work is complete, fixed, passing, 
 - [ ] Failures, skips, or unknowns are stated plainly
 - [ ] The final wording matches the evidence instead of the hoped-for result
 - [ ] When strict mode is active, the canonical state returns `terminal-authorized` against both operator pins and the live worktree
-
-## Anti-Patterns
-
-1. **Optimistic paraphrase** -- changing "not fully verified" into "looks good."
-2. **Proxy verification** -- treating lint, typecheck, or one passing test as proof that the whole claim is true.
-3. **Stale green** -- relying on an earlier run after code or context changed.
-4. **Fast-track loophole hunting** -- assuming urgency waives evidence.
-5. **Agent trust fall** -- repeating another agent's success claim without checking the output or artifacts yourself.
-
-## Reference Material
-
-For common completion-claim failure modes and recovery patterns, see [Gotchas](references/gotchas.md).
-
-## Related Skills
-
-- [pc-systematic-debugging](../pc-systematic-debugging/SKILL.md) -- verifies that a claimed fix is backed by a root-cause-first debugging result
-- [pc-code-review](../pc-code-review/SKILL.md) -- provides review evidence that may feed the final completion claim
-- [pc-testing-strategy](../pc-testing-strategy/SKILL.md) -- supplies test reports for broader validation
-- [pc-incident-response](../pc-incident-response/SKILL.md) -- uses this gate before declaring a live issue resolved
 
 ## Distribution
 

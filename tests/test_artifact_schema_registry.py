@@ -20,6 +20,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from scripts.validate_prodcraft import validate_verification_record_instance_contract  # noqa: E402
+from tools.execution_validation import validate_artifact_instance  # noqa: E402
 
 REGISTRY_PATH = REPO_ROOT / "schemas" / "artifacts" / "registry.yml"
 
@@ -67,6 +68,61 @@ class ArtifactSchemaRegistryTests(unittest.TestCase):
             "remaining_unverified": [],
             "claim_may_be_made": True,
         }
+
+    def valid_intake_brief(self) -> dict:
+        return {
+            "artifact": "intake-brief",
+            "schema_version": "intake-brief.v1",
+            "status": "approved",
+            "request_summary": "Make an internal documentation correction.",
+            "source_language": "en",
+            "artifact_record_language": "en",
+            "user_presentation_locale": "en",
+            "intake_mode": "micro",
+            "work_type": "Documentation",
+            "entry_phase": "cross-cutting",
+            "quality_target_context": {
+                "runtime_context": "agent_internal_skill",
+                "exposure_profile": "no_network_listener",
+                "production_target": "Internal skill documentation",
+                "non_targets": [],
+                "evidence_refs": [],
+            },
+            "scope_assessment": "small",
+            "recommended_next_skill": "pc-documentation",
+            "routing_rationale": "Documentation-only micro route.",
+            "key_risks": [],
+            "questions_asked": [],
+            "routing_changed_by_answers": False,
+            "approver": "auto (micro policy)",
+            "micro_eligibility": {
+                "single_revert": True,
+                "zero_questions": True,
+                "no_external_effect": True,
+                "no_security_impact": True,
+                "no_irreversible_action": True,
+            },
+            "proposed_path": ["pc-documentation"],
+        }
+
+    def test_intake_artifact_instance_rejects_unknown_route_skills(self):
+        for field_name, invalid_value in (
+            ("recommended_next_skill", "pc-does-not-exist"),
+            ("proposed_path", ["pc-documentation", "pc-does-not-exist"]),
+        ):
+            with self.subTest(field=field_name), tempfile.TemporaryDirectory() as tmpdir:
+                payload = self.valid_intake_brief()
+                payload[field_name] = invalid_value
+                path = Path(tmpdir) / "intake-brief.json"
+                path.write_text(json.dumps(payload), encoding="utf-8")
+                errors: list[str] = []
+
+                validate_artifact_instance(path, errors)
+
+                self.assertTrue(
+                    any("unknown manifest skill `pc-does-not-exist`" in error for error in errors),
+                    errors,
+                )
 
     def test_registry_declares_core_artifacts(self):
         registry = yaml.safe_load(REGISTRY_PATH.read_text(encoding="utf-8"))

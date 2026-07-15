@@ -27,20 +27,13 @@ metadata:
 
 ## Context
 
-Problem framing sits immediately after [pc-intake](../pc-intake/SKILL.md) when routing is clear but the work is still underspecified. It absorbs the strongest part of brainstorming-style collaboration without collapsing the entry gate into a full design workshop.
+Problem framing sits immediately after [pc-intake](../pc-intake/SKILL.md) when routing is clear but the work is still underspecified.
 
-Use it to answer:
-- What problem are we actually solving?
-- What boundaries must stay fixed?
-- What are the viable directions?
-- Which direction should the team carry into specification, research, or architecture?
-
-Do not use it when the route is already well-scoped enough for downstream work, or when the user is already in implementation, debugging, or review.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **intake-brief** -- Must identify the work type, entry phase, recommended workflow, key risks, `quality_target_context`, and the next likely skill.
-  Preserve the intake language boundary fields instead of silently guessing them away: `source_language`, `artifact_record_language`, and `user_presentation_locale`. Preserve `quality_target_context` so downstream quality and security work does not reconstruct the runtime or exposure boundary from guesses.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -117,9 +110,7 @@ After approval, hand off the framing artifacts to the next skill named in the `d
 
 ## Outputs
 
-- **problem-frame** -- The clarified problem, constraints, and non-goals
-- **options-brief** -- Small set of viable directions with trade-offs
-- **design-direction** -- Approved recommendation plus next lifecycle destination
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -128,18 +119,3 @@ After approval, hand off the framing artifacts to the next skill named in the `d
 - [ ] `design-direction` recommends one direction and names the next skill to invoke
 - [ ] The total question load stayed within the default budget or justified why it exceeded it
 - [ ] The user approved the framing output before handoff
-
-## Anti-Patterns
-
-1. **Repeating intake** -- Intake already handled classification and routing. Framing should deepen the decision, not restart the entry gate.
-2. **Premature architecture** -- Stay at the level of direction and trade-off. Leave system structure to [pc-system-design](../../02-architecture/pc-system-design/SKILL.md).
-3. **Infinite discovery interviews** -- Use the minimum questions needed to make a decision. If more information is required, route to research skills.
-4. **Single-option framing** -- If only one path is shown, there is no real trade-off analysis.
-
-## Related Skills
-
-- [pc-intake](../pc-intake/SKILL.md) -- provides the approved route and initial constraints
-- [pc-market-analysis](../pc-market-analysis/SKILL.md) -- use when market uncertainty remains high
-- [pc-user-research](../pc-user-research/SKILL.md) -- use when user behavior or pain points are still unclear
-- [pc-feasibility-study](../pc-feasibility-study/SKILL.md) -- use when go/no-go needs deeper validation
-- [pc-requirements-engineering](../../01-specification/pc-requirements-engineering/SKILL.md) -- consumes the approved design direction

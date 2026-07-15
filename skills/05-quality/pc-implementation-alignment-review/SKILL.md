@@ -26,19 +26,13 @@ metadata:
 
 ## Context
 
-This skill checks whether the implementation actually satisfies the user's intent and approved scope. It exists because green tests, a plausible summary, or a working happy path can still hide a mismatch between requested outcome, implemented behavior, documentation, and delivery claims.
+This skill checks whether the implementation actually satisfies the user's intent and approved scope.
 
-Use it before broad code review when the main risk is not style or local correctness, but whether the delivered artifact is the right artifact.
+See [context notes](references/context.md).
 
 ## Inputs
 
-- **intake-brief**: The original intent, target context, non-targets, and evidence expectations.
-- **task-list**: The approved implementation slice and any priority ordering.
-- **acceptance-criteria-set**: The explicit pass/fail contract, including negative criteria.
-- **source-code**: The diff or implementation surface.
-- **test-suite**: Tests, fixtures, snapshots, smoke logs, and validation output.
-
-Also read requirements docs, specs, architecture notes, runbooks, or quality snapshots when they are referenced by the task.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -68,14 +62,7 @@ Prioritize:
 
 ## Outputs
 
-Produce a `review-report` with:
-
-- intent contract summary
-- coverage matrix
-- implementation status by priority
-- claim/evidence mismatches
-- unresolved scope or consistency questions
-- recommended next skill or repair path
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 

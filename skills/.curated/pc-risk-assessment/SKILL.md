@@ -32,15 +32,13 @@ metadata:
 
 ## Context
 
-Risk assessment identifies what could derail the plan and what the team will do about it. In Prodcraft, this is not generic project management paperwork. It is the technical and delivery-focused pass that protects sequencing, scope, and release confidence.
+Risk assessment identifies what could derail the plan and what the team will do about it.
 
-This skill matters most when work crosses service boundaries, introduces migrations, depends on outside teams, or lands in brownfield systems where rollback and coexistence are real constraints.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **task-list** -- The work items being considered for execution.
-- **dependency-graph** -- The sequencing map that reveals where blockage or critical path fragility exists.
-- **architecture-doc** -- The system context needed to identify structural and operational risk.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -82,7 +80,7 @@ Make the register concrete enough that estimation, sprint planning, and later re
 
 ## Outputs
 
-- **risk-register** -- A prioritized set of material risks with mitigations, owners, and planning consequences.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -91,20 +89,6 @@ Make the register concrete enough that estimation, sprint planning, and later re
 - [ ] The register changes sequencing, estimates, or scope where needed
 - [ ] Brownfield, migration, or rollback risks are explicit when relevant
 - [ ] Accepted risks are documented rather than implied
-
-## Anti-Patterns
-
-1. **Everything is a risk** -- noisy registers bury the few issues that matter.
-2. **Risk without action** -- documenting threats but not changing the plan.
-3. **Optimistic sequencing** -- keeping the same roadmap after major risks are known.
-4. **Treating rollback as delivery-only** -- operational recovery constraints often have to change planning.
-
-## Related Skills
-
-- [pc-task-breakdown](../pc-task-breakdown/SKILL.md) -- supplies the work and dependency map to assess
-- [pc-estimation](../pc-estimation/SKILL.md) -- uses the risk register to calibrate confidence
-- [pc-monitoring-observability](../pc-monitoring-observability/SKILL.md) -- consumes operational risks later in the lifecycle
-- [pc-incident-response](../pc-incident-response/SKILL.md) -- provides evidence when past incidents should alter future risk posture
 
 ## Distribution
 

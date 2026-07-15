@@ -29,25 +29,13 @@ metadata:
 
 ## Context
 
-This skill covers **cross-cutting instrumentation design**, not just runtime dashboards. Use it when the system needs durable telemetry contracts for:
+This skill covers **cross-cutting instrumentation design**, not just runtime dashboards.
 
-- application events and structured logs
-- metrics and traces at important boundaries
-- AI execution telemetry such as skill invocation, runner execution, model usage, and token accounting
-- workflow-level observability that must survive handoff across phases
-
-This skill is intentionally distinct from [pc-monitoring-observability](../pc-monitoring-observability/SKILL.md):
-
-- `pc-observability` defines **what signals should exist and how they are structured**
-- `pc-monitoring-observability` turns important production signals into **dashboards, alerts, and responder workflows**
-
-The repository's current execution contract uses append-only `execution-observability.jsonl` artifacts plus periodic summaries from `scripts/summarize_execution_observability.py`. That keeps the runtime loop concrete without committing to a heavier backend too early.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- Current code or workflow entry points where behavior, failure, or cost must be visible
-- Existing execution boundaries such as CLI runners, background jobs, request handlers, or workflow dispatchers
-- Any external platform constraints on usage accounting or token reporting
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -136,8 +124,7 @@ Do not stop at event emission. Summarize recurring failures, missing usage data,
 
 ## Outputs
 
-- **observability-spec** -- The written boundary definition: what is instrumented, why it matters, and who consumes it
-- **execution-event-schema** -- Versioned event definitions for execution telemetry, including skill invocation and model usage fields
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -150,22 +137,6 @@ Do not stop at event emission. Summarize recurring failures, missing usage data,
 - [ ] Runtime summaries can compare baseline and with-skill exact token usage before any token-saving claim is accepted
 - [ ] Ownership and downstream consumption path are documented
 - [ ] Runtime summaries can identify recurring failures, missing usage, and risky actions
-
-## Anti-Patterns
-
-1. **Metric soup** -- Capturing everything because it is easy, without clear questions the telemetry answers.
-2. **Inline logging everywhere** -- Repeating custom logging at each call site instead of instrumenting shared boundaries.
-3. **Conflating instrumentation with dashboards** -- Hard-coding alerting or UI assumptions into the event model.
-4. **Invented usage data** -- Estimating token counts and then aggregating them with exact provider or runner usage.
-5. **No schema versioning** -- Breaking downstream consumers every time fields evolve.
-6. **Optimization before measurement** -- Shortening or compressing skill instructions before proving the change preserves benchmark quality and actually reduces loaded context.
-
-## Related Skills
-
-- [pc-monitoring-observability](../pc-monitoring-observability/SKILL.md) -- turns important runtime signals into dashboards, alerts, and responder workflows
-- [pc-documentation](../pc-documentation/SKILL.md) -- records ADRs, schemas, and operational guidance for the observability layer
-- [pc-ci-cd](../pc-ci-cd/SKILL.md) -- supplies release and rollout boundaries that should remain visible in telemetry
-- `docs/observability/runtime-feedback-loop.md` -- explains how execution JSONL evidence feeds back into the skills system
 
 ## Distribution
 

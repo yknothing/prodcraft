@@ -26,15 +26,13 @@ metadata:
 
 ## Context
 
-CI/CD automates the path to deployment; deployment strategy decides how much risk to take on each step of that path. It selects the rollout pattern that matches the change's blast radius, reversibility, and operational visibility.
+CI/CD automates the path to deployment; deployment strategy decides how much risk to take on each step of that path.
 
-Use this skill when "deploy" is no longer a binary action. The questions are: canary or blue-green, full rollout or staged activation, what to verify before expanding traffic, and what exact action restores service if the release misbehaves.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **ci-cd-pipeline** -- The automated delivery path and available gates.
-- **build-artifacts** -- The exact release package that will be deployed.
-- **release-plan** -- The intended scope, release window, and stakeholder expectations when one exists.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
 
 ## Process
 
@@ -71,7 +69,7 @@ Document the exact release sequence, rollback trigger conditions, rollback comma
 
 ## Outputs
 
-- **deployment-runbook** -- The chosen rollout pattern, verification sequence, rollback path, communications, and ownership for the release.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -80,17 +78,3 @@ Document the exact release sequence, rollback trigger conditions, rollback comma
 - [ ] Rollback path is concrete, fast, and tested or rehearsed
 - [ ] Release ownership and communication path are documented
 - [ ] The runbook is specific to this release, not a generic template
-
-## Anti-Patterns
-
-1. **Default full rollout** -- treating every release as equally safe.
-2. **Monitoring after the fact** -- deploying first and deciding what to watch later.
-3. **Rollback in theory only** -- naming rollback without documenting or rehearsing the actual path.
-4. **Pipeline equals strategy** -- assuming automation alone decides rollout risk.
-
-## Related Skills
-
-- [pc-ci-cd](../pc-ci-cd/SKILL.md) -- provides the automated delivery path
-- [pc-monitoring-observability](../../07-operations/pc-monitoring-observability/SKILL.md) -- supplies the signals used for rollout verification
-- [pc-runbooks](../../07-operations/pc-runbooks/SKILL.md) -- operationalizes the deployment procedure after release
-- [pc-release-management](../pc-release-management/SKILL.md) -- coordinates the broader human release process

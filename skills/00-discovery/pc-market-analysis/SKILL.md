@@ -21,11 +21,14 @@ metadata:
 
 ## Context
 
-Market analysis is the first analytical step after intake routes work to the discovery phase. It answers: "Is there a market for this?" before investing in specification or architecture. Skip this for internal tools or when the market is already well-understood.
+Market analysis is the first analytical step after intake routes work to the discovery phase.
+
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-None required. This skill can begin from the project context alone.
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
+
 ## Process
 
 ### Step 1: Define Market Scope
@@ -59,7 +62,7 @@ Rank opportunities by: market size, competition intensity, team capability fit, 
 
 ## Outputs
 
-- **market-research-report**: Competitor map, gap analysis, market size estimates, ranked opportunities with rationale.
+Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
@@ -67,16 +70,3 @@ Rank opportunities by: market size, competition intensity, team capability fit, 
 - [ ] Market gaps identified with evidence (user reviews, forum posts, survey data)
 - [ ] TAM/SAM/SOM estimated with methodology documented
 - [ ] Opportunities ranked with clear criteria
-
-## Anti-Patterns
-
-1. **Analysis paralysis** -- Spending weeks on research when a week suffices. Set a timebox.
-2. **Confirmation bias** -- Only looking for evidence that supports the idea. Actively seek disconfirming evidence.
-3. **Ignoring indirect competitors** -- Users solve problems with spreadsheets, email, or manual processes. These are competitors too.
-4. **Vanity TAM** -- "The global software market is $500B." Narrow to the specific segment you can actually serve.
-
-## Related Skills
-
-- [pc-user-research](../pc-user-research/SKILL.md) -- runs in parallel to validate personas
-- [pc-feasibility-study](../pc-feasibility-study/SKILL.md) -- consumes market-research-report
-- [pc-requirements-engineering](../../01-specification/pc-requirements-engineering/SKILL.md) -- consumes market-research-report

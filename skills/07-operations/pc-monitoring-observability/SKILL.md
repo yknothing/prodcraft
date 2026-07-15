@@ -29,15 +29,14 @@ metadata:
 
 ## Context
 
-Monitoring and observability translate system behavior into signals responders can trust. The goal is not to collect every metric. The goal is to make risky boundaries, user impact, and recovery state visible fast enough to guide action.
+Monitoring and observability translate system behavior into signals responders can trust.
 
-In a lifecycle-aware system, observability should preserve release intent. For brownfield work, make sure dashboards and alerts distinguish safe supported behavior from unsupported or coexistence-sensitive paths.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
 
-- **architecture-doc** -- produced by the preceding skill in the lifecycle
-- **ci-cd-pipeline** -- produced by the preceding skill in the lifecycle
-- **api-contract** -- produced by the preceding skill in the lifecycle
+[I/O contract notes](references/io-contract.md) define required inputs and authority.
+
 ## Process
 
 ### Step 1: Map User-Critical and Boundary-Critical Signals
@@ -88,9 +87,8 @@ Before relying on the setup:
 
 ## Outputs
 
-- **monitoring-config** -- produced by this skill
-- **alert-rules** -- produced by this skill
-- **service-dashboard** -- produced by this skill
+Produce only declared outputs at their documented quality boundary.
+
 ## Quality Gate
 
 - [ ] User-facing and boundary-critical flows are explicitly instrumented
@@ -98,18 +96,3 @@ Before relying on the setup:
 - [ ] Release markers and rollback or fallback health are visible
 - [ ] Async seams or coexistence boundaries are observable where applicable
 - [ ] Responder dashboard supports triage without requiring ad hoc queries first
-
-## Anti-Patterns
-
-1. **Metric soup** -- Thousands of charts, no operational clarity.
-2. **CPU-first monitoring** -- Infra metrics without route or contract visibility.
-3. **No release markers** -- Incidents take longer because nobody can correlate behavior to deploys.
-4. **Alerts without action** -- Noise trains responders to ignore the system.
-5. **No boundary-specific telemetry** -- Supported and unsupported behavior are merged until the incident is already expensive.
-
-## Related Skills
-
-- [pc-ci-cd](../../06-delivery/pc-ci-cd/SKILL.md) -- provides release and rollback context
-- [pc-incident-response](../pc-incident-response/SKILL.md) -- consumes observability signals during incidents
-- [pc-runbooks](../pc-runbooks/SKILL.md) -- attaches response steps to alerts
-- `pc-capacity-planning` (planned) -- uses operational signals for projection

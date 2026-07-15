@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -21,11 +22,21 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from tools.execution_observability import ExecutionTrace, infer_skill_identity, measure_skill_context, new_span_id
-from tools.model_usage_normalization import COPILOT_FOOTER_RE, normalize_copilot_footer_usage, normalize_runner_usage
+from tools.execution_observability import (  # noqa: E402
+    ExecutionTrace,
+    infer_skill_identity,
+    measure_skill_context,
+    new_span_id,
+)
+from tools.model_usage_normalization import (  # noqa: E402
+    COPILOT_FOOTER_RE,
+    normalize_copilot_footer_usage,
+    normalize_runner_usage,
+)
 
 
-SUPPORTED_RUNNERS = {"claude", "copilot", "gemini"}
+SUPPORTED_RUNNERS = {"claude", "codex", "copilot", "gemini"}
+CODEX_HOME_FORBIDDEN_PATH_FRAGMENT = "systematic-debugging"
 GEMINI_PREAMBLE_LINE_PREFIXES = (
     "Loaded cached credentials.",
     "Loading extension:",
@@ -77,7 +88,70 @@ def parse_runner_usage(runner: str, output: str) -> dict[str, int | str] | None:
     return normalize_runner_usage(runner, output)
 
 
-def build_prompt_command(runner: str, prompt: str, model: str | None) -> list[str]:
+def sha256_bytes(content: bytes) -> str:
+    return hashlib.sha256(content).hexdigest()
+
+
+def sha256_text(content: str) -> str:
+    return sha256_bytes(content.encode("utf-8"))
+
+
+def sha256_file(path: Path) -> str:
+    return sha256_bytes(path.read_bytes())
+
+
+def codex_home_isolation_metadata() -> dict[str, object]:
+    return {
+        "mode": "per-case-temporary-auth-only",
+        "auth_exposure": "auth.json-symlink",
+        "source_user_config_loaded": False,
+        "forbidden_path_fragment": CODEX_HOME_FORBIDDEN_PATH_FRAGMENT,
+        "preflight_forbidden_path_matches": 0,
+        "postflight_forbidden_path_matches": 0,
+        "cleanup": "automatic-after-each-case",
+    }
+
+
+def assert_codex_home_has_no_forbidden_paths(home: Path, stage: str) -> None:
+    forbidden_matches = [
+        path
+        for path in home.rglob("*")
+        if CODEX_HOME_FORBIDDEN_PATH_FRAGMENT in str(path)
+    ]
+    if forbidden_matches:
+        relative_matches = [str(path.relative_to(home)) for path in forbidden_matches]
+        raise OSError(
+            f"{stage} isolated codex home contains forbidden "
+            f"{CODEX_HOME_FORBIDDEN_PATH_FRAGMENT} paths: {relative_matches}"
+        )
+
+
+def create_isolated_codex_home(cwd: Path) -> Path:
+    source_home = Path(os.environ.get("CODEX_HOME", Path.home() / ".codex")).expanduser()
+    source_auth = source_home / "auth.json"
+    if not source_auth.is_file():
+        raise OSError("codex auth.json is unavailable for isolated evaluator home")
+
+    isolated_home = Path(
+        tempfile.mkdtemp(prefix=".codex-home-auth-only-", dir=cwd.parent)
+    )
+    try:
+        (isolated_home / "auth.json").symlink_to(source_auth.resolve())
+        assert_codex_home_has_no_forbidden_paths(isolated_home, "preflight")
+    except Exception:
+        shutil.rmtree(isolated_home, ignore_errors=True)
+        raise
+    return isolated_home
+
+
+def build_prompt_command(
+    runner: str,
+    prompt: str,
+    model: str | None,
+    *,
+    cwd: Path | None = None,
+    response_file: Path | None = None,
+) -> list[str]:
     if runner == "gemini":
         cmd = [
             "gemini",
@@ -104,6 +178,24 @@ def build_prompt_command(runner: str, prompt: str, model: str | None) -> list[st
             "--tools",
             "Read",
         ]
+    elif runner == "codex":
+        if cwd is None or response_file is None:
+            raise ValueError("codex runner requires cwd and response_file")
+        cmd = [
+            "codex",
+            "exec",
+            "--ignore-user-config",
+            "--ephemeral",
+            "--sandbox",
+            "read-only",
+            "--skip-git-repo-check",
+            "-C",
+            str(cwd),
+        ]
+        if model:
+            cmd.extend(["-m", model])
+        cmd.extend(["-o", str(response_file), "-"])
+        return cmd
     elif runner == "copilot":
         cmd = [
             "copilot",
@@ -234,27 +326,83 @@ def run_prompt_with_usage(
     cwd: Path,
     timeout_seconds: int,
 ) -> tuple[str, dict | None]:
-    cmd = build_prompt_command(runner, prompt, model)
+    if runner != "codex":
+        return _run_prompt_with_usage_in_environment(
+            prompt,
+            runner,
+            model,
+            cwd,
+            timeout_seconds,
+            isolated_codex_home=None,
+        )
+
+    isolated_codex_home = create_isolated_codex_home(cwd)
+    try:
+        result = _run_prompt_with_usage_in_environment(
+            prompt,
+            runner,
+            model,
+            cwd,
+            timeout_seconds,
+            isolated_codex_home=isolated_codex_home,
+        )
+        assert_codex_home_has_no_forbidden_paths(isolated_codex_home, "postflight")
+        return result
+    finally:
+        shutil.rmtree(isolated_codex_home, ignore_errors=True)
+
+
+def _run_prompt_with_usage_in_environment(
+    prompt: str,
+    runner: str,
+    model: str | None,
+    cwd: Path,
+    timeout_seconds: int,
+    *,
+    isolated_codex_home: Path | None,
+) -> tuple[str, dict | None]:
+    response_file = cwd / ".codex-final-response.txt" if runner == "codex" else None
+    cmd = build_prompt_command(
+        runner,
+        prompt,
+        model,
+        cwd=cwd,
+        response_file=response_file,
+    )
     env = os.environ.copy()
     if runner == "claude":
         env.pop("CLAUDECODE", None)
+    if isolated_codex_home is not None:
+        env["CODEX_HOME"] = str(isolated_codex_home)
 
     max_attempts = 4
     base_delay = 5.0
     
     for attempt in range(1, max_attempts + 1):
+        if response_file is not None:
+            response_file.unlink(missing_ok=True)
         process = subprocess.Popen(
             cmd,
             cwd=cwd,
             text=True,
+            stdin=subprocess.PIPE if runner == "codex" else None,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             start_new_session=True,
             env=env,
         )
         try:
-            stdout, stderr = process.communicate(timeout=timeout_seconds)
+            if runner == "codex":
+                stdout, stderr = process.communicate(input=prompt, timeout=timeout_seconds)
+            else:
+                stdout, stderr = process.communicate(timeout=timeout_seconds)
             if process.returncode == 0:
+                if response_file is not None:
+                    response = response_file.read_text(encoding="utf-8")
+                    if not response.strip():
+                        raise OSError("codex runner produced an empty final response file")
+                    response_file.unlink(missing_ok=True)
+                    return response.strip(), parse_runner_usage(runner, stdout)
                 return sanitize_runner_output(runner, stdout), parse_runner_usage(runner, stdout)
                 
             combined_output = stdout + "\n" + stderr
@@ -332,10 +480,12 @@ def run_case(
     observability_output: Path,
     branch_label: str,
     scenario_id: str,
+    run_number: int = 1,
+    output_root: Path | None = None,
     skill_name: str | None = None,
     phase: str | None = None,
     skill_context: dict[str, object] | None = None,
-) -> None:
+) -> dict[str, object]:
     trace = ExecutionTrace(
         output_path=observability_output,
         runner=runner,
@@ -344,6 +494,11 @@ def run_case(
         phase=phase,
         workflow=None,
     )
+    case_metadata = {
+        "branch": branch_label,
+        "scenario_id": scenario_id,
+        "run_number": run_number,
+    }
     skill_span_id = None
     if skill_name:
         skill_span_id = new_span_id()
@@ -351,7 +506,7 @@ def run_case(
             event_type="skill_invocation.started",
             status="started",
             span_id=skill_span_id,
-            metadata={"branch": branch_label, "scenario_id": scenario_id},
+            metadata=case_metadata,
         )
         if skill_context:
             skill_file_chars = skill_context.get("skill_file_char_count")
@@ -386,8 +541,7 @@ def run_case(
                 usage_source="unavailable",
                 usage_precision="unavailable",
                 metadata={
-                    "branch": branch_label,
-                    "scenario_id": scenario_id,
+                    **case_metadata,
                     "load_stage": "skill_body",
                     "loaded_file_count": 1,
                     "loaded_context_char_count": loaded_chars,
@@ -415,7 +569,7 @@ def run_case(
         status="started",
         span_id=runner_span_id,
         parent_span_id=skill_span_id,
-        metadata={"branch": branch_label, "scenario_id": scenario_id, "timeout_ms": timeout_seconds * 1000},
+        metadata={**case_metadata, "timeout_ms": timeout_seconds * 1000},
     )
     start_time = time.monotonic()
     try:
@@ -447,8 +601,7 @@ def run_case(
                 usage_source=str(usage["usage_source"]),
                 usage_precision=str(usage.get("usage_precision") or "unknown"),
                 metadata={
-                    "branch": branch_label,
-                    "scenario_id": scenario_id,
+                    **case_metadata,
                     "usage_note": "runner-reported aggregate; precision is recorded separately and estimated usage is excluded from exact summaries",
                 },
             )
@@ -462,8 +615,7 @@ def run_case(
                 usage_source="unavailable",
                 usage_precision="unavailable",
                 metadata={
-                    "branch": branch_label,
-                    "scenario_id": scenario_id,
+                    **case_metadata,
                     "reason": "runner output did not expose token usage",
                 },
             )
@@ -474,7 +626,7 @@ def run_case(
             parent_span_id=skill_span_id,
             duration_ms=duration_ms,
             artifact_path=display_path(response_path),
-            metadata={"branch": branch_label, "scenario_id": scenario_id},
+            metadata=case_metadata,
         )
         if skill_span_id:
             trace.emit(
@@ -483,8 +635,21 @@ def run_case(
                 span_id=skill_span_id,
                 duration_ms=duration_ms,
                 artifact_path=display_path(response_path),
-                metadata={"branch": branch_label, "scenario_id": scenario_id},
+                metadata=case_metadata,
             )
+        artifact_path = (
+            str(response_path.relative_to(output_root))
+            if output_root is not None
+            else display_path(response_path)
+        )
+        return {
+            **case_metadata,
+            "arm": branch_label,
+            "status": "completed",
+            "prompt_sha256": sha256_text(prompt),
+            "artifact_path": artifact_path,
+            "artifact_sha256": sha256_file(response_path),
+        }
     except subprocess.TimeoutExpired:
         error_path = result_dir / "error.txt"
         write_text(error_path, f"Timed out after {timeout_seconds}s")
@@ -498,8 +663,7 @@ def run_case(
             usage_source="unavailable",
             usage_precision="unavailable",
             metadata={
-                "branch": branch_label,
-                "scenario_id": scenario_id,
+                **case_metadata,
                 "reason": "runner timed out before usage could be recorded",
             },
         )
@@ -511,8 +675,7 @@ def run_case(
             duration_ms=duration_ms,
             artifact_path=display_path(error_path),
             metadata={
-                "branch": branch_label,
-                "scenario_id": scenario_id,
+                **case_metadata,
                 "error_type": "timeout",
                 "timeout_ms": timeout_seconds * 1000,
             },
@@ -524,8 +687,22 @@ def run_case(
                 span_id=skill_span_id,
                 duration_ms=duration_ms,
                 artifact_path=display_path(error_path),
-                metadata={"branch": branch_label, "scenario_id": scenario_id, "error_type": "timeout"},
+                metadata={**case_metadata, "error_type": "timeout"},
             )
+        artifact_path = (
+            str(error_path.relative_to(output_root))
+            if output_root is not None
+            else display_path(error_path)
+        )
+        return {
+            **case_metadata,
+            "arm": branch_label,
+            "status": "failed",
+            "error_type": "timeout",
+            "prompt_sha256": sha256_text(prompt),
+            "artifact_path": artifact_path,
+            "artifact_sha256": sha256_file(error_path),
+        }
     except subprocess.CalledProcessError as exc:
         error_path = result_dir / "error.txt"
         write_text(
@@ -542,8 +719,7 @@ def run_case(
             usage_source="unavailable",
             usage_precision="unavailable",
             metadata={
-                "branch": branch_label,
-                "scenario_id": scenario_id,
+                **case_metadata,
                 "reason": "runner exited with non-zero status before usage could be recorded",
             },
         )
@@ -555,8 +731,7 @@ def run_case(
             duration_ms=duration_ms,
             artifact_path=display_path(error_path),
             metadata={
-                "branch": branch_label,
-                "scenario_id": scenario_id,
+                **case_metadata,
                 "error_type": "called_process_error",
                 "returncode": exc.returncode,
             },
@@ -569,12 +744,72 @@ def run_case(
                 duration_ms=duration_ms,
                 artifact_path=display_path(error_path),
                 metadata={
-                    "branch": branch_label,
-                    "scenario_id": scenario_id,
+                    **case_metadata,
                     "error_type": "called_process_error",
                     "returncode": exc.returncode,
                 },
             )
+        artifact_path = (
+            str(error_path.relative_to(output_root))
+            if output_root is not None
+            else display_path(error_path)
+        )
+        return {
+            **case_metadata,
+            "arm": branch_label,
+            "status": "failed",
+            "error_type": "called_process_error",
+            "returncode": exc.returncode,
+            "prompt_sha256": sha256_text(prompt),
+            "artifact_path": artifact_path,
+            "artifact_sha256": sha256_file(error_path),
+        }
+    except OSError as exc:
+        error_path = result_dir / "error.txt"
+        write_text(error_path, f"{type(exc).__name__}: {exc}")
+        duration_ms = int((time.monotonic() - start_time) * 1000)
+        trace.emit(
+            event_type="model_usage.unavailable",
+            status="unavailable",
+            span_id=new_span_id(),
+            parent_span_id=runner_span_id,
+            artifact_path=display_path(error_path),
+            usage_source="unavailable",
+            usage_precision="unavailable",
+            metadata={**case_metadata, "reason": "runner could not be started"},
+        )
+        trace.emit(
+            event_type="runner_execution.failed",
+            status="failed",
+            span_id=runner_span_id,
+            parent_span_id=skill_span_id,
+            duration_ms=duration_ms,
+            artifact_path=display_path(error_path),
+            metadata={**case_metadata, "error_type": "os_error"},
+        )
+        if skill_span_id:
+            trace.emit(
+                event_type="skill_invocation.failed",
+                status="failed",
+                span_id=skill_span_id,
+                duration_ms=duration_ms,
+                artifact_path=display_path(error_path),
+                metadata={**case_metadata, "error_type": "os_error"},
+            )
+        artifact_path = (
+            str(error_path.relative_to(output_root))
+            if output_root is not None
+            else display_path(error_path)
+        )
+        return {
+            **case_metadata,
+            "arm": branch_label,
+            "status": "failed",
+            "error_type": "os_error",
+            "prompt_sha256": sha256_text(prompt),
+            "artifact_path": artifact_path,
+            "artifact_sha256": sha256_file(error_path),
+        }
 
 
 def copy_context_files(
@@ -608,7 +843,16 @@ def main() -> int:
     parser.add_argument("--model", default=None, help="Optional model override for the selected runner.")
     parser.add_argument("--timeout-seconds", type=int, default=120, help="Per-prompt timeout for the selected CLI runner.")
     parser.add_argument("--scenario-id", default=None, help="Optional single scenario id to run.")
+    parser.add_argument(
+        "--runs-per-scenario",
+        type=int,
+        default=1,
+        help="Independent runs to execute for each scenario and arm. Defaults to 1.",
+    )
     args = parser.parse_args()
+
+    if args.runs_per_scenario < 1:
+        raise SystemExit("--runs-per-scenario must be at least 1")
 
     benchmark_path = Path(args.benchmark).resolve()
     skill_path = Path(args.skill_path).resolve()
@@ -623,6 +867,13 @@ def main() -> int:
         if not scenarios:
             raise SystemExit(f"No scenario matched --scenario-id={args.scenario_id}")
     timestamp = datetime.now().isoformat(timespec="seconds")
+    skill_name, phase = infer_skill_identity(skill_path)
+    skill_context = measure_skill_context(skill_path)
+    benchmark_sha256 = sha256_file(benchmark_path)
+    skill_file_sha256 = sha256_file(skill_path / "SKILL.md")
+    runner_home_isolation = (
+        codex_home_isolation_metadata() if args.runner == "codex" else None
+    )
 
     write_text(
         output_dir / "run_metadata.json",
@@ -634,101 +885,160 @@ def main() -> int:
                 "model": args.model,
                 "run_started_at": timestamp,
                 "scenario_count": len(scenarios),
+                "runs_per_scenario": args.runs_per_scenario,
+                "expected_case_count": len(scenarios) * args.runs_per_scenario * 2,
+                "benchmark_sha256": benchmark_sha256,
+                "skill_file_sha256": skill_file_sha256,
+                "runner_home_isolation": runner_home_isolation,
             },
             indent=2,
         ),
     )
     progress_log = output_dir / "progress.log"
     observability_output = output_dir / "execution-observability.jsonl"
-    skill_name, phase = infer_skill_identity(skill_path)
-    skill_context = measure_skill_context(skill_path)
+    case_records: list[dict[str, object]] = []
 
     for index, scenario in enumerate(scenarios, start=1):
         scenario_dir = output_dir / f"eval-{index}-{scenario['id']}"
         write_text(scenario_dir / "eval_metadata.json", json.dumps(scenario, indent=2, ensure_ascii=False))
-        with tempfile.TemporaryDirectory(prefix=f"prodcraft-explicit-benchmark-{scenario['id']}-") as tmpdir:
-            temp_root = Path(tmpdir)
-            baseline_dir = temp_root / "baseline"
-            with_skill_dir = temp_root / "with-skill"
-            baseline_dir.mkdir(parents=True, exist_ok=True)
-            with_skill_dir.mkdir(parents=True, exist_ok=True)
-            isolated_skill_dir = with_skill_dir / "skill-under-test"
-            shutil.copytree(skill_path, isolated_skill_dir, dirs_exist_ok=True)
-            context_files = scenario.get("context_files", [])
-            copied_baseline_context = copy_context_files(
-                context_files,
-                baseline_dir,
-                benchmark_path,
-                "baseline",
+        for run_number in range(1, args.runs_per_scenario + 1):
+            case_dir = (
+                scenario_dir
+                if args.runs_per_scenario == 1
+                else scenario_dir / f"run-{run_number}"
             )
-            copied_with_skill_context = copy_context_files(
-                context_files,
-                with_skill_dir,
-                benchmark_path,
-                "with-skill",
-            )
+            with tempfile.TemporaryDirectory(
+                prefix=f"prodcraft-explicit-benchmark-{scenario['id']}-run-{run_number}-"
+            ) as tmpdir:
+                temp_root = Path(tmpdir)
+                baseline_dir = temp_root / "baseline"
+                with_skill_dir = temp_root / "with-skill"
+                baseline_dir.mkdir(parents=True, exist_ok=True)
+                with_skill_dir.mkdir(parents=True, exist_ok=True)
+                isolated_skill_dir = with_skill_dir / "skill-under-test"
+                shutil.copytree(skill_path, isolated_skill_dir, dirs_exist_ok=True)
+                context_files = scenario.get("context_files", [])
+                copied_baseline_context = copy_context_files(
+                    context_files,
+                    baseline_dir,
+                    benchmark_path,
+                    "baseline",
+                )
+                copied_with_skill_context = copy_context_files(
+                    context_files,
+                    with_skill_dir,
+                    benchmark_path,
+                    "with-skill",
+                )
 
-            baseline_prompt = (
-                "Work only from the request below. Do not read any local files or rely on repository instructions. "
-                "If you need assumptions, state them briefly and continue.\n\n"
-                f"{scenario['prompt']}"
-            )
-            with_skill_prompt = (
-                "First read ./skill-under-test/SKILL.md, then answer the request below using that skill. "
-                "Do not read any other local files or rely on repository instructions beyond the copied skill. "
-                "If you need assumptions, state them briefly and continue.\n\n"
-                f"{scenario['prompt']}"
-            )
+                baseline_prompt = (
+                    "Work only from the request below and copied benchmark context files explicitly named in it. "
+                    "You may read those copied context files. Do not read repository instructions, neighboring skills, "
+                    "or unrelated local files. If you need assumptions, state them briefly and continue.\n\n"
+                    f"{scenario['prompt']}"
+                )
+                with_skill_prompt = (
+                    "First read ./skill-under-test/SKILL.md, then answer the request below using that skill. "
+                    "You may read copied benchmark context files explicitly named in the request and resources under "
+                    "./skill-under-test/references/ when the copied skill directs you there. Do not read repository "
+                    "instructions, neighboring skills, or unrelated local files. If you need assumptions, state them "
+                    "briefly and continue.\n\n"
+                    f"{scenario['prompt']}"
+                )
 
-            write_text(scenario_dir / "without_skill" / "prompt.txt", baseline_prompt)
-            write_text(scenario_dir / "with_skill" / "prompt.txt", with_skill_prompt)
-            write_text(
-                scenario_dir / "runtime_context.json",
-                json.dumps(
-                    {
-                        "baseline_workspace": "baseline",
-                        "with_skill_workspace": "with-skill",
-                        "copied_skill_path": "with-skill/skill-under-test/SKILL.md",
-                        "baseline_context_files": copied_baseline_context,
-                        "with_skill_context_files": copied_with_skill_context,
-                        "isolation_mode": "tempdir-outside-repo",
-                    },
-                    indent=2,
-                ),
-            )
+                write_text(case_dir / "without_skill" / "prompt.txt", baseline_prompt)
+                write_text(case_dir / "with_skill" / "prompt.txt", with_skill_prompt)
+                write_text(
+                    case_dir / "runtime_context.json",
+                    json.dumps(
+                        {
+                            "run_number": run_number,
+                            "baseline_workspace": "baseline",
+                            "with_skill_workspace": "with-skill",
+                            "copied_skill_path": "with-skill/skill-under-test/SKILL.md",
+                            "baseline_context_files": copied_baseline_context,
+                            "with_skill_context_files": copied_with_skill_context,
+                            "allowed_skill_reference_root": "with-skill/skill-under-test/references",
+                            "isolation_mode": "tempdir-outside-repo",
+                        },
+                        indent=2,
+                    ),
+                )
 
-            append_text(progress_log, f"running {scenario['id']} without_skill")
-            run_case(
-                prompt=baseline_prompt,
-                runner=args.runner,
-                model=args.model,
-                timeout_seconds=args.timeout_seconds,
-                cwd=baseline_dir,
-                result_dir=scenario_dir / "without_skill",
-                observability_output=observability_output,
-                branch_label="without_skill",
-                scenario_id=scenario["id"],
-            )
+                append_text(
+                    progress_log,
+                    f"running {scenario['id']} run={run_number} without_skill",
+                )
+                case_records.append(
+                    run_case(
+                        prompt=baseline_prompt,
+                        runner=args.runner,
+                        model=args.model,
+                        timeout_seconds=args.timeout_seconds,
+                        cwd=baseline_dir,
+                        result_dir=case_dir / "without_skill",
+                        observability_output=observability_output,
+                        branch_label="without_skill",
+                        scenario_id=scenario["id"],
+                        run_number=run_number,
+                        output_root=output_dir,
+                    )
+                )
 
-            append_text(progress_log, f"running {scenario['id']} with_skill")
-            run_case(
-                prompt=with_skill_prompt,
-                runner=args.runner,
-                model=args.model,
-                timeout_seconds=args.timeout_seconds,
-                cwd=with_skill_dir,
-                result_dir=scenario_dir / "with_skill",
-                observability_output=observability_output,
-                branch_label="with_skill",
-                scenario_id=scenario["id"],
-                skill_name=skill_name,
-                phase=phase,
-                skill_context=skill_context,
-            )
+                append_text(
+                    progress_log,
+                    f"running {scenario['id']} run={run_number} with_skill",
+                )
+                case_records.append(
+                    run_case(
+                        prompt=with_skill_prompt,
+                        runner=args.runner,
+                        model=args.model,
+                        timeout_seconds=args.timeout_seconds,
+                        cwd=with_skill_dir,
+                        result_dir=case_dir / "with_skill",
+                        observability_output=observability_output,
+                        branch_label="with_skill",
+                        scenario_id=scenario["id"],
+                        run_number=run_number,
+                        output_root=output_dir,
+                        skill_name=skill_name,
+                        phase=phase,
+                        skill_context=skill_context,
+                    )
+                )
 
-            append_text(progress_log, f"completed {scenario['id']}")
+                append_text(progress_log, f"completed {scenario['id']} run={run_number}")
 
-    return 0
+    completed_case_count = sum(record["status"] == "completed" for record in case_records)
+    failed_case_count = len(case_records) - completed_case_count
+    write_text(
+        output_dir / "execution_summary.json",
+        json.dumps(
+            {
+                "schema_version": "explicit-benchmark-execution-summary.v1",
+                "benchmark": display_path(benchmark_path),
+                "benchmark_sha256": benchmark_sha256,
+                "skill_path": display_path(skill_path),
+                "skill_name": skill_name,
+                "skill_file_sha256": skill_file_sha256,
+                "runner_home_isolation": runner_home_isolation,
+                "runner": args.runner,
+                "model": args.model,
+                "run_started_at": timestamp,
+                "scenario_count": len(scenarios),
+                "runs_per_scenario": args.runs_per_scenario,
+                "expected_case_count": len(scenarios) * args.runs_per_scenario * 2,
+                "completed_case_count": completed_case_count,
+                "failed_case_count": failed_case_count,
+                "cases": case_records,
+            },
+            indent=2,
+            ensure_ascii=False,
+        ),
+    )
+
+    return 1 if failed_case_count else 0
 
 
 if __name__ == "__main__":

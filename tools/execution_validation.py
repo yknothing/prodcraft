@@ -434,7 +434,34 @@ def validate_registered_artifact_payload(
 
     if artifact_name == "verification-record":
         validate_verification_record_instance_contract(payload, str(path), errors)
+    if artifact_name in {"intake-brief", "course-correction-note"}:
+        validate_artifact_skill_membership(payload, path, errors)
     return True
+
+
+def validate_artifact_skill_membership(
+    payload: dict,
+    path: Path,
+    errors: list[str],
+) -> None:
+    """Reject artifact routes that do not resolve to implemented manifest skills."""
+
+    manifest = _load_yaml_file(MANIFEST_PATH, errors)
+    implemented_names = {
+        entry["name"]
+        for entry in manifest.get("skills", [])
+        if isinstance(entry, dict) and isinstance(entry.get("name"), str)
+    }
+    referenced_names: list[str] = []
+    recommended = payload.get("recommended_next_skill")
+    if isinstance(recommended, str):
+        referenced_names.append(recommended)
+    proposed = payload.get("proposed_path")
+    if isinstance(proposed, list):
+        referenced_names.extend(name for name in proposed if isinstance(name, str))
+    for name in dict.fromkeys(referenced_names):
+        if name not in implemented_names:
+            errors.append(f"{path}: route references unknown manifest skill `{name}`")
 
 
 def validate_route_contract_from_repository(route: dict, errors: list[str]) -> list[str]:
