@@ -45,12 +45,59 @@ Follow the runtime guidance shared across Anthropic, OpenAI, Cursor, and Trae:
 | description | Yes | Must start with trigger condition |
 | metadata.phase | Yes | Must match parent phase directory |
 | metadata.inputs | Yes | Empty array `[]` for phase-entry skills |
-| metadata.outputs | Yes | At least one output |
+| metadata.outputs | Yes | Empty array `[]` for a new draft; define reviewed outputs before promotion |
 | metadata.quality_gate | Yes | Must be verifiable |
 | metadata.roles | Yes | At least one role |
 | metadata.methodologies | Yes | Default to `["all"]` |
 | metadata.prerequisites | Yes | Use empty array `[]` if no dependencies |
 | metadata.effort | No | Default to "medium" |
+
+## Draft Scaffolding
+
+Create a new draft package with:
+
+```bash
+python scripts/new_skill.py <phase> <pc-skill-name>
+```
+
+The command is draft-only. It builds a candidate repository containing the new
+`SKILL.md`, a `draft` manifest entry, and `eval/<phase>/<name>/evals/eval-strategy.md`.
+The candidate repository must pass `scripts/validate_prodcraft.py` before the
+command commits any source-repository change. A matching same-phase entry in
+`planned_skills` is converted into the draft entry in the same transaction.
+Validation failures, name collisions, concurrent manifest changes, and commit
+failures leave the command-owned repository state byte-for-byte unchanged.
+Cooperating scaffolder invocations are serialized with an advisory lock on the
+repository root. Directory commits use atomic no-replace moves, and exception
+rollback first moves each target into a transaction-private quarantine before
+inspecting or deleting owned bytes. A replacement installed at the public path
+during rollback is never unlinked. The manifest commit uses an atomic exchange
+followed by checks of both the displaced bytes and the installed candidate. A
+write displaced at the exchange boundary is restored; a write that replaces the
+candidate after exchange is preserved and causes the transaction-owned
+directories to roll back. The command fails closed when these primitives are
+unavailable; supported hosts are local macOS and Linux filesystems that provide
+the required locking and rename operations.
+
+This is a local authoring transaction, not distributed locking. A process that
+keeps an old manifest inode open and ignores path replacement can operate
+outside this boundary. Do not run non-cooperating manifest writers concurrently
+with the scaffolder. Exception rollback is tested; power loss, kernel failure,
+and uncatchable process termination are not claimed as crash-durable rollback.
+
+The scaffold deliberately starts with empty `inputs` and `outputs`. Do not
+invent `artifact_flow` entries before those contracts are reviewed. The
+following remain promotion-time review surfaces and are never modified by the
+draft scaffolder:
+
+- `manifest.yml` `artifact_flow`
+- `schemas/distribution/public-skill-registry.json`
+- `schemas/distribution/public-skill-portability.json`
+- `rules/cross-cutting-matrix.yml`
+- workflows and generated `skills/.curated` packages
+
+Promotion requires explicit review of every applicable surface. The command
+does not imply review, routing readiness, portability, or public distribution.
 
 ## Body Structure
 
