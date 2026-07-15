@@ -15,7 +15,7 @@ class ObservabilityTestedStatusTests(unittest.TestCase):
         self.entries = {entry["name"]: entry for entry in self.manifest["skills"]}
 
     def test_manifest_registers_observability_as_tested(self):
-        entry = self.entries["observability"]
+        entry = self.entries["pc-observability"]
 
         self.assertEqual("cross-cutting", entry["phase"])
         self.assertEqual("tested", entry["status"])
@@ -33,22 +33,22 @@ class ObservabilityTestedStatusTests(unittest.TestCase):
 
     def test_tested_artifacts_exist(self):
         targets = [
-            REPO_ROOT / "eval" / "cross-cutting" / "observability" / "findings.md",
-            REPO_ROOT / "eval" / "cross-cutting" / "observability" / "evals" / "eval-strategy.md",
+            REPO_ROOT / "eval" / "cross-cutting" / "pc-observability" / "findings.md",
+            REPO_ROOT / "eval" / "cross-cutting" / "pc-observability" / "evals" / "eval-strategy.md",
             REPO_ROOT
             / "eval"
             / "cross-cutting"
-            / "observability"
+            / "pc-observability"
             / "isolated-benchmark-plan.md",
             REPO_ROOT
             / "eval"
             / "cross-cutting"
-            / "observability"
+            / "pc-observability"
             / "isolated-benchmark-review.md",
             REPO_ROOT
             / "eval"
             / "cross-cutting"
-            / "observability"
+            / "pc-observability"
             / "runtime-contract-review.md",
         ]
 
@@ -58,14 +58,14 @@ class ObservabilityTestedStatusTests(unittest.TestCase):
 
     def test_findings_and_artifact_flow_record_tested_promotion(self):
         findings = (
-            REPO_ROOT / "eval" / "cross-cutting" / "observability" / "findings.md"
+            REPO_ROOT / "eval" / "cross-cutting" / "pc-observability" / "findings.md"
         ).read_text(encoding="utf-8")
         artifact_flow = {entry["artifact"]: entry for entry in self.manifest["artifact_flow"]}
 
         self.assertIn("Current status: `tested`", findings)
         self.assertIn("isolated benchmark review", findings)
-        self.assertEqual("observability", artifact_flow["observability-spec"]["produced_by"])
-        self.assertIn("monitoring-observability", artifact_flow["observability-spec"]["consumed_by"])
+        self.assertEqual("pc-observability", artifact_flow["observability-spec"]["produced_by"])
+        self.assertIn("pc-monitoring-observability", artifact_flow["observability-spec"]["consumed_by"])
 
 
 if __name__ == "__main__":

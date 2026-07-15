@@ -2,7 +2,7 @@
   "schema_version": "curated-surface.v1",
   "skills": [
     {
-      "name": "prodcraft",
+      "name": "pc-prodcraft",
       "source": "generated:prodcraft",
       "stability": "beta",
       "readiness": "core",
@@ -11,8 +11,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "intake",
-      "source": "skills/00-discovery/intake",
+      "name": "pc-intake",
+      "source": "skills/00-discovery/pc-intake",
       "stability": "beta",
       "readiness": "core",
       "manual_allowlist": true,
@@ -20,8 +20,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "problem-framing",
-      "source": "skills/00-discovery/problem-framing",
+      "name": "pc-problem-framing",
+      "source": "skills/00-discovery/pc-problem-framing",
       "stability": "beta",
       "readiness": "core",
       "manual_allowlist": true,
@@ -29,8 +29,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "user-research",
-      "source": "skills/00-discovery/user-research",
+      "name": "pc-user-research",
+      "source": "skills/00-discovery/pc-user-research",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -38,8 +38,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "requirements-engineering",
-      "source": "skills/01-specification/requirements-engineering",
+      "name": "pc-requirements-engineering",
+      "source": "skills/01-specification/pc-requirements-engineering",
       "stability": "beta",
       "readiness": "core",
       "manual_allowlist": true,
@@ -47,8 +47,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "spec-writing",
-      "source": "skills/01-specification/spec-writing",
+      "name": "pc-spec-writing",
+      "source": "skills/01-specification/pc-spec-writing",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -56,8 +56,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "domain-modeling",
-      "source": "skills/01-specification/domain-modeling",
+      "name": "pc-domain-modeling",
+      "source": "skills/01-specification/pc-domain-modeling",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -65,8 +65,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "acceptance-criteria",
-      "source": "skills/01-specification/acceptance-criteria",
+      "name": "pc-acceptance-criteria",
+      "source": "skills/01-specification/pc-acceptance-criteria",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -74,8 +74,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "system-design",
-      "source": "skills/02-architecture/system-design",
+      "name": "pc-system-design",
+      "source": "skills/02-architecture/pc-system-design",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -83,8 +83,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "data-modeling",
-      "source": "skills/02-architecture/data-modeling",
+      "name": "pc-data-modeling",
+      "source": "skills/02-architecture/pc-data-modeling",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -92,8 +92,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "security-design",
-      "source": "skills/02-architecture/security-design",
+      "name": "pc-security-design",
+      "source": "skills/02-architecture/pc-security-design",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -101,8 +101,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "tech-selection",
-      "source": "skills/02-architecture/tech-selection",
+      "name": "pc-tech-selection",
+      "source": "skills/02-architecture/pc-tech-selection",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -110,8 +110,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "api-design",
-      "source": "skills/02-architecture/api-design",
+      "name": "pc-api-design",
+      "source": "skills/02-architecture/pc-api-design",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -119,8 +119,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "task-breakdown",
-      "source": "skills/03-planning/task-breakdown",
+      "name": "pc-task-breakdown",
+      "source": "skills/03-planning/pc-task-breakdown",
       "stability": "beta",
       "readiness": "core",
       "manual_allowlist": true,
@@ -128,8 +128,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "estimation",
-      "source": "skills/03-planning/estimation",
+      "name": "pc-estimation",
+      "source": "skills/03-planning/pc-estimation",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -137,8 +137,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "risk-assessment",
-      "source": "skills/03-planning/risk-assessment",
+      "name": "pc-risk-assessment",
+      "source": "skills/03-planning/pc-risk-assessment",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -146,8 +146,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "sprint-planning",
-      "source": "skills/03-planning/sprint-planning",
+      "name": "pc-sprint-planning",
+      "source": "skills/03-planning/pc-sprint-planning",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -155,8 +155,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "tdd",
-      "source": "skills/04-implementation/tdd",
+      "name": "pc-tdd",
+      "source": "skills/04-implementation/pc-tdd",
       "stability": "beta",
       "readiness": "core",
       "manual_allowlist": true,
@@ -164,8 +164,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "systematic-debugging",
-      "source": "skills/04-implementation/systematic-debugging",
+      "name": "pc-systematic-debugging",
+      "source": "skills/04-implementation/pc-systematic-debugging",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -173,8 +173,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "task-execution",
-      "source": "skills/04-implementation/task-execution",
+      "name": "pc-task-execution",
+      "source": "skills/04-implementation/pc-task-execution",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -182,8 +182,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "feature-development",
-      "source": "skills/04-implementation/feature-development",
+      "name": "pc-feature-development",
+      "source": "skills/04-implementation/pc-feature-development",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -191,8 +191,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "refactoring",
-      "source": "skills/04-implementation/refactoring",
+      "name": "pc-refactoring",
+      "source": "skills/04-implementation/pc-refactoring",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -200,8 +200,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "code-review",
-      "source": "skills/05-quality/code-review",
+      "name": "pc-code-review",
+      "source": "skills/05-quality/pc-code-review",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -209,8 +209,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "receiving-code-review",
-      "source": "skills/05-quality/receiving-code-review",
+      "name": "pc-receiving-code-review",
+      "source": "skills/05-quality/pc-receiving-code-review",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -218,8 +218,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "testing-strategy",
-      "source": "skills/05-quality/testing-strategy",
+      "name": "pc-testing-strategy",
+      "source": "skills/05-quality/pc-testing-strategy",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -227,8 +227,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "e2e-scenario-design",
-      "source": "skills/05-quality/e2e-scenario-design",
+      "name": "pc-e2e-scenario-design",
+      "source": "skills/05-quality/pc-e2e-scenario-design",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -236,8 +236,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "security-audit",
-      "source": "skills/05-quality/security-audit",
+      "name": "pc-security-audit",
+      "source": "skills/05-quality/pc-security-audit",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -245,8 +245,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "ci-cd",
-      "source": "skills/06-delivery/ci-cd",
+      "name": "pc-ci-cd",
+      "source": "skills/06-delivery/pc-ci-cd",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -254,8 +254,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "release-management",
-      "source": "skills/06-delivery/release-management",
+      "name": "pc-release-management",
+      "source": "skills/06-delivery/pc-release-management",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -263,8 +263,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "deployment-strategy",
-      "source": "skills/06-delivery/deployment-strategy",
+      "name": "pc-deployment-strategy",
+      "source": "skills/06-delivery/pc-deployment-strategy",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -272,8 +272,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "delivery-completion",
-      "source": "skills/06-delivery/delivery-completion",
+      "name": "pc-delivery-completion",
+      "source": "skills/06-delivery/pc-delivery-completion",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -281,8 +281,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "observability",
-      "source": "skills/cross-cutting/observability",
+      "name": "pc-observability",
+      "source": "skills/cross-cutting/pc-observability",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -290,8 +290,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "verification-before-completion",
-      "source": "skills/cross-cutting/verification-before-completion",
+      "name": "pc-verification-before-completion",
+      "source": "skills/cross-cutting/pc-verification-before-completion",
       "stability": "beta",
       "readiness": "core",
       "manual_allowlist": true,
@@ -299,8 +299,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "accessibility",
-      "source": "skills/cross-cutting/accessibility",
+      "name": "pc-accessibility",
+      "source": "skills/cross-cutting/pc-accessibility",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -308,8 +308,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "documentation",
-      "source": "skills/cross-cutting/documentation",
+      "name": "pc-documentation",
+      "source": "skills/cross-cutting/pc-documentation",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -317,8 +317,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "monitoring-observability",
-      "source": "skills/07-operations/monitoring-observability",
+      "name": "pc-monitoring-observability",
+      "source": "skills/07-operations/pc-monitoring-observability",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -326,8 +326,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "incident-response",
-      "source": "skills/07-operations/incident-response",
+      "name": "pc-incident-response",
+      "source": "skills/07-operations/pc-incident-response",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -335,8 +335,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "runbooks",
-      "source": "skills/07-operations/runbooks",
+      "name": "pc-runbooks",
+      "source": "skills/07-operations/pc-runbooks",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -344,8 +344,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "tech-debt-management",
-      "source": "skills/08-evolution/tech-debt-management",
+      "name": "pc-tech-debt-management",
+      "source": "skills/08-evolution/pc-tech-debt-management",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,
@@ -353,8 +353,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "retrospective",
-      "source": "skills/08-evolution/retrospective",
+      "name": "pc-retrospective",
+      "source": "skills/08-evolution/pc-retrospective",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,

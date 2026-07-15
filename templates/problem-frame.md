@@ -1,15 +1,15 @@
 # Problem Frame
 
-Use this template when `problem-framing` shapes an approved intake route into a decision-ready direction.
+Use this template when `pc-problem-framing` shapes an approved intake route into a decision-ready direction.
 
 ## Required Artifact
 
 - artifact: `problem-frame`
 - schema_version: `problem-frame.v1`
 - status:
-- source_language:
+- source_language: `BCP-47 locale such as en or zh-Hans, or mixed`
 - artifact_record_language: `en`
-- user_presentation_locale:
+- user_presentation_locale: `BCP-47 locale`
 
 ## Source Context
 

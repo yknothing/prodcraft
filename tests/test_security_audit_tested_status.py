@@ -15,7 +15,7 @@ class SecurityAuditTestedStatusTests(unittest.TestCase):
         self.entries = {entry["name"]: entry for entry in self.manifest["skills"]}
 
     def test_manifest_registers_security_audit_as_tested(self):
-        entry = self.entries["security-audit"]
+        entry = self.entries["pc-security-audit"]
 
         self.assertEqual("05-quality", entry["phase"])
         self.assertEqual("tested", entry["status"])
@@ -32,11 +32,11 @@ class SecurityAuditTestedStatusTests(unittest.TestCase):
 
     def test_tested_artifacts_exist(self):
         targets = [
-            REPO_ROOT / "eval" / "05-quality" / "security-audit" / "findings.md",
-            REPO_ROOT / "eval" / "05-quality" / "security-audit" / "evals" / "eval-strategy.md",
-            REPO_ROOT / "eval" / "05-quality" / "security-audit" / "evals" / "security-check-evidence.md",
-            REPO_ROOT / "eval" / "05-quality" / "security-audit" / "isolated-benchmark-review.md",
-            REPO_ROOT / "eval" / "05-quality" / "security-audit" / "release-management-handoff-review.md",
+            REPO_ROOT / "eval" / "05-quality" / "pc-security-audit" / "findings.md",
+            REPO_ROOT / "eval" / "05-quality" / "pc-security-audit" / "evals" / "eval-strategy.md",
+            REPO_ROOT / "eval" / "05-quality" / "pc-security-audit" / "evals" / "security-check-evidence.md",
+            REPO_ROOT / "eval" / "05-quality" / "pc-security-audit" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "05-quality" / "pc-security-audit" / "release-management-handoff-review.md",
         ]
 
         for path in targets:
@@ -45,25 +45,25 @@ class SecurityAuditTestedStatusTests(unittest.TestCase):
 
     def test_findings_and_artifact_flow_record_tested_promotion(self):
         findings = (
-            REPO_ROOT / "eval" / "05-quality" / "security-audit" / "findings.md"
+            REPO_ROOT / "eval" / "05-quality" / "pc-security-audit" / "findings.md"
         ).read_text(encoding="utf-8")
         security_check = (
-            REPO_ROOT / "eval" / "05-quality" / "security-audit" / "evals" / "security-check-evidence.md"
+            REPO_ROOT / "eval" / "05-quality" / "pc-security-audit" / "evals" / "security-check-evidence.md"
         ).read_text(encoding="utf-8")
         artifact_flow = {entry["artifact"]: entry for entry in self.manifest["artifact_flow"]}
 
         self.assertIn("Current status: `tested`", findings)
         self.assertIn("isolated benchmark", findings)
         self.assertIn("Prodcraft validation passed", security_check)
-        self.assertEqual("security-audit", artifact_flow["security-report"]["produced_by"])
-        self.assertIn("release-management", artifact_flow["security-report"]["consumed_by"])
+        self.assertEqual("pc-security-audit", artifact_flow["security-report"]["produced_by"])
+        self.assertIn("pc-release-management", artifact_flow["security-report"]["consumed_by"])
 
     def test_security_audit_calibrates_to_exposure_without_dropping_baseline(self):
         source = (
-            REPO_ROOT / "skills" / "05-quality" / "security-audit" / "SKILL.md"
+            REPO_ROOT / "skills" / "05-quality" / "pc-security-audit" / "SKILL.md"
         ).read_text(encoding="utf-8")
         curated = (
-            REPO_ROOT / "skills" / ".curated" / "security-audit" / "SKILL.md"
+            REPO_ROOT / "skills" / ".curated" / "pc-security-audit" / "SKILL.md"
         ).read_text(encoding="utf-8")
 
         for text in (source, curated):

@@ -9,10 +9,10 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 class CodeReviewPrecisionContractTests(unittest.TestCase):
     def test_source_and_curated_skill_require_evidence_backed_blockers(self):
-        source = (REPO_ROOT / "skills" / "05-quality" / "code-review" / "SKILL.md").read_text(
+        source = (REPO_ROOT / "skills" / "05-quality" / "pc-code-review" / "SKILL.md").read_text(
             encoding="utf-8"
         )
-        curated = (REPO_ROOT / "skills" / ".curated" / "code-review" / "SKILL.md").read_text(
+        curated = (REPO_ROOT / "skills" / ".curated" / "pc-code-review" / "SKILL.md").read_text(
             encoding="utf-8"
         )
 
@@ -23,10 +23,10 @@ class CodeReviewPrecisionContractTests(unittest.TestCase):
             self.assertIn("Inventing blockers from suspicion alone", text)
 
     def test_code_review_calibrates_service_blockers_to_runtime_boundary(self):
-        source = (REPO_ROOT / "skills" / "05-quality" / "code-review" / "SKILL.md").read_text(
+        source = (REPO_ROOT / "skills" / "05-quality" / "pc-code-review" / "SKILL.md").read_text(
             encoding="utf-8"
         )
-        curated = (REPO_ROOT / "skills" / ".curated" / "code-review" / "SKILL.md").read_text(
+        curated = (REPO_ROOT / "skills" / ".curated" / "pc-code-review" / "SKILL.md").read_text(
             encoding="utf-8"
         )
 

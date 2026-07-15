@@ -46,7 +46,10 @@
       "type": "array",
       "items": { "type": "string" }
     },
-    "recommended_next_skill": { "type": "string" },
+    "recommended_next_skill": {
+      "type": "string",
+      "pattern": "^pc-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
     "severity": { "enum": ["low", "medium", "high", "critical"] },
     "requires_user_reapproval": { "type": "boolean" }
   },

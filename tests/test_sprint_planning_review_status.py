@@ -15,7 +15,7 @@ class SprintPlanningReviewStatusTests(unittest.TestCase):
 
     def test_manifest_registers_sprint_planning_as_tested_routed(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
-        entry = entries["sprint-planning"]
+        entry = entries["pc-sprint-planning"]
 
         self.assertEqual("03-planning", entry["phase"])
         self.assertEqual("tested", entry["status"])
@@ -32,13 +32,13 @@ class SprintPlanningReviewStatusTests(unittest.TestCase):
 
     def test_tested_artifacts_exist(self):
         targets = [
-            REPO_ROOT / "eval" / "03-planning" / "sprint-planning" / "findings.md",
-            REPO_ROOT / "eval" / "03-planning" / "sprint-planning" / "evals" / "eval-strategy.md",
-            REPO_ROOT / "eval" / "03-planning" / "sprint-planning" / "isolated-benchmark-plan.md",
-            REPO_ROOT / "eval" / "03-planning" / "sprint-planning" / "isolated-benchmark-review.md",
-            REPO_ROOT / "eval" / "03-planning" / "sprint-planning" / "estimation-handoff-review.md",
-            REPO_ROOT / "eval" / "03-planning" / "sprint-planning" / "fixtures" / "access-review-modernization-estimate-set.md",
-            REPO_ROOT / "eval" / "03-planning" / "sprint-planning" / "fixtures" / "access-review-modernization-risk-register.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-sprint-planning" / "findings.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-sprint-planning" / "evals" / "eval-strategy.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-sprint-planning" / "isolated-benchmark-plan.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-sprint-planning" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-sprint-planning" / "estimation-handoff-review.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-sprint-planning" / "fixtures" / "access-review-modernization-estimate-set.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-sprint-planning" / "fixtures" / "access-review-modernization-risk-register.md",
         ]
 
         for path in targets:
@@ -50,15 +50,15 @@ class SprintPlanningReviewStatusTests(unittest.TestCase):
         planning_phase = (REPO_ROOT / "skills" / "03-planning" / "_phase.md").read_text(encoding="utf-8")
         gateway = (REPO_ROOT / "skills" / "_gateway.md").read_text(encoding="utf-8")
 
-        self.assertEqual("sprint-planning", artifact_flow["sprint-plan"]["produced_by"])
-        self.assertIn("sprint-planning", artifact_flow["estimate-set"]["consumed_by"])
-        self.assertIn("sprint-planning", artifact_flow["risk-register"]["consumed_by"])
-        self.assertIn("sprint-planning", planning_phase)
-        self.assertIn("sprint-planning", gateway)
+        self.assertEqual("pc-sprint-planning", artifact_flow["sprint-plan"]["produced_by"])
+        self.assertIn("pc-sprint-planning", artifact_flow["estimate-set"]["consumed_by"])
+        self.assertIn("pc-sprint-planning", artifact_flow["risk-register"]["consumed_by"])
+        self.assertIn("pc-sprint-planning", planning_phase)
+        self.assertIn("pc-sprint-planning", gateway)
 
     def test_findings_record_tested_status(self):
         findings = (
-            REPO_ROOT / "eval" / "03-planning" / "sprint-planning" / "findings.md"
+            REPO_ROOT / "eval" / "03-planning" / "pc-sprint-planning" / "findings.md"
         ).read_text(encoding="utf-8")
 
         self.assertIn("Current status: `tested`", findings)

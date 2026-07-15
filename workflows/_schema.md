@@ -16,7 +16,7 @@ composes_with:                  # Which other workflows this one can layer with
   - "greenfield"
   - "brownfield"
   - "hotfix"
-entry_skill: "intake"           # Mandatory lifecycle entry gate
+entry_skill: "pc-intake"           # Mandatory lifecycle entry gate
 required_artifacts:             # Artifacts that must exist before the workflow starts
   - "intake-brief"
 best_for:                       # List of ideal use cases
@@ -37,7 +37,7 @@ phases_included:                # Which phases this workflow uses
 | `cadence` | string | yes | How time is structured in this workflow |
 | `workflow_kind` | string | yes | `primary` governance workflow or `overlay` modifier |
 | `composes_with` | list | yes | Names this workflow can legally layer with |
-| `entry_skill` | string | yes | Must be `intake`; workflows begin only after intake approval |
+| `entry_skill` | string | yes | Must be `pc-intake`; workflows begin only after intake approval |
 | `required_artifacts` | list | yes | Must include `intake-brief` to enforce the hard gate |
 | `best_for` | list | yes | Scenarios where this workflow excels |
 | `phases_included` | list | yes | Phases used; `["all"]` means all 9 phases |
@@ -48,7 +48,7 @@ phases_included:                # Which phases this workflow uses
 
 Every workflow MUST start with an explicit entry gate section that:
 
-- states that the workflow only begins after `intake` is completed and approved
+- states that the workflow only begins after `pc-intake` is completed and approved
 - names the required artifact (`intake-brief`)
 - explains any fast-track rule or phase skip in terms of intake-approved routing
 
@@ -97,7 +97,7 @@ Workflows orchestrate existing skills from `skills/` -- they never duplicate ski
 
 Referenced skills should also declare methodology tags compatible with the workflow that uses them. If a workflow invokes a skill as a routed exception, that exception should be explicit in the skill's `metadata.methodologies` rather than left as an undocumented assumption.
 
-**Do:** "During the specification phase, apply the `spec-writing` skill to produce the PRD."
+**Do:** "During the specification phase, apply the `pc-spec-writing` skill to produce the PRD."
 **Don't:** Reproduce the full spec-writing process inline in the workflow file.
 
 This keeps workflows lightweight and ensures skill improvements automatically benefit all workflows that reference them.

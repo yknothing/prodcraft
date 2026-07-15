@@ -71,7 +71,7 @@ verification-record hardening:
 
 | Candidate | Canonical source | Host adapter posture |
 |---|---|---|
-| Verification before completion | `verification-record.v1`, `verification-before-completion`, artifact-flow checks | Runtime reminder or preflight validator before final completion claims. |
+| Verification before completion | `verification-record.v1`, `pc-verification-before-completion`, artifact-flow checks | Runtime reminder or preflight validator before final completion claims. |
 | Curated export portability | `public-skill-portability.v1`, curated-surface validator | Export-time check only; host runtime should display public caveats, not reinterpret hidden dependencies. |
 | Course-correction routing | `course-correction-note.v1`, gateway direct-jump contract | Warn when a host conversation jumps phases without the required artifact. |
 | Agent security controls | AR-01 measurement protocol | Keep as protocol/evidence first; only promote narrow command or artifact-boundary checks after measurement. |

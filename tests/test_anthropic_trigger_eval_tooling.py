@@ -15,9 +15,9 @@ if str(REPO_ROOT) not in sys.path:
 from tools.anthropic_trigger_eval import run_eval as run_eval_module
 
 RUN_EVAL_PATH = REPO_ROOT / "tools" / "anthropic_trigger_eval" / "run_eval.py"
-RERUN_SCRIPT_PATH = REPO_ROOT / "eval" / "00-discovery" / "intake" / "scripts" / "rerun_iter2_trigger_eval.sh"
+RERUN_SCRIPT_PATH = REPO_ROOT / "eval" / "00-discovery" / "pc-intake" / "scripts" / "rerun_iter2_trigger_eval.sh"
 DETERMINISTIC_UUID_HEX = "12345678abcdef00"
-DETERMINISTIC_CLEAN_NAME = "intake-skill-12345678"
+DETERMINISTIC_CLEAN_NAME = "pc-intake-skill-12345678"
 
 
 class StaticUuid:
@@ -93,9 +93,9 @@ class AnthropicTriggerEvalToolingTests(unittest.TestCase):
         self.assertNotIn(".claude/plugins/cache/claude-plugins-official/skill-creator", content)
         self.assertIn("tools/anthropic_trigger_eval/run_eval.py", content)
         self.assertIn("--observability-output", content)
-        self.assertIn("eval/00-discovery/intake/evals/trigger-core.json", content)
-        self.assertIn("eval/00-discovery/intake/evals/trigger-overlap.json", content)
-        self.assertIn("eval/00-discovery/intake/evals/trigger-non-trigger.json", content)
+        self.assertIn("eval/00-discovery/pc-intake/evals/trigger-core.json", content)
+        self.assertIn("eval/00-discovery/pc-intake/evals/trigger-overlap.json", content)
+        self.assertIn("eval/00-discovery/pc-intake/evals/trigger-non-trigger.json", content)
 
     def test_project_owned_run_eval_executes_with_fake_claude(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -127,7 +127,7 @@ class AnthropicTriggerEvalToolingTests(unittest.TestCase):
             skill_dir = temp_root / "skill"
             skill_dir.mkdir()
             (skill_dir / "SKILL.md").write_text(
-                "---\nname: intake\ndescription: Use when starting a new effort.\n---\n\n# Intake\n",
+                "---\nname: pc-intake\ndescription: Use when starting a new effort.\n---\n\n# Intake\n",
                 encoding="utf-8",
             )
 
@@ -198,7 +198,7 @@ class AnthropicTriggerEvalToolingTests(unittest.TestCase):
             ):
                 triggered = run_eval_module.run_single_query(
                     query="start from scratch",
-                    skill_name="intake",
+                    skill_name="pc-intake",
                     skill_description="Use when starting a new effort.",
                     timeout=3,
                     project_root=str(project_root),
@@ -221,7 +221,7 @@ class AnthropicTriggerEvalToolingTests(unittest.TestCase):
             ):
                 triggered = run_eval_module.run_single_query(
                     query="start from scratch",
-                    skill_name="intake",
+                    skill_name="pc-intake",
                     skill_description="Use when starting a new effort.",
                     timeout=3,
                     project_root=str(project_root),
@@ -245,7 +245,7 @@ class AnthropicTriggerEvalToolingTests(unittest.TestCase):
             ):
                 triggered = run_eval_module.run_single_query(
                     query="start from scratch",
-                    skill_name="intake",
+                    skill_name="pc-intake",
                     skill_description="Use when starting a new effort.",
                     timeout=3,
                     project_root=str(project_root),
@@ -280,7 +280,7 @@ class AnthropicTriggerEvalToolingTests(unittest.TestCase):
             ):
                 triggered = run_eval_module.run_single_query(
                     query="start from scratch",
-                    skill_name="intake",
+                    skill_name="pc-intake",
                     skill_description="Use when starting a new effort.",
                     timeout=3,
                     project_root=str(project_root),

@@ -2,17 +2,22 @@
 
 Prodcraft is a lifecycle-aware skills system for production-grade software development. It turns engineering discipline into repository-owned skills, workflows, artifact contracts, validators, and evidence records that can survive across agent runtimes.
 
+All user-visible Prodcraft skill IDs use the canonical `pc-` prefix. The beta
+migration from unprefixed flat packages is intentionally breaking; follow the
+[provenance-safe upgrade guidance](docs/distribution/npx-skills-compat.md#breaking-upgrade-from-unprefixed-beta-packages)
+instead of deleting old package directories by basename.
+
 This English README is the canonical project overview. A non-authoritative Chinese reader guide is available at [README.zh-CN.md](README.zh-CN.md).
 
 ## Current State
 
-As of 2026-04-25, the checked-in system contains:
+As of 2026-07-10, the checked-in system contains:
 
-- 44 lifecycle skill packages in `skills/00-discovery/` through `skills/cross-cutting/`
-- authored-skill maturity in `manifest.yml`: 6 `production`, 32 `tested`, 6 `review`, 0 `draft`
+- 46 lifecycle skill packages in `skills/00-discovery/` through `skills/cross-cutting/`
+- authored-skill maturity in `manifest.yml`: 6 `production`, 32 `tested`, 8 `review`, 0 `draft`
 - 6 workflow files: 3 primary methodology workflows and 3 overlays
 - 7 advisory personas
-- 6 registered protocol artifact schemas
+- 8 registered protocol artifact schemas
 - 40 generated public skills in `skills/.curated/`
 
 The current canonical architecture state is [Architecture State Bundle](docs/architecture/2026-04-18-prodcraft-architecture-state-bundle.md). Its core position is that Prodcraft is not just a skill library. It is a host-agnostic governance system for production engineering, with repository-owned contracts as the authority and host bindings as adapters.
@@ -30,21 +35,21 @@ Those layers are evaluated across three consumer surfaces: `repo_internal`, `hos
 
 ## Guarantees And Limits
 
-Prodcraft can currently enforce and validate structural contracts such as workflow entry gates, artifact schema shape, curated-surface parity, portability metadata, and security-minimal checks.
+Prodcraft can enforce and validate structural contracts such as workflow entry gates, artifact schema shape, curated-surface parity, portability metadata, and security-minimal checks. Projects may also opt into the Direction 2 strict execution loop: repository-owned route and execution artifacts, operator-pinned route and terminal-completion digests, a replayed lifecycle/phase automaton, closed content-bound evidence, and live Git-worktree freshness can produce machine-distinct gate or terminal authority.
 
 Prodcraft does not claim that structural checks prove semantic engineering quality. A valid schema does not prove a good requirement, a passing review template does not prove high-quality review, and `verification-record.v1` does not by itself prove route-level completion. Judgment-heavy work still needs bounded evidence, review, and route-specific acceptance.
 
-The downstream execution loop is still being hardened. AR-01, AR-02, AR-03, and the public portability review are active governance workstreams, not proof that every execution-critical rule is already enforced.
+Strict execution state remains additive rather than mandatory. It does not authenticate approvers, provide trusted time, prove semantic engineering quality, or supply a scheduler, service, database, or multi-writer event authority. Legacy workflows remain guidance-led unless they explicitly adopt the strict artifacts and authority command.
 
 ## How It Works
 
-Every piece of engineering work starts with `intake`, the mandatory triage skill. Intake classifies the request, chooses the lifecycle entry point, records the route decision, captures the quality target context, and hands off to the next skill or workflow.
+Every piece of engineering work starts with `pc-intake`, the mandatory triage skill. Intake classifies the request, chooses the lifecycle entry point, records the route decision, captures the quality target context, and hands off to the next skill or workflow.
 
-If the route is clear but the problem statement or solution direction is still fuzzy, `problem-framing` runs before deeper discovery, specification, or architecture work begins.
+If the route is clear but the problem statement or solution direction is still fuzzy, `pc-problem-framing` runs before deeper discovery, specification, or architecture work begins.
 
 ```text
 User request
-  -> intake
+  -> pc-intake
   -> gateway
   -> workflow
   -> routed skills
@@ -67,10 +72,10 @@ Most development skill systems are flat collections. Prodcraft adds the control 
 
 ## Intake Hard Gate
 
-Prodcraft treats `intake` as a system rule, not just a trigger hint:
+Prodcraft treats `pc-intake` as a system rule, not just a trigger hint:
 
-- New work should route through `skills/00-discovery/intake/SKILL.md`.
-- Every workflow declares `entry_skill: intake`.
+- New work should route through `skills/00-discovery/pc-intake/SKILL.md`.
+- Every workflow declares `entry_skill: pc-intake`.
 - Every workflow requires an `intake-brief`.
 - Entry-layer decisions should stay observable through `intake-brief` and, when needed, `problem-frame`.
 - CI and local validators check workflow entry rules so the gate cannot silently drift.
@@ -103,10 +108,42 @@ Protocol artifacts are registered in `schemas/artifacts/registry.yml` and backed
 - `course-correction-note`
 - `review-report`
 - `verification-record`
+- `route-decision`
+- `execution-state`
 
 `verification-record.v1` is the first repo-native foothold for completion-claim proof shape. It requires evidence references, checks run, pass/fail lists, remaining unverified scope, and `claim_may_be_made` alignment. A completion claim may be made only when the record is accepted, checks are passed, and no failed or unverified items remain.
 
-This is intentionally narrow. `verification-record.v1` validates proof shape; route-level acceptance and semantic adequacy still require workflow rules, artifact-flow checks, and human or agent review for the specific route.
+`route-decision.v1` keeps approved workflow focus and reviewer-declared obligations outside mutable execution bindings. `execution-state.v1` records one globally ordered lifecycle/phase/binding history, append-only completion attempts, and content-addressed evidence/work snapshots. These v1 artifacts are opt-in and do not change `verification-record.v1.claim_scope` semantics.
+
+Generic artifact inspection emits no authority:
+
+```bash
+python scripts/validate_prodcraft.py --artifact-instance <artifact.json>
+```
+
+Strict gate authorization requires the canonical state path plus an operator-held route digest. Terminal authorization additionally requires an operator-held completion digest over the final attempt, evidence commitment, and terminal transition records:
+
+```bash
+python scripts/validate_prodcraft.py \
+  --authorize-execution-state .prodcraft/artifacts/<work_id>/execution-state.json \
+  --approved-route-digest sha256:<operator-pinned-route-digest> \
+  --approved-completion-digest sha256:<operator-pinned-completion-digest>
+```
+
+For a valid terminal bundle without a completion pin, the command exits non-zero and reports the candidate completion digest for out-of-band review. Supplying that digest is an explicit operator approval step, not an in-bundle self-attestation.
+
+Machine consumers can request one stable JSON object without changing authority semantics or exit codes:
+
+```bash
+python scripts/validate_prodcraft.py \
+  --authorize-execution-state .prodcraft/artifacts/<work_id>/execution-state.json \
+  --approved-route-digest sha256:<operator-pinned-route-digest> \
+  --output-format json
+```
+
+The current object contains exactly `status`, `authority`, `candidate_completion_digest`, and `errors`. A candidate-only result has `status: "invalid"`, `authority: null`, and a nonzero exit code. JSON rendering starts after successful argument parsing; invalid option combinations retain standard `argparse` stderr and exit code 2. This local CLI projection is not a versioned Direction 3 host-adapter protocol.
+
+Only `gate-authorized` or `terminal-authorized` exits zero. Historical/non-canonical state, a missing or mismatched pin, stale work/evidence, an invalid state projection, and structural-only results fail closed. See [Minimal Execution Loop Architecture](docs/architecture/2026-07-10-minimal-execution-loop.md), [ADR-003](docs/adr/ADR-003-repository-owned-execution-state.md), the [Threat Model](docs/architecture/2026-07-10-minimal-execution-loop-threat-model.md), and the [Acceptance Record](docs/architecture/2026-07-10-minimal-execution-loop-acceptance.md).
 
 `intake-brief.v1` also carries `quality_target_context`: runtime context, exposure profile, production target, non-targets, and evidence references. This prevents downstream quality skills from treating an agent-internal skill or local harness as a public service just because the implementation contains HTTP-shaped code, while preserving full service review when the target is actually internet-exposed or multi-user.
 
@@ -115,7 +152,7 @@ This is intentionally narrow. `verification-record.v1` validates proof shape; ro
 Prodcraft does **not** assume every skill should be found from metadata alone.
 
 - **discoverability-first** skills are the small control-plane set whose value depends on being surfaced directly from a user request.
-- **routed** skills are the majority of the lifecycle spine and are usually invoked by `intake`, workflow selection, or explicit handoff from an upstream skill.
+- **routed** skills are the majority of the lifecycle spine and are usually invoked by `pc-intake`, workflow selection, or explicit handoff from an upstream skill.
 
 This means:
 
@@ -131,12 +168,15 @@ This means:
 Prodcraft supports the public Agent Skills install flow:
 
 ```bash
-npx skills add <repo-url>
-npx skills add <repo-url> --skill intake
+npx skills add <repo-url>/skills/.curated
+npx skills add <repo-url>/skills/.curated --skill pc-intake
 npx skills update
 ```
 
 The canonical public beta install surface is `skills/.curated/`. It is generated from repository registries and should not be edited by hand.
+Repository-root discovery is not the public contract unless the installer has
+explicit registry-aware filtering; root discovery includes repository-local
+authoring packages that are not part of the curated public surface.
 
 Public export is governed by two registries:
 
@@ -151,7 +191,7 @@ Portability classifications are:
 
 Current public skills are conservatively classified as `portable_with_caveat`. The generated `skills/.curated/index.json` exposes only public-safe portability fields: `portability` and, when needed, `public_caveat_text`. Hidden dependency notes stay in the repository registry.
 
-The generated `prodcraft` package is a gateway package. A single `prodcraft/SKILL.md` in a global or public install is expected and is not evidence that downstream skills are missing. Agents must resolve downstream context from a trusted source repository, a global runtime locator, or sibling public skill packages; if those cannot be resolved, they should stay in entry-level guidance instead of claiming repository-grade workflow, validator, QA, or completion gates have run. For a global install, the current workspace is trusted only when it matches the locator's canonical repository root or has been explicitly identified by the user or host runtime as the Prodcraft source repository.
+The generated `pc-prodcraft` package is a gateway package. A single `pc-prodcraft/SKILL.md` in a global or public install is expected and is not evidence that downstream skills are missing. Agents must resolve downstream context from a trusted source repository, a global runtime locator, or sibling public skill packages; if those cannot be resolved, they should stay in entry-level guidance instead of claiming repository-grade workflow, validator, QA, or completion gates have run. For a global install, the current workspace is trusted only when it matches the locator's canonical repository root or has been explicitly identified by the user or host runtime as the Prodcraft source repository.
 
 Regenerate and validate the curated surface:
 
@@ -179,12 +219,14 @@ Current architecture governance is split deliberately:
 - Execution support register: [Architecture Review Action Register](docs/architecture/2026-04-17-architecture-review-action-register.md)
 - AR-01 measurement protocol: [Enforcement Promotion Measurement Protocol](docs/architecture/ar-01-enforcement-promotion-measurement-protocol.md)
 - Provisional AR-03 host policy: [Host Adapter Policy](docs/architecture/ar-03-host-adapter-policy.md)
+- Implemented Direction 2 control plane: [Minimal Execution Loop Architecture](docs/architecture/2026-07-10-minimal-execution-loop.md)
+- Direction 2 decision and Direction 3 migration boundary: [ADR-003](docs/adr/ADR-003-repository-owned-execution-state.md)
 
 The current action sequence is:
 
 1. Treat the AR-01 provisional enforcement promotion matrix as the current planning input, not as canonical architecture policy.
-2. Run AR-02 first repo-native downstream execution checks on a small execution-critical slice.
-3. Formalize or implement AR-03 host adapters only after repository-owned contracts are clear.
+2. Use the opt-in Direction 2 route/execution authority on bounded work before considering mandatory adoption.
+3. Formalize or implement AR-03 host adapters only as adapters over repository-owned authority.
 4. Extend AR-04 `.curated/` portability review from the initial static review to live full-repo versus curated-only task runs.
 5. Audit AR-05 protocol artifacts for essential versus accidental complexity.
 
@@ -226,13 +268,13 @@ Every skill follows Anthropic's `SKILL.md` package shape. Runtime-discoverable f
 
 ```yaml
 ---
-name: skill-name
+name: pc-system-design
 description: "Use when requirements are clear enough to choose components, interfaces, and quality-attribute trade-offs before planning or implementation."
 metadata:
   phase: "02-architecture"
   inputs: ["requirements-doc", "domain-model"]
   outputs: ["system-architecture-doc", "component-diagram"]
-  prerequisites: ["spec-writing", "domain-modeling"]
+  prerequisites: ["pc-spec-writing", "pc-domain-modeling"]
   quality_gate: "Architecture review approved by tech lead"
   roles: ["architect", "tech-lead"]
   methodologies: ["all"]
@@ -303,7 +345,7 @@ Quality gates are not magic. They are useful only when the required state, artif
 ### Work from the repository
 
 1. Read `CLAUDE.md` for mandatory project rules.
-2. Start through `skills/00-discovery/intake/SKILL.md`.
+2. Start through `skills/00-discovery/pc-intake/SKILL.md`.
 3. Use `skills/_gateway.md` and the selected file in `workflows/` to route the next skills.
 4. Produce the required protocol artifacts from `templates/`.
 5. Run validators before claiming completion.
@@ -311,7 +353,7 @@ Quality gates are not magic. They are useful only when the required state, artif
 ### Use the public skill surface
 
 ```bash
-npx skills add <repo-url> --skill prodcraft
+npx skills add <repo-url>/skills/.curated --skill pc-prodcraft
 ```
 
 The public surface is useful for portable guidance and entry routing. Full governance guarantees require the source repository contracts, schemas, validators, and evidence paths.
@@ -321,16 +363,16 @@ The public surface is useful for portable guidance and entry routing. Full gover
 Each skill package can still be read directly:
 
 ```bash
-cat skills/04-implementation/tdd/SKILL.md
+cat skills/04-implementation/pc-tdd/SKILL.md
 ```
 
 Prodcraft does **not** ship a standalone `/orchestrator` command. The orchestration layer is defined by checked-in skill packages, gateway rules, workflow files, validators, and artifact registries.
 
 ## Operator Notes
 
-For gray-rollout or production cutovers where Prodcraft should become the default software-development entry system, use `scripts/install_prodcraft_global_skill.py` to manage the global `~/.agents/skills/prodcraft` gateway and `scripts/archive_superpowers_skills.py` to archive or restore conflicting global superpowers skills. Both scripts write reversible state and event logs under `build/`, which is gitignored.
+For gray-rollout or production cutovers where Prodcraft should become the default software-development entry system, use `scripts/install_prodcraft_global_skill.py` to manage the global `~/.agents/skills/pc-prodcraft` gateway and `scripts/archive_superpowers_skills.py` to archive or restore conflicting global superpowers skills. Both scripts write reversible state and event logs under `build/`, which is gitignored.
 
-The global `prodcraft` install is also a singleton gateway directory. Its installer writes `prodcraft-runtime.json` beside `SKILL.md` so agent runtimes can find the canonical repository, gateway file, source skill root, and workflows without mistaking the gateway directory for a complete skill inventory.
+The global `pc-prodcraft` install is also a singleton gateway directory. Its installer writes `prodcraft-runtime.json` beside `SKILL.md` so agent runtimes can find the canonical repository, gateway file, source skill root, and workflows without mistaking the gateway directory for a complete skill inventory.
 
 For routine local QA, prefer the installed `gemini` CLI where this repository asks for model-backed evals. Use the vendored Anthropic trigger harness only when official Claude trigger behavior is the object under test.
 
@@ -346,7 +388,7 @@ For routine local QA, prefer the installed `gemini` CLI where this repository as
 
 ## Contributing
 
-1. Start with `intake`, even for small work. Use `micro` for reversible trivia and `fast-track` when the route is clear but the change still warrants blocking approval.
+1. Start with `pc-intake`, even for small work. Use `micro` for reversible trivia and `fast-track` when the route is clear but the change still warrants blocking approval.
 2. Keep canonical repository artifacts in English.
 3. Put user-facing localized guidance in explicitly named companion docs only when needed.
 4. Follow `skills/_schema.md` and the relevant artifact schemas.

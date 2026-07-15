@@ -7,7 +7,7 @@ import yaml
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-TDD_SKILL = REPO_ROOT / "skills" / "04-implementation" / "tdd" / "SKILL.md"
+TDD_SKILL = REPO_ROOT / "skills" / "04-implementation" / "pc-tdd" / "SKILL.md"
 
 
 class TddDisciplineContractTests(unittest.TestCase):
@@ -31,7 +31,7 @@ class TddDisciplineContractTests(unittest.TestCase):
         manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
         entries = {entry["name"]: entry for entry in manifest["skills"]}
 
-        tdd = entries["tdd"]
+        tdd = entries["pc-tdd"]
 
         self.assertEqual("04-implementation", tdd["phase"])
         self.assertEqual("production", tdd["status"])

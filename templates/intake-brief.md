@@ -1,6 +1,6 @@
 # Intake Brief
 
-Use this template whenever `intake` routes new work into a workflow.
+Use this template whenever `pc-intake` routes new work into a workflow.
 
 ## Required Artifact
 
@@ -12,9 +12,9 @@ Use this template whenever `intake` routes new work into a workflow.
 ## Work Summary
 
 - request_summary:
-- source_language:
+- source_language: `BCP-47 locale such as en or zh-Hans, or mixed`
 - artifact_record_language: `en`
-- user_presentation_locale:
+- user_presentation_locale: `BCP-47 locale`
 - intake_mode:
 - work_type:
 - entry_phase:
@@ -67,7 +67,7 @@ Use this template whenever `intake` routes new work into a workflow.
 - constraints:
 - open questions:
 - context that downstream skills must preserve:
-- should `problem-framing` run next? yes / no
+- should `pc-problem-framing` run next? yes / no
 
 ## Micro Mode Compact Form
 
@@ -83,7 +83,7 @@ source_language: en | artifact_record_language: en | user_presentation_locale: e
 work_type: Documentation | entry_phase: cross-cutting
 quality_target_context: runtime_context=agent_internal_skill, exposure_profile=no_network_listener,
   production_target=repo docs, non_targets=[behavior change], evidence_refs=[README.md diff]
-scope_assessment: small | recommended_next_skill: documentation
+scope_assessment: small | recommended_next_skill: pc-documentation
 routing_rationale: single-line reversible doc fix, unambiguous route
 key_risks: none beyond doc accuracy | questions_asked: [] | routing_changed_by_answers: false
 ```

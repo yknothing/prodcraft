@@ -19,7 +19,7 @@ class LanguageBoundaryContractTests(unittest.TestCase):
         return json.loads(schema_path.read_text(encoding="utf-8"))
 
     @unittest.skipIf(jsonschema is None, "jsonschema not installed")
-    def test_problem_frame_and_requirements_doc_reject_invalid_language_boundary_values(self):
+    def test_problem_frame_and_requirements_doc_accept_portable_locale_values(self):
         problem_frame = {
             "artifact": "problem-frame",
             "schema_version": "problem-frame.v1",
@@ -29,7 +29,7 @@ class LanguageBoundaryContractTests(unittest.TestCase):
             "user_presentation_locale": "zh",
             "problem_statement": "Clarify the problem before spec work starts.",
             "recommended_option": "Option 1",
-            "next_skill_to_invoke": "requirements-engineering",
+            "next_skill_to_invoke": "pc-requirements-engineering",
         }
         requirements_doc = {
             "artifact": "requirements-doc",
@@ -44,28 +44,35 @@ class LanguageBoundaryContractTests(unittest.TestCase):
 
         jsonschema.validate(problem_frame, self.load_schema("problem-frame"))
         jsonschema.validate(requirements_doc, self.load_schema("requirements-doc"))
-
-        # Open BCP-47 contract: any well-formed language tag is valid for
-        # source and presentation fields.
         jsonschema.validate(
-            {**problem_frame, "source_language": "fr", "user_presentation_locale": "pt-BR"},
+            {**problem_frame, "source_language": "fr-FR", "user_presentation_locale": "fr"},
             self.load_schema("problem-frame"),
         )
         jsonschema.validate(
-            {**requirements_doc, "user_presentation_locale": "fr"},
+            {**requirements_doc, "source_language": "de", "user_presentation_locale": "de-DE"},
             self.load_schema("requirements-doc"),
         )
 
         invalid_payloads = (
-            ("problem-frame", {**problem_frame, "source_language": "not a tag!"}),
+            ("problem-frame", {**problem_frame, "source_language": "not_a_locale"}),
             ("problem-frame", {**problem_frame, "artifact_record_language": "zh"}),
-            ("requirements-doc", {**requirements_doc, "user_presentation_locale": "mixed"}),
+            ("requirements-doc", {**requirements_doc, "user_presentation_locale": "not_a_locale"}),
             ("requirements-doc", {**requirements_doc, "artifact_record_language": "zh"}),
         )
         for artifact_name, payload in invalid_payloads:
             with self.subTest(artifact=artifact_name, payload=payload):
                 with self.assertRaises(jsonschema.ValidationError):
                     jsonschema.validate(payload, self.load_schema(artifact_name))
+
+    def test_curated_entry_skills_do_not_export_operator_language_defaults(self):
+        for skill_name in ("pc-intake", "pc-problem-framing"):
+            with self.subTest(skill=skill_name):
+                content = (
+                    REPO_ROOT / "skills" / ".curated" / skill_name / "SKILL.md"
+                ).read_text(encoding="utf-8")
+                self.assertNotIn("Default to Chinese", content)
+                self.assertNotIn("default to Chinese", content)
+                self.assertIn("user_presentation_locale", content)
 
 
 if __name__ == "__main__":

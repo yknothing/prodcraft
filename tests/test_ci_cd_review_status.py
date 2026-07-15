@@ -15,7 +15,7 @@ class CiCdReviewStatusTests(unittest.TestCase):
 
     def test_manifest_registers_ci_cd_as_tested_routed(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
-        entry = entries["ci-cd"]
+        entry = entries["pc-ci-cd"]
 
         self.assertEqual("06-delivery", entry["phase"])
         self.assertEqual("tested", entry["status"])
@@ -32,11 +32,11 @@ class CiCdReviewStatusTests(unittest.TestCase):
 
     def test_tested_artifacts_exist(self):
         targets = [
-            REPO_ROOT / "eval" / "06-delivery" / "ci-cd" / "findings.md",
-            REPO_ROOT / "eval" / "06-delivery" / "ci-cd" / "evals" / "eval-strategy.md",
-            REPO_ROOT / "eval" / "06-delivery" / "ci-cd" / "isolated-benchmark-plan.md",
-            REPO_ROOT / "eval" / "06-delivery" / "ci-cd" / "isolated-benchmark-review.md",
-            REPO_ROOT / "eval" / "06-delivery" / "ci-cd" / "pipeline-review.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-ci-cd" / "findings.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-ci-cd" / "evals" / "eval-strategy.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-ci-cd" / "isolated-benchmark-plan.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-ci-cd" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-ci-cd" / "pipeline-review.md",
         ]
 
         for path in targets:
@@ -47,14 +47,14 @@ class CiCdReviewStatusTests(unittest.TestCase):
         artifact_flow = {entry["artifact"]: entry for entry in self.manifest["artifact_flow"]}
         phase_text = (REPO_ROOT / "skills" / "06-delivery" / "_phase.md").read_text(encoding="utf-8")
         gateway = (REPO_ROOT / "skills" / "_gateway.md").read_text(encoding="utf-8")
-        findings = (REPO_ROOT / "eval" / "06-delivery" / "ci-cd" / "findings.md").read_text(
+        findings = (REPO_ROOT / "eval" / "06-delivery" / "pc-ci-cd" / "findings.md").read_text(
             encoding="utf-8"
         )
 
-        self.assertEqual("ci-cd", artifact_flow["ci-cd-pipeline"]["produced_by"])
-        self.assertIn("release-management", artifact_flow["ci-cd-pipeline"]["consumed_by"])
-        self.assertIn("ci-cd", phase_text)
-        self.assertIn("ci-cd", gateway)
+        self.assertEqual("pc-ci-cd", artifact_flow["ci-cd-pipeline"]["produced_by"])
+        self.assertIn("pc-release-management", artifact_flow["ci-cd-pipeline"]["consumed_by"])
+        self.assertIn("pc-ci-cd", phase_text)
+        self.assertIn("pc-ci-cd", gateway)
         self.assertIn("Current status: `tested`", findings)
         self.assertIn("isolated benchmark", findings)
 

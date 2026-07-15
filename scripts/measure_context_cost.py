@@ -40,9 +40,9 @@ CHARS_PER_TOKEN = 3.8
 
 ENTRY_STACK_FILES = (
     "skills/_gateway.md",
-    "skills/00-discovery/intake/SKILL.md",
-    "skills/00-discovery/intake/references/routing-signals-and-examples.md",
-    "skills/00-discovery/intake/references/gotchas.md",
+    "skills/00-discovery/pc-intake/SKILL.md",
+    "skills/00-discovery/pc-intake/references/routing-signals-and-examples.md",
+    "skills/00-discovery/pc-intake/references/gotchas.md",
     "templates/intake-brief.md",
 )
 

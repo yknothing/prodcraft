@@ -16,11 +16,11 @@ class RoutedTestedPromotionsWaveTests(unittest.TestCase):
 
     def test_manifest_registers_wave_skills_as_tested_with_benchmark_results(self):
         targets = {
-            "user-research": "00-discovery",
-            "incident-response": "07-operations",
-            "runbooks": "07-operations",
-            "tech-debt-management": "08-evolution",
-            "retrospective": "08-evolution",
+            "pc-user-research": "00-discovery",
+            "pc-incident-response": "07-operations",
+            "pc-runbooks": "07-operations",
+            "pc-tech-debt-management": "08-evolution",
+            "pc-retrospective": "08-evolution",
         }
 
         for name, phase in targets.items():
@@ -37,11 +37,11 @@ class RoutedTestedPromotionsWaveTests(unittest.TestCase):
 
     def test_findings_record_tested_status_for_wave_skills(self):
         targets = [
-            REPO_ROOT / "eval" / "00-discovery" / "user-research" / "findings.md",
-            REPO_ROOT / "eval" / "07-operations" / "incident-response" / "findings.md",
-            REPO_ROOT / "eval" / "07-operations" / "runbooks" / "findings.md",
-            REPO_ROOT / "eval" / "08-evolution" / "tech-debt-management" / "findings.md",
-            REPO_ROOT / "eval" / "08-evolution" / "retrospective" / "findings.md",
+            REPO_ROOT / "eval" / "00-discovery" / "pc-user-research" / "findings.md",
+            REPO_ROOT / "eval" / "07-operations" / "pc-incident-response" / "findings.md",
+            REPO_ROOT / "eval" / "07-operations" / "pc-runbooks" / "findings.md",
+            REPO_ROOT / "eval" / "08-evolution" / "pc-tech-debt-management" / "findings.md",
+            REPO_ROOT / "eval" / "08-evolution" / "pc-retrospective" / "findings.md",
         ]
 
         for path in targets:

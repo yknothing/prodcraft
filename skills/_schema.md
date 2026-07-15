@@ -123,9 +123,9 @@ For larger skills, move the `## Gotchas` content into `references/gotchas.md` an
 
 ## Naming Conventions
 
-- Directory names match the `name` field: `api-design/SKILL.md` has `name: api-design`
-- Use verb-noun patterns when possible: `spec-writing`, `code-review`, `risk-assessment`
-- Avoid generic names: prefer `data-modeling` over `database`
+- Directory names match the `name` field: `pc-api-design/SKILL.md` has `name: pc-api-design`
+- Use the `pc-` prefix and verb-noun patterns when possible: `pc-spec-writing`, `pc-code-review`, `pc-risk-assessment`
+- Avoid generic names: prefer `pc-data-modeling` over `pc-database`
 
 ## Artifact Naming
 

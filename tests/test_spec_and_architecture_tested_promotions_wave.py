@@ -17,10 +17,10 @@ class SpecificationAndArchitectureTestedPromotionsWaveTests(unittest.TestCase):
 
     def test_manifest_registers_wave_skills_as_tested(self):
         targets = {
-            "spec-writing": "01-specification",
-            "domain-modeling": "01-specification",
-            "data-modeling": "02-architecture",
-            "security-design": "02-architecture",
+            "pc-spec-writing": "01-specification",
+            "pc-domain-modeling": "01-specification",
+            "pc-data-modeling": "02-architecture",
+            "pc-security-design": "02-architecture",
         }
 
         for name, phase in targets.items():
@@ -44,14 +44,14 @@ class SpecificationAndArchitectureTestedPromotionsWaveTests(unittest.TestCase):
 
     def test_manual_branch_pair_artifacts_exist(self):
         targets = [
-            REPO_ROOT / "eval" / "01-specification" / "domain-modeling" / "manual-run-2026-04-10-access-review" / "eval-1-access-review-modernization-domain-model" / "without_skill" / "response.md",
-            REPO_ROOT / "eval" / "01-specification" / "domain-modeling" / "manual-run-2026-04-10-access-review" / "eval-1-access-review-modernization-domain-model" / "with_skill" / "response.md",
-            REPO_ROOT / "eval" / "01-specification" / "spec-writing" / "manual-run-2026-04-10-access-review" / "eval-1-access-review-modernization-spec" / "without_skill" / "response.md",
-            REPO_ROOT / "eval" / "01-specification" / "spec-writing" / "manual-run-2026-04-10-access-review" / "eval-1-access-review-modernization-spec" / "with_skill" / "response.md",
-            REPO_ROOT / "eval" / "02-architecture" / "data-modeling" / "manual-run-2026-04-10-access-review" / "eval-1-access-review-modernization-data-model" / "without_skill" / "response.md",
-            REPO_ROOT / "eval" / "02-architecture" / "data-modeling" / "manual-run-2026-04-10-access-review" / "eval-1-access-review-modernization-data-model" / "with_skill" / "response.md",
-            REPO_ROOT / "eval" / "02-architecture" / "security-design" / "manual-run-2026-04-10-access-review" / "eval-1-access-review-modernization-security-design" / "without_skill" / "response.md",
-            REPO_ROOT / "eval" / "02-architecture" / "security-design" / "manual-run-2026-04-10-access-review" / "eval-1-access-review-modernization-security-design" / "with_skill" / "response.md",
+            REPO_ROOT / "eval" / "01-specification" / "pc-domain-modeling" / "manual-run-2026-04-10-access-review" / "eval-1-access-review-modernization-domain-model" / "without_skill" / "response.md",
+            REPO_ROOT / "eval" / "01-specification" / "pc-domain-modeling" / "manual-run-2026-04-10-access-review" / "eval-1-access-review-modernization-domain-model" / "with_skill" / "response.md",
+            REPO_ROOT / "eval" / "01-specification" / "pc-spec-writing" / "manual-run-2026-04-10-access-review" / "eval-1-access-review-modernization-spec" / "without_skill" / "response.md",
+            REPO_ROOT / "eval" / "01-specification" / "pc-spec-writing" / "manual-run-2026-04-10-access-review" / "eval-1-access-review-modernization-spec" / "with_skill" / "response.md",
+            REPO_ROOT / "eval" / "02-architecture" / "pc-data-modeling" / "manual-run-2026-04-10-access-review" / "eval-1-access-review-modernization-data-model" / "without_skill" / "response.md",
+            REPO_ROOT / "eval" / "02-architecture" / "pc-data-modeling" / "manual-run-2026-04-10-access-review" / "eval-1-access-review-modernization-data-model" / "with_skill" / "response.md",
+            REPO_ROOT / "eval" / "02-architecture" / "pc-security-design" / "manual-run-2026-04-10-access-review" / "eval-1-access-review-modernization-security-design" / "without_skill" / "response.md",
+            REPO_ROOT / "eval" / "02-architecture" / "pc-security-design" / "manual-run-2026-04-10-access-review" / "eval-1-access-review-modernization-security-design" / "with_skill" / "response.md",
         ]
 
         for path in targets:
@@ -60,10 +60,10 @@ class SpecificationAndArchitectureTestedPromotionsWaveTests(unittest.TestCase):
 
     def test_findings_and_artifact_flow_record_tested_status(self):
         expectations = {
-            "domain-modeling": ("domain-model", "spec-writing"),
-            "spec-writing": ("spec-doc", "api-design"),
-            "data-modeling": ("data-schema", "feature-development"),
-            "security-design": ("threat-model", "security-audit"),
+            "pc-domain-modeling": ("domain-model", "pc-spec-writing"),
+            "pc-spec-writing": ("spec-doc", "pc-api-design"),
+            "pc-data-modeling": ("data-schema", "pc-feature-development"),
+            "pc-security-design": ("threat-model", "pc-security-audit"),
         }
 
         for skill_name, (artifact_name, downstream_consumer) in expectations.items():

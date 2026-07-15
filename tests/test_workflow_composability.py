@@ -42,7 +42,7 @@ class WorkflowComposabilityTests(unittest.TestCase):
 
     def test_intake_template_and_skill_use_primary_plus_overlays(self):
         intake_template = (REPO_ROOT / "templates" / "intake-brief.md").read_text(encoding="utf-8")
-        intake_skill = (REPO_ROOT / "skills" / "00-discovery" / "intake" / "SKILL.md").read_text(encoding="utf-8")
+        intake_skill = (REPO_ROOT / "skills" / "00-discovery" / "pc-intake" / "SKILL.md").read_text(encoding="utf-8")
 
         self.assertIn("workflow_primary", intake_template)
         self.assertIn("workflow_overlays", intake_template)
@@ -64,6 +64,27 @@ class WorkflowComposabilityTests(unittest.TestCase):
                         self.assertTrue(
                             re.search(rf"`{re.escape(ref)}`\s*\((?:experimental|planned)\)", line, re.IGNORECASE) is not None,
                             f"Workflow {path.name} references draft skill `{ref}` without marking it as experimental or planned on line: {line}"
+                        )
+
+    def test_workflow_status_labels_match_manifest(self):
+        manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
+        non_draft_skills = {
+            skill["name"]: skill["status"]
+            for skill in manifest.get("skills", [])
+            if skill.get("status") != "draft"
+        }
+
+        for path in sorted(WORKFLOWS_DIR.glob("*.md")):
+            if path.name.startswith("_"):
+                continue
+            body = path.read_text(encoding="utf-8")
+            for line in body.splitlines():
+                refs = re.findall(r"`([a-z0-9-]+)`", line)
+                for ref in refs:
+                    if ref in non_draft_skills:
+                        self.assertIsNone(
+                            re.search(rf"`{re.escape(ref)}`\s*\((?:experimental|planned)\)", line, re.IGNORECASE),
+                            f"Workflow {path.name} marks non-draft skill `{ref}` as experimental/planned despite manifest status {non_draft_skills[ref]} on line: {line}",
                         )
 
 

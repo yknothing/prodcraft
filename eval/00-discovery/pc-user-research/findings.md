@@ -1,0 +1,54 @@
+# User Research QA Findings
+
+## Summary
+
+`pc-user-research` moves from `review` to `tested`.
+
+The skill is now treated as a **routed discovery skill** whose current evidence comes from a staged handoff review from `pc-problem-framing`.
+
+## What Changed
+
+1. The skill package now acknowledges that `problem-frame` can be a valid upstream input.
+2. The skill contract now explicitly forbids inventing "validated" personas when real user evidence does not yet exist.
+3. `research-plan` is now declared as a first-class output so the current review evidence matches the actual pre-evidence behavior of the skill.
+4. The first review-stage handoff review now checks whether `pc-user-research` can turn a framed discovery direction into a concrete research plan without drifting into requirements.
+
+## What We Learned
+
+1. `pc-problem-framing` is a meaningful upstream consumer test for `pc-user-research`; it exposes whether the skill preserves non-goals and unresolved questions instead of flattening them.
+2. The correct early output in this situation is often a **research plan**, not a pretend persona set.
+3. The skill's value is strongest when the team already has a candidate direction but still needs user evidence before requirements should start.
+4. The first signal no longer comes from a single product-direction scenario only; it now also appears in a classic B2B/SaaS brownfield admin-modernization case.
+5. The preferred brownfield scenario now has semi-isolated manual benchmark evidence, which is stronger than plain handoff review and is enough for a narrow tested posture, even though it is still weaker than a true isolated benchmark.
+6. A downstream specification-consumption review now exists for the same brownfield scenario, showing that evidence-backed user-research artifacts improve later requirements work rather than just producing cleaner discovery documents.
+7. That downstream specification-consumption path now also has semi-isolated manual benchmark evidence, so the value of `pc-user-research` is no longer supported only by discovery-local reviews.
+8. A non-brownfield downstream comparison scenario now exists as well, which reduces the risk that the observed downstream lift is only a brownfield artifact.
+
+## Contract Implication
+
+`research-plan` should be treated as a legitimate intermediate discovery artifact:
+
+- it improves observability and handoff discipline
+- it does **not** satisfy the full user-research quality gate by itself
+- downstream specification work should start from evidence-backed personas and journeys, not from a research plan alone
+
+The new downstream review follows that rule: it uses evidence-shaped persona and journey fixtures, not the earlier `research-plan`, when testing `pc-requirements-engineering`.
+
+## Implication for Prodcraft
+
+`pc-user-research` should be evaluated as a routed discovery skill:
+
+- invoked after `pc-intake` or `pc-problem-framing`
+- judged on evidence quality and handoff discipline
+- not primarily judged on discoverability in a crowded skill ecosystem
+
+## Current Status
+
+`pc-user-research` is now `tested` under a narrow routed-evidence posture:
+
+- semi-isolated benchmark evidence exists for the preferred brownfield scenario
+- downstream specification-consumption evidence exists for both brownfield and non-brownfield follow-through
+
+## Next QA Step
+
+Run a true isolated benchmark or cross-reviewer execution drill on `seat-guest-management-problem-framing-handoff`, then replace the current semi-isolated tested evidence with a cleaner isolated lane.

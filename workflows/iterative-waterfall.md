@@ -4,7 +4,7 @@ description: "Phase-gated development with iteration allowed within each phase"
 cadence: "phase-based, 2-6 weeks per phase"
 workflow_kind: "primary"
 composes_with: ["greenfield", "brownfield", "hotfix"]
-entry_skill: "intake"
+entry_skill: "pc-intake"
 required_artifacts: ["intake-brief"]
 best_for: ["enterprise", "compliance-heavy", "large-scope", "distributed-teams"]
 phases_included: ["all"]
@@ -24,7 +24,7 @@ This workflow may be paired with overlays such as `greenfield`, `brownfield`, or
 
 ## Entry Gate
 
-This workflow starts only after `intake` is completed and approved. The required artifact is the `intake-brief`, which captures why a phase-gated workflow is appropriate and what assumptions or constraints must be carried into the first phase.
+This workflow starts only after `pc-intake` is completed and approved. The required artifact is the `intake-brief`, which captures why a phase-gated workflow is appropriate and what assumptions or constraints must be carried into the first phase.
 
 ## Phase Sequence
 
@@ -32,7 +32,7 @@ This workflow starts only after `intake` is completed and approved. The required
 
 **Purpose:** Define the problem space, stakeholders, and constraints.
 
-**Skills:** Apply `user-research`, `market-analysis` (experimental), and `feasibility-study` (experimental).
+**Skills:** Apply `pc-user-research`, `pc-market-analysis`, and `pc-feasibility-study`.
 
 **Iteration within phase:** Conduct initial research, synthesize findings, review with stakeholders, refine understanding. Expect 2-3 iteration cycles.
 
@@ -51,7 +51,7 @@ This workflow starts only after `intake` is completed and approved. The required
 
 **Purpose:** Translate discovery into detailed, verifiable requirements.
 
-**Skills:** Apply `requirements-engineering`, `spec-writing`, `domain-modeling`, and `acceptance-criteria`.
+**Skills:** Apply `pc-requirements-engineering`, `pc-spec-writing`, `pc-domain-modeling`, and `pc-acceptance-criteria`.
 
 **Iteration within phase:** Draft requirements, review with stakeholders and architects for feasibility, revise for clarity and completeness. Each requirement goes through at least one review cycle.
 
@@ -70,7 +70,7 @@ Requirements are versioned. Each revision is tracked with change rationale. The 
 
 **Purpose:** Design a system that fulfills all specified requirements.
 
-**Skills:** Apply `system-design`, `api-design`, `data-modeling`, `security-design`, and `tech-selection`.
+**Skills:** Apply `pc-system-design`, `pc-api-design`, `pc-data-modeling`, `pc-security-design`, and `pc-tech-selection`.
 
 **Iteration within phase:** Propose architecture, review against requirements and quality attributes, revise. Prototype high-risk components if needed. Expect 2-3 design iterations.
 
@@ -89,7 +89,7 @@ Requirements are versioned. Each revision is tracked with change rationale. The 
 
 **Purpose:** Break the architecture into implementable work units and schedule delivery.
 
-**Skills:** Apply `task-breakdown`, `risk-assessment`, and `estimation`.
+**Skills:** Apply `pc-task-breakdown`, `pc-risk-assessment`, and `pc-estimation`.
 
 **Iteration within phase:** Create initial work breakdown, validate estimates with implementers, adjust sequencing based on dependencies and risk, finalize.
 
@@ -108,7 +108,7 @@ Requirements are versioned. Each revision is tracked with change rationale. The 
 
 **Purpose:** Build the software according to the architecture and plan.
 
-**Skills:** Apply `tdd`, `feature-development`, `refactoring`, `code-review`, `documentation`, and `ci-cd`.
+**Skills:** Apply `pc-tdd`, `pc-feature-development`, `pc-refactoring`, `pc-code-review`, `pc-documentation`, and `pc-ci-cd`.
 
 **Iteration within phase:** Implement in increments aligned to the WBS. Each increment includes coding, unit testing, code review, and integration. Weekly progress reviews allow course correction.
 
@@ -127,7 +127,7 @@ Deviations from the architecture or specification are logged and escalated throu
 
 **Purpose:** Verify the implementation against the specification.
 
-**Skills:** Apply `testing-strategy`, `code-review`, `security-audit`, and `documentation`.
+**Skills:** Apply `pc-testing-strategy`, `pc-code-review`, `pc-security-audit`, and `pc-documentation`.
 
 **Iteration within phase:** Execute test plan, report defects, fix defects, re-test. Iterate until exit criteria met.
 
@@ -144,7 +144,7 @@ Deviations from the architecture or specification are logged and escalated throu
 
 **Purpose:** Deploy to production with controlled risk.
 
-**Skills:** Apply `ci-cd`, `release-management`, `deployment-strategy`, and `documentation`.
+**Skills:** Apply `pc-ci-cd`, `pc-release-management`, `pc-deployment-strategy`, and `pc-documentation`.
 
 **Inputs:** Release-ready software, deployment plan, rollback plan, communication plan.
 **Outputs:** Production deployment, release notes, deployment verification report.
@@ -155,7 +155,7 @@ Deployment follows a rehearsed plan. Rollback is tested before go-live. Stakehol
 
 **Purpose:** Maintain system health and respond to incidents.
 
-**Skills:** Apply `incident-response` and `documentation`.
+**Skills:** Apply `pc-incident-response` and `pc-documentation`.
 
 **Inputs:** Production system, monitoring configuration, runbooks, SLAs.
 **Outputs:** Operational dashboards, incident reports, postmortems, maintenance log.
@@ -164,7 +164,7 @@ Deployment follows a rehearsed plan. Rollback is tested before go-live. Stakehol
 
 **Purpose:** Assess system health and plan improvements.
 
-**Skills:** Apply `retrospective`, `tech-debt-management`, and `market-analysis` (experimental).
+**Skills:** Apply `pc-retrospective`, `pc-tech-debt-management`, and `pc-market-analysis`.
 
 **Inputs:** Operational data, user feedback, market changes, tech debt inventory.
 **Outputs:** Evolution plan, updated roadmap, process improvements.

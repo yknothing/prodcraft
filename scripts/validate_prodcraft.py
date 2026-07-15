@@ -5,28 +5,78 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
+import stat
 import sys
 import tempfile
-from datetime import datetime
 from pathlib import Path
 
 import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from tools.execution_validation import (  # noqa: E402
+    ValidationDisposition,
+    authorize_execution_state,
+    validate_artifact_instance,
+    validate_registered_artifact_payload as validate_registered_artifact_payload,
+    validate_verification_record_instance_contract as validate_verification_record_instance_contract,
+)
+from tools.execution_state import (  # noqa: E402
+    STRICT_JSON_MAX_BYTES,
+    StrictJSONError,
+    parse_strict_json_bytes,
+)
+
 SKILLS_DIR = ROOT / "skills"
 CURATED_SKILLS_DIR = SKILLS_DIR / ".curated"
 WORKFLOWS_DIR = ROOT / "workflows"
 MANIFEST_PATH = ROOT / "manifest.yml"
 SCHEMAS_DIR = ROOT / "schemas"
 ARTIFACT_REGISTRY_PATH = SCHEMAS_DIR / "artifacts" / "registry.yml"
+PROTOCOL_RESULT_REGISTRY_PATH = SCHEMAS_DIR / "protocol" / "registry.yml"
 DISTRIBUTION_REGISTRY_PATH = SCHEMAS_DIR / "distribution" / "public-skill-registry.json"
 PUBLIC_SKILL_PORTABILITY_PATH = SCHEMAS_DIR / "distribution" / "public-skill-portability.json"
 MATRIX_PATH = ROOT / "rules" / "cross-cutting-matrix.yml"
-INTAKE_SKILL_PATH = SKILLS_DIR / "00-discovery" / "intake" / "SKILL.md"
+INTAKE_SKILL_PATH = SKILLS_DIR / "00-discovery" / "pc-intake" / "SKILL.md"
 GATEWAY_PATH = SKILLS_DIR / "_gateway.md"
 ADR_002_PATH = ROOT / "docs" / "adr" / "ADR-002-cross-phase-course-corrections.md"
+
+SKILL_NAME_PREFIX = "pc-"
+SKILL_NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+MARKDOWN_SKILL_LINK_RE = re.compile(
+    r"\[[^\]]+\]\((?P<target>[^)\s]*SKILL\.md(?:#[^)\s]+)?)\)"
+)
+LOCAL_EVAL_FILE_RE = re.compile(
+    r"`(?P<path>eval/[^`\s]+)`"
+)
+
+
+def _is_gitignored_local_artifact(rel_path: str) -> bool:
+    """True when a referenced eval path matches a declared local-artifact pattern.
+
+    Raw benchmark run directories (e.g. `eval/**/run-*/`) are deliberately
+    gitignored; review documents may still cite them as provenance for evidence
+    that lives only on the operator's machine. A gitignored reference is a
+    declared local artifact, not a broken link.
+    """
+    import subprocess
+
+    # Directory ignore patterns (`run-*/`) only match paths with a trailing
+    # slash, and the referenced path may be a file or a directory -- probe both.
+    for candidate in (rel_path, rel_path.rstrip("/") + "/"):
+        result = subprocess.run(
+            ["git", "check-ignore", "-q", candidate],
+            cwd=ROOT,
+            capture_output=True,
+        )
+        if result.returncode == 0:
+            return True
+    return False
 
 SKILL_REQUIRED_FIELDS = [
     "name",
@@ -72,6 +122,7 @@ CHECKS = {
     "workflow-skill-refs",
     "artifact-flow",
     "artifact-schema-registry",
+    "protocol-result-registry",
     "cross-cutting-matrix",
     "curated-surface",
     "security-minimal",
@@ -87,6 +138,16 @@ _SCRIPT_REF_RE = re.compile(r"(?<![\w/])scripts/[A-Za-z0-9_\-/]+\.py\b")
 # Discovery descriptions share one context budget across every installed skill.
 # Soft guidance is 280 characters; this is the enforced hard cap.
 DESCRIPTION_HARD_CAP = 350
+
+
+class _CheckChoices(tuple[str, ...]):
+    """Preserve the legacy argparse listing while accepting additive checks."""
+
+    def __contains__(self, value: object) -> bool:
+        return value in CHECKS
+
+
+LEGACY_CHECK_CHOICES = _CheckChoices(sorted(CHECKS - {"protocol-result-registry"}))
 
 # Zero-width and soft-hyphen characters that may hide injected content.
 _ZERO_WIDTH_CHARS = frozenset("\u200b\u200c\u200d\ufeff\u00ad")
@@ -133,6 +194,8 @@ PUBLIC_SURFACE_PORTABILITY = {
     "blocked",
 }
 
+BCP_47_LOCALE_PATTERN = r"^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$"
+
 CRITICAL_REVIEW_DEPTH_PATHS = {
     "benchmark_plan_path",
     "benchmark_results_path",
@@ -154,6 +217,20 @@ REQUIRED_SKILL_BODY_HEADINGS = (
 )
 
 QUALITY_GATE_CHECK_ITEM_RE = re.compile(r"^\s*-\s*\[\s*\]\s+.+$", re.MULTILINE)
+
+
+def validate_skill_name(name: object, source: Path, errors: list[str]) -> None:
+    if not isinstance(name, str) or not name:
+        errors.append(f"{source}: skill name must be a non-empty string")
+        return
+    if len(name) > 64:
+        errors.append(f"{source}: skill name `{name}` must be 64 characters or fewer")
+    if not SKILL_NAME_RE.fullmatch(name):
+        errors.append(
+            f"{source}: skill name `{name}` must contain only lowercase letters, numbers, and single hyphens"
+        )
+    if not name.startswith(SKILL_NAME_PREFIX):
+        errors.append(f"{source}: skill name `{name}` must start with `pc-`")
 
 
 def load_frontmatter(path: Path) -> tuple[dict, str]:
@@ -219,6 +296,149 @@ def load_yaml_file(path: Path, errors: list[str]) -> dict:
     return payload
 
 
+class _UniqueKeyLoader(yaml.SafeLoader):
+    """Safe YAML loader that rejects mapping-key replacement."""
+
+
+def _construct_unique_mapping(loader: _UniqueKeyLoader, node: yaml.MappingNode, deep: bool = False) -> dict:
+    mapping: dict = {}
+    for key_node, value_node in node.value:
+        key = loader.construct_object(key_node, deep=deep)
+        if key in mapping:
+            raise ValueError(f"duplicate YAML key `{key}`")
+        mapping[key] = loader.construct_object(value_node, deep=deep)
+    return mapping
+
+
+_UniqueKeyLoader.add_constructor(
+    yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+    _construct_unique_mapping,
+)
+
+
+def load_unique_yaml_mapping(path: Path, errors: list[str]) -> dict:
+    try:
+        payload = yaml.load(path.read_text(encoding="utf-8"), Loader=_UniqueKeyLoader) or {}
+    except FileNotFoundError:
+        errors.append(f"{path}: file does not exist")
+        return {}
+    except Exception as exc:
+        errors.append(f"{path}: failed to parse YAML: {exc}")
+        return {}
+    if not isinstance(payload, dict):
+        errors.append(f"{path}: expected a YAML mapping")
+        return {}
+    return payload
+
+
+def resolve_protocol_schema_path(
+    root: Path,
+    schema_rel: object,
+    registry_path: Path,
+    errors: list[str],
+) -> Path | None:
+    if (
+        not isinstance(schema_rel, str)
+        or not schema_rel.startswith("schemas/protocol/")
+        or schema_rel.startswith("/")
+        or "\\" in schema_rel
+        or ":" in schema_rel
+        or "//" in schema_rel
+        or schema_rel.endswith("/")
+        or any(part in {"", ".", ".."} for part in schema_rel.split("/"))
+    ):
+        errors.append(f"{registry_path}: unsafe `schema_path` `{schema_rel}`")
+        return None
+
+    candidate = root
+    parts = schema_rel.split("/")
+    for index, part in enumerate(parts):
+        candidate /= part
+        try:
+            mode = candidate.lstat().st_mode
+        except FileNotFoundError:
+            errors.append(f"{registry_path}: references missing schema `{schema_rel}`")
+            return None
+        except OSError as exc:
+            errors.append(f"{registry_path}: cannot inspect schema path `{schema_rel}`: {exc}")
+            return None
+        if stat.S_ISLNK(mode):
+            errors.append(f"{registry_path}: schema path `{schema_rel}` contains a symlink")
+            return None
+        if index < len(parts) - 1 and not stat.S_ISDIR(mode):
+            errors.append(f"{registry_path}: schema path `{schema_rel}` has a non-directory parent")
+            return None
+        if index == len(parts) - 1 and not stat.S_ISREG(mode):
+            errors.append(f"{registry_path}: schema path `{schema_rel}` must be a regular file")
+            return None
+
+    try:
+        candidate.resolve(strict=True).relative_to(root.resolve(strict=True))
+    except (OSError, ValueError):
+        errors.append(f"{registry_path}: unsafe `schema_path` `{schema_rel}` escapes repository root")
+        return None
+    return candidate
+
+
+def load_protocol_schema_snapshot(root: Path, schema_rel: str, schema_path: Path) -> dict:
+    """Read one schema without following a swapped path component."""
+
+    directory_fd = -1
+    file_fd = -1
+    try:
+        directory_flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0)
+        directory_fd = os.open(root, directory_flags)
+        parts = schema_rel.split("/")
+        for part in parts[:-1]:
+            next_fd = os.open(part, directory_flags, dir_fd=directory_fd)
+            os.close(directory_fd)
+            directory_fd = next_fd
+
+        file_flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0)
+        file_fd = os.open(parts[-1], file_flags, dir_fd=directory_fd)
+        opened_stat = os.fstat(file_fd)
+        if not stat.S_ISREG(opened_stat.st_mode):
+            raise StrictJSONError(f"schema path must be a regular file: {schema_path}")
+        with os.fdopen(file_fd, "rb", closefd=True) as handle:
+            file_fd = -1
+            content = handle.read(STRICT_JSON_MAX_BYTES + 1)
+            final_stat = os.fstat(handle.fileno())
+        if len(content) > STRICT_JSON_MAX_BYTES:
+            raise StrictJSONError(
+                f"schema exceeds {STRICT_JSON_MAX_BYTES} bytes: {schema_path}"
+            )
+        opened_identity = (
+            opened_stat.st_dev,
+            opened_stat.st_ino,
+            opened_stat.st_mode,
+            opened_stat.st_size,
+            opened_stat.st_mtime_ns,
+            opened_stat.st_ctime_ns,
+        )
+        final_identity = (
+            final_stat.st_dev,
+            final_stat.st_ino,
+            final_stat.st_mode,
+            final_stat.st_size,
+            final_stat.st_mtime_ns,
+            final_stat.st_ctime_ns,
+        )
+        if opened_identity != final_identity or len(content) != opened_stat.st_size:
+            raise StrictJSONError(f"schema changed while being read: {schema_path}")
+        return parse_strict_json_bytes(content, schema_path)
+    except StrictJSONError:
+        raise
+    except OSError as exc:
+        raise StrictJSONError(
+            f"schema path changed or contains a symlink: {schema_path}: {exc}"
+        ) from exc
+    finally:
+        if file_fd >= 0:
+            os.close(file_fd)
+        if directory_fd >= 0:
+            os.close(directory_fd)
+
+
 def schema_string_enum(schema: dict, field_name: str, schema_path: Path, errors: list[str]) -> set[str]:
     properties = schema.get("properties", {})
     if not isinstance(properties, dict):
@@ -236,6 +456,29 @@ def schema_string_enum(schema: dict, field_name: str, schema_path: Path, errors:
         return set()
 
     return set(values)
+
+
+def schema_locale_field(field: object, field_name: str, schema_path: Path, errors: list[str]) -> None:
+    if not isinstance(field, dict):
+        errors.append(f"{schema_path}: field `{field_name}` must be declared in `properties`")
+        return
+    if field.get("type") != "string" or field.get("pattern") != BCP_47_LOCALE_PATTERN:
+        errors.append(
+            f"{schema_path}: field `{field_name}` must be a BCP-47-style locale string using pattern {BCP_47_LOCALE_PATTERN}"
+        )
+
+
+def schema_source_language_field(field: object, field_name: str, schema_path: Path, errors: list[str]) -> None:
+    if not isinstance(field, dict):
+        errors.append(f"{schema_path}: field `{field_name}` must be declared in `properties`")
+        return
+    one_of = field.get("oneOf")
+    expected_locale_branch = {"type": "string", "pattern": BCP_47_LOCALE_PATTERN}
+    expected_mixed_branch = {"const": "mixed"}
+    if not isinstance(one_of, list) or expected_locale_branch not in one_of or expected_mixed_branch not in one_of:
+        errors.append(
+            f"{schema_path}: field `{field_name}` must allow BCP-47-style locale strings and the explicit `mixed` sentinel"
+        )
 
 
 def schema_nested_string_enum(schema: dict, path_parts: list[str], schema_path: Path, errors: list[str]) -> set[str]:
@@ -423,8 +666,6 @@ def validate_intake_brief_schema_contract(schema: dict, schema_path: Path, manif
 
 # Language fields are open BCP-47 tags, not a closed operator-specific list.
 # `source_language` additionally accepts the literal `mixed` for multilingual requests.
-SOURCE_LANGUAGE_PATTERN = "^([a-z]{2,3}(-[A-Za-z0-9]{1,8})*|mixed)$"
-PRESENTATION_LOCALE_PATTERN = "^[a-z]{2,3}(-[A-Za-z0-9]{1,8})*$"
 
 
 def validate_language_boundary_schema_contract(schema: dict, schema_path: Path, errors: list[str]) -> None:
@@ -433,19 +674,10 @@ def validate_language_boundary_schema_contract(schema: dict, schema_path: Path, 
         errors.append(f"{schema_path}: `properties` must be a mapping")
         return
 
-    source_language = properties.get("source_language", {})
-    if not isinstance(source_language, dict) or source_language.get("pattern") != SOURCE_LANGUAGE_PATTERN:
-        errors.append(
-            f"{schema_path}: `source_language` must be an open BCP-47 string with pattern `{SOURCE_LANGUAGE_PATTERN}`"
-        )
+    schema_source_language_field(properties.get("source_language"), "source_language", schema_path, errors)
+    schema_locale_field(properties.get("user_presentation_locale"), "user_presentation_locale", schema_path, errors)
 
-    presentation_locale = properties.get("user_presentation_locale", {})
-    if not isinstance(presentation_locale, dict) or presentation_locale.get("pattern") != PRESENTATION_LOCALE_PATTERN:
-        errors.append(
-            f"{schema_path}: `user_presentation_locale` must be an open BCP-47 string with pattern `{PRESENTATION_LOCALE_PATTERN}`"
-        )
-
-    artifact_record_language = properties.get("artifact_record_language", {})
+    artifact_record_language = properties.get("artifact_record_language", {}) if isinstance(properties, dict) else {}
     if not isinstance(artifact_record_language, dict) or artifact_record_language.get("const") != "en":
         errors.append(f"{schema_path}: `artifact_record_language` must be a const `en` under current repo policy")
 
@@ -726,94 +958,6 @@ def validate_verification_record_schema_contract(schema: dict, schema_path: Path
         errors.append(f"{schema_path}: `additionalProperties` must be `false` to keep the verification contract closed")
 
 
-def _parse_record_datetime(value: object) -> datetime | None:
-    if not isinstance(value, str):
-        return None
-    try:
-        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
-    except ValueError:
-        return None
-    if parsed.tzinfo is None:
-        return None
-    return parsed
-
-
-def validate_verification_record_instance_contract(record: dict, source: str, errors: list[str]) -> None:
-    """Validate completion-claim bindings that JSON Schema cannot express portably."""
-    if record.get("status") != "accepted" and record.get("claim_may_be_made") is not True:
-        return
-
-    work_state = record.get("work_state_ref")
-    if not isinstance(work_state, dict):
-        errors.append(f"{source}: accepted verification record must use structured work_state_ref")
-        return
-
-    verified_at = _parse_record_datetime(record.get("verified_at"))
-    if verified_at is None:
-        errors.append(f"{source}: accepted verification record must include valid verified_at")
-
-    work_state_id = work_state.get("id")
-    if not isinstance(work_state_id, str) or not work_state_id:
-        errors.append(f"{source}: accepted verification record work_state_ref must include non-empty id")
-        return
-
-    work_state_captured_at = _parse_record_datetime(work_state.get("captured_at"))
-    if work_state_captured_at is None:
-        errors.append(f"{source}: accepted verification record work_state_ref must include valid captured_at")
-
-    evidence_refs = record.get("evidence_refs")
-    if not isinstance(evidence_refs, list) or not evidence_refs:
-        errors.append(f"{source}: accepted verification record must declare at least one evidence_ref")
-        evidence_refs = []
-
-    evidence_by_id: dict[str, dict] = {}
-    for evidence in evidence_refs:
-        if not isinstance(evidence, dict):
-            errors.append(f"{source}: evidence_refs entries must be structured objects")
-            continue
-        evidence_id = evidence.get("id")
-        if not isinstance(evidence_id, str) or not evidence_id:
-            errors.append(f"{source}: evidence_refs entries must include non-empty id")
-            continue
-        if evidence_id in evidence_by_id:
-            errors.append(f"{source}: evidence_ref id `{evidence_id}` must be unique")
-        evidence_by_id[evidence_id] = evidence
-
-        evidence_work_state_ref = evidence.get("work_state_ref")
-        if evidence_work_state_ref != work_state_id:
-            errors.append(
-                f"{source}: evidence `{evidence_id}` binds to work_state_ref `{evidence_work_state_ref}` instead of current work state `{work_state_id}`"
-            )
-
-        evidence_captured_at = _parse_record_datetime(evidence.get("captured_at"))
-        if evidence_captured_at is None:
-            errors.append(f"{source}: evidence `{evidence_id}` must include valid captured_at")
-        elif work_state_captured_at is not None and evidence_captured_at < work_state_captured_at:
-            errors.append(
-                f"{source}: accepted verification record evidence `{evidence_id}` is older than work state `{work_state_id}`"
-            )
-
-    checks_run = record.get("checks_run")
-    if not isinstance(checks_run, list) or not checks_run:
-        errors.append(f"{source}: accepted verification record must declare at least one check")
-        return
-
-    for check in checks_run:
-        if not isinstance(check, dict):
-            errors.append(f"{source}: checks_run entries must be structured objects")
-            continue
-        check_name = check.get("name")
-        check_label = check_name if isinstance(check_name, str) and check_name else "<unnamed>"
-        check_evidence_ref = check.get("evidence_ref")
-        if check_evidence_ref not in evidence_by_id:
-            errors.append(f"{source}: check `{check_label}` references unknown evidence_ref `{check_evidence_ref}`")
-        check_work_state_ref = check.get("work_state_ref")
-        if check_work_state_ref != work_state_id:
-            errors.append(
-                f"{source}: check `{check_label}` binds to work_state_ref `{check_work_state_ref}` instead of current work state `{work_state_id}`"
-            )
-
-
 def snapshot_file_tree(root: Path) -> dict[str, bytes]:
     return {
         str(path.relative_to(root)): path.read_bytes()
@@ -864,6 +1008,11 @@ def validate_skill_file(path: Path, errors: list[str]) -> None:
         if field not in frontmatter:
             errors.append(f"{path}: missing required skill field `{field}`")
 
+    name = frontmatter.get("name")
+    validate_skill_name(name, path, errors)
+    if isinstance(name, str) and name != path.parent.name:
+        errors.append(f"{path}: skill name `{name}` must match parent directory `{path.parent.name}`")
+
     description = frontmatter.get("description")
     if not isinstance(description, str):
         errors.append(f"{path}: `description` must be a string")
@@ -894,6 +1043,18 @@ def validate_skill_file(path: Path, errors: list[str]) -> None:
     if actual_phase != expected_phase:
         errors.append(f"{path}: `metadata.phase` must match parent phase directory `{expected_phase}`")
 
+    prerequisites = metadata.get("prerequisites")
+    if not isinstance(prerequisites, list):
+        errors.append(f"{path}: `metadata.prerequisites` must be a list")
+    else:
+        for prerequisite in prerequisites:
+            if not isinstance(prerequisite, str) or not prerequisite.startswith(SKILL_NAME_PREFIX):
+                errors.append(
+                    f"{path}: prerequisite `{prerequisite}` must be a canonical `pc-` skill name"
+                )
+            if isinstance(name, str) and prerequisite == name:
+                errors.append(f"{path}: skill `{name}` must not list itself as a prerequisite")
+
     try:
         frontmatter_raw = raw_frontmatter(path)
     except ValueError as exc:
@@ -917,6 +1078,14 @@ def validate_skill_file(path: Path, errors: list[str]) -> None:
         bundled_path = skill_dir / rel_target[0] / rel_target[1]
         if not bundled_path.exists():
             errors.append(f"{path}: referenced bundled resource `{bundled_path.relative_to(ROOT)}` does not exist")
+
+    for match in MARKDOWN_SKILL_LINK_RE.finditer(body):
+        target = match.group("target").split("#", 1)[0]
+        if target.startswith(("http://", "https://")):
+            continue
+        linked_path = (skill_dir / target).resolve()
+        if not linked_path.is_file():
+            errors.append(f"{path}: referenced skill link `{target}` does not exist")
 
     if "## Gotchas" in body:
         validate_gotchas_block(path, body, errors, source_label="inline gotchas section")
@@ -997,8 +1166,8 @@ def validate_workflow_file(path: Path, errors: list[str], selected_checks: set[s
             errors.append(f"{path}: `composes_with` must be a non-empty list")
 
     if "workflow-entry-gate" in selected_checks:
-        if frontmatter.get("entry_skill") != "intake":
-            errors.append(f"{path}: `entry_skill` must be `intake`")
+        if frontmatter.get("entry_skill") != "pc-intake":
+            errors.append(f"{path}: `entry_skill` must be `pc-intake`")
 
         required_artifacts = frontmatter.get("required_artifacts", [])
         if not isinstance(required_artifacts, list) or "intake-brief" not in required_artifacts:
@@ -1008,8 +1177,8 @@ def validate_workflow_file(path: Path, errors: list[str], selected_checks: set[s
             errors.append(f"{path}: missing `## Entry Gate` section")
 
         body_lower = body.lower()
-        if "intake" not in body_lower or "intake-brief" not in body_lower:
-            errors.append(f"{path}: entry gate must mention both `intake` and `intake-brief`")
+        if "pc-intake" not in body_lower or "intake-brief" not in body_lower:
+            errors.append(f"{path}: entry gate must mention both `pc-intake` and `intake-brief`")
 
         required_sections = ("Overview", "Phase Sequence", "Quality Gates", "Adaptation Notes")
         for section_name in required_sections:
@@ -1030,11 +1199,15 @@ def manifest_planned_skill_names(manifest: dict) -> set[str]:
 
 
 def maturity_marker_violation(status: object, marker_present: bool) -> str | None:
-    """Shared policy: how a skill's manifest status constrains prose maturity markers."""
+    """Shared policy: how a skill's manifest status constrains prose maturity markers.
+
+    Aligned with the workflow-reference rule on main: only draft skills carry
+    an (experimental)/(planned) marker; any non-draft marker is stale.
+    """
     if status == "draft" and not marker_present:
         return "is referenced without being explicitly marked as (experimental) or (planned)"
-    if status in {"tested", "secure", "production"} and marker_present:
-        return f"has manifest status `{status}` and must not carry a stale (experimental) or (planned) label"
+    if isinstance(status, str) and status != "draft" and marker_present:
+        return f"is marked experimental/planned; sync the label with manifest status `{status}`"
     return None
 
 
@@ -1045,15 +1218,178 @@ def validate_manifest(errors: list[str]) -> dict:
         errors.append(f"{MANIFEST_PATH}: failed to parse YAML: {exc}")
         return {}
 
-    for entry in manifest.get("skills", []):
+    skill_entries = manifest.get("skills", [])
+    for entry in skill_entries:
+        validate_skill_name(entry.get("name"), MANIFEST_PATH, errors)
         path = ROOT / entry["file"]
         if not path.exists():
             errors.append(f"{MANIFEST_PATH}: missing referenced skill file `{entry['file']}`")
+            continue
+        try:
+            frontmatter, _body = load_frontmatter(path)
+        except ValueError as exc:
+            errors.append(str(exc))
+            continue
+        if frontmatter.get("name") != entry.get("name"):
+            errors.append(
+                f"{MANIFEST_PATH}: skill `{entry.get('name')}` does not match frontmatter name "
+                f"`{frontmatter.get('name')}` in `{entry['file']}`"
+            )
 
     for entry in manifest.get("workflows", []):
         path = ROOT / entry["file"]
         if not path.exists():
             errors.append(f"{MANIFEST_PATH}: missing referenced workflow file `{entry['file']}`")
+
+    phase_ids = {
+        entry.get("id")
+        for entry in manifest.get("phases", [])
+        if isinstance(entry, dict) and isinstance(entry.get("id"), str)
+    }
+    skill_names = manifest_skill_names(manifest)
+    source_skill_names: set[str] = set()
+    for path in iter_lifecycle_skill_paths():
+        try:
+            frontmatter, _body = load_frontmatter(path)
+        except ValueError as exc:
+            errors.append(str(exc))
+            continue
+        name = frontmatter.get("name")
+        if isinstance(name, str):
+            source_skill_names.add(name)
+    if source_skill_names != skill_names:
+        missing_from_manifest = sorted(source_skill_names - skill_names)
+        missing_from_source = sorted(skill_names - source_skill_names)
+        if missing_from_manifest:
+            errors.append(f"{MANIFEST_PATH}: source skills missing from manifest {missing_from_manifest}")
+        if missing_from_source:
+            errors.append(f"{MANIFEST_PATH}: manifest skills missing from source tree {missing_from_source}")
+
+    for entry in skill_entries:
+        name = entry.get("name")
+        phase = entry.get("phase")
+        expected_file = f"skills/{phase}/{name}/SKILL.md"
+        if entry.get("file") != expected_file:
+            errors.append(
+                f"{MANIFEST_PATH}: skill `{name}` file must be `{expected_file}`"
+            )
+
+    planned_names: set[str] = set()
+    planned_skills = manifest.get("planned_skills", [])
+    if planned_skills is not None and not isinstance(planned_skills, list):
+        errors.append(f"{MANIFEST_PATH}: `planned_skills` must be a list when present")
+    for entry in planned_skills if isinstance(planned_skills, list) else []:
+        if not isinstance(entry, dict):
+            errors.append(f"{MANIFEST_PATH}: planned skill entries must be mappings")
+            continue
+        name = entry.get("name")
+        phase = entry.get("phase")
+        rationale = entry.get("rationale")
+        if not isinstance(name, str) or not name:
+            errors.append(f"{MANIFEST_PATH}: planned skill entries must include non-empty `name`")
+            continue
+        validate_skill_name(name, MANIFEST_PATH, errors)
+        if name in planned_names:
+            errors.append(f"{MANIFEST_PATH}: duplicate planned skill `{name}`")
+        planned_names.add(name)
+        if name in skill_names:
+            errors.append(f"{MANIFEST_PATH}: planned skill `{name}` already exists in `skills`")
+        if phase not in phase_ids and phase != "cross-cutting":
+            errors.append(f"{MANIFEST_PATH}: planned skill `{name}` has invalid phase `{phase}`")
+        if not isinstance(rationale, str) or not rationale:
+            errors.append(f"{MANIFEST_PATH}: planned skill `{name}` must include rationale")
+
+        target_file = entry.get("target_file")
+        expected_target_file = f"skills/{phase}/{name}/SKILL.md"
+        if target_file != expected_target_file:
+            errors.append(
+                f"{MANIFEST_PATH}: planned skill `{name}` target_file must be `{expected_target_file}`"
+            )
+
+    for entry in skill_entries:
+        name = entry.get("name")
+        path = ROOT / entry.get("file", "")
+        if not isinstance(name, str) or not path.is_file():
+            continue
+        try:
+            frontmatter, _body = load_frontmatter(path)
+        except ValueError:
+            continue
+        prerequisites = frontmatter.get("metadata", {}).get("prerequisites", [])
+        if not isinstance(prerequisites, list):
+            errors.append(f"{path}: `metadata.prerequisites` must be a list")
+            continue
+        for prerequisite in prerequisites:
+            if prerequisite not in skill_names:
+                errors.append(
+                    f"{path}: prerequisite `{prerequisite}` is not an implemented manifest skill"
+                )
+
+    for edge in manifest.get("iterative_feedback_edges", []):
+        if not isinstance(edge, dict):
+            errors.append(f"{MANIFEST_PATH}: iterative feedback edges must be mappings")
+            continue
+        for field in ("from", "to"):
+            skill_name = edge.get(field)
+            if skill_name not in skill_names:
+                errors.append(
+                    f"{MANIFEST_PATH}: iterative feedback edge `{field}` value `{skill_name}` "
+                    "is not an implemented skill"
+                )
+
+    root_eval_configs = set((ROOT / "eval").glob("*/*/evals.json"))
+    nested_eval_configs = set((ROOT / "eval").glob("*/*/evals/*.json"))
+    for config_path in sorted(root_eval_configs | nested_eval_configs):
+        try:
+            payload = json.loads(config_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+            errors.append(f"{config_path}: active eval config is not valid JSON: {exc}")
+            continue
+        if config_path in root_eval_configs and (
+            not isinstance(payload, dict) or not isinstance(payload.get("skill_name"), str)
+        ):
+            errors.append(f"{config_path}: active root eval config must declare string `skill_name`")
+            continue
+        if not isinstance(payload, dict) or "skill_name" not in payload:
+            continue
+        expected_skill_name = config_path.relative_to(ROOT / "eval").parts[1]
+        if payload["skill_name"] != expected_skill_name:
+            errors.append(
+                f"{config_path}: active eval `skill_name` must be `{expected_skill_name}`, "
+                f"got `{payload['skill_name']}`"
+            )
+
+    active_benchmarks = set((ROOT / "eval").glob("*/*/*benchmark*.json"))
+    active_benchmarks.update((ROOT / "eval").glob("*/*/evals/*benchmark*.json"))
+    for benchmark_path in sorted(active_benchmarks):
+        try:
+            benchmark = json.loads(benchmark_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+            errors.append(f"{benchmark_path}: active benchmark config is not valid JSON: {exc}")
+            continue
+        if not isinstance(benchmark, list):
+            errors.append(f"{benchmark_path}: active benchmark config must be a list")
+            continue
+        for case in benchmark:
+            if not isinstance(case, dict):
+                errors.append(f"{benchmark_path}: benchmark cases must be objects")
+                continue
+            context_files = case.get("context_files", [])
+            if not isinstance(context_files, list):
+                errors.append(f"{benchmark_path}: `context_files` must be a list")
+                continue
+            for context_file in context_files:
+                if not isinstance(context_file, str):
+                    errors.append(f"{benchmark_path}: context file paths must be strings")
+                    continue
+                candidate = (benchmark_path.parent / context_file).resolve()
+                try:
+                    candidate.relative_to((ROOT / "eval").resolve())
+                except ValueError:
+                    errors.append(f"{benchmark_path}: context file escapes eval root: `{context_file}`")
+                    continue
+                if not candidate.is_file():
+                    errors.append(f"{benchmark_path}: missing context file `{context_file}`")
 
     return manifest
 
@@ -1096,6 +1432,17 @@ def validate_manifest_skill_status(manifest: dict, errors: list[str]) -> None:
                     errors.append(
                         f"{MANIFEST_PATH}: skill `{name}` references missing QA artifact `{rel_path}` via `{key}`"
                     )
+                    continue
+                if target.suffix == ".md":
+                    text = target.read_text(encoding="utf-8")
+                    for match in LOCAL_EVAL_FILE_RE.finditer(text):
+                        local_path = match.group("path")
+                        if any(marker in local_path for marker in ("*", "<", ">", "{", "}")):
+                            continue
+                        if not (ROOT / local_path).exists() and not _is_gitignored_local_artifact(local_path):
+                            errors.append(
+                                f"{target}: references missing local eval artifact `{local_path}`"
+                            )
 
         if status in {"tested", "secure", "production"}:
             if evaluation_mode == "discoverability":
@@ -1153,6 +1500,10 @@ def validate_artifact_flow(manifest: dict, errors: list[str]) -> None:
             return {item for item in value if isinstance(item, str)}
         return set()
 
+    skills = manifest_skill_names(manifest)
+    planned_skills = manifest_planned_skill_names(manifest)
+    allowed_skill_tokens = skills | planned_skills
+
     artifact_flow = {
         entry["artifact"]: {
             "produced_by": producer_set(entry.get("produced_by")),
@@ -1162,18 +1513,27 @@ def validate_artifact_flow(manifest: dict, errors: list[str]) -> None:
         if isinstance(entry, dict) and "artifact" in entry
     }
 
-    # Graph closure: every producer/consumer must resolve to a manifest skill or a
-    # declared planned skill, so the artifact graph cannot silently reference ghosts.
-    resolvable_names = manifest_skill_names(manifest) | manifest_planned_skill_names(manifest)
-    for artifact_name, flow_entry in artifact_flow.items():
-        for producer in sorted(flow_entry["produced_by"] - resolvable_names):
-            errors.append(
-                f"{MANIFEST_PATH}: artifact `{artifact_name}` lists producer `{producer}` that is neither a manifest skill nor a planned skill"
-            )
-        for consumer in sorted(flow_entry["consumed_by"] - resolvable_names):
-            errors.append(
-                f"{MANIFEST_PATH}: artifact `{artifact_name}` lists consumer `{consumer}` that is neither a manifest skill nor a planned skill"
-            )
+    for entry in manifest.get("artifact_flow", []):
+        if not isinstance(entry, dict) or "artifact" not in entry:
+            continue
+        artifact = entry["artifact"]
+        producers = producer_set(entry.get("produced_by"))
+        if not producers:
+            errors.append(f"{MANIFEST_PATH}: artifact_flow `{artifact}` must declare at least one produced_by skill")
+        for producer in sorted(producers):
+            if producer not in allowed_skill_tokens:
+                errors.append(
+                    f"{MANIFEST_PATH}: artifact_flow `{artifact}` produced_by references unknown skill `{producer}`"
+                )
+        consumers = entry.get("consumed_by", [])
+        if not isinstance(consumers, list):
+            errors.append(f"{MANIFEST_PATH}: artifact_flow `{artifact}` consumed_by must be a list")
+            consumers = []
+        for consumer in sorted(item for item in consumers if isinstance(item, str)):
+            if consumer not in allowed_skill_tokens:
+                errors.append(
+                    f"{MANIFEST_PATH}: artifact_flow `{artifact}` consumed_by references unknown skill `{consumer}`"
+                )
 
     for path in iter_lifecycle_skill_paths():
         try:
@@ -1247,6 +1607,7 @@ def workflow_compatibility_tags(workflow_name: str) -> set[str]:
 
 def validate_workflow_skill_references(manifest: dict, errors: list[str]) -> None:
     skills = manifest_skill_names(manifest)
+    planned_skills = manifest_planned_skill_names(manifest)
     skill_methods = load_skill_methodologies(errors)
     manifest_skills = {
         entry["name"]: entry
@@ -1260,7 +1621,6 @@ def validate_workflow_skill_references(manifest: dict, errors: list[str]) -> Non
     }
     allowed_non_skill_tokens = {
         "all",
-        "intake",
         "intake-brief",
     }
     allowed_non_skill_tokens.update(workflow_names)
@@ -1278,12 +1638,13 @@ def validate_workflow_skill_references(manifest: dict, errors: list[str]) -> Non
                     )
                 elif ref in skills:
                     skill_status = manifest_skills.get(ref, {}).get("status")
-                    marker_present = bool(
-                        re.search(rf"`{re.escape(ref)}`\s*\((?:experimental|planned)\)", line, re.IGNORECASE)
-                    )
-                    violation = maturity_marker_violation(skill_status, marker_present)
-                    if violation:
-                        errors.append(f"{path}: skill `{ref}` {violation}")
+                    if skill_status == "draft":
+                        if not re.search(rf"`{re.escape(ref)}`\s*\((?:experimental|planned)\)", line, re.IGNORECASE):
+                            errors.append(f"{path}: draft skill `{ref}` is referenced without being explicitly marked as (experimental) or (planned)")
+                    elif re.search(rf"`{re.escape(ref)}`\s*\((?:experimental|planned)\)", line, re.IGNORECASE):
+                        errors.append(
+                            f"{path}: non-draft skill `{ref}` is marked experimental/planned; sync the label with manifest status `{skill_status}`"
+                        )
 
         refs = extract_backtick_refs(body)
         compatibility_tags = workflow_compatibility_tags(frontmatter.get("name", ""))
@@ -1293,6 +1654,546 @@ def validate_workflow_skill_references(manifest: dict, errors: list[str]) -> Non
                 errors.append(
                     f"{path}: references skill `{ref}` but workflow `{frontmatter.get('name')}` is incompatible with metadata.methodologies {methods}"
                 )
+
+    validate_gateway_phase_skill_references(skills, planned_skills, manifest_skills, errors)
+
+
+def validate_gateway_phase_skill_references(
+    skills: set[str],
+    planned_skills: set[str],
+    manifest_skills: dict[str, dict],
+    errors: list[str],
+) -> None:
+    text = GATEWAY_PATH.read_text(encoding="utf-8")
+    match = re.search(
+        r"### Priority 2: Phase-Specific Skills \(contextual\)\s*(?P<section>.*?)\n### ",
+        text,
+        re.DOTALL,
+    )
+    if not match:
+        errors.append(f"{GATEWAY_PATH}: could not locate the phase-specific skill routing table")
+        return
+
+    for line in match.group("section").splitlines():
+        stripped = line.strip()
+        if not stripped.startswith("|") or "Likely Skills" in stripped or set(stripped.replace("|", "").strip()) == {"-"}:
+            continue
+        columns = [item.strip() for item in stripped.split("|")[1:-1]]
+        if len(columns) != 3:
+            continue
+        for raw_token in columns[2].split(","):
+            token_text = raw_token.strip()
+            if not token_text or token_text.lower() == "none":
+                continue
+            is_marked_planned = bool(re.search(r"\((?:experimental|planned)\)", token_text, re.IGNORECASE))
+            token = re.sub(r"\s*\((?:experimental|planned)\)\s*", "", token_text, flags=re.IGNORECASE).strip("` ")
+            if token in skills:
+                status = manifest_skills.get(token, {}).get("status")
+                if status == "draft" and not is_marked_planned:
+                    errors.append(f"{GATEWAY_PATH}: draft skill `{token}` in routing table must be marked experimental/planned")
+                if status != "draft" and is_marked_planned:
+                    errors.append(
+                        f"{GATEWAY_PATH}: non-draft skill `{token}` in routing table is marked experimental/planned; manifest status is `{status}`"
+                    )
+            elif token in planned_skills:
+                if not is_marked_planned:
+                    errors.append(f"{GATEWAY_PATH}: planned skill `{token}` in routing table must be marked planned")
+            else:
+                errors.append(f"{GATEWAY_PATH}: routing table references undefined skill `{token}`")
+
+
+PROTOCOL_RESULT_CONTRACTS = {
+    "execution-authority-result": {
+        "version": "execution-authority-result.v1",
+        "statuses": ("valid", "approval-required", "invalid"),
+        "required": {
+            "schema_version",
+            "status",
+            "authority",
+            "candidate_completion_digest",
+            "errors",
+        },
+    },
+    "execution-authoring-result": {
+        "version": "execution-authoring-result.v1",
+        "statuses": ("written", "candidate", "recovery-required", "invalid"),
+        "required": {
+            "schema_version",
+            "status",
+            "operation",
+            "mutations",
+            "state_revision",
+            "candidate_route_digest",
+            "candidate_completion_digest",
+            "capacities",
+            "warnings",
+            "errors",
+        },
+    },
+}
+
+PROTOCOL_AUTHORING_OPERATIONS = (
+    "route-draft",
+    "state-init",
+    "transition",
+    "phase-event",
+    "artifact-bind",
+    "claim-completion",
+    "record-outcome",
+    "reroute",
+)
+
+PROTOCOL_AUTHORITY_VALUES = ("gate-authorized", "terminal-authorized")
+PROTOCOL_MUTATION_ACTIONS = ("create", "replace", "remove")
+
+
+def validate_closed_schema_objects(schema: object, schema_path: Path, errors: list[str], location: str = "$") -> None:
+    if isinstance(schema, dict):
+        if schema.get("type") == "object" and schema.get("additionalProperties") is not False:
+            errors.append(f"{schema_path}: schema object `{location}` must be a closed object")
+        for key, value in schema.items():
+            validate_closed_schema_objects(value, schema_path, errors, f"{location}/{key}")
+    elif isinstance(schema, list):
+        for index, value in enumerate(schema):
+            validate_closed_schema_objects(value, schema_path, errors, f"{location}/{index}")
+
+
+def validate_protocol_schema_contract(
+    result_name: str,
+    entry: dict,
+    schema: dict,
+    schema_path: Path,
+    errors: list[str],
+) -> None:
+    contract = PROTOCOL_RESULT_CONTRACTS[result_name]
+    version = contract["version"]
+    properties = schema.get("properties")
+    if not isinstance(properties, dict):
+        errors.append(f"{schema_path}: properties must be an object")
+        return
+    schema_version_contract = properties.get("schema_version")
+    schema_version = (
+        schema_version_contract.get("const")
+        if isinstance(schema_version_contract, dict)
+        else None
+    )
+    if entry.get("schema_version") != schema_version:
+        errors.append(
+            f"{PROTOCOL_RESULT_REGISTRY_PATH}: result `{result_name}` registry version "
+            f"`{entry.get('schema_version')}` does not match schema const `{schema_version}`"
+        )
+    if schema_version != version:
+        errors.append(f"{schema_path}: schema_version const must be `{version}`")
+    if schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
+        errors.append(f"{schema_path}: must declare JSON Schema draft 2020-12")
+    if set(schema.get("required", [])) != contract["required"]:
+        errors.append(f"{schema_path}: required result fields must be {sorted(contract['required'])}")
+    if set(properties) != contract["required"]:
+        errors.append(f"{schema_path}: declared result fields must be exactly {sorted(contract['required'])}")
+    status_contract = properties.get("status")
+    status_values = status_contract.get("enum") if isinstance(status_contract, dict) else None
+    if status_values != list(contract["statuses"]):
+        errors.append(f"{schema_path}: status enum must be {sorted(contract['statuses'])}")
+    definitions = schema.get("$defs")
+    if not isinstance(definitions, dict):
+        definitions = {}
+    sha256 = definitions.get("sha256")
+    if sha256 != {"type": "string", "pattern": r"^sha256:[0-9a-f]{64}$"}:
+        errors.append(f"{schema_path}: sha256 must require lowercase prefixed 64-hex digests")
+    validate_closed_schema_objects(schema, schema_path, errors)
+
+    if result_name != "execution-authoring-result":
+        authority_contract = properties.get("authority")
+        authority_branches = (
+            authority_contract.get("oneOf") if isinstance(authority_contract, dict) else None
+        )
+        authority_values = None
+        if (
+            isinstance(authority_branches, list)
+            and authority_branches
+            and isinstance(authority_branches[0], dict)
+        ):
+            authority_values = authority_branches[0].get("enum")
+        if authority_values != list(PROTOCOL_AUTHORITY_VALUES):
+            errors.append(f"{schema_path}: authority enum must be gate-authorized/terminal-authorized")
+        validate_protocol_status_contract(result_name, schema, schema_path, errors)
+        return
+    operation_contract = properties.get("operation")
+    operations = operation_contract.get("enum") if isinstance(operation_contract, dict) else None
+    if operations != list(PROTOCOL_AUTHORING_OPERATIONS):
+        errors.append(f"{schema_path}: operation enum must be {sorted(PROTOCOL_AUTHORING_OPERATIONS)}")
+    revision_contract = properties.get("state_revision")
+    revision_branches = (
+        revision_contract.get("oneOf") if isinstance(revision_contract, dict) else None
+    )
+    if not isinstance(revision_branches, list):
+        revision_branches = []
+    if {"type": "integer", "minimum": 1} not in revision_branches or {"type": "null"} not in revision_branches:
+        errors.append(f"{schema_path}: state_revision must be null or an integer with minimum 1")
+
+    mutation = definitions.get("mutation", {})
+    if not isinstance(mutation, dict):
+        mutation = {}
+    if set(mutation.get("required", [])) != {"action", "path"}:
+        errors.append(f"{schema_path}: mutation must require exactly action and path")
+    mutation_properties = mutation.get("properties")
+    if not isinstance(mutation_properties, dict):
+        mutation_properties = {}
+    if set(mutation_properties) != {"action", "path"}:
+        errors.append(f"{schema_path}: mutation fields must be exactly action and path")
+    action_contract = mutation_properties.get("action")
+    actions = action_contract.get("enum") if isinstance(action_contract, dict) else None
+    if actions != list(PROTOCOL_MUTATION_ACTIONS):
+        errors.append(f"{schema_path}: mutation action enum must be create/replace/remove")
+    capacity = definitions.get("capacity", {})
+    if not isinstance(capacity, dict):
+        capacity = {}
+    expected_capacity_fields = {
+        "path",
+        "used_bytes",
+        "warning_bytes",
+        "limit_bytes",
+        "remaining_bytes",
+    }
+    if set(capacity.get("required", [])) != expected_capacity_fields:
+        errors.append(f"{schema_path}: capacity must require {sorted(expected_capacity_fields)}")
+    capacity_properties = capacity.get("properties")
+    if not isinstance(capacity_properties, dict):
+        capacity_properties = {}
+    if set(capacity_properties) != expected_capacity_fields:
+        errors.append(f"{schema_path}: capacity fields must be exactly {sorted(expected_capacity_fields)}")
+    warning_contract = capacity_properties.get("warning_bytes")
+    warning_bytes = warning_contract.get("const") if isinstance(warning_contract, dict) else None
+    if warning_bytes != 12 * 1024 * 1024:
+        errors.append(f"{schema_path}: capacity warning_bytes must be exactly 12582912")
+    limit_contract = capacity_properties.get("limit_bytes")
+    limit_bytes = limit_contract.get("const") if isinstance(limit_contract, dict) else None
+    if limit_bytes != 16 * 1024 * 1024:
+        errors.append(f"{schema_path}: capacity limit_bytes must be exactly 16777216")
+    validate_protocol_status_contract(result_name, schema, schema_path, errors)
+
+
+def _protocol_status_fixtures(result_name: str) -> tuple[list[dict], list[dict]]:
+    digest = "sha256:" + ("a" * 64)
+    if result_name == "execution-authority-result":
+        valid: list[dict] = [
+            {
+                "schema_version": "execution-authority-result.v1",
+                "status": "valid",
+                "authority": "gate-authorized",
+                "candidate_completion_digest": None,
+                "errors": [],
+            },
+            {
+                "schema_version": "execution-authority-result.v1",
+                "status": "approval-required",
+                "authority": None,
+                "candidate_completion_digest": digest,
+                "errors": ["pin required"],
+            },
+            {
+                "schema_version": "execution-authority-result.v1",
+                "status": "invalid",
+                "authority": None,
+                "candidate_completion_digest": None,
+                "errors": ["invalid"],
+            },
+        ]
+        invalid_fixtures: list[dict] = [
+            {**valid[0], "errors": ["unexpected"]},
+            {**valid[1], "candidate_completion_digest": None},
+            {**valid[1], "authority": "gate-authorized"},
+            {**valid[2], "authority": "gate-authorized"},
+            {**valid[2], "candidate_completion_digest": digest},
+            {**valid[2], "errors": []},
+        ]
+        return valid, invalid_fixtures
+
+    mutation: dict = {
+        "action": "replace",
+        "path": ".prodcraft/artifacts/work-1/execution-state.json",
+    }
+    base: dict = {
+        "schema_version": "execution-authoring-result.v1",
+        "operation": "transition",
+        "state_revision": 2,
+        "candidate_route_digest": None,
+        "candidate_completion_digest": None,
+        "capacities": [],
+        "warnings": [],
+        "errors": [],
+    }
+    written: dict = {**base, "status": "written", "mutations": [mutation]}
+    candidate: dict = {
+        **base,
+        "status": "candidate",
+        "mutations": [mutation],
+        "candidate_route_digest": digest,
+    }
+    completion_candidate: dict = {
+        **base,
+        "status": "candidate",
+        "mutations": [mutation],
+        "candidate_completion_digest": digest,
+    }
+    recovery: dict = {
+        **base,
+        "status": "recovery-required",
+        "mutations": [],
+        "errors": ["manual recovery required"],
+    }
+    invalid_result: dict = {
+        **base,
+        "status": "invalid",
+        "mutations": [],
+        "errors": ["invalid"],
+    }
+    invalid_fixtures = [
+        {**written, "errors": ["unexpected"]},
+        {**written, "candidate_route_digest": digest},
+        {**written, "mutations": []},
+        {**candidate, "candidate_route_digest": None},
+        {**candidate, "errors": ["unexpected"]},
+        {**candidate, "mutations": []},
+        {
+            **candidate,
+            "candidate_route_digest": None,
+            "candidate_completion_digest": digest,
+            "mutations": [],
+        },
+        {**recovery, "candidate_completion_digest": digest},
+        {**recovery, "candidate_route_digest": digest},
+        {**recovery, "errors": []},
+        {**invalid_result, "mutations": [mutation]},
+        {**invalid_result, "candidate_route_digest": digest},
+        {**invalid_result, "candidate_completion_digest": digest},
+        {**invalid_result, "errors": []},
+        {
+            **written,
+            "mutations": [{"action": "replace", "path": "bad\x00path"}],
+        },
+    ]
+    return [written, candidate, completion_candidate, recovery, invalid_result], invalid_fixtures
+
+
+def validate_protocol_status_contract(
+    result_name: str,
+    schema: dict,
+    schema_path: Path,
+    errors: list[str],
+) -> None:
+    import jsonschema  # type: ignore[import-untyped]
+
+    validator = jsonschema.Draft202012Validator(schema)
+    valid_fixtures, invalid_fixtures = _protocol_status_fixtures(result_name)
+    if any(not validator.is_valid(payload) for payload in valid_fixtures):
+        errors.append(f"{schema_path}: status contract rejects a representative valid result")
+    if any(validator.is_valid(payload) for payload in invalid_fixtures):
+        errors.append(f"{schema_path}: status contract accepts a contradictory result")
+
+
+def _load_protocol_result_schema(
+    result_name: str,
+    errors: list[str],
+    *,
+    root: Path,
+    registry_path: Path,
+) -> dict | None:
+    registry = load_unique_yaml_mapping(registry_path, errors)
+    results = registry.get("results", {})
+    if not isinstance(results, dict):
+        errors.append(f"{registry_path}: `results` must be a mapping")
+        return None
+    entry = results.get(result_name)
+    if not isinstance(entry, dict):
+        errors.append(f"{registry_path}: result `{result_name}` is not registered")
+        return None
+    schema_rel = entry.get("schema_path")
+    schema_path = resolve_protocol_schema_path(root, schema_rel, registry_path, errors)
+    if schema_path is None:
+        return None
+    if not isinstance(schema_rel, str):
+        return None
+    try:
+        schema = load_protocol_schema_snapshot(root, schema_rel, schema_path)
+    except StrictJSONError as exc:
+        errors.append(f"{schema_path}: failed to parse JSON schema: {exc}")
+        return None
+    return schema
+
+
+def validate_protocol_result_registry(
+    errors: list[str],
+    *,
+    root: Path = ROOT,
+    registry_path: Path | None = None,
+) -> None:
+    registry_path = registry_path or root / "schemas" / "protocol" / "registry.yml"
+    registry = load_unique_yaml_mapping(registry_path, errors)
+    if not registry:
+        return
+    if set(registry) != {"schema_version", "results"}:
+        errors.append(f"{registry_path}: registry must contain exactly schema_version and results")
+    if registry.get("schema_version") != "protocol-result-registry.v1":
+        errors.append(f"{registry_path}: `schema_version` must be `protocol-result-registry.v1`")
+    results = registry.get("results", {})
+    if not isinstance(results, dict):
+        errors.append(f"{registry_path}: `results` must be a mapping")
+        return
+    if set(results) != set(PROTOCOL_RESULT_CONTRACTS):
+        errors.append(f"{registry_path}: results must be {sorted(PROTOCOL_RESULT_CONTRACTS)}")
+    try:
+        import jsonschema  # type: ignore[import-untyped]
+    except ImportError as exc:
+        errors.append(f"{registry_path}: jsonschema is required to validate protocol schemas: {exc}")
+        return
+
+    for result_name in sorted(PROTOCOL_RESULT_CONTRACTS):
+        entry = results.get(result_name)
+        if not isinstance(entry, dict):
+            errors.append(f"{registry_path}: result `{result_name}` must map to a metadata object")
+            continue
+        if set(entry) != {"schema_version", "schema_path"}:
+            errors.append(f"{registry_path}: result `{result_name}` must contain exactly schema_version and schema_path")
+        expected_path = f"schemas/protocol/{result_name}.v1.schema.json"
+        if entry.get("schema_path") != expected_path:
+            if isinstance(entry.get("schema_path"), str):
+                errors.append(f"{registry_path}: result `{result_name}` must use schema_path `{expected_path}`")
+        schema_rel = entry.get("schema_path")
+        schema_path = resolve_protocol_schema_path(root, schema_rel, registry_path, errors)
+        if schema_path is None:
+            continue
+        if not isinstance(schema_rel, str):
+            continue
+        try:
+            schema = load_protocol_schema_snapshot(root, schema_rel, schema_path)
+        except StrictJSONError as exc:
+            errors.append(f"{schema_path}: failed to parse JSON schema: {exc}")
+            continue
+        try:
+            jsonschema.Draft202012Validator.check_schema(schema)
+        except jsonschema.SchemaError as exc:
+            errors.append(f"{schema_path}: invalid JSON schema: {exc.message}")
+            continue
+        validate_protocol_schema_contract(result_name, entry, schema, schema_path, errors)
+
+
+def validate_protocol_result_status_semantics(
+    result_name: str,
+    payload: dict,
+    errors: list[str],
+) -> None:
+    status = payload.get("status")
+    result_errors = payload.get("errors")
+    has_errors = isinstance(result_errors, list) and bool(result_errors)
+    if result_name == "execution-authority-result":
+        authority = payload.get("authority")
+        candidate = payload.get("candidate_completion_digest")
+        if status == "valid" and (candidate is not None or has_errors):
+            errors.append(f"{result_name}: valid status forbids candidates and errors")
+        elif status == "approval-required" and (
+            authority is not None or candidate is None or not has_errors
+        ):
+            errors.append(
+                f"{result_name}: approval-required status requires only a completion candidate"
+            )
+        elif status == "invalid" and (
+            authority is not None or candidate is not None or not has_errors
+        ):
+            errors.append(f"{result_name}: invalid status forbids authority and candidates")
+        return
+
+    mutations = payload.get("mutations")
+    has_mutations = isinstance(mutations, list) and bool(mutations)
+    route_candidate = payload.get("candidate_route_digest")
+    completion_candidate = payload.get("candidate_completion_digest")
+    has_candidate = route_candidate is not None or completion_candidate is not None
+    if status == "written" and (not has_mutations or has_candidate or has_errors):
+        errors.append(
+            f"{result_name}: written status requires mutations and forbids candidates and errors"
+        )
+    elif status == "candidate" and (not has_mutations or not has_candidate or has_errors):
+        errors.append(
+            f"{result_name}: candidate status requires mutations and a candidate without errors"
+        )
+    elif status == "recovery-required" and (has_candidate or not has_errors):
+        errors.append(
+            f"{result_name}: recovery-required status forbids candidates and requires errors"
+        )
+    elif status == "invalid" and (has_mutations or has_candidate or not has_errors):
+        errors.append(
+            f"{result_name}: invalid status requires empty mutations, no candidates, and errors"
+        )
+
+
+def validate_protocol_result_instance(
+    result_name: str,
+    payload: object,
+    errors: list[str],
+    *,
+    root: Path = ROOT,
+    registry_path: Path | None = None,
+) -> None:
+    registry_path = registry_path or root / "schemas" / "protocol" / "registry.yml"
+    schema = _load_protocol_result_schema(
+        result_name,
+        errors,
+        root=root,
+        registry_path=registry_path,
+    )
+    if schema is None:
+        return
+    try:
+        import jsonschema  # type: ignore[import-untyped]
+    except ImportError as exc:
+        errors.append(f"{registry_path}: jsonschema is required to validate protocol results: {exc}")
+        return
+    try:
+        jsonschema.Draft202012Validator(schema).validate(payload)
+    except jsonschema.ValidationError as exc:
+        location = "/".join(str(part) for part in exc.absolute_path) or "<root>"
+        errors.append(f"{result_name}: invalid result at `{location}`: {exc.message}")
+
+    if not isinstance(payload, dict):
+        return
+    validate_protocol_result_status_semantics(result_name, payload, errors)
+    if result_name != "execution-authoring-result":
+        return
+    for field_name in ("mutations", "capacities"):
+        entries = payload.get(field_name)
+        if not isinstance(entries, list):
+            continue
+        seen_paths: set[str] = set()
+        for entry in entries:
+            if not isinstance(entry, dict) or not isinstance(entry.get("path"), str):
+                continue
+            path = entry["path"]
+            if "\x00" in path:
+                errors.append(f"{result_name}: {field_name} path contains a NUL byte")
+            if path in seen_paths:
+                errors.append(f"{result_name}: duplicate {field_name} path `{path}`")
+            seen_paths.add(path)
+    capacities = payload.get("capacities")
+    if isinstance(capacities, list):
+        for index, capacity in enumerate(capacities):
+            if not isinstance(capacity, dict):
+                continue
+            used = capacity.get("used_bytes")
+            limit = capacity.get("limit_bytes")
+            remaining = capacity.get("remaining_bytes")
+            if (
+                not isinstance(used, int)
+                or isinstance(used, bool)
+                or not isinstance(limit, int)
+                or isinstance(limit, bool)
+                or not isinstance(remaining, int)
+                or isinstance(remaining, bool)
+            ):
+                continue
+            if used > limit:
+                errors.append(f"{result_name}: capacities[{index}] used_bytes exceeds limit_bytes")
+            if remaining != limit - used:
+                errors.append(f"{result_name}: capacities[{index}] remaining_bytes must equal limit_bytes - used_bytes")
 
 
 def _skill_name_occurrences(name: str, line: str) -> list[re.Match]:
@@ -1428,6 +2329,39 @@ def validate_artifact_schema_registry(manifest: dict, errors: list[str]) -> None
                     errors.append(
                         f"{template_path}: template is missing required schema field markers {', '.join(missing)}"
                     )
+
+
+def validate_markdown_script_references(errors: list[str]) -> None:
+    for path in sorted(ROOT.rglob("*.md")):
+        if any(part in {".git", "build", "__pycache__"} for part in path.parts):
+            continue
+        text = path.read_text(encoding="utf-8")
+        for match in re.finditer(r"(?<![\w/-])(scripts/[A-Za-z0-9_./-]+\.py)", text):
+            rel_path = match.group(1)
+            if not (ROOT / rel_path).exists():
+                errors.append(f"{path}: references missing script `{rel_path}`")
+
+
+def validate_examples_reference_contract(manifest: dict, errors: list[str]) -> None:
+    examples_path = ROOT / "examples" / "README.md"
+    if not examples_path.exists():
+        return
+
+    allowed = manifest_skill_names(manifest) | manifest_planned_skill_names(manifest)
+    text = examples_path.read_text(encoding="utf-8")
+    for line_number, line in enumerate(text.splitlines(), start=1):
+        if "Key skills:" not in line:
+            continue
+        _, raw_skills = line.split("Key skills:", 1)
+        for raw_token in raw_skills.split(","):
+            token = raw_token.strip().strip(".")
+            if not token:
+                continue
+            skill_name = re.sub(r"\s*\([^)]*\)\s*", "", token).strip("` ")
+            if skill_name and skill_name not in allowed:
+                errors.append(
+                    f"{examples_path}:{line_number}: Key skills references unknown skill `{skill_name}`"
+                )
 
 
 def validate_cross_cutting_matrix(manifest: dict, errors: list[str]) -> None:
@@ -1593,6 +2527,7 @@ def validate_curated_surface(errors: list[str]) -> None:
         if not isinstance(name, str) or not name:
             errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: each portability entry must include non-empty `name`")
             continue
+        validate_skill_name(name, PUBLIC_SKILL_PORTABILITY_PATH, errors)
         if name in portability_names:
             errors.append(f"{PUBLIC_SKILL_PORTABILITY_PATH}: duplicate portability entry `{name}`")
         portability_names.add(name)
@@ -1656,6 +2591,7 @@ def validate_curated_surface(errors: list[str]) -> None:
             errors.append(f"{DISTRIBUTION_REGISTRY_PATH}: each public skill entry must include `name`, `source`, `stability`, and `readiness`")
             continue
         name = entry["name"]
+        validate_skill_name(name, DISTRIBUTION_REGISTRY_PATH, errors)
         stability = entry["stability"]
         readiness = entry["readiness"]
         if name in names:
@@ -1783,12 +2719,46 @@ def main() -> int:
     parser.add_argument(
         "--check",
         action="append",
-        choices=sorted(CHECKS),
+        choices=LEGACY_CHECK_CHOICES,
         help="Run only the named check. May be repeated. Defaults to all checks.",
+    )
+    parser.add_argument(
+        "--artifact-instance",
+        action="append",
+        type=Path,
+        default=[],
+        help="Validate a JSON or YAML protocol artifact instance against the artifact registry and schema.",
+    )
+    parser.add_argument(
+        "--authorize-execution-state",
+        type=Path,
+        help="Authorize the canonical current execution-state against its bound route and live Git worktree.",
+    )
+    parser.add_argument(
+        "--approved-route-digest",
+        help="Operator-supplied sha256 pin for --authorize-execution-state.",
+    )
+    parser.add_argument(
+        "--approved-completion-digest",
+        help="Operator-supplied terminal-authority digest pin for verified/completed state.",
+    )
+    parser.add_argument(
+        "--output-format",
+        choices=("text", "json"),
+        default="text",
+        help="Render the validation result as human-readable text or stable JSON.",
     )
     args = parser.parse_args()
 
-    selected_checks = set(args.check or CHECKS)
+    if args.approved_route_digest and args.authorize_execution_state is None:
+        parser.error("--approved-route-digest requires --authorize-execution-state")
+    if args.approved_completion_digest and args.authorize_execution_state is None:
+        parser.error("--approved-completion-digest requires --authorize-execution-state")
+
+    selected_checks = set(
+        args.check
+        or ([] if args.authorize_execution_state is not None and not args.artifact_instance else CHECKS)
+    )
     errors: list[str] = []
 
     _MANIFEST_DEPENDENT_CHECKS = {
@@ -1837,18 +2807,67 @@ def main() -> int:
     if "artifact-schema-registry" in selected_checks and manifest:
         validate_artifact_schema_registry(manifest, errors)
 
+    if "protocol-result-registry" in selected_checks:
+        validate_protocol_result_registry(errors)
+
+    if "manifest-files" in selected_checks:
+        validate_markdown_script_references(errors)
+        if manifest:
+            validate_examples_reference_contract(manifest, errors)
+
     if "cross-cutting-matrix" in selected_checks and manifest:
         validate_cross_cutting_matrix(manifest, errors)
 
     if "curated-surface" in selected_checks:
         validate_curated_surface(errors)
 
+    for artifact_instance in args.artifact_instance:
+        validate_artifact_instance(artifact_instance, errors)
+
+    authority_result = None
+    if args.authorize_execution_state is not None:
+        authority_result = authorize_execution_state(
+            args.authorize_execution_state,
+            args.approved_route_digest,
+            args.approved_completion_digest,
+            errors,
+        )
+
+    if args.output_format == "json":
+        authority = None
+        candidate_completion_digest = None
+        if (
+            authority_result is not None
+            and authority_result.disposition is ValidationDisposition.VALID
+        ):
+            authority = authority_result.authority
+        if (
+            authority_result is not None
+            and authority_result.disposition is ValidationDisposition.APPROVAL_REQUIRED
+        ):
+            candidate_completion_digest = authority_result.candidate_completion_digest
+        print(
+            json.dumps(
+                {
+                    "status": "invalid" if errors else "valid",
+                    "authority": authority,
+                    "candidate_completion_digest": candidate_completion_digest,
+                    "errors": errors,
+                },
+                sort_keys=True,
+            )
+        )
+        return 1 if errors else 0
+
     if errors:
         for error in errors:
             print(f"ERROR: {error}")
         return 1
 
-    print("Prodcraft validation passed")
+    if authority_result is not None:
+        print(authority_result.authority)
+    else:
+        print("Prodcraft validation passed")
     return 0
 
 

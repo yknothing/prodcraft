@@ -28,12 +28,14 @@ QA sign-off granted. All P0/P1 acceptance criteria pass. Code review completed w
 
 | Skill | Purpose | Effort |
 |---|---|---|
-| code-review | Ensure code quality, correctness, and maintainability | medium |
-| receiving-code-review | Verify and respond to review feedback with technical rigor | small |
-| testing-strategy | Design and execute comprehensive test plans | large |
-| e2e-scenario-design | Design deep, stateful E2E scenarios from user journeys across any platform or language | large |
-| security-audit | Identify and remediate security vulnerabilities | medium |
-| performance-audit | Validate performance against specified thresholds | medium |
+| pc-implementation-alignment-review | Verify that implementation, tests, docs, and completion claims match the original intent and accepted scope | medium |
+| pc-implementation-integrity-audit | Audit low-level defects, deceptive success paths, improper mocks, and fake evidence before claims are trusted | medium |
+| pc-code-review | Ensure code quality, correctness, and maintainability | medium |
+| pc-receiving-code-review | Verify and respond to review feedback with technical rigor | small |
+| pc-testing-strategy | Design and execute comprehensive test plans | large |
+| pc-e2e-scenario-design | Design deep, stateful E2E scenarios from user journeys across any platform or language | large |
+| pc-security-audit | Identify and remediate security vulnerabilities | medium |
+| pc-performance-audit | Validate performance against specified thresholds | medium |
 
 ## Typical Duration
 
@@ -45,15 +47,18 @@ QA sign-off granted. All P0/P1 acceptance criteria pass. Code review completed w
 ## Skill Sequence
 
 ```
-code-review <──> receiving-code-review ──> testing-strategy ──> e2e-scenario-design ──┐
-                                                                                        ├──> QA sign-off
-security-audit ─────────────────────────────────────────────────────────────────────────┤
-performance-audit ──────────────────────────────────────────────────────────────────────┘
+pc-implementation-alignment-review ──┐
+pc-implementation-integrity-audit ────┼──> pc-code-review <──> pc-receiving-code-review ──> pc-testing-strategy ──> pc-e2e-scenario-design ──┐
+                                      │                                                                                                      ├──> QA sign-off
+pc-security-audit ────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────┤
+pc-performance-audit ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-Code review establishes the reviewer-side findings. `receiving-code-review` governs the author-side follow-up on those findings before broader testing closes out the phase. `testing-strategy` decides the layered plan; `e2e-scenario-design` deepens the scenario and edge-case layers when shallow E2E coverage would otherwise hide release risk. Security and performance audits can run in parallel with functional testing. All must pass for QA sign-off.
+`pc-implementation-alignment-review` checks whether the right thing was built. `pc-implementation-integrity-audit` checks whether the implementation and evidence are honest enough to trust. Use either before `pc-code-review` when the risk is intent drift, fake success, fixture masquerade, or low-level implementation shortcuts.
 
-Do not assume public HTTP service from framework or transport details. `security-audit`, `testing-strategy`, and `e2e-scenario-design` are calibrated branches, not automatic service-style follow-ups. For agent-internal skill or host-runtime work, the quality target may be trigger behavior, artifact safety, tool boundaries, validators, curated export, and runtime portability. For public service work, browser/API contracts, CORS, public auth, rate limiting, and internet abuse paths remain in scope when supported by evidence.
+Code review establishes the reviewer-side findings. `pc-receiving-code-review` governs the author-side follow-up on those findings before broader testing closes out the phase. `pc-testing-strategy` decides the layered plan; `pc-e2e-scenario-design` deepens the scenario and edge-case layers when shallow E2E coverage would otherwise hide release risk. Security and performance audits can run in parallel with functional testing. All must pass for QA sign-off.
+
+Do not assume public HTTP service from framework or transport details. `pc-security-audit`, `pc-testing-strategy`, and `pc-e2e-scenario-design` are calibrated branches, not automatic service-style follow-ups. For agent-internal skill or host-runtime work, the quality target may be trigger behavior, artifact safety, tool boundaries, validators, curated export, and runtime portability. For public service work, browser/API contracts, CORS, public auth, rate limiting, and internet abuse paths remain in scope when supported by evidence.
 
 In brownfield work, quality review must verify that coexistence and unsupported release-boundary behavior are still protected before broader QA sign-off proceeds.
 

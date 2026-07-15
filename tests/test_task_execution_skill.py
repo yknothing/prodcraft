@@ -15,8 +15,8 @@ class TaskExecutionSkillTests(unittest.TestCase):
 
     def test_task_execution_skill_files_exist(self):
         targets = [
-            REPO_ROOT / "skills" / "04-implementation" / "task-execution" / "SKILL.md",
-            REPO_ROOT / "skills" / "04-implementation" / "task-execution" / "references" / "gotchas.md",
+            REPO_ROOT / "skills" / "04-implementation" / "pc-task-execution" / "SKILL.md",
+            REPO_ROOT / "skills" / "04-implementation" / "pc-task-execution" / "references" / "gotchas.md",
         ]
         for path in targets:
             with self.subTest(path=path):
@@ -24,7 +24,7 @@ class TaskExecutionSkillTests(unittest.TestCase):
 
     def test_manifest_registers_task_execution_as_critical_tested_skill(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
-        entry = entries["task-execution"]
+        entry = entries["pc-task-execution"]
 
         self.assertEqual("04-implementation", entry["phase"])
         self.assertEqual("tested", entry["status"])
@@ -34,30 +34,30 @@ class TaskExecutionSkillTests(unittest.TestCase):
 
     def test_artifact_flow_and_gateway_keep_task_execution_tactical(self):
         artifact_flow = {entry["artifact"]: entry for entry in self.manifest["artifact_flow"]}
-        skill_text = (REPO_ROOT / "skills" / "04-implementation" / "task-execution" / "SKILL.md").read_text(encoding="utf-8")
+        skill_text = (REPO_ROOT / "skills" / "04-implementation" / "pc-task-execution" / "SKILL.md").read_text(encoding="utf-8")
         gateway = (REPO_ROOT / "skills" / "_gateway.md").read_text(encoding="utf-8")
         implementation_phase = (REPO_ROOT / "skills" / "04-implementation" / "_phase.md").read_text(encoding="utf-8")
 
-        self.assertIn("task-execution", artifact_flow["task-list"]["consumed_by"])
-        self.assertIn("task-execution", artifact_flow["dependency-graph"]["consumed_by"])
-        self.assertEqual("task-execution", artifact_flow["execution-batch-plan"]["produced_by"])
-        self.assertEqual("task-execution", artifact_flow["execution-checkpoint"]["produced_by"])
-        self.assertIn("feature-development", artifact_flow["execution-batch-plan"]["consumed_by"])
-        self.assertIn("systematic-debugging", artifact_flow["execution-batch-plan"]["consumed_by"])
-        self.assertIn("verification-before-completion", artifact_flow["execution-checkpoint"]["consumed_by"])
+        self.assertIn("pc-task-execution", artifact_flow["task-list"]["consumed_by"])
+        self.assertIn("pc-task-execution", artifact_flow["dependency-graph"]["consumed_by"])
+        self.assertEqual("pc-task-execution", artifact_flow["execution-batch-plan"]["produced_by"])
+        self.assertEqual("pc-task-execution", artifact_flow["execution-checkpoint"]["produced_by"])
+        self.assertIn("pc-feature-development", artifact_flow["execution-batch-plan"]["consumed_by"])
+        self.assertIn("pc-systematic-debugging", artifact_flow["execution-batch-plan"]["consumed_by"])
+        self.assertIn("pc-verification-before-completion", artifact_flow["execution-checkpoint"]["consumed_by"])
 
-        self.assertIn("It does **not** replace `feature-development`, `systematic-debugging`, or `tdd`", skill_text)
+        self.assertIn("It does **not** replace `pc-feature-development`, `pc-systematic-debugging`, or `pc-tdd`", skill_text)
         self.assertIn("2-5 minute", skill_text)
         self.assertIn("### Implementation Routing Quick Map", gateway)
         self.assertIn("optional tactical wrapper", gateway)
         self.assertIn("### Implementation Routing Quick Map", implementation_phase)
-        self.assertIn("use `task-execution` only when the batch itself needs explicit checkpoints", implementation_phase)
+        self.assertIn("use `pc-task-execution` only when the batch itself needs explicit checkpoints", implementation_phase)
 
     def test_tested_artifacts_exist(self):
         targets = [
-            REPO_ROOT / "eval" / "04-implementation" / "task-execution" / "isolated-benchmark.json",
-            REPO_ROOT / "eval" / "04-implementation" / "task-execution" / "isolated-benchmark-review.md",
-            REPO_ROOT / "eval" / "04-implementation" / "task-execution" / "tactical-batch-review.md",
+            REPO_ROOT / "eval" / "04-implementation" / "pc-task-execution" / "isolated-benchmark.json",
+            REPO_ROOT / "eval" / "04-implementation" / "pc-task-execution" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "04-implementation" / "pc-task-execution" / "tactical-batch-review.md",
         ]
 
         for path in targets:

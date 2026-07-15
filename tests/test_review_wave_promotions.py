@@ -16,11 +16,11 @@ class ReviewWavePromotionTests(unittest.TestCase):
 
     def test_manifest_registers_review_wave_skills_with_review_stage_qa(self):
         targets = {
-            "market-analysis": "00-discovery",
-            "feasibility-study": "00-discovery",
-            "bug-history-retrieval": "cross-cutting",
-            "internationalization": "cross-cutting",
-            "compliance": "cross-cutting",
+            "pc-market-analysis": "00-discovery",
+            "pc-feasibility-study": "00-discovery",
+            "pc-bug-history-retrieval": "cross-cutting",
+            "pc-internationalization": "cross-cutting",
+            "pc-compliance": "cross-cutting",
         }
 
         for name, phase in targets.items():

@@ -26,11 +26,11 @@ Architecture review passed. The review confirms: all functional requirements are
 
 | Skill | Purpose | Effort |
 |---|---|---|
-| system-design | Define component boundaries and interactions | large |
-| api-design | Specify contracts between components and external consumers | medium |
-| data-modeling | Design storage schemas and data flow | medium |
-| security-design | Threat model and define security controls | medium |
-| tech-selection | Choose languages, frameworks, and infrastructure | medium |
+| pc-system-design | Define component boundaries and interactions | large |
+| pc-api-design | Specify contracts between components and external consumers | medium |
+| pc-data-modeling | Design storage schemas and data flow | medium |
+| pc-security-design | Threat model and define security controls | medium |
+| pc-tech-selection | Choose languages, frameworks, and infrastructure | medium |
 
 ## Typical Duration
 
@@ -42,13 +42,13 @@ Architecture review passed. The review confirms: all functional requirements are
 ## Skill Sequence
 
 ```
-system-design ──┬──> api-design
-                ├──> data-modeling
-                ├──> security-design
-                └──> tech-selection
+pc-system-design ──┬──> pc-api-design
+                   ├──> pc-data-modeling
+                   ├──> pc-security-design
+                   └──> pc-tech-selection
 ```
 
-System design establishes the high-level structure. The remaining skills can proceed in parallel, feeding back into system design as constraints emerge.
+`pc-system-design` establishes the high-level structure. The remaining skills can proceed in parallel, feeding back into `pc-system-design` as constraints emerge.
 
 ## Anti-Patterns
 

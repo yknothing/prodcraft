@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-"""Shared renderer for the public/global `prodcraft` gateway skill."""
+"""Shared renderer for the public/global `pc-prodcraft` gateway skill."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
 import yaml
+
+
+GATEWAY_SKILL_NAME = "pc-prodcraft"
 
 
 PRODCRAFT_DESCRIPTION = (
@@ -24,8 +27,8 @@ def render_prodcraft_skill(
     public_readiness: str = "core",
 ) -> str:
     if install_surface == "curated":
-        intake_ref = "`intake`"
-        problem_framing_ref = "`problem-framing`"
+        intake_ref = "`pc-intake`"
+        problem_framing_ref = "`pc-problem-framing`"
         gateway_ref = "`skills/_gateway.md` in the source repository"
         workflows_ref = "`workflows/` in the source repository"
         repo_source_line = "- Canonical repo source: see the source repository"
@@ -34,8 +37,8 @@ def render_prodcraft_skill(
             "available, rely only on sibling public skill packages that are actually installed."
         )
     else:
-        intake_ref = "`intake` from the canonical repository recorded in `prodcraft-runtime.json`"
-        problem_framing_ref = "`problem-framing` from the canonical repository recorded in `prodcraft-runtime.json`"
+        intake_ref = "`pc-intake` from the canonical repository recorded in `prodcraft-runtime.json`"
+        problem_framing_ref = "`pc-problem-framing` from the canonical repository recorded in `prodcraft-runtime.json`"
         gateway_ref = "the `gateway_path` recorded in `prodcraft-runtime.json`"
         workflows_ref = "the `workflow_root` recorded in `prodcraft-runtime.json`"
         repo_source_line = "- Canonical repo source: recorded in `prodcraft-runtime.json` for this global install"
@@ -45,7 +48,7 @@ def render_prodcraft_skill(
         )
 
     frontmatter = {
-        "name": "prodcraft",
+        "name": GATEWAY_SKILL_NAME,
         "description": PRODCRAFT_DESCRIPTION,
         "metadata": {
             "internal": False,
@@ -88,14 +91,14 @@ The curated install surface is a stable packaging contract, not a promise that e
 
 ## Runtime Resolution
 
-A `prodcraft` directory that contains only this `SKILL.md` is a valid gateway install. It is not evidence that downstream Prodcraft skills are missing. Do not search for downstream skills inside the `prodcraft` directory.
+A `pc-prodcraft` directory that contains only this `SKILL.md` is a valid gateway install. It is not evidence that downstream Prodcraft skills are missing. Do not search for downstream skills inside the `pc-prodcraft` directory.
 
 Resolve the actual operating context in this order:
 
 1. For a global install, read `prodcraft-runtime.json` beside this file when it exists, then use its `gateway_path`, `source_skills_root`, `workflow_root`, and `canonical_repo_root` fields.
 2. In global mode, trust the current workspace as the source repository only when it is the locator's `canonical_repo_root` or inside that root, and it also contains Prodcraft identity files such as `CLAUDE.md`, `manifest.yml`, `skills/_gateway.md`, `schemas/distribution/public-skill-registry.json`, and `scripts/validate_prodcraft.py`.
 3. Without a trusted global locator, treat a source repository as authoritative only when the user or higher-priority runtime context explicitly identifies it as the Prodcraft source repository and the same identity files are present.
-4. Look for sibling skill packages beside `prodcraft`, such as `../intake/SKILL.md`, `../code-review/SKILL.md`, `../testing-strategy/SKILL.md`, and `../security-audit/SKILL.md`. Sibling packages provide public skill guidance; they do not provide source-repository authority.
+4. Look for sibling skill packages beside `pc-prodcraft`, such as `../pc-intake/SKILL.md`, `../pc-code-review/SKILL.md`, `../pc-testing-strategy/SKILL.md`, and `../pc-security-audit/SKILL.md`. Sibling packages provide public skill guidance; they do not provide source-repository authority.
 5. If neither a trusted source repository nor sibling public skill packages can be resolved, treat the runtime as a partial entry install.
 
 Use explicit file reads for these checks. Do not recursively search arbitrary parent directories or run shell commands to discover a substitute repository.
@@ -107,7 +110,7 @@ In partial-entry mode, keep the boundary explicit:
 - if the quality target context is missing, ask for `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs`
 - do not assume public HTTP service from framework names, routes, CORS, HTTP clients, or model provider adapters
 - ask for the source repository path or installation of the needed public skill package before deeper execution
-- do not claim that downstream skills such as `code-review`, `testing-strategy`, or `security-audit` ran
+- do not claim that downstream skills such as `pc-code-review`, `pc-testing-strategy`, or `pc-security-audit` ran
 - do not manually simulate repository validators, workflow approval, QA evidence, or completion gates as if Prodcraft executed them
 
 ## Observability

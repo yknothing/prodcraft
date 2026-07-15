@@ -12,16 +12,16 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 class SystemDesignContractTests(unittest.TestCase):
     def setUp(self):
         self.skill_text = (
-            REPO_ROOT / "skills" / "02-architecture" / "system-design" / "SKILL.md"
+            REPO_ROOT / "skills" / "02-architecture" / "pc-system-design" / "SKILL.md"
         ).read_text(encoding="utf-8")
         self.findings_text = (
-            REPO_ROOT / "eval" / "02-architecture" / "system-design" / "findings.md"
+            REPO_ROOT / "eval" / "02-architecture" / "pc-system-design" / "findings.md"
         ).read_text(encoding="utf-8")
         self.manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
 
     def test_system_design_keeps_review_contract(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
-        entry = entries["system-design"]
+        entry = entries["pc-system-design"]
 
         self.assertEqual("02-architecture", entry["phase"])
         self.assertEqual("review", entry["status"])

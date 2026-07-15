@@ -1,6 +1,6 @@
 # Verification Record
 
-Use this template whenever `verification-before-completion` checks whether a completion, fix, phase, release, or handoff claim may be made.
+Use this template whenever `pc-verification-before-completion` checks whether a completion, fix, phase, release, or handoff claim may be made.
 
 ## Required Artifact
 

@@ -1,15 +1,15 @@
 # Requirements Document
 
-Use this template when `requirements-engineering` converts approved upstream direction into a canonical requirements record.
+Use this template when `pc-requirements-engineering` converts approved upstream direction into a canonical requirements record.
 
 ## Required Artifact
 
 - artifact: `requirements-doc`
 - schema_version: `requirements-doc.v1`
 - status:
-- source_language:
+- source_language: `BCP-47 locale such as en or zh-Hans, or mixed`
 - artifact_record_language: `en`
-- user_presentation_locale:
+- user_presentation_locale: `BCP-47 locale`
 
 ## Source Context
 

@@ -27,12 +27,12 @@ All planned features are code-complete. Unit and integration tests pass. Code me
 
 | Skill | Purpose | Effort |
 |---|---|---|
-| task-execution | Turn approved slices into short execution batches with checkpoints and stop conditions | medium |
-| systematic-debugging | Find root cause before code fixes and escalate structural mismatches cleanly | medium |
-| tdd | Write tests first to drive design and catch regressions | medium |
-| feature-development | Implement features incrementally and verifiably | large |
-| refactoring | Improve code structure without changing behavior | medium |
-| pair-programming | Collaborate in real-time for quality and knowledge sharing | small |
+| pc-task-execution | Turn approved slices into short execution batches with checkpoints and stop conditions | medium |
+| pc-systematic-debugging | Find root cause before code fixes and escalate structural mismatches cleanly | medium |
+| pc-tdd | Write tests first to drive design and catch regressions | medium |
+| pc-feature-development | Implement features incrementally and verifiably | large |
+| pc-refactoring | Improve code structure without changing behavior | medium |
+| pc-pair-programming | Collaborate in real-time for quality and knowledge sharing | small |
 
 ## Typical Duration
 
@@ -44,26 +44,26 @@ All planned features are code-complete. Unit and integration tests pass. Code me
 ## Skill Sequence
 
 ```
-task-execution ──> systematic-debugging ──> tdd ←──→ feature-development ←──→ refactoring
-                                                          ↑
-                                                   pair-programming
+pc-task-execution ──> pc-systematic-debugging ──> pc-tdd ←──→ pc-feature-development ←──→ pc-refactoring
+                                                                  ↑
+                                                          pc-pair-programming
 ```
 
-Implementation skills are iterative and interwoven. `task-execution` turns approved slices into tactical batches. `systematic-debugging` establishes the defect boundary before code fixes. TDD and feature development form a tight loop. Refactoring happens continuously. Pair programming applies to any of the above.
+Implementation skills are iterative and interwoven. `pc-task-execution` turns approved slices into tactical batches. `pc-systematic-debugging` establishes the defect boundary before code fixes. TDD and feature development form a tight loop. Refactoring happens continuously. Pair programming applies to any of the above.
 
 ### Implementation Routing Quick Map
 
-- use `task-execution` only when the batch itself needs explicit checkpoints, stop conditions, or handoff-friendly execution records
-- use `systematic-debugging` when the next move depends on proving root cause before changing code
-- use `tdd` when behavior is changing and the next proof should be a failing test
-- use `feature-development` when the tested slice is ready to become a small reviewable diff
-- use `refactoring` when behavior is already protected and the next goal is structural cleanup
+- use `pc-task-execution` only when the batch itself needs explicit checkpoints, stop conditions, or handoff-friendly execution records
+- use `pc-systematic-debugging` when the next move depends on proving root cause before changing code
+- use `pc-tdd` when behavior is changing and the next proof should be a failing test
+- use `pc-feature-development` when the tested slice is ready to become a small reviewable diff
+- use `pc-refactoring` when behavior is already protected and the next goal is structural cleanup
 
 If two of these seem equally primary, prefer the skill that changes the verification boundary next, not the one that merely sounds more general.
 
 In brownfield work, implementation should start with the smallest safe slice and the tests that protect coexistence or contract behavior before new code expands.
 
-When the work starts from a bug, failing test, or regression, `systematic-debugging` should run before implementation code changes unless the root cause is already evidenced and recorded.
+When the work starts from a bug, failing test, or regression, `pc-systematic-debugging` should run before implementation code changes unless the root cause is already evidenced and recorded.
 
 If implementation discovers that requirements or architecture are materially wrong, produce a `course-correction-note` and jump directly to `01-specification` or `02-architecture` instead of silently patching around the mismatch.
 

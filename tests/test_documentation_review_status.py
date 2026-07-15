@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DOC_ROOT = REPO_ROOT / "eval" / "cross-cutting" / "documentation"
+DOC_ROOT = REPO_ROOT / "eval" / "cross-cutting" / "pc-documentation"
 
 
 class DocumentationReviewStatusTests(unittest.TestCase):
@@ -14,7 +14,7 @@ class DocumentationReviewStatusTests(unittest.TestCase):
 
         manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
         entries = {entry["name"]: entry for entry in manifest["skills"]}
-        entry = entries["documentation"]
+        entry = entries["pc-documentation"]
 
         self.assertEqual("cross-cutting", entry["phase"])
         self.assertEqual("tested", entry["status"])

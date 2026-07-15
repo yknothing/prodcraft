@@ -3,7 +3,7 @@
 
 This script intentionally uses lightweight heuristics suitable for many languages.
 It is not a semantic analyzer: it encodes Prodcraft's baseline expectations and pairs
-with human review via `skills/05-quality/code-review/SKILL.md`.
+with human review via `skills/05-quality/pc-code-review/SKILL.md`.
 """
 
 from __future__ import annotations

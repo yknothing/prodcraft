@@ -18,11 +18,20 @@ class PublicSkillPositioningTests(unittest.TestCase):
         self.assertIn("does **not** automatically publish it to `npx`", readme)
         self.assertIn("packaging stability", readme)
         self.assertIn("capability readiness", readme)
-        self.assertIn("single `prodcraft/SKILL.md`", readme)
+        self.assertIn("single `pc-prodcraft/SKILL.md`", readme)
         self.assertIn("not evidence that downstream skills are missing", readme)
 
+    def test_public_install_docs_point_at_curated_surface(self):
+        readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+        compat = (REPO_ROOT / "docs" / "distribution" / "npx-skills-compat.md").read_text(encoding="utf-8")
+
+        for content in (readme, compat):
+            self.assertIn("npx skills add <repo-url>/skills/.curated", content)
+            self.assertIn("Repository-root discovery is not the public contract", content)
+        self.assertNotIn("npx skills add <repo-url>\n", readme)
+
     def test_curated_prodcraft_skill_sets_routed_expectation(self):
-        prodcraft_skill = (REPO_ROOT / "skills" / ".curated" / "prodcraft" / "SKILL.md").read_text(encoding="utf-8")
+        prodcraft_skill = (REPO_ROOT / "skills" / ".curated" / "pc-prodcraft" / "SKILL.md").read_text(encoding="utf-8")
 
         self.assertIn("## Routed Invocation", prodcraft_skill)
         self.assertIn("stable packaging contract", prodcraft_skill)

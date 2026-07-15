@@ -14,7 +14,7 @@ except ImportError:  # pragma: no cover - environment guard
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-INTAKE_SKILL_PATH = REPO_ROOT / "skills" / "00-discovery" / "intake" / "SKILL.md"
+INTAKE_SKILL_PATH = REPO_ROOT / "skills" / "00-discovery" / "pc-intake" / "SKILL.md"
 INTAKE_SCHEMA_PATH = REPO_ROOT / "schemas" / "artifacts" / "intake-brief.schema.json"
 WORKFLOWS_DIR = REPO_ROOT / "workflows"
 MANIFEST_PATH = REPO_ROOT / "manifest.yml"
@@ -91,27 +91,20 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_language_boundary_fields_match_repo_policy(self):
-        import re as _re
-
-        source_pattern = self.schema["properties"]["source_language"]["pattern"]
-        locale_pattern = self.schema["properties"]["user_presentation_locale"]["pattern"]
-
-        # Open BCP-47 contract: any well-formed language tag is valid, plus
-        # `mixed` for multilingual source requests. Only the canonical artifact
-        # record language stays pinned by repo policy.
-        for valid in ("en", "zh", "fr", "pt-BR", "zh-Hans", "mixed"):
-            self.assertIsNotNone(_re.fullmatch(source_pattern, valid), valid)
-        for invalid in ("", "EN", "français", "not a tag!"):
-            self.assertIsNone(_re.fullmatch(source_pattern, invalid), invalid)
-
-        for valid in ("en", "zh", "fr", "pt-BR", "zh-Hans"):
-            self.assertIsNotNone(_re.fullmatch(locale_pattern, valid), valid)
-        for invalid in ("mixed", "", "EN", "not a tag!"):
-            self.assertIsNone(_re.fullmatch(locale_pattern, invalid), invalid)
-
+        self.assertEqual(
+            [
+                {"type": "string", "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$"},
+                {"const": "mixed"},
+            ],
+            self.schema["properties"]["source_language"]["oneOf"],
+        )
         self.assertEqual(
             "en",
             self.schema["properties"]["artifact_record_language"]["const"],
+        )
+        self.assertEqual(
+            "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$",
+            self.schema["properties"]["user_presentation_locale"]["pattern"],
         )
 
     def test_runtime_boundary_fields_define_quality_calibration_axis(self):
@@ -184,7 +177,7 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
             },
             "workflow_primary": "agile-sprint",
             "scope_assessment": "medium",
-            "recommended_next_skill": "requirements-engineering",
+            "recommended_next_skill": "pc-requirements-engineering",
             "routing_rationale": "Feature work in an existing product starts in specification.",
             "key_risks": ["Approval thresholds may be ambiguous."],
             "questions_asked": ["Does this affect an existing system?"],
@@ -193,6 +186,14 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
         }
 
         jsonschema.validate(valid_full_payload, self.schema)
+        jsonschema.validate(
+            {
+                **valid_full_payload,
+                "source_language": "fr-FR",
+                "user_presentation_locale": "fr",
+            },
+            self.schema,
+        )
 
         valid_fast_track_payload = {
             **valid_full_payload,
@@ -221,7 +222,9 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
             ("work_type", "New Feture"),
             ("entry_phase", "whatever"),
             ("workflow_primary", "kanban"),
+            ("source_language", "not_a_locale"),
             ("source_language", "not a tag!"),
+            ("user_presentation_locale", "not_a_locale"),
             ("user_presentation_locale", "mixed"),
         )
         for field_name, invalid_value in invalid_cases:

@@ -20,11 +20,11 @@ The project needs a canonical way to answer execution questions such as:
 - where time was spent
 - where the chain failed, retried, or timed out
 
-Today those concerns are not represented by a dedicated cross-cutting skill or schema. The repository only has `monitoring-observability`, which is scoped to operational telemetry, dashboards, alerts, and release triage. That is the wrong boundary for execution-level usage accounting and skill invocation events.
+Today those concerns are not represented by a dedicated cross-cutting skill or schema. The repository only has `pc-monitoring-observability`, which is scoped to operational telemetry, dashboards, alerts, and release triage. That is the wrong boundary for execution-level usage accounting and skill invocation events.
 
 ## Decision
 
-We will introduce a cross-cutting `observability` capability for execution telemetry and define an **Execution Observability Envelope** with these principles:
+We will introduce a cross-cutting `pc-observability` capability for execution telemetry and define an **Execution Observability Envelope** with these principles:
 
 1. A canonical cross-cutting skill owns instrumentation contracts for execution telemetry.
 2. Execution telemetry uses a versioned event schema rather than ad hoc log lines.
@@ -52,12 +52,12 @@ We will introduce a cross-cutting `observability` capability for execution telem
 - JSONL is intentionally simple and will not provide rich querying by itself.
 
 ### Neutral
-- `monitoring-observability` remains responsible for dashboards, alerts, and responder workflows.
+- `pc-monitoring-observability` remains responsible for dashboards, alerts, and responder workflows.
 - Existing benchmark and trigger-eval semantics do not change merely because they become instrumented.
 
 ## Alternatives Considered
 
-### Alternative 1: Keep this inside `monitoring-observability`
+### Alternative 1: Keep this inside `pc-monitoring-observability`
 
 Rejected because that skill is about production-facing telemetry, dashboards, alerts, rollback markers, and responder workflows. Mixing execution accounting into it would blur ownership and produce an unclear contract boundary.
 
@@ -71,8 +71,8 @@ Rejected for now because beta needs a stable contract first, not an immediate ba
 
 ## References
 
-- `skills/cross-cutting/observability/SKILL.md`
-- `skills/07-operations/monitoring-observability/SKILL.md`
+- `skills/cross-cutting/pc-observability/SKILL.md`
+- `skills/07-operations/pc-monitoring-observability/SKILL.md`
 - `docs/observability/execution-event-schema-v1.md`
 - `docs/observability/runtime-feedback-loop.md`
 - `scripts/run_explicit_skill_benchmark.py`

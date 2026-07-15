@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prodcraft.dev/schemas/protocol/execution-authority-result.v1.schema.json",
+  "title": "Prodcraft Execution Authority Result v1",
+  "type": "object",
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "nullableSha256": {
+      "oneOf": [
+        { "$ref": "#/$defs/sha256" },
+        { "type": "null" }
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "status",
+    "authority",
+    "candidate_completion_digest",
+    "errors"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "execution-authority-result.v1"
+    },
+    "status": {
+      "enum": [
+        "valid",
+        "approval-required",
+        "invalid"
+      ]
+    },
+    "authority": {
+      "oneOf": [
+        {
+          "enum": [
+            "gate-authorized",
+            "terminal-authorized"
+          ]
+        },
+        { "type": "null" }
+      ]
+    },
+    "candidate_completion_digest": {
+      "$ref": "#/$defs/nullableSha256"
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "status": { "const": "valid" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "candidate_completion_digest": { "type": "null" },
+          "errors": { "maxItems": 0 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "status": { "const": "approval-required" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "authority": { "type": "null" },
+          "candidate_completion_digest": { "$ref": "#/$defs/sha256" },
+          "errors": { "minItems": 1 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "status": { "const": "invalid" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "authority": { "type": "null" },
+          "candidate_completion_digest": { "type": "null" },
+          "errors": { "minItems": 1 }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

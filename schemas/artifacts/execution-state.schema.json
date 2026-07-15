@@ -1,0 +1,387 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prodcraft.dev/schemas/artifacts/execution-state.schema.json",
+  "title": "Prodcraft Execution State",
+  "type": "object",
+  "$defs": {
+    "phase": {
+      "enum": [
+        "00-discovery",
+        "01-specification",
+        "02-architecture",
+        "03-planning",
+        "04-implementation",
+        "05-quality",
+        "06-delivery",
+        "07-operations",
+        "08-evolution",
+        "cross-cutting"
+      ]
+    },
+    "lifecycleState": {
+      "enum": [
+        "received",
+        "routed",
+        "gated",
+        "executing",
+        "blocked",
+        "completion_claimed",
+        "verified",
+        "rejected",
+        "completed",
+        "rerouted"
+      ]
+    },
+    "sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "localRef": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*//)(?!.*(?:^|/)(?:\\.|\\.\\.)(?:/|$))(?!.*\\/$)(?![A-Za-z]:)(?!.*\\\\)(?![A-Za-z][A-Za-z0-9+.-]*:).+$"
+    },
+    "contentEvidence": {
+      "type": "object",
+      "required": ["ref", "sha256"],
+      "properties": {
+        "ref": { "$ref": "#/$defs/localRef" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      },
+      "additionalProperties": false
+    },
+    "routeBinding": {
+      "type": "object",
+      "required": ["ref", "route_id", "route_revision", "route_digest"],
+      "properties": {
+        "ref": { "$ref": "#/$defs/localRef" },
+        "route_id": { "type": "string", "minLength": 1 },
+        "route_revision": { "type": "integer", "minimum": 1 },
+        "route_digest": { "$ref": "#/$defs/sha256" }
+      },
+      "additionalProperties": false
+    },
+    "transition": {
+      "type": "object",
+      "required": [
+        "recorded_sequence",
+        "record_digest",
+        "from_state",
+        "to_state",
+        "occurred_at",
+        "reason",
+        "evidence_refs"
+      ],
+      "properties": {
+        "recorded_sequence": { "type": "integer", "minimum": 1 },
+        "record_digest": { "$ref": "#/$defs/sha256" },
+        "from_state": { "$ref": "#/$defs/lifecycleState" },
+        "to_state": { "$ref": "#/$defs/lifecycleState" },
+        "occurred_at": { "type": "string", "format": "date-time" },
+        "reason": { "type": "string", "minLength": 1 },
+        "evidence_refs": { "type": "array", "items": { "$ref": "#/$defs/contentEvidence" } }
+      },
+      "additionalProperties": false
+    },
+    "phaseEvent": {
+      "type": "object",
+      "required": [
+        "recorded_sequence",
+        "record_digest",
+        "kind",
+        "phase_index",
+        "phase",
+        "occurred_at",
+        "evidence_refs"
+      ],
+      "properties": {
+        "recorded_sequence": { "type": "integer", "minimum": 1 },
+        "record_digest": { "$ref": "#/$defs/sha256" },
+        "kind": { "enum": ["entered", "exited"] },
+        "phase_index": { "type": "integer", "minimum": 0 },
+        "phase": { "$ref": "#/$defs/phase" },
+        "occurred_at": { "type": "string", "format": "date-time" },
+        "evidence_refs": { "type": "array", "items": { "$ref": "#/$defs/contentEvidence" } }
+      },
+      "additionalProperties": false
+    },
+    "structuralEvidence": {
+      "type": "object",
+      "required": ["validator_id", "validator_version", "check_set", "result", "evidence"],
+      "properties": {
+        "validator_id": { "type": "string", "minLength": 1 },
+        "validator_version": { "type": "string", "minLength": 1 },
+        "check_set": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "result": { "const": "passed" },
+        "evidence": { "$ref": "#/$defs/contentEvidence" }
+      },
+      "additionalProperties": false
+    },
+    "approval": {
+      "type": "object",
+      "required": ["status", "approver", "approved_at", "subject_sha256", "evidence"],
+      "properties": {
+        "status": { "const": "accepted" },
+        "approver": { "type": "string", "minLength": 1 },
+        "approved_at": { "type": "string", "format": "date-time" },
+        "subject_sha256": { "$ref": "#/$defs/sha256" },
+        "evidence": { "$ref": "#/$defs/contentEvidence" }
+      },
+      "additionalProperties": false
+    },
+    "artifactBinding": {
+      "type": "object",
+      "required": [
+        "recorded_sequence",
+        "obligation_id",
+        "artifact",
+        "ref",
+        "subject_sha256",
+        "assurance"
+      ],
+      "properties": {
+        "recorded_sequence": { "type": "integer", "minimum": 1 },
+        "obligation_id": { "type": "string", "minLength": 1 },
+        "artifact": { "type": "string", "minLength": 1 },
+        "ref": { "$ref": "#/$defs/localRef" },
+        "subject_sha256": { "$ref": "#/$defs/sha256" },
+        "assurance": { "enum": ["presence", "structural_valid", "approval_accepted"] },
+        "structural_evidence": { "$ref": "#/$defs/structuralEvidence" },
+        "approval": { "$ref": "#/$defs/approval" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "assurance": { "const": "structural_valid" } }, "required": ["assurance"] },
+          "then": { "required": ["structural_evidence"] }
+        },
+        {
+          "if": { "properties": { "assurance": { "const": "approval_accepted" } }, "required": ["assurance"] },
+          "then": { "required": ["approval"] }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "blockContext": {
+      "type": "object",
+      "required": ["transition_sequence", "reason", "evidence_refs"],
+      "properties": {
+        "transition_sequence": { "type": "integer", "minimum": 1 },
+        "resume_transition_sequence": { "type": "integer", "minimum": 1 },
+        "reason": { "type": "string", "minLength": 1 },
+        "evidence_refs": { "type": "array", "items": { "$ref": "#/$defs/contentEvidence" } }
+      },
+      "additionalProperties": false
+    },
+    "workSnapshot": {
+      "type": "object",
+      "required": ["algorithm_id", "scope_policy_id", "head", "status", "content_digest", "captured_at"],
+      "properties": {
+        "algorithm_id": { "const": "git-worktree-content-v1" },
+        "scope_policy_id": { "const": "repo-worktree-excluding-bound-control-v1" },
+        "head": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["clean", "dirty"] },
+        "content_digest": { "$ref": "#/$defs/sha256" },
+        "captured_at": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "evidenceBinding": {
+      "type": "object",
+      "required": ["evidence_id", "local_ref", "sha256"],
+      "properties": {
+        "evidence_id": { "type": "string", "minLength": 1 },
+        "local_ref": { "$ref": "#/$defs/localRef" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      },
+      "additionalProperties": false
+    },
+    "verificationCommitment": {
+      "type": "object",
+      "required": [
+        "verification_record_ref",
+        "verification_record_sha256",
+        "evidence_bindings",
+        "work_snapshot"
+      ],
+      "properties": {
+        "verification_record_ref": { "$ref": "#/$defs/localRef" },
+        "verification_record_sha256": { "$ref": "#/$defs/sha256" },
+        "evidence_bindings": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/evidenceBinding" }
+        },
+        "work_snapshot": { "$ref": "#/$defs/workSnapshot" }
+      },
+      "additionalProperties": false
+    },
+    "completionBinding": {
+      "type": "object",
+      "required": [
+        "attempt_id",
+        "attempt_revision",
+        "claim_digest",
+        "completion_basis_digest",
+        "route_id",
+        "route_revision",
+        "route_digest",
+        "verification_record_ref",
+        "verification_record_sha256",
+        "evidence_bindings",
+        "terminal_transition_digests",
+        "work_snapshot"
+      ],
+      "properties": {
+        "attempt_id": { "type": "string", "minLength": 1 },
+        "attempt_revision": { "type": "integer", "minimum": 1 },
+        "claim_digest": { "$ref": "#/$defs/sha256" },
+        "completion_basis_digest": { "$ref": "#/$defs/sha256" },
+        "route_id": { "type": "string", "minLength": 1 },
+        "route_revision": { "type": "integer", "minimum": 1 },
+        "route_digest": { "$ref": "#/$defs/sha256" },
+        "verification_record_ref": { "$ref": "#/$defs/localRef" },
+        "verification_record_sha256": { "$ref": "#/$defs/sha256" },
+        "evidence_bindings": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidenceBinding" } },
+        "terminal_transition_digests": { "type": "array", "minItems": 1, "maxItems": 2, "items": { "$ref": "#/$defs/sha256" } },
+        "work_snapshot": { "$ref": "#/$defs/workSnapshot" }
+      },
+      "additionalProperties": false
+    },
+    "completionAttempt": {
+      "type": "object",
+      "required": [
+        "attempt_id",
+        "attempt_revision",
+        "claim",
+        "claim_scope",
+        "claim_digest",
+        "completion_basis_digest",
+        "claim_cut_sequence",
+        "route_id",
+        "route_revision",
+        "route_digest",
+        "work_snapshot",
+        "verification_commitment",
+        "claimed_at",
+        "terminal_transitions"
+      ],
+      "properties": {
+        "attempt_id": { "type": "string", "minLength": 1 },
+        "attempt_revision": { "type": "integer", "minimum": 1 },
+        "claim": { "type": "string", "minLength": 1 },
+        "claim_scope": { "type": "string", "minLength": 1 },
+        "claim_digest": { "$ref": "#/$defs/sha256" },
+        "completion_basis_digest": { "$ref": "#/$defs/sha256" },
+        "claim_cut_sequence": { "type": "integer", "minimum": 1 },
+        "route_id": { "type": "string", "minLength": 1 },
+        "route_revision": { "type": "integer", "minimum": 1 },
+        "route_digest": { "$ref": "#/$defs/sha256" },
+        "work_snapshot": { "$ref": "#/$defs/workSnapshot" },
+        "verification_commitment": { "$ref": "#/$defs/verificationCommitment" },
+        "claimed_at": { "type": "string", "format": "date-time" },
+        "terminal_transitions": {
+          "type": "array",
+          "maxItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["recorded_sequence", "record_digest"],
+            "properties": {
+              "recorded_sequence": { "type": "integer", "minimum": 1 },
+              "record_digest": { "$ref": "#/$defs/sha256" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "completion_binding": { "$ref": "#/$defs/completionBinding" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "artifact",
+    "schema_version",
+    "work_id",
+    "state_revision",
+    "updated_at",
+    "route_binding",
+    "lifecycle_state",
+    "lifecycle_transitions",
+    "phase_events",
+    "artifact_bindings",
+    "block_contexts",
+    "completion_attempts"
+  ],
+  "properties": {
+    "artifact": { "const": "execution-state" },
+    "schema_version": { "const": "execution-state.v1" },
+    "work_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
+    "state_revision": { "type": "integer", "minimum": 1 },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "route_binding": { "$ref": "#/$defs/routeBinding" },
+    "previous_execution": {
+      "type": "object",
+      "required": ["ref", "sha256", "lifecycle_state"],
+      "properties": {
+        "ref": { "$ref": "#/$defs/localRef" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "lifecycle_state": { "const": "rerouted" }
+      },
+      "additionalProperties": false
+    },
+    "lifecycle_state": {
+      "enum": [
+        "routed",
+        "gated",
+        "executing",
+        "blocked",
+        "completion_claimed",
+        "verified",
+        "rejected",
+        "completed",
+        "rerouted"
+      ]
+    },
+    "workflow_cursor": {
+      "type": "object",
+      "required": ["phase_index", "phase", "checkpoint"],
+      "properties": {
+        "phase_index": { "type": "integer", "minimum": 0 },
+        "phase": { "$ref": "#/$defs/phase" },
+        "checkpoint": { "enum": ["entered", "exited"] }
+      },
+      "additionalProperties": false
+    },
+    "lifecycle_transitions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/transition" } },
+    "phase_events": { "type": "array", "minItems": 0, "items": { "$ref": "#/$defs/phaseEvent" } },
+    "artifact_bindings": { "type": "array", "items": { "$ref": "#/$defs/artifactBinding" } },
+    "block_contexts": { "type": "array", "items": { "$ref": "#/$defs/blockContext" } },
+    "completion_attempts": { "type": "array", "items": { "$ref": "#/$defs/completionAttempt" } },
+    "current_completion_attempt_id": { "type": "string", "minLength": 1 }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "phase_events": { "minItems": 1 } }, "required": ["phase_events"] },
+      "then": { "required": ["workflow_cursor"] },
+      "else": { "not": { "required": ["workflow_cursor"] } }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": { "enum": ["completion_claimed", "verified", "completed"] }
+        },
+        "required": ["lifecycle_state"]
+      },
+      "then": { "required": ["current_completion_attempt_id"] }
+    },
+    {
+      "if": {
+        "properties": {
+          "route_binding": {
+            "properties": { "route_revision": { "minimum": 2 } },
+            "required": ["route_revision"]
+          }
+        },
+        "required": ["route_binding"]
+      },
+      "then": { "required": ["previous_execution"] }
+    }
+  ],
+  "additionalProperties": false
+}

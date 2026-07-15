@@ -15,7 +15,7 @@ class EstimationTestedStatusTests(unittest.TestCase):
         self.entries = {entry["name"]: entry for entry in manifest["skills"]}
 
     def test_manifest_registers_estimation_as_tested_routed(self):
-        entry = self.entries["estimation"]
+        entry = self.entries["pc-estimation"]
 
         self.assertEqual("03-planning", entry["phase"])
         self.assertEqual("tested", entry["status"])
@@ -32,13 +32,13 @@ class EstimationTestedStatusTests(unittest.TestCase):
 
     def test_tested_artifacts_exist(self):
         targets = [
-            REPO_ROOT / "eval" / "03-planning" / "estimation" / "findings.md",
-            REPO_ROOT / "eval" / "03-planning" / "estimation" / "evals" / "eval-strategy.md",
-            REPO_ROOT / "eval" / "03-planning" / "estimation" / "isolated-benchmark-plan.md",
-            REPO_ROOT / "eval" / "03-planning" / "estimation" / "isolated-benchmark-review.md",
-            REPO_ROOT / "eval" / "03-planning" / "estimation" / "sprint-planning-handoff-review.md",
-            REPO_ROOT / "eval" / "03-planning" / "estimation" / "fixtures" / "access-review-modernization-task-list.md",
-            REPO_ROOT / "eval" / "03-planning" / "estimation" / "fixtures" / "access-review-modernization-risk-register.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-estimation" / "findings.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-estimation" / "evals" / "eval-strategy.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-estimation" / "isolated-benchmark-plan.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-estimation" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-estimation" / "sprint-planning-handoff-review.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-estimation" / "fixtures" / "access-review-modernization-task-list.md",
+            REPO_ROOT / "eval" / "03-planning" / "pc-estimation" / "fixtures" / "access-review-modernization-risk-register.md",
         ]
 
         for path in targets:
@@ -47,7 +47,7 @@ class EstimationTestedStatusTests(unittest.TestCase):
 
     def test_findings_record_tested_status(self):
         findings = (
-            REPO_ROOT / "eval" / "03-planning" / "estimation" / "findings.md"
+            REPO_ROOT / "eval" / "03-planning" / "pc-estimation" / "findings.md"
         ).read_text(encoding="utf-8")
         artifact_flow = {
             entry["artifact"]: entry
@@ -56,8 +56,8 @@ class EstimationTestedStatusTests(unittest.TestCase):
 
         self.assertIn("Current status: `tested`", findings)
         self.assertIn("isolated benchmark", findings)
-        self.assertEqual("estimation", artifact_flow["estimate-set"]["produced_by"])
-        self.assertIn("sprint-planning", artifact_flow["estimate-set"]["consumed_by"])
+        self.assertEqual("pc-estimation", artifact_flow["estimate-set"]["produced_by"])
+        self.assertIn("pc-sprint-planning", artifact_flow["estimate-set"]["consumed_by"])
 
 
 if __name__ == "__main__":

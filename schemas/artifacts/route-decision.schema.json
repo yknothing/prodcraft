@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prodcraft.dev/schemas/artifacts/route-decision.schema.json",
+  "title": "Prodcraft Route Decision",
+  "type": "object",
+  "$defs": {
+    "phase": {
+      "enum": [
+        "00-discovery",
+        "01-specification",
+        "02-architecture",
+        "03-planning",
+        "04-implementation",
+        "05-quality",
+        "06-delivery",
+        "07-operations",
+        "08-evolution",
+        "cross-cutting"
+      ]
+    },
+    "lifecycleState": {
+      "enum": [
+        "received",
+        "routed",
+        "gated",
+        "executing",
+        "blocked",
+        "completion_claimed",
+        "verified",
+        "rejected",
+        "completed",
+        "rerouted"
+      ]
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "localRef": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*//)(?!.*(?:^|/)(?:\\.|\\.\\.)(?:/|$))(?!.*\\/$)(?![A-Za-z]:)(?!.*\\\\)(?![A-Za-z][A-Za-z0-9+.-]*:).+$"
+    },
+    "contentEvidence": {
+      "type": "object",
+      "required": ["ref", "sha256"],
+      "properties": {
+        "ref": { "$ref": "#/$defs/localRef" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      },
+      "additionalProperties": false
+    },
+    "gate": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["kind", "from_state", "to_state"],
+          "properties": {
+            "kind": { "const": "lifecycle_transition" },
+            "from_state": { "$ref": "#/$defs/lifecycleState" },
+            "to_state": { "$ref": "#/$defs/lifecycleState" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["kind", "phase_index", "checkpoint"],
+          "properties": {
+            "kind": { "const": "phase_checkpoint" },
+            "phase_index": { "type": "integer", "minimum": 0 },
+            "checkpoint": { "enum": ["entered", "exited"] }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "required": [
+    "artifact",
+    "schema_version",
+    "status",
+    "work_id",
+    "route_id",
+    "route_revision",
+    "route_digest",
+    "entry_phase",
+    "workflow",
+    "obligations",
+    "approved_by",
+    "approved_at",
+    "approval_evidence"
+  ],
+  "properties": {
+    "artifact": { "const": "route-decision" },
+    "schema_version": { "const": "route-decision.v1" },
+    "status": { "const": "approved" },
+    "work_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "route_id": { "type": "string", "minLength": 1 },
+    "route_revision": { "type": "integer", "minimum": 1 },
+    "previous_route": {
+      "type": "object",
+      "required": ["revision", "digest", "ref"],
+      "properties": {
+        "revision": { "type": "integer", "minimum": 1 },
+        "digest": { "$ref": "#/$defs/sha256" },
+        "ref": { "$ref": "#/$defs/localRef" }
+      },
+      "additionalProperties": false
+    },
+    "route_digest": { "$ref": "#/$defs/sha256" },
+    "entry_phase": { "$ref": "#/$defs/phase" },
+    "workflow": {
+      "type": "object",
+      "required": ["primary", "focus_sequence"],
+      "properties": {
+        "primary": { "enum": ["agile-sprint", "spec-driven", "iterative-waterfall"] },
+        "overlays": {
+          "type": "array",
+          "items": { "enum": ["greenfield", "brownfield", "hotfix"] },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "focus_sequence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/phase" },
+          "minItems": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "obligations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "artifact", "gate", "assurance"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
+          "artifact": { "type": "string", "minLength": 1 },
+          "gate": { "$ref": "#/$defs/gate" },
+          "assurance": { "enum": ["presence", "structural_valid", "approval_accepted"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "approved_by": { "type": "string", "minLength": 1 },
+    "approved_at": { "type": "string", "format": "date-time" },
+    "approval_evidence": { "$ref": "#/$defs/contentEvidence" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "route_revision": { "minimum": 2 } }, "required": ["route_revision"] },
+      "then": { "required": ["previous_route"] }
+    },
+    {
+      "if": { "properties": { "route_revision": { "const": 1 } }, "required": ["route_revision"] },
+      "then": { "not": { "required": ["previous_route"] } }
+    }
+  ],
+  "additionalProperties": false
+}

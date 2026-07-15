@@ -14,7 +14,7 @@ class IntakeQaPostureTests(unittest.TestCase):
         manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
         entries = {entry["name"]: entry for entry in manifest["skills"]}
 
-        intake = entries["intake"]
+        intake = entries["pc-intake"]
 
         self.assertEqual("00-discovery", intake["phase"])
         self.assertEqual("production", intake["status"])
@@ -34,18 +34,18 @@ class IntakeQaPostureTests(unittest.TestCase):
 
     def test_intake_findings_record_routed_posture_and_discoverability_blocker(self):
         findings = (
-            REPO_ROOT / "eval" / "00-discovery" / "intake" / "current-evidence-status.md"
+            REPO_ROOT / "eval" / "00-discovery" / "pc-intake" / "current-evidence-status.md"
         ).read_text(encoding="utf-8")
 
-        self.assertIn("`intake` is now `production` under a `routed` QA posture", findings)
+        self.assertIn("`pc-intake` is now `production` under a `routed` QA posture", findings)
         self.assertIn("mandatory gateway enforced by Prodcraft workflow contracts", findings)
         self.assertIn("Anthropic trigger-discoverability remains useful diagnostic evidence", findings)
 
     def test_intake_requires_runtime_boundary_before_quality_handoff(self):
-        source = (REPO_ROOT / "skills" / "00-discovery" / "intake" / "SKILL.md").read_text(
+        source = (REPO_ROOT / "skills" / "00-discovery" / "pc-intake" / "SKILL.md").read_text(
             encoding="utf-8"
         )
-        curated = (REPO_ROOT / "skills" / ".curated" / "intake" / "SKILL.md").read_text(
+        curated = (REPO_ROOT / "skills" / ".curated" / "pc-intake" / "SKILL.md").read_text(
             encoding="utf-8"
         )
 

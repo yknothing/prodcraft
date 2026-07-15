@@ -15,8 +15,8 @@ class ReceivingCodeReviewSkillTests(unittest.TestCase):
 
     def test_skill_files_exist(self):
         targets = [
-            REPO_ROOT / "skills" / "05-quality" / "receiving-code-review" / "SKILL.md",
-            REPO_ROOT / "skills" / "05-quality" / "receiving-code-review" / "references" / "gotchas.md",
+            REPO_ROOT / "skills" / "05-quality" / "pc-receiving-code-review" / "SKILL.md",
+            REPO_ROOT / "skills" / "05-quality" / "pc-receiving-code-review" / "references" / "gotchas.md",
         ]
         for path in targets:
             with self.subTest(path=path):
@@ -24,7 +24,7 @@ class ReceivingCodeReviewSkillTests(unittest.TestCase):
 
     def test_manifest_registers_receiving_code_review_as_quality_skill(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
-        entry = entries["receiving-code-review"]
+        entry = entries["pc-receiving-code-review"]
 
         self.assertEqual("05-quality", entry["phase"])
         self.assertEqual("tested", entry["status"])
@@ -38,19 +38,19 @@ class ReceivingCodeReviewSkillTests(unittest.TestCase):
         quality_phase = (REPO_ROOT / "skills" / "05-quality" / "_phase.md").read_text(encoding="utf-8")
         gateway = (REPO_ROOT / "skills" / "_gateway.md").read_text(encoding="utf-8")
 
-        self.assertIn("receiving-code-review", artifact_flow["review-report"]["consumed_by"])
-        self.assertEqual("receiving-code-review", artifact_flow["review-response-record"]["produced_by"])
-        self.assertIn("receiving-code-review", artifact_flow["source-code"]["consumed_by"])
-        self.assertIn("receiving-code-review", artifact_flow["test-suite"]["consumed_by"])
+        self.assertIn("pc-receiving-code-review", artifact_flow["review-report"]["consumed_by"])
+        self.assertEqual("pc-receiving-code-review", artifact_flow["review-response-record"]["produced_by"])
+        self.assertIn("pc-receiving-code-review", artifact_flow["source-code"]["consumed_by"])
+        self.assertIn("pc-receiving-code-review", artifact_flow["test-suite"]["consumed_by"])
 
-        self.assertIn("receiving-code-review", quality_phase)
-        self.assertIn("receiving-code-review", gateway)
+        self.assertIn("pc-receiving-code-review", quality_phase)
+        self.assertIn("pc-receiving-code-review", gateway)
 
     def test_tested_artifacts_exist(self):
         targets = [
-            REPO_ROOT / "eval" / "05-quality" / "receiving-code-review" / "isolated-benchmark.json",
-            REPO_ROOT / "eval" / "05-quality" / "receiving-code-review" / "isolated-benchmark-review.md",
-            REPO_ROOT / "eval" / "05-quality" / "receiving-code-review" / "feedback-response-review.md",
+            REPO_ROOT / "eval" / "05-quality" / "pc-receiving-code-review" / "isolated-benchmark.json",
+            REPO_ROOT / "eval" / "05-quality" / "pc-receiving-code-review" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "05-quality" / "pc-receiving-code-review" / "feedback-response-review.md",
         ]
 
         for path in targets:

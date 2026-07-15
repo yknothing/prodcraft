@@ -15,8 +15,8 @@ class DeliveryCompletionSkillTests(unittest.TestCase):
 
     def test_delivery_completion_skill_files_exist(self):
         targets = [
-            REPO_ROOT / "skills" / "06-delivery" / "delivery-completion" / "SKILL.md",
-            REPO_ROOT / "skills" / "06-delivery" / "delivery-completion" / "references" / "gotchas.md",
+            REPO_ROOT / "skills" / "06-delivery" / "pc-delivery-completion" / "SKILL.md",
+            REPO_ROOT / "skills" / "06-delivery" / "pc-delivery-completion" / "references" / "gotchas.md",
         ]
         for path in targets:
             with self.subTest(path=path):
@@ -26,7 +26,7 @@ class DeliveryCompletionSkillTests(unittest.TestCase):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
         artifact_flow = {entry["artifact"]: entry for entry in self.manifest["artifact_flow"]}
 
-        entry = entries["delivery-completion"]
+        entry = entries["pc-delivery-completion"]
         self.assertEqual("06-delivery", entry["phase"])
         self.assertEqual("tested", entry["status"])
         self.assertEqual("critical", entry["qa_tier"])
@@ -38,14 +38,14 @@ class DeliveryCompletionSkillTests(unittest.TestCase):
         self.assertIn("findings_path", entry["qa"])
         self.assertIn("integration_test_path", entry["qa"])
 
-        self.assertIn("delivery-completion", artifact_flow["verification-record"]["consumed_by"])
-        self.assertIn("delivery-completion", artifact_flow["execution-checkpoint"]["consumed_by"])
-        self.assertEqual("delivery-completion", artifact_flow["delivery-decision-record"]["produced_by"])
-        self.assertIn("release-management", artifact_flow["delivery-decision-record"]["consumed_by"])
+        self.assertIn("pc-delivery-completion", artifact_flow["verification-record"]["consumed_by"])
+        self.assertIn("pc-delivery-completion", artifact_flow["execution-checkpoint"]["consumed_by"])
+        self.assertEqual("pc-delivery-completion", artifact_flow["delivery-decision-record"]["produced_by"])
+        self.assertIn("pc-release-management", artifact_flow["delivery-decision-record"]["consumed_by"])
 
     def test_gateway_phase_and_skill_contract_keep_delivery_completion_thin(self):
         skill_text = (
-            REPO_ROOT / "skills" / "06-delivery" / "delivery-completion" / "SKILL.md"
+            REPO_ROOT / "skills" / "06-delivery" / "pc-delivery-completion" / "SKILL.md"
         ).read_text(encoding="utf-8")
         phase_text = (REPO_ROOT / "skills" / "06-delivery" / "_phase.md").read_text(encoding="utf-8")
         gateway_text = (REPO_ROOT / "skills" / "_gateway.md").read_text(encoding="utf-8")
@@ -53,17 +53,17 @@ class DeliveryCompletionSkillTests(unittest.TestCase):
         self.assertIn("Present these four outcomes", skill_text)
         self.assertIn("typed `discard` confirmation", skill_text)
         self.assertIn("does **not** replace release management or deployment strategy", skill_text)
-        self.assertIn("delivery-completion", phase_text)
-        self.assertIn("delivery-completion", gateway_text)
+        self.assertIn("pc-delivery-completion", phase_text)
+        self.assertIn("pc-delivery-completion", gateway_text)
         self.assertIn("finishing-a-development-branch", gateway_text)
 
     def test_tested_artifacts_exist(self):
         targets = [
-            REPO_ROOT / "eval" / "06-delivery" / "delivery-completion" / "findings.md",
-            REPO_ROOT / "eval" / "06-delivery" / "delivery-completion" / "evals" / "eval-strategy.md",
-            REPO_ROOT / "eval" / "06-delivery" / "delivery-completion" / "isolated-benchmark-plan.md",
-            REPO_ROOT / "eval" / "06-delivery" / "delivery-completion" / "isolated-benchmark-review.md",
-            REPO_ROOT / "eval" / "06-delivery" / "delivery-completion" / "completion-handoff-review.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-delivery-completion" / "findings.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-delivery-completion" / "evals" / "eval-strategy.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-delivery-completion" / "isolated-benchmark-plan.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-delivery-completion" / "isolated-benchmark-review.md",
+            REPO_ROOT / "eval" / "06-delivery" / "pc-delivery-completion" / "completion-handoff-review.md",
         ]
 
         for path in targets:
@@ -72,7 +72,7 @@ class DeliveryCompletionSkillTests(unittest.TestCase):
 
     def test_findings_record_tested_status(self):
         findings = (
-            REPO_ROOT / "eval" / "06-delivery" / "delivery-completion" / "findings.md"
+            REPO_ROOT / "eval" / "06-delivery" / "pc-delivery-completion" / "findings.md"
         ).read_text(encoding="utf-8")
 
         self.assertIn("Current status: `tested`", findings)

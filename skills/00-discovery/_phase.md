@@ -25,10 +25,10 @@ Feasibility report approved by sponsor with an explicit go/no-go decision and do
 
 | Skill | Purpose | Effort |
 |---|---|---|
-| [problem-framing](problem-framing/SKILL.md) | Turn an approved intake route into a clear problem statement and design direction | medium |
-| [market-analysis](market-analysis/SKILL.md) | Map the competitive landscape and size the opportunity | medium |
-| [user-research](user-research/SKILL.md) | Build evidence-based understanding of target users | large |
-| [feasibility-study](feasibility-study/SKILL.md) | Make a defensible go/no-go decision | medium |
+| [pc-problem-framing](pc-problem-framing/SKILL.md) | Turn an approved intake route into a clear problem statement and design direction | medium |
+| [pc-market-analysis](pc-market-analysis/SKILL.md) | Map the competitive landscape and size the opportunity | medium |
+| [pc-user-research](pc-user-research/SKILL.md) | Build evidence-based understanding of target users | large |
+| [pc-feasibility-study](pc-feasibility-study/SKILL.md) | Make a defensible go/no-go decision | medium |
 
 ## Typical Duration
 
@@ -41,17 +41,17 @@ Duration scales with uncertainty. A well-understood adjacent feature needs less 
 ## Skill Sequence
 
 ```
-intake ──> problem-framing ──┬──> market-analysis ──┐
-                             │                      ├──> feasibility-study
-                             └──> user-research  ───┘
+pc-intake ──> pc-problem-framing ──┬──> pc-market-analysis ──┐
+                                   │                         ├──> pc-feasibility-study
+                                   └──> pc-user-research  ───┘
 ```
 
-Problem framing is optional but recommended when intake has routed the work correctly and the problem or solution direction is still fuzzy. Market analysis and user research can run in parallel after framing. Feasibility study consumes outputs from both.
+Problem framing is optional but recommended when `pc-intake` has routed the work correctly and the problem or solution direction is still fuzzy. `pc-market-analysis` and `pc-user-research` can run in parallel after framing. `pc-feasibility-study` consumes outputs from both.
 
 ## Anti-Patterns
 
 - **Solution-first thinking.** Jumping to "let's build X" before validating the problem exists. Discovery is about the problem, not the solution.
-- **Using intake as a design workshop.** Intake should route the work. Use problem-framing when the route is clear but the concept still needs shaping.
+- **Using intake as a design workshop.** `pc-intake` should route the work. Use `pc-problem-framing` when the route is clear but the concept still needs shaping.
 - **Analysis paralysis.** Spending months in discovery to avoid commitment. Time-box discovery and make a decision with imperfect information.
 - **Skipping discovery entirely.** "We already know what to build" is the most expensive assumption in product development.
 - **Confirmation bias.** Designing research to validate a predetermined conclusion. Seek disconfirming evidence actively.

@@ -1,0 +1,8 @@
+schema_version: protocol-result-registry.v1
+results:
+  execution-authority-result:
+    schema_version: execution-authority-result.v1
+    schema_path: schemas/protocol/execution-authority-result.v1.schema.json
+  execution-authoring-result:
+    schema_version: execution-authoring-result.v1
+    schema_path: schemas/protocol/execution-authoring-result.v1.schema.json

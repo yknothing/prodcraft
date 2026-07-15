@@ -55,12 +55,12 @@ Review-doc findings F1, F2, F6, F7, F9 (partially), F10 (partially), F12
   anti-rationalization, observed-failure gotchas, repo-specific procedure.
   Generic engineering knowledge goes to `references/` or is deleted.
 
-## Task 1 (P0): Revalidate systematic-debugging
+## Task 1 (P0): Revalidate pc-systematic-debugging
 
 The rewrite invalidated prior benchmark/integration evidence. The full plan,
 scenario set (multi-hypothesis regression, flaky failure, stale-artifact trap,
 structural-mismatch escalation), and acceptance bar are already written:
-`eval/04-implementation/systematic-debugging/post-rewrite-revalidation-plan.md`.
+`eval/04-implementation/pc-systematic-debugging/post-rewrite-revalidation-plan.md`.
 
 - Runner: `scripts/run_explicit_skill_benchmark.py` with gemini, isolated
   workspaces, N>=3 per scenario per arm.
@@ -69,7 +69,7 @@ structural-mismatch escalation), and acceptance bar are already written:
   machine checks. Downstream skill names in outputs must resolve against
   `manifest.yml` (this rubric rule is mandatory -- prior intake evidence
   accepted non-existent skill names).
-- Also re-run the trigger eval for `e2e-scenario-design` (description was
+- Also re-run the trigger eval for `pc-e2e-scenario-design` (description was
   shortened 581 -> ~310 chars in PR #5).
 
 ## Task 2 (P1): Evidence-to-content binding (review-doc F5)
@@ -88,7 +88,7 @@ revalidation-plan note. Implement the mechanical version:
   is too fiddly for v1, whole-file hashing is an acceptable start.
 - Acceptance: editing a tested skill's Process section without updating
   evidence turns the validator red; a pure typo fix outside contract sections
-  does not (if section-scoped), and the backfill covers all 44 skills.
+  does not (if section-scoped), and the backfill covers every manifest skill.
 
 ## Task 3 (P1): Portable routing digest (review-doc F4)
 
@@ -128,7 +128,7 @@ The biggest unstarted item from the review. Two coupled moves:
   `Adaptation Notes`) satisfied or update the workflow contract deliberately.
 - Prune generic-knowledge restatement from skill bodies (Context/Anti-Patterns
   overlap; ~26% of body words are in low-density sections).
-  `systematic-debugging` is the pattern exemplar: tight core + `references/`.
+  `pc-systematic-debugging` is the pattern exemplar: tight core + `references/`.
 - Measure before/after with `scripts/measure_context_cost.py`; target roughly
   40-50% reduction in workflow tokens and 30%+ in total body tokens with no
   contract loss.
@@ -139,12 +139,31 @@ The biggest unstarted item from the review. Two coupled moves:
 ## Task 6 (P2): Authoring scaffold (review-doc F8)
 
 Creating a skill is currently a five-surface dual-write (SKILL.md, manifest,
-eval tree, distribution registries, cross-cutting matrix). Ship
-`scripts/new_skill.py <phase> <name>` that scaffolds all surfaces with
+eval tree, distribution registries, cross-cutting matrix). Ship a
+`new_skill.py <phase> <name>` scaffolder under `scripts/` that populates all surfaces with
 draft-status defaults, so the validator immediately owns consistency.
 
 - Acceptance: scaffold output passes `validate_prodcraft.py` with zero manual
   edits; a follow-up `--promote review` flag is optional scope.
+
+## Merge Note (2026-07-15)
+
+PR #5 merged after main's pc- prefix identity migration landed. Convergent
+implementations were reconciled in the merge commit: main's oneOf language
+contract, path-resolving curated link rewriter, and artifact-flow closure
+superseded this branch's equivalents; this branch's micro tier, description
+budget, gateway-refs/doc-script-refs checks, portability-note-in-body, and
+the pc-systematic-debugging rewrite were grafted onto main's structure. One
+extra follow-up from the reconciliation:
+
+- `validate_prodcraft.py --artifact-instance` (main) and
+  `scripts/validate_artifact_instance.py` (this branch) overlap; unify on one
+  implementation and delete the other, keeping the verification-record
+  completion-claim binding checks.
+- Gitignored eval run directories (`eval/**/run-*/`) are now tolerated as
+  declared operator-local artifacts by both the validator and
+  test_skill_identity_prefix; if the team wants committed evidence instead,
+  flip that policy deliberately rather than re-tightening the regex.
 
 ## Task 7 (P2): Known accepted risks to keep an eye on
 

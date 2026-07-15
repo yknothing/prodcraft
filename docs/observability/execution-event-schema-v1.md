@@ -11,7 +11,7 @@ It is intended for:
 - model usage and token accounting
 - future cost and latency analysis across benchmark, eval, and beta runtime paths
 
-This schema is owned by the cross-cutting `observability` capability. It is distinct from production dashboards and alerts handled by `monitoring-observability`.
+This schema is owned by the cross-cutting `pc-observability` capability. It is distinct from production dashboards and alerts handled by `pc-monitoring-observability`.
 
 ## Storage Format
 
@@ -138,11 +138,11 @@ Initial local measurement uses exact character and UTF-8 byte counts. Token coun
   "status": "completed",
   "runner": "gemini",
   "model_name": "gemini-2.5-pro",
-  "skill_name": "intake",
+  "skill_name": "pc-intake",
   "phase": "00-discovery",
   "workflow": "brownfield",
   "duration_ms": 1820,
-  "artifact_path": "eval/00-discovery/intake/post-redesign-benchmark-run-2026-03-19-gemini-naming-rerun/eval-2-legacy-permissions-migration/with_skill/response.md",
+  "artifact_path": "eval/00-discovery/pc-intake/post-redesign-benchmark-run-2026-03-19-gemini-naming-rerun/eval-2-legacy-permissions-migration/with_skill/response.md",
   "token_input": 914,
   "token_output": 287,
   "token_total": 1201,
@@ -152,7 +152,7 @@ Initial local measurement uses exact character and UTF-8 byte counts. Token coun
   "usage_precision": "exact",
   "metadata": {
     "invocation_reason": "migration request requires routing and path comparison",
-    "route_target": "problem-framing"
+    "route_target": "pc-problem-framing"
   }
 }
 ```
@@ -170,7 +170,7 @@ Initial local measurement uses exact character and UTF-8 byte counts. Token coun
   "status": "unavailable",
   "runner": "claude",
   "model_name": "claude-sonnet-4-5",
-  "skill_name": "intake",
+  "skill_name": "pc-intake",
   "phase": "00-discovery",
   "workflow": "discoverability-eval",
   "duration_ms": null,

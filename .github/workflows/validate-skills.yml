@@ -5,6 +5,24 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'skills/**'
+      - 'workflows/**'
+      - 'personas/**'
+      - 'docs/**'
+      - 'schemas/**'
+      - 'rules/**'
+      - 'eval/**'
+      - 'tests/**'
+      - '.github/workflows/validate-skills.yml'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'manifest.yml'
+      - 'README.md'
+      - 'README.*.md'
+      - 'scripts/**'
+      - 'templates/**'
+      - 'tools/**'
   pull_request:
     paths:
       - 'skills/**'
@@ -23,6 +41,7 @@ on:
       - 'README.*.md'
       - 'scripts/**'
       - 'templates/**'
+      - 'tools/**'
 
 jobs:
   validate-structure:

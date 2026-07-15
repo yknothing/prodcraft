@@ -7,24 +7,24 @@ description: Lifecycle-aware skills system for production-grade software develop
 # that represent the review-and-revise loops inherent in software development.
 # The acyclicity validator skips these edges when checking for unintended cycles.
 iterative_feedback_edges:
-- from: code-review
-  to: feature-development
+- from: pc-code-review
+  to: pc-feature-development
   rationale: Review findings (review-report) feed back into the implementation cycle.
-- from: code-review
-  to: refactoring
-  rationale: Review findings trigger targeted refactoring before re-review.
-- from: security-audit
-  to: feature-development
+- from: pc-code-review
+  to: pc-refactoring
+  rationale: Review findings trigger targeted pc-refactoring before re-review.
+- from: pc-security-audit
+  to: pc-feature-development
   rationale: Security findings (security-report) require implementation changes before re-audit.
-- from: tech-selection
-  to: system-design
+- from: pc-tech-selection
+  to: pc-system-design
   rationale: Technology decisions (tech-decision-record) update the architecture iteratively.
-- from: tdd
-  to: feature-development
+- from: pc-tdd
+  to: pc-feature-development
   rationale: Test suite shapes the implementation loop within the same phase.
-- from: refactoring
-  to: feature-development
-  rationale: Refactored source re-enters the feature-development cycle for integration.
+- from: pc-refactoring
+  to: pc-feature-development
+  rationale: Refactored source re-enters the pc-feature-development cycle for integration.
 
 phases:
 - id: 00-discovery
@@ -100,598 +100,626 @@ phases:
   - 00-discovery
   gate: Retrospective complete, tech debt cataloged, next cycle planned
 skills:
-- name: intake
+- name: pc-intake
   phase: 00-discovery
-  file: skills/00-discovery/intake/SKILL.md
+  file: skills/00-discovery/pc-intake/SKILL.md
   gateway: true
   status: production
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/00-discovery/intake/evals/eval-strategy.md
-    benchmark_plan_path: eval/00-discovery/intake/post-redesign-benchmark-plan.md
-    benchmark_results_path: eval/00-discovery/intake/post-redesign-benchmark-review.md
-    integration_test_path: eval/00-discovery/intake/post-redesign-integration-review.md
-    findings_path: eval/00-discovery/intake/current-evidence-status.md
-    security_review_path: eval/00-discovery/intake/security-review.md
-    redesign_notes_path: eval/00-discovery/intake/redesign-notes.md
-    revalidation_plan_path: eval/00-discovery/intake/evals/eval-strategy.md
-    historical_trigger_eval_results_path: eval/00-discovery/intake/optimization/iter-2/results-mixed.json
-    historical_benchmark_results_path: eval/00-discovery/intake/iteration-1/benchmark.md
-- name: problem-framing
+    eval_strategy_path: eval/00-discovery/pc-intake/evals/eval-strategy.md
+    benchmark_plan_path: eval/00-discovery/pc-intake/post-redesign-benchmark-plan.md
+    benchmark_results_path: eval/00-discovery/pc-intake/post-redesign-benchmark-review.md
+    integration_test_path: eval/00-discovery/pc-intake/post-redesign-integration-review.md
+    findings_path: eval/00-discovery/pc-intake/current-evidence-status.md
+    security_review_path: eval/00-discovery/pc-intake/security-review.md
+    redesign_notes_path: eval/00-discovery/pc-intake/redesign-notes.md
+    revalidation_plan_path: eval/00-discovery/pc-intake/evals/eval-strategy.md
+    historical_trigger_eval_results_path: eval/00-discovery/pc-intake/optimization/iter-2/results-mixed.json
+    historical_benchmark_results_path: eval/00-discovery/pc-intake/iteration-1/benchmark.md
+- name: pc-problem-framing
   phase: 00-discovery
-  file: skills/00-discovery/problem-framing/SKILL.md
+  file: skills/00-discovery/pc-problem-framing/SKILL.md
   status: production
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/00-discovery/problem-framing/evals/eval-strategy.md
-    findings_path: eval/00-discovery/problem-framing/findings.md
-    security_review_path: eval/00-discovery/problem-framing/security-review.md
-    explicit_invocation_plan_path: eval/00-discovery/problem-framing/explicit-invocation-benchmark.md
-    benchmark_results_path: eval/00-discovery/problem-framing/isolated-benchmark-review.md
-    integration_test_path: eval/00-discovery/problem-framing/intake-handoff-review.md
-    downstream_integration_test_path: eval/01-specification/requirements-engineering/problem-framing-handoff-review.md
-    secondary_downstream_integration_test_path: eval/00-discovery/user-research/problem-framing-handoff-review.md
-- name: market-analysis
+    eval_strategy_path: eval/00-discovery/pc-problem-framing/evals/eval-strategy.md
+    findings_path: eval/00-discovery/pc-problem-framing/findings.md
+    security_review_path: eval/00-discovery/pc-problem-framing/security-review.md
+    explicit_invocation_plan_path: eval/00-discovery/pc-problem-framing/explicit-invocation-benchmark.md
+    benchmark_results_path: eval/00-discovery/pc-problem-framing/isolated-benchmark-review.md
+    integration_test_path: eval/00-discovery/pc-problem-framing/intake-handoff-review.md
+    downstream_integration_test_path: eval/01-specification/pc-requirements-engineering/problem-framing-handoff-review.md
+    secondary_downstream_integration_test_path: eval/00-discovery/pc-user-research/problem-framing-handoff-review.md
+- name: pc-market-analysis
   phase: 00-discovery
-  file: skills/00-discovery/market-analysis/SKILL.md
+  file: skills/00-discovery/pc-market-analysis/SKILL.md
   status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/00-discovery/market-analysis/evals/eval-strategy.md
-- name: user-research
+    eval_strategy_path: eval/00-discovery/pc-market-analysis/evals/eval-strategy.md
+- name: pc-user-research
   phase: 00-discovery
-  file: skills/00-discovery/user-research/SKILL.md
+  file: skills/00-discovery/pc-user-research/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/00-discovery/user-research/evals/eval-strategy.md
-    findings_path: eval/00-discovery/user-research/findings.md
-    benchmark_plan_path: eval/00-discovery/user-research/semi-isolated-benchmark.md
-    benchmark_results_path: eval/00-discovery/user-research/semi-isolated-benchmark-review.md
-    integration_test_path: eval/00-discovery/user-research/problem-framing-handoff-review.md
-    downstream_spec_integration_test_path: eval/01-specification/requirements-engineering/user-research-handoff-review.md
-- name: feasibility-study
+    eval_strategy_path: eval/00-discovery/pc-user-research/evals/eval-strategy.md
+    findings_path: eval/00-discovery/pc-user-research/findings.md
+    benchmark_plan_path: eval/00-discovery/pc-user-research/semi-isolated-benchmark.md
+    benchmark_results_path: eval/00-discovery/pc-user-research/semi-isolated-benchmark-review.md
+    integration_test_path: eval/00-discovery/pc-user-research/problem-framing-handoff-review.md
+    downstream_spec_integration_test_path: eval/01-specification/pc-requirements-engineering/user-research-handoff-review.md
+- name: pc-feasibility-study
   phase: 00-discovery
-  file: skills/00-discovery/feasibility-study/SKILL.md
+  file: skills/00-discovery/pc-feasibility-study/SKILL.md
   status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/00-discovery/feasibility-study/evals/eval-strategy.md
-- name: requirements-engineering
+    eval_strategy_path: eval/00-discovery/pc-feasibility-study/evals/eval-strategy.md
+- name: pc-requirements-engineering
   phase: 01-specification
-  file: skills/01-specification/requirements-engineering/SKILL.md
+  file: skills/01-specification/pc-requirements-engineering/SKILL.md
   status: production
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/01-specification/requirements-engineering/evals/eval-strategy.md
-    trigger_eval_set_path: eval/01-specification/requirements-engineering/evals/trigger-eval.json
-    trigger_eval_results_path: eval/01-specification/requirements-engineering/results-trigger-iter3.json
-    findings_path: eval/01-specification/requirements-engineering/findings.md
-    security_review_path: eval/01-specification/requirements-engineering/security-review.md
-    explicit_invocation_plan_path: eval/01-specification/requirements-engineering/explicit-invocation-benchmark.md
-    benchmark_results_path: eval/01-specification/requirements-engineering/problem-framing-routed-benchmark-review.md
-    integration_test_path: eval/01-specification/requirements-engineering/intake-handoff-review.md
-    framing_integration_test_path: eval/01-specification/requirements-engineering/problem-framing-handoff-review.md
-    user_research_integration_test_path: eval/01-specification/requirements-engineering/user-research-handoff-review.md
-    user_research_benchmark_plan_path: eval/01-specification/requirements-engineering/user-research-semi-isolated-benchmark.md
-    user_research_benchmark_results_path: eval/01-specification/requirements-engineering/user-research-semi-isolated-benchmark-review.md
-- name: spec-writing
+    eval_strategy_path: eval/01-specification/pc-requirements-engineering/evals/eval-strategy.md
+    trigger_eval_set_path: eval/01-specification/pc-requirements-engineering/evals/trigger-eval.json
+    trigger_eval_results_path: eval/01-specification/pc-requirements-engineering/results-trigger-iter3.json
+    findings_path: eval/01-specification/pc-requirements-engineering/findings.md
+    security_review_path: eval/01-specification/pc-requirements-engineering/security-review.md
+    explicit_invocation_plan_path: eval/01-specification/pc-requirements-engineering/explicit-invocation-benchmark.md
+    benchmark_results_path: eval/01-specification/pc-requirements-engineering/problem-framing-routed-benchmark-review.md
+    integration_test_path: eval/01-specification/pc-requirements-engineering/intake-handoff-review.md
+    framing_integration_test_path: eval/01-specification/pc-requirements-engineering/problem-framing-handoff-review.md
+    user_research_integration_test_path: eval/01-specification/pc-requirements-engineering/user-research-handoff-review.md
+    user_research_benchmark_plan_path: eval/01-specification/pc-requirements-engineering/user-research-semi-isolated-benchmark.md
+    user_research_benchmark_results_path: eval/01-specification/pc-requirements-engineering/user-research-semi-isolated-benchmark-review.md
+- name: pc-spec-writing
   phase: 01-specification
-  file: skills/01-specification/spec-writing/SKILL.md
+  file: skills/01-specification/pc-spec-writing/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/01-specification/spec-writing/evals/eval-strategy.md
-    benchmark_plan_path: eval/01-specification/spec-writing/isolated-benchmark-plan.md
-    benchmark_results_path: eval/01-specification/spec-writing/manual-benchmark-review.md
-    findings_path: eval/01-specification/spec-writing/findings.md
-    integration_test_path: eval/01-specification/spec-writing/api-design-handoff-review.md
-- name: domain-modeling
+    eval_strategy_path: eval/01-specification/pc-spec-writing/evals/eval-strategy.md
+    benchmark_plan_path: eval/01-specification/pc-spec-writing/isolated-benchmark-plan.md
+    benchmark_results_path: eval/01-specification/pc-spec-writing/manual-benchmark-review.md
+    findings_path: eval/01-specification/pc-spec-writing/findings.md
+    integration_test_path: eval/01-specification/pc-spec-writing/api-design-handoff-review.md
+- name: pc-domain-modeling
   phase: 01-specification
-  file: skills/01-specification/domain-modeling/SKILL.md
+  file: skills/01-specification/pc-domain-modeling/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/01-specification/domain-modeling/evals/eval-strategy.md
-    benchmark_plan_path: eval/01-specification/domain-modeling/isolated-benchmark-plan.md
-    benchmark_results_path: eval/01-specification/domain-modeling/manual-benchmark-review.md
-    findings_path: eval/01-specification/domain-modeling/findings.md
-    integration_test_path: eval/01-specification/domain-modeling/spec-writing-handoff-review.md
-- name: acceptance-criteria
+    eval_strategy_path: eval/01-specification/pc-domain-modeling/evals/eval-strategy.md
+    benchmark_plan_path: eval/01-specification/pc-domain-modeling/isolated-benchmark-plan.md
+    benchmark_results_path: eval/01-specification/pc-domain-modeling/manual-benchmark-review.md
+    findings_path: eval/01-specification/pc-domain-modeling/findings.md
+    integration_test_path: eval/01-specification/pc-domain-modeling/spec-writing-handoff-review.md
+- name: pc-acceptance-criteria
   phase: 01-specification
-  file: skills/01-specification/acceptance-criteria/SKILL.md
+  file: skills/01-specification/pc-acceptance-criteria/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/01-specification/acceptance-criteria/evals/eval-strategy.md
-    benchmark_plan_path: eval/01-specification/acceptance-criteria/isolated-benchmark-plan.md
-    benchmark_results_path: eval/01-specification/acceptance-criteria/isolated-benchmark-review.md
-    findings_path: eval/01-specification/acceptance-criteria/findings.md
-    integration_test_path: eval/01-specification/acceptance-criteria/testing-strategy-handoff-review.md
-- name: system-design
+    eval_strategy_path: eval/01-specification/pc-acceptance-criteria/evals/eval-strategy.md
+    benchmark_plan_path: eval/01-specification/pc-acceptance-criteria/isolated-benchmark-plan.md
+    benchmark_results_path: eval/01-specification/pc-acceptance-criteria/isolated-benchmark-review.md
+    findings_path: eval/01-specification/pc-acceptance-criteria/findings.md
+    integration_test_path: eval/01-specification/pc-acceptance-criteria/testing-strategy-handoff-review.md
+- name: pc-system-design
   phase: 02-architecture
-  file: skills/02-architecture/system-design/SKILL.md
+  file: skills/02-architecture/pc-system-design/SKILL.md
   status: review
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/02-architecture/system-design/evals/eval-strategy.md
-    benchmark_plan_path: eval/02-architecture/system-design/isolated-benchmark-plan.md
-    findings_path: eval/02-architecture/system-design/findings.md
-    integration_test_path: eval/02-architecture/system-design/requirements-handoff-review.md
-- name: data-modeling
+    eval_strategy_path: eval/02-architecture/pc-system-design/evals/eval-strategy.md
+    benchmark_plan_path: eval/02-architecture/pc-system-design/isolated-benchmark-plan.md
+    findings_path: eval/02-architecture/pc-system-design/findings.md
+    integration_test_path: eval/02-architecture/pc-system-design/requirements-handoff-review.md
+- name: pc-data-modeling
   phase: 02-architecture
-  file: skills/02-architecture/data-modeling/SKILL.md
+  file: skills/02-architecture/pc-data-modeling/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/02-architecture/data-modeling/evals/eval-strategy.md
-    benchmark_plan_path: eval/02-architecture/data-modeling/isolated-benchmark-plan.md
-    benchmark_results_path: eval/02-architecture/data-modeling/manual-benchmark-review.md
-    findings_path: eval/02-architecture/data-modeling/findings.md
-    integration_test_path: eval/02-architecture/data-modeling/feature-development-handoff-review.md
-- name: security-design
+    eval_strategy_path: eval/02-architecture/pc-data-modeling/evals/eval-strategy.md
+    benchmark_plan_path: eval/02-architecture/pc-data-modeling/isolated-benchmark-plan.md
+    benchmark_results_path: eval/02-architecture/pc-data-modeling/manual-benchmark-review.md
+    findings_path: eval/02-architecture/pc-data-modeling/findings.md
+    integration_test_path: eval/02-architecture/pc-data-modeling/feature-development-handoff-review.md
+- name: pc-security-design
   phase: 02-architecture
-  file: skills/02-architecture/security-design/SKILL.md
+  file: skills/02-architecture/pc-security-design/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/02-architecture/security-design/evals/eval-strategy.md
-    benchmark_plan_path: eval/02-architecture/security-design/isolated-benchmark-plan.md
-    benchmark_results_path: eval/02-architecture/security-design/manual-benchmark-review.md
-    findings_path: eval/02-architecture/security-design/findings.md
-    integration_test_path: eval/02-architecture/security-design/security-audit-handoff-review.md
-- name: tech-selection
+    eval_strategy_path: eval/02-architecture/pc-security-design/evals/eval-strategy.md
+    benchmark_plan_path: eval/02-architecture/pc-security-design/isolated-benchmark-plan.md
+    benchmark_results_path: eval/02-architecture/pc-security-design/manual-benchmark-review.md
+    findings_path: eval/02-architecture/pc-security-design/findings.md
+    integration_test_path: eval/02-architecture/pc-security-design/security-audit-handoff-review.md
+- name: pc-tech-selection
   phase: 02-architecture
-  file: skills/02-architecture/tech-selection/SKILL.md
+  file: skills/02-architecture/pc-tech-selection/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/02-architecture/tech-selection/evals/eval-strategy.md
-    benchmark_plan_path: eval/02-architecture/tech-selection/isolated-benchmark-plan.md
-    benchmark_results_path: eval/02-architecture/tech-selection/isolated-benchmark-review.md
-    findings_path: eval/02-architecture/tech-selection/findings.md
-    integration_test_path: eval/02-architecture/tech-selection/system-design-handoff-review.md
-- name: api-design
+    eval_strategy_path: eval/02-architecture/pc-tech-selection/evals/eval-strategy.md
+    benchmark_plan_path: eval/02-architecture/pc-tech-selection/isolated-benchmark-plan.md
+    benchmark_results_path: eval/02-architecture/pc-tech-selection/isolated-benchmark-review.md
+    findings_path: eval/02-architecture/pc-tech-selection/findings.md
+    integration_test_path: eval/02-architecture/pc-tech-selection/system-design-handoff-review.md
+- name: pc-api-design
   phase: 02-architecture
-  file: skills/02-architecture/api-design/SKILL.md
+  file: skills/02-architecture/pc-api-design/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/02-architecture/api-design/evals/eval-strategy.md
-    benchmark_plan_path: eval/02-architecture/api-design/isolated-benchmark-plan.md
-    benchmark_results_path: eval/02-architecture/api-design/manual-benchmark-review.md
-    findings_path: eval/02-architecture/api-design/findings.md
-    integration_test_path: eval/02-architecture/api-design/architecture-handoff-review.md
-- name: task-breakdown
+    eval_strategy_path: eval/02-architecture/pc-api-design/evals/eval-strategy.md
+    benchmark_plan_path: eval/02-architecture/pc-api-design/isolated-benchmark-plan.md
+    benchmark_results_path: eval/02-architecture/pc-api-design/manual-benchmark-review.md
+    findings_path: eval/02-architecture/pc-api-design/findings.md
+    integration_test_path: eval/02-architecture/pc-api-design/architecture-handoff-review.md
+- name: pc-task-breakdown
   phase: 03-planning
-  file: skills/03-planning/task-breakdown/SKILL.md
+  file: skills/03-planning/pc-task-breakdown/SKILL.md
   status: production
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/03-planning/task-breakdown/evals/eval-strategy.md
-    benchmark_plan_path: eval/03-planning/task-breakdown/isolated-benchmark-plan.md
-    benchmark_results_path: eval/03-planning/task-breakdown/isolated-benchmark-review.md
-    findings_path: eval/03-planning/task-breakdown/findings.md
-    security_review_path: eval/03-planning/task-breakdown/security-review.md
-    integration_test_path: eval/03-planning/task-breakdown/architecture-handoff-review.md
-- name: estimation
+    eval_strategy_path: eval/03-planning/pc-task-breakdown/evals/eval-strategy.md
+    benchmark_plan_path: eval/03-planning/pc-task-breakdown/isolated-benchmark-plan.md
+    benchmark_results_path: eval/03-planning/pc-task-breakdown/isolated-benchmark-review.md
+    findings_path: eval/03-planning/pc-task-breakdown/findings.md
+    security_review_path: eval/03-planning/pc-task-breakdown/security-review.md
+    integration_test_path: eval/03-planning/pc-task-breakdown/architecture-handoff-review.md
+- name: pc-estimation
   phase: 03-planning
-  file: skills/03-planning/estimation/SKILL.md
+  file: skills/03-planning/pc-estimation/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/03-planning/estimation/evals/eval-strategy.md
-    benchmark_plan_path: eval/03-planning/estimation/isolated-benchmark-plan.md
-    benchmark_results_path: eval/03-planning/estimation/isolated-benchmark-review.md
-    findings_path: eval/03-planning/estimation/findings.md
-    integration_test_path: eval/03-planning/estimation/sprint-planning-handoff-review.md
-- name: risk-assessment
+    eval_strategy_path: eval/03-planning/pc-estimation/evals/eval-strategy.md
+    benchmark_plan_path: eval/03-planning/pc-estimation/isolated-benchmark-plan.md
+    benchmark_results_path: eval/03-planning/pc-estimation/isolated-benchmark-review.md
+    findings_path: eval/03-planning/pc-estimation/findings.md
+    integration_test_path: eval/03-planning/pc-estimation/sprint-planning-handoff-review.md
+- name: pc-risk-assessment
   phase: 03-planning
-  file: skills/03-planning/risk-assessment/SKILL.md
+  file: skills/03-planning/pc-risk-assessment/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/03-planning/risk-assessment/evals/eval-strategy.md
-    benchmark_plan_path: eval/03-planning/risk-assessment/isolated-benchmark-plan.md
-    benchmark_results_path: eval/03-planning/risk-assessment/isolated-benchmark-review.md
-    findings_path: eval/03-planning/risk-assessment/findings.md
-    integration_test_path: eval/03-planning/risk-assessment/task-breakdown-handoff-review.md
-- name: sprint-planning
+    eval_strategy_path: eval/03-planning/pc-risk-assessment/evals/eval-strategy.md
+    benchmark_plan_path: eval/03-planning/pc-risk-assessment/isolated-benchmark-plan.md
+    benchmark_results_path: eval/03-planning/pc-risk-assessment/isolated-benchmark-review.md
+    findings_path: eval/03-planning/pc-risk-assessment/findings.md
+    integration_test_path: eval/03-planning/pc-risk-assessment/task-breakdown-handoff-review.md
+- name: pc-sprint-planning
   phase: 03-planning
-  file: skills/03-planning/sprint-planning/SKILL.md
+  file: skills/03-planning/pc-sprint-planning/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/03-planning/sprint-planning/evals/eval-strategy.md
-    benchmark_plan_path: eval/03-planning/sprint-planning/isolated-benchmark-plan.md
-    benchmark_results_path: eval/03-planning/sprint-planning/isolated-benchmark-review.md
-    findings_path: eval/03-planning/sprint-planning/findings.md
-    integration_test_path: eval/03-planning/sprint-planning/estimation-handoff-review.md
-- name: tdd
+    eval_strategy_path: eval/03-planning/pc-sprint-planning/evals/eval-strategy.md
+    benchmark_plan_path: eval/03-planning/pc-sprint-planning/isolated-benchmark-plan.md
+    benchmark_results_path: eval/03-planning/pc-sprint-planning/isolated-benchmark-review.md
+    findings_path: eval/03-planning/pc-sprint-planning/findings.md
+    integration_test_path: eval/03-planning/pc-sprint-planning/estimation-handoff-review.md
+- name: pc-tdd
   phase: 04-implementation
-  file: skills/04-implementation/tdd/SKILL.md
+  file: skills/04-implementation/pc-tdd/SKILL.md
   status: production
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/04-implementation/tdd/evals/eval-strategy.md
-    benchmark_plan_path: eval/04-implementation/tdd/isolated-benchmark-plan.md
-    benchmark_results_path: eval/04-implementation/tdd/isolated-benchmark-review.md
-    findings_path: eval/04-implementation/tdd/findings.md
-    security_review_path: eval/04-implementation/tdd/security-review.md
-    integration_test_path: eval/04-implementation/tdd/task-handoff-review.md
-- name: systematic-debugging
+    eval_strategy_path: eval/04-implementation/pc-tdd/evals/eval-strategy.md
+    benchmark_plan_path: eval/04-implementation/pc-tdd/isolated-benchmark-plan.md
+    benchmark_results_path: eval/04-implementation/pc-tdd/isolated-benchmark-review.md
+    findings_path: eval/04-implementation/pc-tdd/findings.md
+    security_review_path: eval/04-implementation/pc-tdd/security-review.md
+    integration_test_path: eval/04-implementation/pc-tdd/task-handoff-review.md
+- name: pc-systematic-debugging
   phase: 04-implementation
-  file: skills/04-implementation/systematic-debugging/SKILL.md
+  file: skills/04-implementation/pc-systematic-debugging/SKILL.md
   status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/04-implementation/systematic-debugging/evals/eval-strategy.md
-    benchmark_plan_path: eval/04-implementation/systematic-debugging/isolated-benchmark-plan.md
-    benchmark_results_path: eval/04-implementation/systematic-debugging/isolated-benchmark-review.md
-    findings_path: eval/04-implementation/systematic-debugging/findings.md
-    integration_test_path: eval/04-implementation/systematic-debugging/bugfix-review.md
-    revalidation_plan_path: eval/04-implementation/systematic-debugging/post-rewrite-revalidation-plan.md
-- name: task-execution
+    eval_strategy_path: eval/04-implementation/pc-systematic-debugging/evals/eval-strategy.md
+    benchmark_plan_path: eval/04-implementation/pc-systematic-debugging/isolated-benchmark-plan.md
+    benchmark_results_path: eval/04-implementation/pc-systematic-debugging/isolated-benchmark-review.md
+    findings_path: eval/04-implementation/pc-systematic-debugging/findings.md
+    integration_test_path: eval/04-implementation/pc-systematic-debugging/bugfix-review.md
+    revalidation_plan_path: eval/04-implementation/pc-systematic-debugging/post-rewrite-revalidation-plan.md
+- name: pc-task-execution
   phase: 04-implementation
-  file: skills/04-implementation/task-execution/SKILL.md
+  file: skills/04-implementation/pc-task-execution/SKILL.md
   status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/04-implementation/task-execution/evals/eval-strategy.md
-    benchmark_plan_path: eval/04-implementation/task-execution/isolated-benchmark-plan.md
-    benchmark_results_path: eval/04-implementation/task-execution/isolated-benchmark-review.md
-    findings_path: eval/04-implementation/task-execution/findings.md
-    integration_test_path: eval/04-implementation/task-execution/tactical-batch-review.md
-- name: feature-development
+    eval_strategy_path: eval/04-implementation/pc-task-execution/evals/eval-strategy.md
+    benchmark_plan_path: eval/04-implementation/pc-task-execution/isolated-benchmark-plan.md
+    benchmark_results_path: eval/04-implementation/pc-task-execution/isolated-benchmark-review.md
+    findings_path: eval/04-implementation/pc-task-execution/findings.md
+    integration_test_path: eval/04-implementation/pc-task-execution/tactical-batch-review.md
+- name: pc-feature-development
   phase: 04-implementation
-  file: skills/04-implementation/feature-development/SKILL.md
+  file: skills/04-implementation/pc-feature-development/SKILL.md
   status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/04-implementation/feature-development/evals/eval-strategy.md
-    benchmark_plan_path: eval/04-implementation/feature-development/isolated-benchmark-plan.md
-    benchmark_results_path: eval/04-implementation/feature-development/isolated-benchmark-review.md
-    findings_path: eval/04-implementation/feature-development/findings.md
-    integration_test_path: eval/04-implementation/feature-development/tdd-handoff-review.md
-- name: refactoring
+    eval_strategy_path: eval/04-implementation/pc-feature-development/evals/eval-strategy.md
+    benchmark_plan_path: eval/04-implementation/pc-feature-development/isolated-benchmark-plan.md
+    benchmark_results_path: eval/04-implementation/pc-feature-development/isolated-benchmark-review.md
+    findings_path: eval/04-implementation/pc-feature-development/findings.md
+    integration_test_path: eval/04-implementation/pc-feature-development/tdd-handoff-review.md
+- name: pc-refactoring
   phase: 04-implementation
-  file: skills/04-implementation/refactoring/SKILL.md
+  file: skills/04-implementation/pc-refactoring/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/04-implementation/refactoring/evals/eval-strategy.md
-    benchmark_plan_path: eval/04-implementation/refactoring/isolated-benchmark-plan.md
-    benchmark_results_path: eval/04-implementation/refactoring/isolated-benchmark-review.md
-    findings_path: eval/04-implementation/refactoring/findings.md
-    integration_test_path: eval/04-implementation/refactoring/code-review-handoff-review.md
-- name: code-review
+    eval_strategy_path: eval/04-implementation/pc-refactoring/evals/eval-strategy.md
+    benchmark_plan_path: eval/04-implementation/pc-refactoring/isolated-benchmark-plan.md
+    benchmark_results_path: eval/04-implementation/pc-refactoring/isolated-benchmark-review.md
+    findings_path: eval/04-implementation/pc-refactoring/findings.md
+    integration_test_path: eval/04-implementation/pc-refactoring/code-review-handoff-review.md
+- name: pc-code-review
   phase: 05-quality
-  file: skills/05-quality/code-review/SKILL.md
+  file: skills/05-quality/pc-code-review/SKILL.md
   status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/05-quality/code-review/evals/eval-strategy.md
-    benchmark_plan_path: eval/05-quality/code-review/isolated-benchmark-plan.md
-    benchmark_results_path: eval/05-quality/code-review/isolated-benchmark-review.md
-    findings_path: eval/05-quality/code-review/findings.md
-    integration_test_path: eval/05-quality/code-review/changeset-review.md
-- name: receiving-code-review
+    eval_strategy_path: eval/05-quality/pc-code-review/evals/eval-strategy.md
+    benchmark_plan_path: eval/05-quality/pc-code-review/isolated-benchmark-plan.md
+    benchmark_results_path: eval/05-quality/pc-code-review/isolated-benchmark-review.md
+    findings_path: eval/05-quality/pc-code-review/findings.md
+    integration_test_path: eval/05-quality/pc-code-review/changeset-review.md
+- name: pc-implementation-alignment-review
   phase: 05-quality
-  file: skills/05-quality/receiving-code-review/SKILL.md
+  file: skills/05-quality/pc-implementation-alignment-review/SKILL.md
+  status: review
+  qa_tier: critical
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/05-quality/pc-implementation-alignment-review/evals/eval-strategy.md
+    benchmark_plan_path: eval/05-quality/pc-implementation-alignment-review/isolated-benchmark-plan.md
+    findings_path: eval/05-quality/pc-implementation-alignment-review/findings.md
+- name: pc-implementation-integrity-audit
+  phase: 05-quality
+  file: skills/05-quality/pc-implementation-integrity-audit/SKILL.md
+  status: review
+  qa_tier: critical
+  evaluation_mode: routed
+  qa:
+    structure_validation_path: scripts/validate_prodcraft.py
+    eval_strategy_path: eval/05-quality/pc-implementation-integrity-audit/evals/eval-strategy.md
+    benchmark_plan_path: eval/05-quality/pc-implementation-integrity-audit/isolated-benchmark-plan.md
+    findings_path: eval/05-quality/pc-implementation-integrity-audit/findings.md
+- name: pc-receiving-code-review
+  phase: 05-quality
+  file: skills/05-quality/pc-receiving-code-review/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/05-quality/receiving-code-review/evals/eval-strategy.md
-    benchmark_plan_path: eval/05-quality/receiving-code-review/isolated-benchmark-plan.md
-    benchmark_results_path: eval/05-quality/receiving-code-review/isolated-benchmark-review.md
-    findings_path: eval/05-quality/receiving-code-review/findings.md
-    integration_test_path: eval/05-quality/receiving-code-review/feedback-response-review.md
-- name: testing-strategy
+    eval_strategy_path: eval/05-quality/pc-receiving-code-review/evals/eval-strategy.md
+    benchmark_plan_path: eval/05-quality/pc-receiving-code-review/isolated-benchmark-plan.md
+    benchmark_results_path: eval/05-quality/pc-receiving-code-review/isolated-benchmark-review.md
+    findings_path: eval/05-quality/pc-receiving-code-review/findings.md
+    integration_test_path: eval/05-quality/pc-receiving-code-review/feedback-response-review.md
+- name: pc-testing-strategy
   phase: 05-quality
-  file: skills/05-quality/testing-strategy/SKILL.md
+  file: skills/05-quality/pc-testing-strategy/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/05-quality/testing-strategy/evals/eval-strategy.md
-    benchmark_plan_path: eval/05-quality/testing-strategy/isolated-benchmark-plan.md
-    benchmark_results_path: eval/05-quality/testing-strategy/isolated-benchmark-review.md
-    findings_path: eval/05-quality/testing-strategy/findings.md
-    integration_test_path: eval/05-quality/testing-strategy/strategy-review.md
-- name: e2e-scenario-design
+    eval_strategy_path: eval/05-quality/pc-testing-strategy/evals/eval-strategy.md
+    benchmark_plan_path: eval/05-quality/pc-testing-strategy/isolated-benchmark-plan.md
+    benchmark_results_path: eval/05-quality/pc-testing-strategy/isolated-benchmark-review.md
+    findings_path: eval/05-quality/pc-testing-strategy/findings.md
+    integration_test_path: eval/05-quality/pc-testing-strategy/strategy-review.md
+- name: pc-e2e-scenario-design
   phase: 05-quality
-  file: skills/05-quality/e2e-scenario-design/SKILL.md
+  file: skills/05-quality/pc-e2e-scenario-design/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/05-quality/e2e-scenario-design/evals/eval-strategy.md
-    benchmark_results_path: eval/05-quality/e2e-scenario-design/isolated-benchmark-review.md
-    findings_path: eval/05-quality/e2e-scenario-design/findings.md
-    integration_test_path: eval/05-quality/e2e-scenario-design/testing-strategy-handoff-review.md
-- name: security-audit
+    eval_strategy_path: eval/05-quality/pc-e2e-scenario-design/evals/eval-strategy.md
+    benchmark_results_path: eval/05-quality/pc-e2e-scenario-design/isolated-benchmark-review.md
+    findings_path: eval/05-quality/pc-e2e-scenario-design/findings.md
+    integration_test_path: eval/05-quality/pc-e2e-scenario-design/testing-strategy-handoff-review.md
+- name: pc-security-audit
   phase: 05-quality
-  file: skills/05-quality/security-audit/SKILL.md
+  file: skills/05-quality/pc-security-audit/SKILL.md
   status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/05-quality/security-audit/evals/eval-strategy.md
-    security_check_path: eval/05-quality/security-audit/evals/security-check-evidence.md
-    findings_path: eval/05-quality/security-audit/findings.md
-    benchmark_results_path: eval/05-quality/security-audit/isolated-benchmark-review.md
-    integration_test_path: eval/05-quality/security-audit/release-management-handoff-review.md
-- name: ci-cd
+    eval_strategy_path: eval/05-quality/pc-security-audit/evals/eval-strategy.md
+    security_check_path: eval/05-quality/pc-security-audit/evals/security-check-evidence.md
+    findings_path: eval/05-quality/pc-security-audit/findings.md
+    benchmark_results_path: eval/05-quality/pc-security-audit/isolated-benchmark-review.md
+    integration_test_path: eval/05-quality/pc-security-audit/release-management-handoff-review.md
+- name: pc-ci-cd
   phase: 06-delivery
-  file: skills/06-delivery/ci-cd/SKILL.md
+  file: skills/06-delivery/pc-ci-cd/SKILL.md
   status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/06-delivery/ci-cd/evals/eval-strategy.md
-    benchmark_plan_path: eval/06-delivery/ci-cd/isolated-benchmark-plan.md
-    benchmark_results_path: eval/06-delivery/ci-cd/isolated-benchmark-review.md
-    findings_path: eval/06-delivery/ci-cd/findings.md
-    integration_test_path: eval/06-delivery/ci-cd/pipeline-review.md
-- name: delivery-completion
+    eval_strategy_path: eval/06-delivery/pc-ci-cd/evals/eval-strategy.md
+    benchmark_plan_path: eval/06-delivery/pc-ci-cd/isolated-benchmark-plan.md
+    benchmark_results_path: eval/06-delivery/pc-ci-cd/isolated-benchmark-review.md
+    findings_path: eval/06-delivery/pc-ci-cd/findings.md
+    integration_test_path: eval/06-delivery/pc-ci-cd/pipeline-review.md
+- name: pc-delivery-completion
   phase: 06-delivery
-  file: skills/06-delivery/delivery-completion/SKILL.md
+  file: skills/06-delivery/pc-delivery-completion/SKILL.md
   status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/06-delivery/delivery-completion/evals/eval-strategy.md
-    benchmark_plan_path: eval/06-delivery/delivery-completion/isolated-benchmark-plan.md
-    benchmark_results_path: eval/06-delivery/delivery-completion/isolated-benchmark-review.md
-    findings_path: eval/06-delivery/delivery-completion/findings.md
-    integration_test_path: eval/06-delivery/delivery-completion/completion-handoff-review.md
-- name: deployment-strategy
+    eval_strategy_path: eval/06-delivery/pc-delivery-completion/evals/eval-strategy.md
+    benchmark_plan_path: eval/06-delivery/pc-delivery-completion/isolated-benchmark-plan.md
+    benchmark_results_path: eval/06-delivery/pc-delivery-completion/isolated-benchmark-review.md
+    findings_path: eval/06-delivery/pc-delivery-completion/findings.md
+    integration_test_path: eval/06-delivery/pc-delivery-completion/completion-handoff-review.md
+- name: pc-deployment-strategy
   phase: 06-delivery
-  file: skills/06-delivery/deployment-strategy/SKILL.md
+  file: skills/06-delivery/pc-deployment-strategy/SKILL.md
   status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/06-delivery/deployment-strategy/evals/eval-strategy.md
-    benchmark_plan_path: eval/06-delivery/deployment-strategy/isolated-benchmark-plan.md
-    benchmark_results_path: eval/06-delivery/deployment-strategy/isolated-benchmark-review.md
-    findings_path: eval/06-delivery/deployment-strategy/findings.md
-    integration_test_path: eval/06-delivery/deployment-strategy/pipeline-handoff-review.md
-- name: release-management
+    eval_strategy_path: eval/06-delivery/pc-deployment-strategy/evals/eval-strategy.md
+    benchmark_plan_path: eval/06-delivery/pc-deployment-strategy/isolated-benchmark-plan.md
+    benchmark_results_path: eval/06-delivery/pc-deployment-strategy/isolated-benchmark-review.md
+    findings_path: eval/06-delivery/pc-deployment-strategy/findings.md
+    integration_test_path: eval/06-delivery/pc-deployment-strategy/pipeline-handoff-review.md
+- name: pc-release-management
   phase: 06-delivery
-  file: skills/06-delivery/release-management/SKILL.md
+  file: skills/06-delivery/pc-release-management/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/06-delivery/release-management/evals/eval-strategy.md
-    benchmark_plan_path: eval/06-delivery/release-management/isolated-benchmark-plan.md
-    benchmark_results_path: eval/06-delivery/release-management/isolated-benchmark-review.md
-    findings_path: eval/06-delivery/release-management/findings.md
-    integration_test_path: eval/06-delivery/release-management/delivery-completion-handoff-review.md
-- name: incident-response
+    eval_strategy_path: eval/06-delivery/pc-release-management/evals/eval-strategy.md
+    benchmark_plan_path: eval/06-delivery/pc-release-management/isolated-benchmark-plan.md
+    benchmark_results_path: eval/06-delivery/pc-release-management/isolated-benchmark-review.md
+    findings_path: eval/06-delivery/pc-release-management/findings.md
+    integration_test_path: eval/06-delivery/pc-release-management/delivery-completion-handoff-review.md
+- name: pc-incident-response
   phase: 07-operations
-  file: skills/07-operations/incident-response/SKILL.md
+  file: skills/07-operations/pc-incident-response/SKILL.md
   status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/07-operations/incident-response/evals/eval-strategy.md
-    benchmark_plan_path: eval/07-operations/incident-response/isolated-benchmark-plan.md
-    benchmark_results_path: eval/07-operations/incident-response/manual-benchmark-review.md
-    findings_path: eval/07-operations/incident-response/findings.md
-    integration_test_path: eval/07-operations/incident-response/incident-review.md
-- name: monitoring-observability
+    eval_strategy_path: eval/07-operations/pc-incident-response/evals/eval-strategy.md
+    benchmark_plan_path: eval/07-operations/pc-incident-response/isolated-benchmark-plan.md
+    benchmark_results_path: eval/07-operations/pc-incident-response/manual-benchmark-review.md
+    findings_path: eval/07-operations/pc-incident-response/findings.md
+    integration_test_path: eval/07-operations/pc-incident-response/incident-review.md
+- name: pc-monitoring-observability
   phase: 07-operations
-  file: skills/07-operations/monitoring-observability/SKILL.md
+  file: skills/07-operations/pc-monitoring-observability/SKILL.md
   status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/07-operations/monitoring-observability/evals/eval-strategy.md
-    benchmark_plan_path: eval/07-operations/monitoring-observability/isolated-benchmark-plan.md
-    benchmark_results_path: eval/07-operations/monitoring-observability/manual-benchmark-review.md
-    findings_path: eval/07-operations/monitoring-observability/findings.md
-    integration_test_path: eval/07-operations/monitoring-observability/observability-review.md
-- name: runbooks
+    eval_strategy_path: eval/07-operations/pc-monitoring-observability/evals/eval-strategy.md
+    benchmark_plan_path: eval/07-operations/pc-monitoring-observability/isolated-benchmark-plan.md
+    benchmark_results_path: eval/07-operations/pc-monitoring-observability/manual-benchmark-review.md
+    findings_path: eval/07-operations/pc-monitoring-observability/findings.md
+    integration_test_path: eval/07-operations/pc-monitoring-observability/observability-review.md
+- name: pc-runbooks
   phase: 07-operations
-  file: skills/07-operations/runbooks/SKILL.md
+  file: skills/07-operations/pc-runbooks/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/07-operations/runbooks/evals/eval-strategy.md
-    benchmark_plan_path: eval/07-operations/runbooks/isolated-benchmark-plan.md
-    benchmark_results_path: eval/07-operations/runbooks/manual-benchmark-review.md
-    findings_path: eval/07-operations/runbooks/findings.md
-    integration_test_path: eval/07-operations/runbooks/runbook-review.md
-- name: tech-debt-management
+    eval_strategy_path: eval/07-operations/pc-runbooks/evals/eval-strategy.md
+    benchmark_plan_path: eval/07-operations/pc-runbooks/isolated-benchmark-plan.md
+    benchmark_results_path: eval/07-operations/pc-runbooks/manual-benchmark-review.md
+    findings_path: eval/07-operations/pc-runbooks/findings.md
+    integration_test_path: eval/07-operations/pc-runbooks/runbook-review.md
+- name: pc-tech-debt-management
   phase: 08-evolution
-  file: skills/08-evolution/tech-debt-management/SKILL.md
+  file: skills/08-evolution/pc-tech-debt-management/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/08-evolution/tech-debt-management/evals/eval-strategy.md
-    benchmark_plan_path: eval/08-evolution/tech-debt-management/isolated-benchmark-plan.md
-    benchmark_results_path: eval/08-evolution/tech-debt-management/manual-benchmark-review.md
-    findings_path: eval/08-evolution/tech-debt-management/findings.md
-    integration_test_path: eval/08-evolution/tech-debt-management/debt-review.md
-- name: retrospective
+    eval_strategy_path: eval/08-evolution/pc-tech-debt-management/evals/eval-strategy.md
+    benchmark_plan_path: eval/08-evolution/pc-tech-debt-management/isolated-benchmark-plan.md
+    benchmark_results_path: eval/08-evolution/pc-tech-debt-management/manual-benchmark-review.md
+    findings_path: eval/08-evolution/pc-tech-debt-management/findings.md
+    integration_test_path: eval/08-evolution/pc-tech-debt-management/debt-review.md
+- name: pc-retrospective
   phase: 08-evolution
-  file: skills/08-evolution/retrospective/SKILL.md
+  file: skills/08-evolution/pc-retrospective/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/08-evolution/retrospective/evals/eval-strategy.md
-    benchmark_plan_path: eval/08-evolution/retrospective/isolated-benchmark-plan.md
-    benchmark_results_path: eval/08-evolution/retrospective/manual-benchmark-review.md
-    findings_path: eval/08-evolution/retrospective/findings.md
-    integration_test_path: eval/08-evolution/retrospective/retro-review.md
-- name: documentation
+    eval_strategy_path: eval/08-evolution/pc-retrospective/evals/eval-strategy.md
+    benchmark_plan_path: eval/08-evolution/pc-retrospective/isolated-benchmark-plan.md
+    benchmark_results_path: eval/08-evolution/pc-retrospective/manual-benchmark-review.md
+    findings_path: eval/08-evolution/pc-retrospective/findings.md
+    integration_test_path: eval/08-evolution/pc-retrospective/retro-review.md
+- name: pc-documentation
   phase: cross-cutting
-  file: skills/cross-cutting/documentation/SKILL.md
+  file: skills/cross-cutting/pc-documentation/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/cross-cutting/documentation/evals/eval-strategy.md
-    benchmark_plan_path: eval/cross-cutting/documentation/isolated-benchmark-plan.md
-    benchmark_results_path: eval/cross-cutting/documentation/isolated-benchmark-review.md
-    findings_path: eval/cross-cutting/documentation/findings.md
-    integration_test_path: eval/cross-cutting/documentation/documentation-handoff-review.md
-    manual_review_path: eval/cross-cutting/documentation/documentation-handoff-review.md
-- name: observability
+    eval_strategy_path: eval/cross-cutting/pc-documentation/evals/eval-strategy.md
+    benchmark_plan_path: eval/cross-cutting/pc-documentation/isolated-benchmark-plan.md
+    benchmark_results_path: eval/cross-cutting/pc-documentation/isolated-benchmark-review.md
+    findings_path: eval/cross-cutting/pc-documentation/findings.md
+    integration_test_path: eval/cross-cutting/pc-documentation/documentation-handoff-review.md
+    manual_review_path: eval/cross-cutting/pc-documentation/documentation-handoff-review.md
+- name: pc-observability
   phase: cross-cutting
-  file: skills/cross-cutting/observability/SKILL.md
+  file: skills/cross-cutting/pc-observability/SKILL.md
   status: tested
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/cross-cutting/observability/evals/eval-strategy.md
-    benchmark_plan_path: eval/cross-cutting/observability/isolated-benchmark-plan.md
-    benchmark_results_path: eval/cross-cutting/observability/isolated-benchmark-review.md
-    findings_path: eval/cross-cutting/observability/findings.md
-    integration_test_path: eval/cross-cutting/observability/runtime-contract-review.md
-    manual_review_path: eval/cross-cutting/observability/runtime-contract-review.md
-- name: bug-history-retrieval
+    eval_strategy_path: eval/cross-cutting/pc-observability/evals/eval-strategy.md
+    benchmark_plan_path: eval/cross-cutting/pc-observability/isolated-benchmark-plan.md
+    benchmark_results_path: eval/cross-cutting/pc-observability/isolated-benchmark-review.md
+    findings_path: eval/cross-cutting/pc-observability/findings.md
+    integration_test_path: eval/cross-cutting/pc-observability/runtime-contract-review.md
+    manual_review_path: eval/cross-cutting/pc-observability/runtime-contract-review.md
+- name: pc-bug-history-retrieval
   phase: cross-cutting
-  file: skills/cross-cutting/bug-history-retrieval/SKILL.md
+  file: skills/cross-cutting/pc-bug-history-retrieval/SKILL.md
   status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/cross-cutting/bug-history-retrieval/evals/eval-strategy.md
-- name: verification-before-completion
+    eval_strategy_path: eval/cross-cutting/pc-bug-history-retrieval/evals/eval-strategy.md
+- name: pc-verification-before-completion
   phase: cross-cutting
-  file: skills/cross-cutting/verification-before-completion/SKILL.md
+  file: skills/cross-cutting/pc-verification-before-completion/SKILL.md
   status: production
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/cross-cutting/verification-before-completion/evals/eval-strategy.md
-    benchmark_plan_path: eval/cross-cutting/verification-before-completion/isolated-benchmark-plan.md
-    benchmark_results_path: eval/cross-cutting/verification-before-completion/isolated-benchmark-review.md
-    findings_path: eval/cross-cutting/verification-before-completion/findings.md
-    security_review_path: eval/cross-cutting/verification-before-completion/security-review.md
-    integration_test_path: eval/cross-cutting/verification-before-completion/completion-claim-review.md
-- name: accessibility
+    eval_strategy_path: eval/cross-cutting/pc-verification-before-completion/evals/eval-strategy.md
+    benchmark_plan_path: eval/cross-cutting/pc-verification-before-completion/isolated-benchmark-plan.md
+    benchmark_results_path: eval/cross-cutting/pc-verification-before-completion/isolated-benchmark-review.md
+    findings_path: eval/cross-cutting/pc-verification-before-completion/findings.md
+    security_review_path: eval/cross-cutting/pc-verification-before-completion/security-review.md
+    integration_test_path: eval/cross-cutting/pc-verification-before-completion/completion-claim-review.md
+- name: pc-accessibility
   phase: cross-cutting
-  file: skills/cross-cutting/accessibility/SKILL.md
+  file: skills/cross-cutting/pc-accessibility/SKILL.md
   status: tested
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/cross-cutting/accessibility/evals/eval-strategy.md
-    benchmark_plan_path: eval/cross-cutting/accessibility/isolated-benchmark-plan.md
-    benchmark_results_path: eval/cross-cutting/accessibility/isolated-benchmark-review.md
-    findings_path: eval/cross-cutting/accessibility/findings.md
-    integration_test_path: eval/cross-cutting/accessibility/acceptance-criteria-handoff-review.md
-- name: internationalization
+    eval_strategy_path: eval/cross-cutting/pc-accessibility/evals/eval-strategy.md
+    benchmark_plan_path: eval/cross-cutting/pc-accessibility/isolated-benchmark-plan.md
+    benchmark_results_path: eval/cross-cutting/pc-accessibility/isolated-benchmark-review.md
+    findings_path: eval/cross-cutting/pc-accessibility/findings.md
+    integration_test_path: eval/cross-cutting/pc-accessibility/acceptance-criteria-handoff-review.md
+- name: pc-internationalization
   phase: cross-cutting
-  file: skills/cross-cutting/internationalization/SKILL.md
+  file: skills/cross-cutting/pc-internationalization/SKILL.md
   status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/cross-cutting/internationalization/evals/eval-strategy.md
-- name: compliance
+    eval_strategy_path: eval/cross-cutting/pc-internationalization/evals/eval-strategy.md
+- name: pc-compliance
   phase: cross-cutting
-  file: skills/cross-cutting/compliance/SKILL.md
+  file: skills/cross-cutting/pc-compliance/SKILL.md
   status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/cross-cutting/compliance/evals/eval-strategy.md
+    eval_strategy_path: eval/cross-cutting/pc-compliance/evals/eval-strategy.md
 planned_skills:
-- name: pair-programming
+- name: pc-pair-programming
   phase: 04-implementation
-  target_file: skills/04-implementation/pair-programming/SKILL.md
-- name: performance-audit
+  target_file: skills/04-implementation/pc-pair-programming/SKILL.md
+  rationale: Planned implementation collaboration skill; not yet part of routed workflows.
+- name: pc-performance-audit
   phase: 05-quality
-  target_file: skills/05-quality/performance-audit/SKILL.md
-- name: feature-flags
+  target_file: skills/05-quality/pc-performance-audit/SKILL.md
+  rationale: Planned producer for performance-report artifacts in quality gates.
+- name: pc-feature-flags
   phase: 06-delivery
-  target_file: skills/06-delivery/feature-flags/SKILL.md
-- name: capacity-planning
+  target_file: skills/06-delivery/pc-feature-flags/SKILL.md
+  rationale: Planned delivery control for staged rollout and pc-deprecation workflows.
+- name: pc-capacity-planning
   phase: 07-operations
-  target_file: skills/07-operations/capacity-planning/SKILL.md
-- name: migration-strategy
+  target_file: skills/07-operations/pc-capacity-planning/SKILL.md
+  rationale: Planned consumer for performance and monitoring artifacts.
+- name: pc-migration-strategy
   phase: 08-evolution
-  target_file: skills/08-evolution/migration-strategy/SKILL.md
-- name: deprecation
+  target_file: skills/08-evolution/pc-migration-strategy/SKILL.md
+  rationale: Planned brownfield modernization skill referenced by evolution routing.
+- name: pc-deprecation
   phase: 08-evolution
-  target_file: skills/08-evolution/deprecation/SKILL.md
+  target_file: skills/08-evolution/pc-deprecation/SKILL.md
+  rationale: Planned evolution/delivery bridge for migration and API lifecycle work.
 workflows:
 - name: spec-driven
   file: workflows/spec-driven.md
@@ -717,7 +745,7 @@ workflows:
   cadence: phase-based (2-6 weeks per phase)
   best_for:
   - enterprise
-  - compliance
+  - pc-compliance
   - large-scope
   - distributed-teams
 - name: hotfix
@@ -809,378 +837,405 @@ artifact_flow:
 # `produced_by` is usually a single skill name. Use a list only when multiple
 # skills intentionally produce the same artifact type, such as implementation code.
 - artifact: market-research-report
-  produced_by: market-analysis
+  produced_by: pc-market-analysis
   consumed_by:
-  - feasibility-study
-  - requirements-engineering
-  - user-research
+  - pc-feasibility-study
+  - pc-requirements-engineering
+  - pc-user-research
 - artifact: user-persona-set
-  produced_by: user-research
+  produced_by: pc-user-research
   consumed_by:
-  - feasibility-study
-  - requirements-engineering
-  - spec-writing
+  - pc-feasibility-study
+  - pc-requirements-engineering
+  - pc-spec-writing
 - artifact: research-plan
-  produced_by: user-research
+  produced_by: pc-user-research
   consumed_by: []
 - artifact: user-journey-map
-  produced_by: user-research
+  produced_by: pc-user-research
   consumed_by: []
 - artifact: feasibility-report
-  produced_by: feasibility-study
+  produced_by: pc-feasibility-study
   consumed_by:
-  - requirements-engineering
+  - pc-requirements-engineering
 - artifact: intake-brief
-  produced_by: intake
+  produced_by: pc-intake
   consumed_by:
-  - problem-framing
-  - market-analysis
-  - user-research
-  - feasibility-study
-  - requirements-engineering
-  - code-review
-  - security-audit
-  - testing-strategy
+  - pc-problem-framing
+  - pc-market-analysis
+  - pc-user-research
+  - pc-feasibility-study
+  - pc-requirements-engineering
+  - pc-code-review
+  - pc-implementation-alignment-review
+  - pc-implementation-integrity-audit
+  - pc-security-audit
+  - pc-testing-strategy
 - artifact: course-correction-note
   produced_by:
-  - systematic-debugging
-  - feature-development
-  - refactoring
-  - code-review
-  - testing-strategy
-  - security-audit
-  - incident-response
-  - monitoring-observability
-  - tech-debt-management
-  - retrospective
+  - pc-systematic-debugging
+  - pc-feature-development
+  - pc-refactoring
+  - pc-code-review
+  - pc-testing-strategy
+  - pc-security-audit
+  - pc-incident-response
+  - pc-monitoring-observability
+  - pc-tech-debt-management
+  - pc-retrospective
   consumed_by:
-  - requirements-engineering
-  - system-design
-  - task-breakdown
+  - pc-requirements-engineering
+  - pc-system-design
+  - pc-task-breakdown
 - artifact: phase-recommendation
-  produced_by: intake
+  produced_by: pc-intake
   consumed_by: []
 - artifact: workflow-recommendation
-  produced_by: intake
+  produced_by: pc-intake
   consumed_by: []
+- artifact: route-decision
+  produced_by: pc-intake
+  consumed_by:
+  - pc-verification-before-completion
+  - pc-task-execution
+  - pc-delivery-completion
+- artifact: execution-state
+  produced_by:
+  - pc-intake
+  - pc-task-execution
+  - pc-verification-before-completion
+  consumed_by:
+  - pc-verification-before-completion
+  - pc-task-execution
+  - pc-delivery-completion
 - artifact: problem-frame
-  produced_by: problem-framing
+  produced_by: pc-problem-framing
   consumed_by:
-  - market-analysis
-  - user-research
-  - feasibility-study
-  - requirements-engineering
+  - pc-market-analysis
+  - pc-user-research
+  - pc-feasibility-study
+  - pc-requirements-engineering
 - artifact: options-brief
-  produced_by: problem-framing
+  produced_by: pc-problem-framing
   consumed_by:
-  - feasibility-study
-  - requirements-engineering
+  - pc-feasibility-study
+  - pc-requirements-engineering
 - artifact: design-direction
-  produced_by: problem-framing
+  produced_by: pc-problem-framing
   consumed_by:
-  - requirements-engineering
+  - pc-requirements-engineering
 - artifact: requirements-doc
-  produced_by: requirements-engineering
+  produced_by: pc-requirements-engineering
   consumed_by:
-  - spec-writing
-  - domain-modeling
-  - acceptance-criteria
-  - system-design
-  - api-design
-  - tech-selection
+  - pc-spec-writing
+  - pc-domain-modeling
+  - pc-acceptance-criteria
+  - pc-system-design
+  - pc-api-design
+  - pc-tech-selection
 - artifact: spec-doc
-  produced_by: spec-writing
+  produced_by: pc-spec-writing
   consumed_by:
-  - system-design
-  - api-design
-  - data-modeling
-  - task-breakdown
-  - acceptance-criteria
+  - pc-system-design
+  - pc-api-design
+  - pc-data-modeling
+  - pc-task-breakdown
+  - pc-acceptance-criteria
 - artifact: domain-model
-  produced_by: domain-modeling
+  produced_by: pc-domain-modeling
   consumed_by:
-  - spec-writing
-  - system-design
-  - data-modeling
-  - api-design
+  - pc-spec-writing
+  - pc-system-design
+  - pc-data-modeling
+  - pc-api-design
 - artifact: acceptance-criteria-set
-  produced_by: acceptance-criteria
+  produced_by: pc-acceptance-criteria
   consumed_by:
-  - tdd
-  - testing-strategy
-  - code-review
+  - pc-tdd
+  - pc-testing-strategy
+  - pc-code-review
+  - pc-implementation-alignment-review
 - artifact: architecture-doc
-  produced_by: system-design
+  produced_by: pc-system-design
   consumed_by:
-  - api-design
-  - data-modeling
-  - security-design
-  - tech-selection
-  - task-breakdown
-  - task-execution
-  - risk-assessment
-  - feature-development
-  - security-audit
-  - code-review
-  - testing-strategy
-  - ci-cd
-  - incident-response
-  - monitoring-observability
+  - pc-api-design
+  - pc-data-modeling
+  - pc-security-design
+  - pc-tech-selection
+  - pc-task-breakdown
+  - pc-task-execution
+  - pc-risk-assessment
+  - pc-feature-development
+  - pc-security-audit
+  - pc-code-review
+  - pc-testing-strategy
+  - pc-ci-cd
+  - pc-incident-response
+  - pc-monitoring-observability
 - artifact: component-diagram
-  produced_by: system-design
+  produced_by: pc-system-design
   consumed_by: []
 - artifact: api-contract
-  produced_by: api-design
+  produced_by: pc-api-design
   consumed_by:
-  - task-execution
-  - feature-development
-  - testing-strategy
-  - task-breakdown
-  - tdd
-  - security-design
-  - code-review
-  - monitoring-observability
+  - pc-task-execution
+  - pc-feature-development
+  - pc-testing-strategy
+  - pc-task-breakdown
+  - pc-tdd
+  - pc-security-design
+  - pc-code-review
+  - pc-monitoring-observability
 - artifact: api-documentation
-  produced_by: api-design
+  produced_by: pc-api-design
   consumed_by: []
 - artifact: data-schema
-  produced_by: data-modeling
+  produced_by: pc-data-modeling
   consumed_by:
-  - feature-development
-  - migration-strategy
+  - pc-feature-development
+  - pc-migration-strategy
 - artifact: threat-model
-  produced_by: security-design
+  produced_by: pc-security-design
   consumed_by:
-  - security-audit
-  - feature-development
+  - pc-security-audit
+  - pc-feature-development
 - artifact: tech-decision-record
-  produced_by: tech-selection
+  produced_by: pc-tech-selection
   consumed_by:
-  - system-design
-  - feature-development
-  - ci-cd
+  - pc-system-design
+  - pc-feature-development
+  - pc-ci-cd
 - artifact: task-list
-  produced_by: task-breakdown
+  produced_by: pc-task-breakdown
   consumed_by:
-  - sprint-planning
-  - estimation
-  - risk-assessment
-  - task-execution
-  - tdd
-  - feature-development
-  - code-review
-  - testing-strategy
-  - e2e-scenario-design
-  - ci-cd
+  - pc-sprint-planning
+  - pc-estimation
+  - pc-risk-assessment
+  - pc-task-execution
+  - pc-tdd
+  - pc-feature-development
+  - pc-code-review
+  - pc-implementation-alignment-review
+  - pc-implementation-integrity-audit
+  - pc-testing-strategy
+  - pc-e2e-scenario-design
+  - pc-ci-cd
 - artifact: dependency-graph
-  produced_by: task-breakdown
+  produced_by: pc-task-breakdown
   consumed_by:
-  - task-execution
-  - risk-assessment
+  - pc-task-execution
+  - pc-risk-assessment
 - artifact: estimate-set
-  produced_by: estimation
+  produced_by: pc-estimation
   consumed_by:
-  - sprint-planning
+  - pc-sprint-planning
 - artifact: sprint-plan
-  produced_by: sprint-planning
+  produced_by: pc-sprint-planning
   consumed_by:
-  - feature-development
-  - tdd
+  - pc-feature-development
+  - pc-tdd
 - artifact: risk-register
-  produced_by: risk-assessment
+  produced_by: pc-risk-assessment
   consumed_by:
-  - estimation
-  - sprint-planning
-  - monitoring-observability
+  - pc-estimation
+  - pc-sprint-planning
+  - pc-monitoring-observability
 - artifact: source-code
   produced_by:
-  - feature-development
-  - refactoring
+  - pc-feature-development
+  - pc-refactoring
   consumed_by:
-  - receiving-code-review
-  - systematic-debugging
-  - refactoring
-  - code-review
-  - testing-strategy
-  - e2e-scenario-design
-  - security-audit
-  - performance-audit
-  - ci-cd
+  - pc-receiving-code-review
+  - pc-systematic-debugging
+  - pc-refactoring
+  - pc-code-review
+  - pc-implementation-alignment-review
+  - pc-implementation-integrity-audit
+  - pc-testing-strategy
+  - pc-e2e-scenario-design
+  - pc-security-audit
+  - pc-performance-audit
+  - pc-ci-cd
 - artifact: test-suite
   produced_by:
-  - tdd
-  - e2e-scenario-design
+  - pc-tdd
+  - pc-e2e-scenario-design
   consumed_by:
-  - receiving-code-review
-  - systematic-debugging
-  - feature-development
-  - refactoring
-  - code-review
-  - ci-cd
-  - testing-strategy
+  - pc-receiving-code-review
+  - pc-systematic-debugging
+  - pc-feature-development
+  - pc-refactoring
+  - pc-code-review
+  - pc-implementation-alignment-review
+  - pc-implementation-integrity-audit
+  - pc-ci-cd
+  - pc-testing-strategy
 - artifact: execution-batch-plan
-  produced_by: task-execution
+  produced_by: pc-task-execution
   consumed_by:
-  - feature-development
-  - systematic-debugging
-  - verification-before-completion
+  - pc-feature-development
+  - pc-systematic-debugging
+  - pc-verification-before-completion
 - artifact: execution-checkpoint
-  produced_by: task-execution
+  produced_by: pc-task-execution
   consumed_by:
-  - verification-before-completion
-  - receiving-code-review
-  - delivery-completion
+  - pc-verification-before-completion
+  - pc-receiving-code-review
+  - pc-delivery-completion
 - artifact: bug-fix-report
-  produced_by: systematic-debugging
+  produced_by: pc-systematic-debugging
   consumed_by:
-  - code-review
-  - verification-before-completion
-  - incident-response
-  - retrospective
+  - pc-code-review
+  - pc-verification-before-completion
+  - pc-incident-response
+  - pc-retrospective
 - artifact: review-report
-  produced_by: code-review
+  produced_by:
+  - pc-code-review
+  - pc-implementation-alignment-review
+  - pc-implementation-integrity-audit
   consumed_by:
-  - receiving-code-review
-  - feature-development
-  - refactoring
-  - retrospective
-  - tech-debt-management
+  - pc-receiving-code-review
+  - pc-feature-development
+  - pc-refactoring
+  - pc-retrospective
+  - pc-tech-debt-management
 - artifact: review-response-record
-  produced_by: receiving-code-review
+  produced_by: pc-receiving-code-review
   consumed_by:
-  - code-review
-  - verification-before-completion
+  - pc-code-review
+  - pc-verification-before-completion
 - artifact: test-report
   produced_by:
-  - testing-strategy
-  - e2e-scenario-design
+  - pc-testing-strategy
+  - pc-e2e-scenario-design
   consumed_by:
-  - release-management
+  - pc-release-management
 - artifact: test-strategy-doc
-  produced_by: testing-strategy
+  produced_by: pc-testing-strategy
   consumed_by:
-  - ci-cd
-  - e2e-scenario-design
+  - pc-ci-cd
+  - pc-e2e-scenario-design
 - artifact: security-report
-  produced_by: security-audit
+  produced_by: pc-security-audit
   consumed_by:
-  - release-management
-  - feature-development
+  - pc-release-management
+  - pc-feature-development
 - artifact: performance-report
-  produced_by: performance-audit
+  produced_by: pc-performance-audit
   consumed_by:
-  - release-management
-  - capacity-planning
+  - pc-release-management
+  - pc-capacity-planning
 - artifact: ci-cd-pipeline
-  produced_by: ci-cd
+  produced_by: pc-ci-cd
   consumed_by:
-  - deployment-strategy
-  - release-management
-  - incident-response
-  - monitoring-observability
-  - runbooks
+  - pc-deployment-strategy
+  - pc-release-management
+  - pc-incident-response
+  - pc-monitoring-observability
+  - pc-runbooks
 - artifact: build-artifacts
-  produced_by: ci-cd
+  produced_by: pc-ci-cd
   consumed_by:
-  - deployment-strategy
+  - pc-deployment-strategy
 - artifact: release-plan
-  produced_by: release-management
+  produced_by: pc-release-management
   consumed_by:
-  - deployment-strategy
+  - pc-deployment-strategy
 - artifact: delivery-decision-record
-  produced_by: delivery-completion
+  produced_by: pc-delivery-completion
   consumed_by:
-  - release-management
+  - pc-release-management
 - artifact: deployment-runbook
-  produced_by: deployment-strategy
+  produced_by: pc-deployment-strategy
   consumed_by:
-  - runbooks
-  - incident-response
+  - pc-runbooks
+  - pc-incident-response
 - artifact: monitoring-config
-  produced_by: monitoring-observability
+  produced_by: pc-monitoring-observability
   consumed_by:
-  - incident-response
-  - capacity-planning
-  - runbooks
+  - pc-incident-response
+  - pc-capacity-planning
+  - pc-runbooks
 - artifact: alert-rules
-  produced_by: monitoring-observability
+  produced_by: pc-monitoring-observability
   consumed_by: []
 - artifact: service-dashboard
-  produced_by: monitoring-observability
+  produced_by: pc-monitoring-observability
   consumed_by: []
 - artifact: incident-playbook
-  produced_by: incident-response
+  produced_by: pc-incident-response
   consumed_by:
-  - runbooks
+  - pc-runbooks
 - artifact: incident-timeline
-  produced_by: incident-response
+  produced_by: pc-incident-response
   consumed_by:
-  - retrospective
+  - pc-retrospective
 - artifact: postmortem-report
-  produced_by: incident-response
+  produced_by: pc-incident-response
   consumed_by:
-  - retrospective
-  - risk-assessment
-  - tech-debt-management
+  - pc-retrospective
+  - pc-risk-assessment
+  - pc-tech-debt-management
 - artifact: operational-runbook
-  produced_by: runbooks
+  produced_by: pc-runbooks
   consumed_by: []
 - artifact: escalation-checklist
-  produced_by: runbooks
+  produced_by: pc-runbooks
   consumed_by: []
 - artifact: tech-debt-registry
-  produced_by: tech-debt-management
+  produced_by: pc-tech-debt-management
   consumed_by:
-  - sprint-planning
-  - refactoring
+  - pc-sprint-planning
+  - pc-refactoring
 - artifact: remediation-plan
-  produced_by: tech-debt-management
+  produced_by: pc-tech-debt-management
   consumed_by: []
 - artifact: retrospective-report
-  produced_by: retrospective
+  produced_by: pc-retrospective
   consumed_by:
-  - market-analysis
-  - sprint-planning
-  - tech-debt-management
+  - pc-market-analysis
+  - pc-sprint-planning
+  - pc-tech-debt-management
 - artifact: improvement-actions
-  produced_by: retrospective
+  produced_by: pc-retrospective
   consumed_by: []
 - artifact: documentation-artifact
-  produced_by: documentation
+  produced_by: pc-documentation
   consumed_by: []
 - artifact: observability-spec
-  produced_by: observability
+  produced_by: pc-observability
   consumed_by:
-  - feature-development
-  - ci-cd
-  - monitoring-observability
+  - pc-feature-development
+  - pc-ci-cd
+  - pc-monitoring-observability
 - artifact: execution-event-schema
-  produced_by: observability
+  produced_by: pc-observability
   consumed_by:
-  - feature-development
-  - monitoring-observability
+  - pc-feature-development
+  - pc-monitoring-observability
 - artifact: historical-defect-context
-  produced_by: bug-history-retrieval
+  produced_by: pc-bug-history-retrieval
   consumed_by:
-  - systematic-debugging
+  - pc-systematic-debugging
 - artifact: fix-lineage-brief
-  produced_by: bug-history-retrieval
+  produced_by: pc-bug-history-retrieval
   consumed_by:
-  - systematic-debugging
+  - pc-systematic-debugging
 - artifact: verification-record
-  produced_by: verification-before-completion
+  produced_by: pc-verification-before-completion
   consumed_by:
-  - delivery-completion
-  - release-management
-  - deployment-strategy
-  - incident-response
+  - pc-delivery-completion
+  - pc-release-management
+  - pc-deployment-strategy
+  - pc-incident-response
 - artifact: accessibility-guidance
-  produced_by: accessibility
+  produced_by: pc-accessibility
   consumed_by:
-  - acceptance-criteria
+  - pc-acceptance-criteria
 - artifact: localization-guidance
-  produced_by: internationalization
+  produced_by: pc-internationalization
   consumed_by: []
 - artifact: compliance-guidance
-  produced_by: compliance
+  produced_by: pc-compliance
   consumed_by: []

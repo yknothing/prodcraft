@@ -40,17 +40,22 @@
       "type": "string"
     },
     "source_language": {
-      "type": "string",
-      "pattern": "^([a-z]{2,3}(-[A-Za-z0-9]{1,8})*|mixed)$",
-      "description": "BCP-47 primary language tag of the incoming request, or `mixed` for multilingual requests."
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$"
+        },
+        {
+          "const": "mixed"
+        }
+      ]
     },
     "artifact_record_language": {
       "const": "en"
     },
     "user_presentation_locale": {
       "type": "string",
-      "pattern": "^[a-z]{2,3}(-[A-Za-z0-9]{1,8})*$",
-      "description": "BCP-47 language tag used when presenting results to the user."
+      "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$"
     },
     "intake_mode": {
       "enum": [
@@ -168,7 +173,8 @@
       "type": "string"
     },
     "recommended_next_skill": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^pc-[a-z0-9]+(?:-[a-z0-9]+)*$"
     },
     "routing_rationale": {
       "type": "string"

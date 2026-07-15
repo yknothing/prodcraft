@@ -15,39 +15,25 @@
     "next_skill_to_invoke"
   ],
   "properties": {
-    "artifact": {
-      "const": "problem-frame"
-    },
-    "schema_version": {
-      "const": "problem-frame.v1"
-    },
-    "status": {
-      "enum": [
-        "draft",
-        "approved"
+    "artifact": { "const": "problem-frame" },
+    "schema_version": { "const": "problem-frame.v1" },
+    "status": { "enum": ["draft", "approved"] },
+    "source_language": {
+      "oneOf": [
+        { "type": "string", "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$" },
+        { "const": "mixed" }
       ]
     },
-    "source_language": {
-      "type": "string",
-      "pattern": "^([a-z]{2,3}(-[A-Za-z0-9]{1,8})*|mixed)$",
-      "description": "BCP-47 primary language tag of the incoming request, or `mixed` for multilingual requests."
-    },
-    "artifact_record_language": {
-      "const": "en"
-    },
+    "artifact_record_language": { "const": "en" },
     "user_presentation_locale": {
       "type": "string",
-      "pattern": "^[a-z]{2,3}(-[A-Za-z0-9]{1,8})*$",
-      "description": "BCP-47 language tag used when presenting results to the user."
+      "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$"
     },
-    "problem_statement": {
-      "type": "string"
-    },
-    "recommended_option": {
-      "type": "string"
-    },
+    "problem_statement": { "type": "string" },
+    "recommended_option": { "type": "string" },
     "next_skill_to_invoke": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^pc-[a-z0-9]+(?:-[a-z0-9]+)*$"
     }
   },
   "additionalProperties": false

@@ -160,7 +160,7 @@ Recommendation:
   consumers from `inputs`), keeping only `iterative_feedback_edges` and
   multi-producer rationales hand-authored. One source of truth beats
   dual-write-plus-checker.
-- Add `scripts/new_skill.py` scaffolding: SKILL.md skeleton from
+- Add `a `new_skill.py` scaffolder under `scripts/`` scaffolding: SKILL.md skeleton from
   `skills/_schema.md`, manifest entry at `draft`, eval directory skeleton.
 
 ### F9 (P2, context economics): the mandatory entry path has no budget check
