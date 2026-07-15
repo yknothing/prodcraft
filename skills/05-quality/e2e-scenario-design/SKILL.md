@@ -1,6 +1,6 @@
 ---
 name: e2e-scenario-design
-description: Use when designing or implementing E2E tests that need to go beyond shallow happy-path flows — especially for multi-step user journeys, stateful session scenarios, cross-boundary state consistency, and failure-mode edge cases. Applies across platforms (web, mobile, desktop), languages (Swift, TypeScript, Python, Java), and test frameworks (XCUITest, Playwright, Cypress, Selenium). Use this skill when tests feel too thin, when the test suite passes but production breaks, or when you need to write tests that simulate realistic, extended usage rather than single feature checks.
+description: Use when E2E tests must go beyond shallow happy-path checks — multi-step user journeys, stateful sessions, cross-boundary state consistency, failure-mode edges — or when the suite passes but production still breaks. Platform- and framework-agnostic (web, mobile, desktop; Playwright, XCUITest, Cypress).
 metadata:
   phase: 05-quality
   inputs:

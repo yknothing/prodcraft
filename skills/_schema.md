@@ -32,6 +32,7 @@ Keep frontmatter limited to discovery metadata. Do not pack edge cases, troubles
 Follow the runtime guidance shared across Anthropic, OpenAI, Cursor, and Trae:
 
 - keep `description` focused on **when to use** the skill
+- keep `description` at or under 280 characters where possible; 350 is the hard cap enforced by `scripts/validate_prodcraft.py`, because every installed skill's description shares one always-loaded discovery context budget
 - keep the main skill concise and move heavy material into supporting files
 - preserve explicit approval points for risky or side-effectful actions
 - add new guardrails only when they map to a real observed failure mode
