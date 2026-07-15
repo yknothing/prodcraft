@@ -55,6 +55,29 @@ LOCAL_EVAL_FILE_RE = re.compile(
     r"`(?P<path>eval/[^`\s]+)`"
 )
 
+
+def _is_gitignored_local_artifact(rel_path: str) -> bool:
+    """True when a referenced eval path matches a declared local-artifact pattern.
+
+    Raw benchmark run directories (e.g. `eval/**/run-*/`) are deliberately
+    gitignored; review documents may still cite them as provenance for evidence
+    that lives only on the operator's machine. A gitignored reference is a
+    declared local artifact, not a broken link.
+    """
+    import subprocess
+
+    # Directory ignore patterns (`run-*/`) only match paths with a trailing
+    # slash, and the referenced path may be a file or a directory -- probe both.
+    for candidate in (rel_path, rel_path.rstrip("/") + "/"):
+        result = subprocess.run(
+            ["git", "check-ignore", "-q", candidate],
+            cwd=ROOT,
+            capture_output=True,
+        )
+        if result.returncode == 0:
+            return True
+    return False
+
 SKILL_REQUIRED_FIELDS = [
     "name",
     "description",
@@ -103,7 +126,18 @@ CHECKS = {
     "cross-cutting-matrix",
     "curated-surface",
     "security-minimal",
+    "doc-script-refs",
+    "gateway-refs",
 }
+
+# Repository-root script references in prose, e.g. `scripts/validate_prodcraft.py`.
+# The lookbehind stops the regex from matching the tail of a longer nested path
+# such as `tools/anthropic_trigger_eval/scripts/run_eval.py`.
+_SCRIPT_REF_RE = re.compile(r"(?<![\w/])scripts/[A-Za-z0-9_\-/]+\.py\b")
+
+# Discovery descriptions share one context budget across every installed skill.
+# Soft guidance is 280 characters; this is the enforced hard cap.
+DESCRIPTION_HARD_CAP = 350
 
 
 class _CheckChoices(tuple[str, ...]):
@@ -630,6 +664,10 @@ def validate_intake_brief_schema_contract(schema: dict, schema_path: Path, manif
         errors.append(f"{schema_path}: `additionalProperties` must be `false` to keep the routing contract closed")
 
 
+# Language fields are open BCP-47 tags, not a closed operator-specific list.
+# `source_language` additionally accepts the literal `mixed` for multilingual requests.
+
+
 def validate_language_boundary_schema_contract(schema: dict, schema_path: Path, errors: list[str]) -> None:
     properties = schema.get("properties", {})
     if not isinstance(properties, dict):
@@ -979,8 +1017,11 @@ def validate_skill_file(path: Path, errors: list[str]) -> None:
     if not isinstance(description, str):
         errors.append(f"{path}: `description` must be a string")
     else:
-        if len(description) > 1024:
-            errors.append(f"{path}: `description` must be 1024 characters or fewer for Anthropic discovery")
+        if len(description) > DESCRIPTION_HARD_CAP:
+            errors.append(
+                f"{path}: `description` is {len(description)} characters; the hard cap is {DESCRIPTION_HARD_CAP} "
+                f"to protect the shared discovery context budget (soft guidance: 280)"
+            )
         if "<" in description or ">" in description:
             errors.append(f"{path}: `description` must not contain XML angle brackets")
         if not re.search(r"\bUse (when|after|before)\b", description):
@@ -1147,6 +1188,27 @@ def validate_workflow_file(path: Path, errors: list[str], selected_checks: set[s
 
 def manifest_skill_names(manifest: dict) -> set[str]:
     return {item["name"] for item in manifest.get("skills", []) if isinstance(item, dict) and "name" in item}
+
+
+def manifest_planned_skill_names(manifest: dict) -> set[str]:
+    return {
+        entry.get("name")
+        for entry in manifest.get("planned_skills", [])
+        if isinstance(entry, dict) and isinstance(entry.get("name"), str)
+    }
+
+
+def maturity_marker_violation(status: object, marker_present: bool) -> str | None:
+    """Shared policy: how a skill's manifest status constrains prose maturity markers.
+
+    Aligned with the workflow-reference rule on main: only draft skills carry
+    an (experimental)/(planned) marker; any non-draft marker is stale.
+    """
+    if status == "draft" and not marker_present:
+        return "is referenced without being explicitly marked as (experimental) or (planned)"
+    if isinstance(status, str) and status != "draft" and marker_present:
+        return f"is marked experimental/planned; sync the label with manifest status `{status}`"
+    return None
 
 
 def validate_manifest(errors: list[str]) -> dict:
@@ -1377,7 +1439,7 @@ def validate_manifest_skill_status(manifest: dict, errors: list[str]) -> None:
                         local_path = match.group("path")
                         if any(marker in local_path for marker in ("*", "<", ">", "{", "}")):
                             continue
-                        if not (ROOT / local_path).exists():
+                        if not (ROOT / local_path).exists() and not _is_gitignored_local_artifact(local_path):
                             errors.append(
                                 f"{target}: references missing local eval artifact `{local_path}`"
                             )
@@ -1510,14 +1572,6 @@ def validate_artifact_flow(manifest: dict, errors: list[str]) -> None:
 
 def extract_backtick_refs(text: str) -> set[str]:
     return set(re.findall(r"`([a-z0-9-]+)`", text))
-
-
-def manifest_planned_skill_names(manifest: dict) -> set[str]:
-    return {
-        entry.get("name")
-        for entry in manifest.get("planned_skills", [])
-        if isinstance(entry, dict) and isinstance(entry.get("name"), str)
-    }
 
 
 def load_skill_methodologies(errors: list[str]) -> dict[str, list[str]]:
@@ -2142,6 +2196,85 @@ def validate_protocol_result_instance(
                 errors.append(f"{result_name}: capacities[{index}] remaining_bytes must equal limit_bytes - used_bytes")
 
 
+def _skill_name_occurrences(name: str, line: str) -> list[re.Match]:
+    """Occurrences of a skill name as a standalone token.
+
+    Lookarounds treat `-` as part of the token, so `migration-strategy` does
+    not match inside `data-migration-strategy`. Ordinary-English collisions
+    with a planned skill name (e.g. prose using the word `deprecation`) can
+    still fire; that is an accepted loud false positive -- rephrase the prose
+    or mark the skill.
+    """
+    pattern = rf"(?<![\w-])`?{re.escape(name)}`?(?![\w-])"
+    return list(re.finditer(pattern, line))
+
+
+def _occurrence_has_marker(line: str, match: re.Match) -> bool:
+    return bool(re.match(r"\s*\((?:experimental|planned)\)", line[match.end():], re.IGNORECASE))
+
+
+def validate_gateway_references(manifest: dict, errors: list[str]) -> None:
+    """Keep gateway routing honest about skill maturity.
+
+    The gateway is the highest-frequency routing document, so a skill name that
+    does not resolve (or resolves to an unshipped skill without a marker) sends
+    agents to a dead end. Prose uses many non-skill tokens, so this check only
+    asserts on names that are known manifest or planned skills, and each
+    occurrence must carry its own marker (a marker elsewhere on the line does
+    not exempt it).
+    """
+    text = GATEWAY_PATH.read_text(encoding="utf-8")
+    manifest_skills = {
+        entry["name"]: entry
+        for entry in manifest.get("skills", [])
+        if isinstance(entry, dict) and "name" in entry
+    }
+    planned_names = manifest_planned_skill_names(manifest)
+    for line_number, line in enumerate(text.splitlines(), start=1):
+        for name in sorted(planned_names):
+            for match in _skill_name_occurrences(name, line):
+                if not _occurrence_has_marker(line, match):
+                    errors.append(
+                        f"{GATEWAY_PATH}:{line_number}: planned skill `{name}` must be marked (planned) where the gateway mentions it"
+                    )
+        for name, entry in manifest_skills.items():
+            status = entry.get("status")
+            for match in _skill_name_occurrences(name, line):
+                violation = maturity_marker_violation(status, _occurrence_has_marker(line, match))
+                if violation:
+                    errors.append(f"{GATEWAY_PATH}:{line_number}: skill `{name}` {violation}")
+
+
+def validate_doc_script_refs(errors: list[str]) -> None:
+    """Every `scripts/*.py` mentioned in operative docs must exist.
+
+    A dangling script reference turns a documented procedure into an
+    unexecutable one without any signal. Historical documents under docs/ and
+    eval/ are excluded; they may legitimately cite superseded paths.
+    """
+    doc_paths = [
+        ROOT / "README.md",
+        ROOT / "README.zh-CN.md",
+        ROOT / "CLAUDE.md",
+        ROOT / "AGENTS.md",
+    ]
+    doc_paths.extend(sorted(WORKFLOWS_DIR.glob("*.md")))
+    doc_paths.extend(
+        sorted(
+            path
+            for path in SKILLS_DIR.rglob("*.md")
+            if ".curated" not in path.parts
+        )
+    )
+    for path in doc_paths:
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8")
+        for script_ref in sorted(set(_SCRIPT_REF_RE.findall(text))):
+            if not (ROOT / script_ref).exists() and not (path.parent / script_ref).exists():
+                errors.append(f"{path}: references missing script `{script_ref}`")
+
+
 def validate_artifact_schema_registry(manifest: dict, errors: list[str]) -> None:
     registry = load_yaml_file(ARTIFACT_REGISTRY_PATH, errors)
     artifacts = registry.get("artifacts", {})
@@ -2447,6 +2580,11 @@ def validate_curated_surface(errors: list[str]) -> None:
         for entry in manifest.get("skills", [])
         if isinstance(entry, dict) and "name" in entry
     }
+    all_public_names = {
+        entry["name"]
+        for entry in public_skills
+        if isinstance(entry, dict) and "name" in entry
+    }
     names: set[str] = set()
     for entry in public_skills:
         if not isinstance(entry, dict) or "name" not in entry or "source" not in entry or "stability" not in entry or "readiness" not in entry:
@@ -2523,6 +2661,25 @@ def validate_curated_surface(errors: list[str]) -> None:
             bundled_path = skill_dir / rel_target[0] / rel_target[1]
             if not bundled_path.exists():
                 errors.append(f"{skill_file}: curated reference `{bundled_path.relative_to(ROOT)}` does not exist")
+
+        # Cross-skill links must stay installable: no links escaping into the
+        # lifecycle source tree, and sibling links must target exported packages.
+        if re.search(r"\]\((?:\.\./){2,}", text):
+            errors.append(
+                f"{skill_file}: curated body links into the lifecycle source tree (`../../...`); "
+                f"the exporter must rewrite cross-skill links"
+            )
+        for sibling_name in re.findall(r"\]\(\.\./([a-z0-9-]+)/SKILL\.md\)", text):
+            if sibling_name not in all_public_names:
+                errors.append(
+                    f"{skill_file}: curated sibling link targets `{sibling_name}`, which is not an exported public skill"
+                )
+        if portability_entry is not None:
+            expected_caveat = portability_entry.get("public_caveat_text", "")
+            if expected_caveat and expected_caveat not in text:
+                errors.append(
+                    f"{skill_file}: curated body must carry its public caveat text so the caveat travels with the skill"
+                )
 
     extra_portability_names = sorted(portability_names - names)
     if extra_portability_names:
@@ -2607,6 +2764,7 @@ def main() -> int:
     _MANIFEST_DEPENDENT_CHECKS = {
         "manifest-files",
         "workflow-skill-refs",
+        "gateway-refs",
         "manifest-skill-status",
         "artifact-flow",
         "artifact-schema-registry",
@@ -2633,6 +2791,12 @@ def main() -> int:
 
     if "workflow-skill-refs" in selected_checks and manifest:
         validate_workflow_skill_references(manifest, errors)
+
+    if "gateway-refs" in selected_checks and manifest:
+        validate_gateway_references(manifest, errors)
+
+    if "doc-script-refs" in selected_checks:
+        validate_doc_script_refs(errors)
 
     if "manifest-skill-status" in selected_checks and manifest:
         validate_manifest_skill_status(manifest, errors)

@@ -19,6 +19,13 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SKILL_NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 SKILL_PREFIX = "pc-"
 VALIDATOR_PATH = REPO_ROOT / "scripts" / "validate_prodcraft.py"
+
+import sys
+
+if str(REPO_ROOT / "scripts") not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT / "scripts"))
+
+from validate_prodcraft import _is_gitignored_local_artifact  # noqa: E402
 MARKDOWN_SKILL_LINK_RE = re.compile(r"\[[^\]]+\]\((?P<target>[^)\s]*SKILL\.md(?:#[^)\s]+)?)\)")
 LOCAL_EVAL_FILE_RE = re.compile(
     r"`(?P<path>eval/[^`\s]+)`"
@@ -259,7 +266,12 @@ Errors.
                     if any(marker in local_path for marker in ("*", "<", ">", "{", "}")):
                         continue
                     with self.subTest(qa=relative_path, linked=local_path):
-                        self.assertTrue((REPO_ROOT / local_path).exists())
+                        # Gitignored references (e.g. eval/**/run-*/) are
+                        # declared operator-local artifacts, not broken links.
+                        self.assertTrue(
+                            (REPO_ROOT / local_path).exists()
+                            or _is_gitignored_local_artifact(local_path)
+                        )
 
     def test_active_benchmark_context_files_exist(self):
         benchmarks = set((REPO_ROOT / "eval").glob("*/*/*benchmark*.json"))

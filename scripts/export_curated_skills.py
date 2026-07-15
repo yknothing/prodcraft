@@ -146,6 +146,19 @@ def curated_note(source_path: str) -> str:
     )
 
 
+def portability_note(portability_entry: dict) -> str:
+    """Ship the portability class and caveat inside the package body.
+
+    Agent runtimes read SKILL.md, not index.json, so the caveat must travel
+    with the skill to prevent public overclaim.
+    """
+    lines = [f"- Portability: `{portability_entry['portability']}`\n"]
+    caveat = portability_entry.get("public_caveat_text", "")
+    if caveat:
+        lines.append(f"- Public caveat: {caveat}\n")
+    return "".join(lines)
+
+
 def validate_public_skill_name(name: object, *, source: Path) -> str:
     if not isinstance(name, str) or not name:
         raise ValueError(f"{source}: public skill name must be a non-empty string")
@@ -321,6 +334,7 @@ def export_entry(
     output_root: Path,
     canonical_skill_paths: set[Path],
     exported_skill_names: dict[Path, str],
+    portability_entry: dict,
 ) -> None:
     destination_dir = output_root / entry["name"]
     if destination_dir.exists():
@@ -328,13 +342,16 @@ def export_entry(
 
     if entry["source"] == "generated:prodcraft":
         destination_dir.mkdir(parents=True, exist_ok=True)
+        rendered = render_prodcraft_skill(
+            repo_root,
+            install_surface="curated",
+            public_stability=entry["stability"],
+            public_readiness=entry["readiness"],
+        )
+        # The rendered body ends inside its Distribution list; the portability
+        # note continues that list.
         (destination_dir / "SKILL.md").write_text(
-            render_prodcraft_skill(
-                repo_root,
-                install_surface="curated",
-                public_stability=entry["stability"],
-                public_readiness=entry["readiness"],
-            ),
+            f"{rendered.rstrip()}\n{portability_note(portability_entry)}",
             encoding="utf-8",
         )
         return
@@ -362,6 +379,7 @@ def export_entry(
             f"{curated_note(metadata['source_path'])}"
             f"- Packaging stability: `{entry['stability']}`\n"
             f"- Capability readiness: `{entry['readiness']}`\n"
+            f"{portability_note(portability_entry)}"
         ),
     )
     copy_resources(source_dir, destination_dir)
@@ -387,6 +405,7 @@ def materialize_curated_skills(
             output_root=output_root,
             canonical_skill_paths=canonical_skill_paths,
             exported_skill_names=exported_skill_names,
+            portability_entry=portability_entry,
         )
         exported_names.append(entry["name"])
         index_entry = {

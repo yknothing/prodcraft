@@ -1,6 +1,6 @@
 ---
 name: pc-e2e-scenario-design
-description: "Use when designing or implementing E2E tests that need to go beyond shallow happy-path flows \u2014 especially for multi-step user journeys, stateful session scenarios, cross-boundary state consistency, and failure-mode edge cases. Applies across platforms (web, mobile, desktop), languages (Swift, TypeScript, Python, Java), and test frameworks (XCUITest, Playwright, Cypress, Selenium). Use this skill when tests feel too thin, when the test suite passes but production breaks, or when you need to write tests that simulate realistic, extended usage rather than single feature checks."
+description: "Use when E2E tests must go beyond shallow happy-path checks \u2014 multi-step user journeys, stateful sessions, cross-boundary state consistency, failure-mode edges \u2014 or when the suite passes but production still breaks. Platform- and framework-agnostic (web, mobile, desktop; Playwright, XCUITest, Cypress)."
 metadata:
   phase: 05-quality
   inputs:
@@ -139,3 +139,5 @@ For platform-specific gotchas that cause silent failures:
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

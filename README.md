@@ -242,10 +242,10 @@ prodcraft/
     02-architecture/         # System design, API design, data modeling, security
     03-planning/             # Task breakdown, estimation, risk, sprint planning
     04-implementation/       # TDD, feature development, refactoring
-    05-quality/              # Review, testing, audit, performance
+    05-quality/              # Review, testing, audit, E2E scenario design
     06-delivery/             # CI/CD, deployment, release, verification
-    07-operations/           # Monitoring, incidents, runbooks, capacity
-    08-evolution/            # Tech debt, migration, deprecation, retrospectives
+    07-operations/           # Monitoring, incidents, runbooks
+    08-evolution/            # Tech debt, retrospectives
     cross-cutting/           # Documentation, observability, accessibility, compliance
     .curated/                # Generated public install surface
   workflows/                 # Primary methodology workflows and overlays
@@ -388,7 +388,7 @@ For routine local QA, prefer the installed `gemini` CLI where this repository as
 
 ## Contributing
 
-1. Start with `pc-intake`, even for small work. Use fast-track only when the route is clear.
+1. Start with `pc-intake`, even for small work. Use `micro` for reversible trivia and `fast-track` when the route is clear but the change still warrants blocking approval.
 2. Keep canonical repository artifacts in English.
 3. Put user-facing localized guidance in explicitly named companion docs only when needed.
 4. Follow `skills/_schema.md` and the relevant artifact schemas.

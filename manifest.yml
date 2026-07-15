@@ -370,6 +370,7 @@ skills:
     benchmark_results_path: eval/04-implementation/pc-systematic-debugging/isolated-benchmark-review.md
     findings_path: eval/04-implementation/pc-systematic-debugging/findings.md
     integration_test_path: eval/04-implementation/pc-systematic-debugging/bugfix-review.md
+    revalidation_plan_path: eval/04-implementation/pc-systematic-debugging/post-rewrite-revalidation-plan.md
 - name: pc-task-execution
   phase: 04-implementation
   file: skills/04-implementation/pc-task-execution/SKILL.md

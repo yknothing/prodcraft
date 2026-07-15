@@ -103,3 +103,5 @@ Before review, state what got better: smaller surface area, clearer boundaries, 
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

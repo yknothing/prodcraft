@@ -101,3 +101,5 @@ Produce a release plan that downstream deployment planning can execute. The plan
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

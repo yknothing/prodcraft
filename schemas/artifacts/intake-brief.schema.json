@@ -24,22 +24,47 @@
     "approver"
   ],
   "properties": {
-    "artifact": { "const": "intake-brief" },
-    "schema_version": { "const": "intake-brief.v1" },
-    "status": { "enum": ["draft", "approved"] },
-    "request_summary": { "type": "string" },
-    "source_language": {
-      "oneOf": [
-        { "type": "string", "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$" },
-        { "const": "mixed" }
+    "artifact": {
+      "const": "intake-brief"
+    },
+    "schema_version": {
+      "const": "intake-brief.v1"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "approved"
       ]
     },
-    "artifact_record_language": { "const": "en" },
+    "request_summary": {
+      "type": "string"
+    },
+    "source_language": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$"
+        },
+        {
+          "const": "mixed"
+        }
+      ]
+    },
+    "artifact_record_language": {
+      "const": "en"
+    },
     "user_presentation_locale": {
       "type": "string",
       "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$"
     },
-    "intake_mode": { "enum": ["full", "fast-track", "resume"] },
+    "intake_mode": {
+      "enum": [
+        "full",
+        "fast-track",
+        "micro",
+        "resume"
+      ]
+    },
     "work_type": {
       "enum": [
         "New Product",
@@ -99,14 +124,20 @@
             "unknown"
           ]
         },
-        "production_target": { "type": "string" },
+        "production_target": {
+          "type": "string"
+        },
         "non_targets": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "evidence_refs": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         }
       },
       "additionalProperties": false
@@ -130,23 +161,51 @@
       "minItems": 1,
       "uniqueItems": true
     },
-    "scope_assessment": { "enum": ["small", "medium", "large", "xlarge"] },
-    "urgency": { "type": "string" },
+    "scope_assessment": {
+      "enum": [
+        "small",
+        "medium",
+        "large",
+        "xlarge"
+      ]
+    },
+    "urgency": {
+      "type": "string"
+    },
     "recommended_next_skill": {
       "type": "string",
       "pattern": "^pc-[a-z0-9]+(?:-[a-z0-9]+)*$"
     },
-    "routing_rationale": { "type": "string" },
+    "routing_rationale": {
+      "type": "string"
+    },
     "key_risks": {
       "type": "array",
-      "items": { "type": "string" }
+      "items": {
+        "type": "string"
+      }
     },
     "questions_asked": {
       "type": "array",
-      "items": { "type": "string" }
+      "items": {
+        "type": "string"
+      }
     },
-    "routing_changed_by_answers": { "type": "boolean" },
-    "approver": { "type": "string" }
+    "routing_changed_by_answers": {
+      "type": "boolean"
+    },
+    "approver": {
+      "type": "string"
+    },
+    "proposed_path": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Ordered downstream skill names when more than the next skill is already clear."
+    }
   },
   "additionalProperties": false,
   "allOf": [
@@ -181,7 +240,10 @@
       "then": {
         "properties": {
           "intake_mode": {
-            "const": "fast-track"
+            "enum": [
+              "fast-track",
+              "micro"
+            ]
           }
         },
         "required": [

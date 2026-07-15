@@ -1,6 +1,6 @@
 # Examples
 
-This directory contains real-world usage examples demonstrating how Prodcraft skills compose into complete development workflows.
+This directory will contain real-world usage examples demonstrating how Prodcraft skills compose into complete development workflows. No examples are checked in yet; the entries below are the planned set. Some listed skills are still planned rather than implemented -- see `planned_skills` in `manifest.yml`; a governance test keeps every listed name resolvable.
 
 ## Candidate Example Themes
 

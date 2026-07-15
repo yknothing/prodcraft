@@ -26,7 +26,7 @@ VALIDATOR = ROOT / "scripts" / "validate_prodcraft.py"
 LEGACY_USAGE = (
     "usage: validate_prodcraft.py [-h]\n"
     "                             [--check {artifact-flow,artifact-schema-registry,"
-    "cross-cutting-matrix,curated-surface,manifest-files,manifest-skill-status,"
+    "cross-cutting-matrix,curated-surface,doc-script-refs,gateway-refs,manifest-files,manifest-skill-status,"
     "security-minimal,skill-frontmatter,workflow-entry-gate,workflow-frontmatter,"
     "workflow-skill-refs}]\n"
     "                             [--artifact-instance ARTIFACT_INSTANCE]\n"
@@ -40,7 +40,7 @@ LEGACY_HELP = LEGACY_USAGE + (
     "\noptions:\n"
     "  -h, --help            show this help message and exit\n"
     "  --check {artifact-flow,artifact-schema-registry,cross-cutting-matrix,curated-"
-    "surface,manifest-files,manifest-skill-status,security-minimal,skill-frontmatter,"
+    "surface,doc-script-refs,gateway-refs,manifest-files,manifest-skill-status,security-minimal,skill-frontmatter,"
     "workflow-entry-gate,workflow-frontmatter,workflow-skill-refs}\n"
     "                        Run only the named check. May be repeated. Defaults to\n"
     "                        all checks.\n"
@@ -148,7 +148,7 @@ class ExecutionStateCLITests(unittest.TestCase):
             LEGACY_USAGE
             + "validate_prodcraft.py: error: argument --check: invalid choice: 'nope' "
             "(choose from 'artifact-flow', 'artifact-schema-registry', "
-            "'cross-cutting-matrix', 'curated-surface', 'manifest-files', "
+            "'cross-cutting-matrix', 'curated-surface', 'doc-script-refs', 'gateway-refs', 'manifest-files', "
             "'manifest-skill-status', 'security-minimal', 'skill-frontmatter', "
             "'workflow-entry-gate', 'workflow-frontmatter', 'workflow-skill-refs')\n",
             invalid_check.stderr,

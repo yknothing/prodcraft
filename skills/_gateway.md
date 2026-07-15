@@ -13,7 +13,7 @@ Before generating any response -- even a clarifying question -- check if a Prodc
 The intake decision gate is enforced in two layers:
 
 1. **Routing policy** -- default to `pc-intake` for new work or ambiguity.
-2. **Workflow contract** -- every workflow requires an approved `intake-brief` before execution, even if the intake mode is `fast-track` or `resume`.
+2. **Workflow contract** -- every workflow requires an approved `intake-brief` before execution, even if the intake mode is `fast-track`, `micro`, or `resume`. For `micro`, "approved" means notify-and-proceed: the brief is presented with the work and stands unless the user objects.
 
 When intake has identified the likely lifecycle path but the problem statement or solution direction is still fuzzy, route next to `pc-problem-framing` before moving into research, specification, or architecture.
 
@@ -48,7 +48,7 @@ Match based on what phase the work is currently in:
 | Writing code or tactically executing an approved slice | 04-implementation | pc-task-execution, pc-systematic-debugging, pc-tdd, pc-feature-development, pc-refactoring |
 | Reviewing/testing | 05-quality | pc-implementation-alignment-review, pc-implementation-integrity-audit, pc-code-review, pc-receiving-code-review, pc-testing-strategy, pc-security-audit |
 | Deploying/releasing | 06-delivery | pc-ci-cd, pc-delivery-completion, pc-deployment-strategy, pc-release-management |
-| Monitoring/responding | 07-operations | pc-monitoring-observability, pc-incident-response |
+| Monitoring/responding | 07-operations | pc-monitoring-observability, pc-incident-response, pc-runbooks |
 | Improving/modernizing | 08-evolution | pc-tech-debt-management, pc-migration-strategy (planned), pc-retrospective |
 
 ### Implementation Routing Quick Map
@@ -172,6 +172,7 @@ Each entry-layer handoff must record:
 
 Entry skills should minimize user burden:
 - `pc-intake`: default to 1-3 questions, never more than 5
+- `micro` intake asks zero questions -- if a question is needed, the work is not micro
 - `pc-problem-framing`: default to 1-3 additional questions, never more than 5
 - do not ask another question unless its answer could change the route, direction, or risk posture
 
@@ -255,19 +256,22 @@ Each `course-correction-note` must capture:
 
 ## Fast-Track Rules
 
-Not every task needs the full lifecycle. Fast-track criteria:
+Not every task needs the full lifecycle. Governance weight scales with the risk of the work; the intake gate itself is universal.
 
-| Condition | Allowed Shortcut |
-|-----------|-----------------|
-| Typo fix, comment update | Skip directly to implementation, minimal review |
-| Single-file bug fix with clear root cause | Skip to implementation with pc-systematic-debugging + TDD |
-| Documentation-only change | Skip to cross-cutting/pc-documentation |
-| Dependency update (patch) | Skip to implementation + quality |
-| Configuration change | Skip to implementation + deployment |
+| Condition | Mode | Allowed Shortcut |
+|-----------|------|-----------------|
+| Typo fix, comment update, doc wording | `micro` | Compact brief, notify-and-proceed, straight to the change |
+| Isolated reversible config value | `micro` | Compact brief, notify-and-proceed |
+| Single-file bug fix with clear root cause | `fast-track` | Skip to implementation with pc-systematic-debugging + TDD |
+| Documentation restructuring | `fast-track` | Skip to cross-cutting/pc-documentation |
+| Dependency update (patch) | `fast-track` | Skip to implementation + quality |
+| Configuration change with deploy impact | `fast-track` | Skip to implementation + deployment |
+
+`micro` eligibility and its notify-and-proceed semantics are owned by the intake skill's Micro Mode section -- see `skills/00-discovery/pc-intake/SKILL.md`. Gateway summary: reversible single-revert trivia only, zero questions, never for irreversible or externally visible actions; doubt on any point means `fast-track`.
 
 Fast-track still requires:
 - an approved `intake-brief`
-- `intake_mode=fast-track`
+- `intake_mode=fast-track` (or `intake_mode=micro` with notify-and-proceed approval)
 - a brief rationale documented
 - quality gates for implementation and delivery still apply
 

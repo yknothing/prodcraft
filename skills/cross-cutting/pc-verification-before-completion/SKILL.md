@@ -143,6 +143,14 @@ Produce a `verification-record` that states:
 - what remains unverified
 - whether the claim may now be made without qualification
 
+When the Prodcraft source repository (or a repository that vendored its validators) is available, validate the structured record instead of eyeballing it:
+
+```bash
+python scripts/validate_artifact_instance.py <verification-record file>
+```
+
+This checks the schema contract plus the completion-claim bindings (evidence freshness against the recorded work state). Outside that context, check the record manually against the `verification-record.v1` fields and say so explicitly.
+
 Only after this step may the workflow say the work is complete, fixed, passing, or ready for handoff.
 
 ## Outputs

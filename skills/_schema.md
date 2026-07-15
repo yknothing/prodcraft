@@ -32,6 +32,7 @@ Keep frontmatter limited to discovery metadata. Do not pack edge cases, troubles
 Follow the runtime guidance shared across Anthropic, OpenAI, Cursor, and Trae:
 
 - keep `description` focused on **when to use** the skill
+- keep `description` at or under 280 characters where possible; 350 is the hard cap enforced by `scripts/validate_prodcraft.py`, because every installed skill's description shares one always-loaded discovery context budget
 - keep the main skill concise and move heavy material into supporting files
 - preserve explicit approval points for risky or side-effectful actions
 - add new guardrails only when they map to a real observed failure mode
@@ -116,7 +117,7 @@ For larger skills, move the `## Gotchas` content into `references/gotchas.md` an
 
 ## User-Facing Output Style
 
-- User-facing outputs default to Chinese unless the user explicitly asks for another language.
+- Present user-facing outputs in the user's language, and record the choice as `user_presentation_locale` when the artifact carries language fields. Operator-level locale defaults belong in the host or repository instruction layer (for this repository: CLAUDE.md) and must never be hard-coded into exported skill bodies.
 - Use plain language. Keep sentences short. Explain the point directly.
 - When framing work, proposing a path, or reviewing direction, keep checking current system shape and collaboration quality if they affect scope, risk, sequencing, or handoff quality.
 

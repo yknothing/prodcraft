@@ -44,7 +44,7 @@ Intake is the control plane for all engineering work in Prodcraft. Every piece o
 
 ## Quality Gate
 
-- [ ] Intake brief produced and approved by the user, covering work type, entry phase, any explicit workflow metadata needed for the route, and key risks.
+- [ ] Intake brief produced and approved (blocking confirmation, or notify-and-proceed for `micro`), covering work type, entry phase, any explicit workflow metadata needed for the route, and key risks.
 - [ ] Next skill to invoke is explicitly named in the brief (not a generic phase label).
 - [ ] Fast-track rationale documented if intake was shortened.
 
@@ -58,15 +58,29 @@ Intake is the **control plane** for entry, not the full discovery workshop. Its 
 
 ## Hard Gate
 
-No implementation, architecture, or planning work may begin until an intake decision is complete and the user approves the proposed path.
+No implementation, architecture, or planning work may begin until an intake decision is complete and approved. Approval is a blocking user confirmation for `full`, `fast-track`, and `resume`; `micro` mode uses notify-and-proceed as defined below.
 
 Use one of these intake modes:
 
 - `full` -- new, ambiguous, risky, or high-impact work
 - `fast-track` -- small and clear work where the route is obvious
+- `micro` -- trivial, reversible work; compact brief, notify-and-proceed
 - `resume` -- continuing an already approved route without changing the route
 
-Trivial work is not an exception to intake. It uses a lightweight `fast-track` intake decision instead of a full routing pass.
+Trivial work is not an exception to intake. It uses a `micro` or `fast-track` intake decision instead of a full routing pass. Governance weight scales with risk; the gate itself is universal.
+
+### Micro Mode (Tier 0)
+
+Use `micro` only when **all** of these hold:
+
+- the change is reversible with a single revert (no data migration, no external side effects, no new security surface)
+- the blast radius is one file or a few clearly-scoped lines (typo, comment, doc wording, isolated config value)
+- no new dependency, contract, schema, or public behavior change
+- the route is unambiguous without asking any question
+
+Micro mode emits the brief as one compact block (all schema-required fields, one line each) **in the same message as the work**, then proceeds immediately: notify-and-proceed instead of a blocking approval round. Record `approver` as `auto (micro policy)`. Any user objection at any point converts the route into a normal `fast-track` or `full` re-route.
+
+Never use micro for anything irreversible or externally visible (deploy, publish, release, force-push, data deletion), for security-adjacent changes, or when any eligibility point is in doubt -- doubt means `fast-track`.
 
 ## Process
 
@@ -85,7 +99,7 @@ Do NOT output this exploration. Internalize it to inform your questions.
 ### Step 2: Classify Work Type
 
 | Type | Description | Entry Phase | Default Primary Workflow | Likely Overlay |
-|------|-------------|-------------|------------------|
+|------|-------------|-------------|--------------------------|----------------|
 | **New Product** | Building from scratch | 00-discovery | agile-sprint | greenfield |
 | **New Product (regulated/complex)** | Formal specs or contractual delivery required | 00-discovery | spec-driven | greenfield |
 | **New Feature** | Adding capability to existing system | 01-specification | agile-sprint | none |
@@ -105,7 +119,7 @@ For new-work routing, use the **Entry Phase** tokens above verbatim. `cross-cutt
 
 Use the declared primary workflow name verbatim when recording `workflow_primary` (`agile-sprint`, `spec-driven`, or `iterative-waterfall`).
 
-For `fast-track`, omit `workflow_primary` when the route stays direct enough that the primary workflow does not materially change the handoff. Keep it explicit for `full` and `resume`.
+For `fast-track` and `micro`, omit `workflow_primary` when the route stays direct enough that the primary workflow does not materially change the handoff. Keep it explicit for `full` and `resume`.
 
 Record `workflow_overlays` only when one or more overlays are active. Omit the field instead of emitting an empty list.
 
@@ -155,7 +169,7 @@ Name concrete Prodcraft skills whenever the next step is already known. Avoid ge
 
 **Work type**: [classification from Step 2]
 **Entry phase**: [which lifecycle phase]
-**Intake mode**: [full / fast-track / resume]
+**Intake mode**: [full / fast-track / micro / resume]
 **workflow_primary**: [primary governance workflow, if explicit for this route]
 **workflow_overlays**: [[overlay list], omit when none]
 **quality_target_context**: [runtime_context, exposure_profile, production_target, non_targets, evidence_refs]
@@ -181,6 +195,8 @@ Wait for user confirmation. Accept:
 - **Approval** -> proceed with proposed path
 - **Adjustment** -> modify and re-present
 - **"Skip to X"** -> translate into a reviewed `fast-track` or `resume` intake decision, then log any skipped gates as tech debt
+
+Exception: `micro` mode uses notify-and-proceed (see Micro Mode above) -- present the compact brief and continue in the same turn instead of blocking on confirmation.
 
 ### Step 6: Handoff
 
@@ -219,7 +235,7 @@ This keeps routing decisions auditable without forcing downstream skills to reco
 
 ## Anti-Patterns
 
-1. **Treating trivial work as "outside intake"** -- Even simple changes still need a lightweight `fast-track` intake decision.
+1. **Treating trivial work as "outside intake"** -- Even simple changes still need a lightweight `micro` or `fast-track` intake decision.
 2. **Over-questioning** -- Intake should take 1-5 minutes, not 30. If you need 5+ questions, you're in discovery territory -- recommend moving there.
 3. **Guessing the methodology** -- Don't assume agile because it's popular. Match methodology to constraints and context.
 4. **Rigid phase assignment** -- The lifecycle is a guide, not a prison. A bug fix might need architecture review if it reveals a design flaw.

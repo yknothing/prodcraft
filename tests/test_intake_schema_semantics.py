@@ -206,12 +206,26 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
 
         jsonschema.validate(valid_fast_track_payload, self.schema)
 
+        # Micro mode omits workflow_primary like fast-track and may carry the
+        # optional structured proposed_path.
+        valid_micro_payload = {
+            **valid_fast_track_payload,
+            "intake_mode": "micro",
+            "work_type": "Documentation",
+            "entry_phase": "cross-cutting",
+            "approver": "auto (micro policy)",
+            "proposed_path": ["documentation"],
+        }
+        jsonschema.validate(valid_micro_payload, self.schema)
+
         invalid_cases = (
             ("work_type", "New Feture"),
             ("entry_phase", "whatever"),
             ("workflow_primary", "kanban"),
             ("source_language", "not_a_locale"),
+            ("source_language", "not a tag!"),
             ("user_presentation_locale", "not_a_locale"),
+            ("user_presentation_locale", "mixed"),
         )
         for field_name, invalid_value in invalid_cases:
             payload = dict(valid_full_payload)
