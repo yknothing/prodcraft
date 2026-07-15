@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 import sys
 from pathlib import Path
@@ -59,6 +60,34 @@ def curated_note(source_path: str) -> str:
     )
 
 
+# Cross-skill links in authored bodies point into the lifecycle source tree
+# (`../same-phase-skill/SKILL.md` or `../../phase/skill/SKILL.md`). Those paths
+# do not exist for an installed curated package, so the exporter rewrites them:
+# flat sibling link when the target ships in the curated surface, plain text
+# with a source annotation when it does not.
+_CROSS_SKILL_LINK_RE = re.compile(
+    r"\[([^\]]+)\]\((?:\.\./)+(?:[0-9a-z-]+/)*?([a-z0-9-]+)/SKILL\.md\)"
+)
+
+
+def rewrite_cross_skill_links(body: str, public_skill_names: set[str]) -> str:
+    def replace(match: re.Match) -> str:
+        link_text, skill_name = match.group(1), match.group(2)
+        if skill_name in public_skill_names:
+            return f"[{link_text}](../{skill_name}/SKILL.md)"
+        return f"`{skill_name}` (source-repository skill, not packaged publicly)"
+
+    return _CROSS_SKILL_LINK_RE.sub(replace, body)
+
+
+def portability_note(portability_entry: dict) -> str:
+    lines = [f"- Portability: `{portability_entry['portability']}`\n"]
+    caveat = portability_entry.get("public_caveat_text", "")
+    if caveat:
+        lines.append(f"- Public caveat: {caveat}\n")
+    return "".join(lines)
+
+
 def load_portability_metadata(repo_root: Path, public_skill_names: set[str]) -> dict[str, dict]:
     registry_path = repo_root / PORTABILITY_REGISTRY_PATH.relative_to(REPO_ROOT)
     registry = json.loads(registry_path.read_text(encoding="utf-8"))
@@ -111,26 +140,37 @@ def load_portability_metadata(repo_root: Path, public_skill_names: set[str]) -> 
     return entries
 
 
-def export_entry(entry: dict, *, repo_root: Path, output_root: Path) -> None:
+def export_entry(
+    entry: dict,
+    *,
+    repo_root: Path,
+    output_root: Path,
+    public_skill_names: set[str],
+    portability_entry: dict,
+) -> None:
     destination_dir = output_root / entry["name"]
     if destination_dir.exists():
         shutil.rmtree(destination_dir)
 
     if entry["source"] == "generated:prodcraft":
         destination_dir.mkdir(parents=True, exist_ok=True)
+        rendered = render_prodcraft_skill(
+            repo_root,
+            install_surface="curated",
+            public_stability=entry["stability"],
+            public_readiness=entry["readiness"],
+        )
+        # The rendered body ends inside its Distribution list; the portability
+        # note continues that list.
         (destination_dir / "SKILL.md").write_text(
-            render_prodcraft_skill(
-                repo_root,
-                install_surface="curated",
-                public_stability=entry["stability"],
-                public_readiness=entry["readiness"],
-            ),
+            f"{rendered.rstrip()}\n{portability_note(portability_entry)}",
             encoding="utf-8",
         )
         return
 
     source_dir = repo_root / entry["source"]
     frontmatter, body = load_frontmatter(source_dir / "SKILL.md")
+    body = rewrite_cross_skill_links(body, public_skill_names)
     metadata = frontmatter.setdefault("metadata", {})
     metadata["internal"] = bool(entry.get("internal", False))
     metadata["distribution_surface"] = "curated"
@@ -146,6 +186,7 @@ def export_entry(entry: dict, *, repo_root: Path, output_root: Path) -> None:
             f"{curated_note(metadata['source_path'])}"
             f"- Packaging stability: `{entry['stability']}`\n"
             f"- Capability readiness: `{entry['readiness']}`\n"
+            f"{portability_note(portability_entry)}"
         ),
     )
     copy_resources(source_dir, destination_dir)
@@ -174,7 +215,13 @@ def export_curated_skills(*, repo_root: Path = REPO_ROOT, output_root: Path = DE
         if portability_entry is None:
             raise ValueError(f"Missing public portability metadata for {entry['name']}")
 
-        export_entry(entry, repo_root=repo_root, output_root=output_root)
+        export_entry(
+            entry,
+            repo_root=repo_root,
+            output_root=output_root,
+            public_skill_names=public_skill_names,
+            portability_entry=portability_entry,
+        )
         exported_names.append(entry["name"])
         index_entry = {
             "name": entry["name"],

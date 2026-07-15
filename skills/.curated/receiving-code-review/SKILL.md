@@ -143,8 +143,8 @@ For common feedback-handling traps, see [Gotchas](references/gotchas.md).
 ## Related Skills
 
 - [code-review](../code-review/SKILL.md) -- produces the reviewer-side findings that this skill processes
-- [tdd](../../04-implementation/tdd/SKILL.md) -- supplies the test discipline used to verify accepted review changes
-- [verification-before-completion](../../cross-cutting/verification-before-completion/SKILL.md) -- verifies that claimed review follow-up is actually complete
+- [tdd](../tdd/SKILL.md) -- supplies the test discipline used to verify accepted review changes
+- [verification-before-completion](../verification-before-completion/SKILL.md) -- verifies that claimed review follow-up is actually complete
 
 ## Distribution
 
@@ -153,3 +153,5 @@ For common feedback-handling traps, see [Gotchas](references/gotchas.md).
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

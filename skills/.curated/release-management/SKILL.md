@@ -89,10 +89,10 @@ Produce a release plan that downstream deployment planning can execute. The plan
 
 ## Related Skills
 
-- [testing-strategy](../../05-quality/testing-strategy/SKILL.md) -- provides the core quality evidence
-- [security-audit](../../05-quality/security-audit/SKILL.md) -- surfaces release-blocking or accepted security findings
+- [testing-strategy](../testing-strategy/SKILL.md) -- provides the core quality evidence
+- [security-audit](../security-audit/SKILL.md) -- surfaces release-blocking or accepted security findings
 - [deployment-strategy](../deployment-strategy/SKILL.md) -- executes the release with a concrete rollout plan
-- [runbooks](../../07-operations/runbooks/SKILL.md) -- receives the deployment and escalation procedures required during release
+- [runbooks](../runbooks/SKILL.md) -- receives the deployment and escalation procedures required during release
 
 ## Distribution
 
@@ -101,3 +101,5 @@ Produce a release plan that downstream deployment planning can execute. The plan
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

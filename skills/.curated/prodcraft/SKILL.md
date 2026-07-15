@@ -81,3 +81,5 @@ When Prodcraft is chosen, preserve routing observability:
 - Canonical repo source: see the source repository
 - Gateway contract: `skills/_gateway.md` in the source repository
 - No machine-specific locator is bundled with the curated package; if the source repository is not available, rely only on sibling public skill packages that are actually installed.
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

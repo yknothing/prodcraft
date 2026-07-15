@@ -142,11 +142,11 @@ For tactical execution failure modes that cause hidden drift or false progress, 
 
 ## Related Skills
 
-- [task-breakdown](../../03-planning/task-breakdown/SKILL.md) -- defines the 1-3 day slice that this skill tactically executes
+- [task-breakdown](../task-breakdown/SKILL.md) -- defines the 1-3 day slice that this skill tactically executes
 - [systematic-debugging](../systematic-debugging/SKILL.md) -- handles bug-fix batches that need root-cause-first investigation
 - [tdd](../tdd/SKILL.md) -- drives behavior-changing steps with failing tests first
 - [feature-development](../feature-development/SKILL.md) -- implements the approved tested slice
-- [verification-before-completion](../../cross-cutting/verification-before-completion/SKILL.md) -- verifies the batch checkpoint before completion claims
+- [verification-before-completion](../verification-before-completion/SKILL.md) -- verifies the batch checkpoint before completion claims
 
 ## Distribution
 
@@ -155,3 +155,5 @@ For tactical execution failure modes that cause hidden drift or false progress, 
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

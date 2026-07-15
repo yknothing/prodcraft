@@ -100,8 +100,8 @@ If the data model makes routine change unsafe, revise it now.
 ## Related Skills
 
 - [system-design](../system-design/SKILL.md) -- provides the component and ownership boundaries
-- [domain-modeling](../../01-specification/domain-modeling/SKILL.md) -- provides the conceptual model
-- [feature-development](../../04-implementation/feature-development/SKILL.md) -- implements against the resulting schema
+- [domain-modeling](../domain-modeling/SKILL.md) -- provides the conceptual model
+- [feature-development](../feature-development/SKILL.md) -- implements against the resulting schema
 - `migration-strategy` (planned) -- handles larger migration programs that depend on the model
 
 ## Distribution
@@ -111,3 +111,5 @@ If the data model makes routine change unsafe, revise it now.
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

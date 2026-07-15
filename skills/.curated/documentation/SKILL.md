@@ -100,10 +100,10 @@ Before writing, classify the need explicitly:
 ## Related Skills
 
 This skill applies at every phase. Key integration points:
-- [spec-writing](../../01-specification/spec-writing/SKILL.md) -- specification is documentation
-- [system-design](../../02-architecture/system-design/SKILL.md) -- architecture docs
-- [runbooks](../../07-operations/runbooks/SKILL.md) -- operational documentation
-- [retrospective](../../08-evolution/retrospective/SKILL.md) -- process documentation
+- [spec-writing](../spec-writing/SKILL.md) -- specification is documentation
+- [system-design](../system-design/SKILL.md) -- architecture docs
+- [runbooks](../runbooks/SKILL.md) -- operational documentation
+- [retrospective](../retrospective/SKILL.md) -- process documentation
 
 ## Distribution
 
@@ -112,3 +112,5 @@ This skill applies at every phase. Key integration points:
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

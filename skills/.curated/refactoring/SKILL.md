@@ -93,8 +93,8 @@ Before review, state what got better: smaller surface area, clearer boundaries, 
 
 - [feature-development](../feature-development/SKILL.md) -- produces the working slice that may reveal structural friction
 - [tdd](../tdd/SKILL.md) -- provides the behavioral safety net
-- [code-review](../../05-quality/code-review/SKILL.md) -- validates the refactor stayed behavior-preserving and worthwhile
-- [tech-debt-management](../../08-evolution/tech-debt-management/SKILL.md) -- prioritizes larger or recurring refactor targets
+- [code-review](../code-review/SKILL.md) -- validates the refactor stayed behavior-preserving and worthwhile
+- [tech-debt-management](../tech-debt-management/SKILL.md) -- prioritizes larger or recurring refactor targets
 
 ## Distribution
 
@@ -103,3 +103,5 @@ Before review, state what got better: smaller surface area, clearer boundaries, 
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

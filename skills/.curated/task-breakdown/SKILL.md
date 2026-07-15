@@ -129,10 +129,10 @@ When the work is modernization or migration:
 
 ## Related Skills
 
-- [system-design](../../02-architecture/system-design/SKILL.md) -- provides the architecture to decompose
+- [system-design](../system-design/SKILL.md) -- provides the architecture to decompose
 - [estimation](../estimation/SKILL.md) -- estimates effort for each task
 - [sprint-planning](../sprint-planning/SKILL.md) -- selects tasks for the sprint
-- [tdd](../../04-implementation/tdd/SKILL.md) -- implements tasks test-first
+- [tdd](../tdd/SKILL.md) -- implements tasks test-first
 
 ## Distribution
 
@@ -141,3 +141,5 @@ When the work is modernization or migration:
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `core`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

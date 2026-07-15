@@ -152,10 +152,10 @@ For common completion-claim failure modes and recovery patterns, see [Gotchas](r
 
 ## Related Skills
 
-- [systematic-debugging](../../04-implementation/systematic-debugging/SKILL.md) -- verifies that a claimed fix is backed by a root-cause-first debugging result
-- [code-review](../../05-quality/code-review/SKILL.md) -- provides review evidence that may feed the final completion claim
-- [testing-strategy](../../05-quality/testing-strategy/SKILL.md) -- supplies test reports for broader validation
-- [incident-response](../../07-operations/incident-response/SKILL.md) -- uses this gate before declaring a live issue resolved
+- [systematic-debugging](../systematic-debugging/SKILL.md) -- verifies that a claimed fix is backed by a root-cause-first debugging result
+- [code-review](../code-review/SKILL.md) -- provides review evidence that may feed the final completion claim
+- [testing-strategy](../testing-strategy/SKILL.md) -- supplies test reports for broader validation
+- [incident-response](../incident-response/SKILL.md) -- uses this gate before declaring a live issue resolved
 
 ## Distribution
 
@@ -164,3 +164,5 @@ For common completion-claim failure modes and recovery patterns, see [Gotchas](r
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `core`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

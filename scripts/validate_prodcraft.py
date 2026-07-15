@@ -1645,6 +1645,11 @@ def validate_curated_surface(errors: list[str]) -> None:
         for entry in manifest.get("skills", [])
         if isinstance(entry, dict) and "name" in entry
     }
+    all_public_names = {
+        entry["name"]
+        for entry in public_skills
+        if isinstance(entry, dict) and "name" in entry
+    }
     names: set[str] = set()
     for entry in public_skills:
         if not isinstance(entry, dict) or "name" not in entry or "source" not in entry or "stability" not in entry or "readiness" not in entry:
@@ -1720,6 +1725,25 @@ def validate_curated_surface(errors: list[str]) -> None:
             bundled_path = skill_dir / rel_target[0] / rel_target[1]
             if not bundled_path.exists():
                 errors.append(f"{skill_file}: curated reference `{bundled_path.relative_to(ROOT)}` does not exist")
+
+        # Cross-skill links must stay installable: no links escaping into the
+        # lifecycle source tree, and sibling links must target exported packages.
+        if re.search(r"\]\((?:\.\./){2,}", text):
+            errors.append(
+                f"{skill_file}: curated body links into the lifecycle source tree (`../../...`); "
+                f"the exporter must rewrite cross-skill links"
+            )
+        for sibling_name in re.findall(r"\]\(\.\./([a-z0-9-]+)/SKILL\.md\)", text):
+            if sibling_name not in all_public_names:
+                errors.append(
+                    f"{skill_file}: curated sibling link targets `{sibling_name}`, which is not an exported public skill"
+                )
+        if portability_entry is not None:
+            expected_caveat = portability_entry.get("public_caveat_text", "")
+            if expected_caveat and expected_caveat not in text:
+                errors.append(
+                    f"{skill_file}: curated body must carry its public caveat text so the caveat travels with the skill"
+                )
 
     extra_portability_names = sorted(portability_names - names)
     if extra_portability_names:

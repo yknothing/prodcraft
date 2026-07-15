@@ -123,9 +123,9 @@ If only `research-plan` exists, the discovery work is better framed but the skil
 ## Related Skills
 
 - [problem-framing](../problem-framing/SKILL.md) -- shapes the problem and open questions before research starts
-- [market-analysis](../market-analysis/SKILL.md) -- provides market context for targeting research
-- [requirements-engineering](../../01-specification/requirements-engineering/SKILL.md) -- consumes personas and journey maps
-- [acceptance-criteria](../../01-specification/acceptance-criteria/SKILL.md) -- uses persona scenarios
+- `market-analysis` (source-repository skill, not packaged publicly) -- provides market context for targeting research
+- [requirements-engineering](../requirements-engineering/SKILL.md) -- consumes personas and journey maps
+- [acceptance-criteria](../acceptance-criteria/SKILL.md) -- uses persona scenarios
 
 ## Distribution
 
@@ -134,3 +134,5 @@ If only `research-plan` exists, the discovery work is better framed but the skil
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

@@ -128,7 +128,7 @@ See [gotchas](references/gotchas.md) for branch-policy edge cases, discard safet
 
 ## Related Skills
 
-- [verification-before-completion](../../cross-cutting/verification-before-completion/SKILL.md) -- provides the fresh evidence required before completion claims
+- [verification-before-completion](../verification-before-completion/SKILL.md) -- provides the fresh evidence required before completion claims
 - [release-management](../release-management/SKILL.md) -- takes over once verified work needs coordinated release handling
 - [deployment-strategy](../deployment-strategy/SKILL.md) -- decides the rollout and rollback path after release coordination exists
 
@@ -139,3 +139,5 @@ See [gotchas](references/gotchas.md) for branch-policy edge cases, discard safet
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

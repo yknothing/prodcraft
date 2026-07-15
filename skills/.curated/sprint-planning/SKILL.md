@@ -93,7 +93,7 @@ The output should let anyone understand what the team is betting on, what was de
 - [estimation](../estimation/SKILL.md) -- provides size and confidence data
 - [risk-assessment](../risk-assessment/SKILL.md) -- keeps the plan honest about uncertainty
 - [task-breakdown](../task-breakdown/SKILL.md) -- supplies the candidate task set
-- [retrospective](../../08-evolution/retrospective/SKILL.md) -- feeds learnings into the next sprint plan
+- [retrospective](../retrospective/SKILL.md) -- feeds learnings into the next sprint plan
 
 ## Distribution
 
@@ -102,3 +102,5 @@ The output should let anyone understand what the team is betting on, what was de
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

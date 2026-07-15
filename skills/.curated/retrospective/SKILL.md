@@ -109,10 +109,10 @@ Prefer actions that reduce recurrence risk and improve future handoffs instead o
 
 ## Related Skills
 
-- [incident-response](../../07-operations/incident-response/SKILL.md) -- postmortems feed into retrospectives
+- [incident-response](../incident-response/SKILL.md) -- postmortems feed into retrospectives
 - [tech-debt-management](../tech-debt-management/SKILL.md) -- retro surfaces debt patterns
-- [sprint-planning](../../03-planning/sprint-planning/SKILL.md) -- retro improvements feed into next sprint
-- [intake](../../00-discovery/intake/SKILL.md) -- retro insights trigger new work via intake
+- [sprint-planning](../sprint-planning/SKILL.md) -- retro improvements feed into next sprint
+- [intake](../intake/SKILL.md) -- retro insights trigger new work via intake
 
 ## Distribution
 
@@ -121,3 +121,5 @@ Prefer actions that reduce recurrence risk and improve future handoffs instead o
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

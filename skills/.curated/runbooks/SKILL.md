@@ -108,7 +108,7 @@ Validate that someone other than the author can follow it. Update the runbook af
 
 - [monitoring-observability](../monitoring-observability/SKILL.md) -- provides the signals that trigger runbooks
 - [incident-response](../incident-response/SKILL.md) -- defines containment and command structure
-- [retrospective](../../08-evolution/retrospective/SKILL.md) -- improves runbooks after incidents
+- [retrospective](../retrospective/SKILL.md) -- improves runbooks after incidents
 
 ## Distribution
 
@@ -117,3 +117,5 @@ Validate that someone other than the author can follow it. Update the runbook af
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

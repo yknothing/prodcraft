@@ -177,11 +177,11 @@ When one of these thoughts appears, treat it as a stop signal:
 
 ## Related Skills
 
-- [bug-history-retrieval](../../cross-cutting/bug-history-retrieval/SKILL.md) -- retrieves canonical defect lineage before a new fix theory hardens
-- [incident-response](../../07-operations/incident-response/SKILL.md) -- contains live production impact before code-level debugging begins
+- `bug-history-retrieval` (source-repository skill, not packaged publicly) -- retrieves canonical defect lineage before a new fix theory hardens
+- [incident-response](../incident-response/SKILL.md) -- contains live production impact before code-level debugging begins
 - [tdd](../tdd/SKILL.md) -- turns the verified bug boundary into reproducing and regression tests
 - [feature-development](../feature-development/SKILL.md) -- implements the smallest safe repair once the test and scope boundary are clear
-- [verification-before-completion](../../cross-cutting/verification-before-completion/SKILL.md) -- verifies the claimed fix with fresh evidence before completion claims
+- [verification-before-completion](../verification-before-completion/SKILL.md) -- verifies the claimed fix with fresh evidence before completion claims
 
 ## Distribution
 
@@ -190,3 +190,5 @@ When one of these thoughts appears, treat it as a stop signal:
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

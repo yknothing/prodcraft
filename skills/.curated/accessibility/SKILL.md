@@ -78,9 +78,9 @@ If gaps already exist, document the minimum remediation sequence and who owns ea
 
 ## Related Skills
 
-- [requirements-engineering](../../01-specification/requirements-engineering/SKILL.md) -- captures accessibility requirements early
-- [feature-development](../../04-implementation/feature-development/SKILL.md) -- implements the required behavior
-- [testing-strategy](../../05-quality/testing-strategy/SKILL.md) -- verifies accessibility checks
+- [requirements-engineering](../requirements-engineering/SKILL.md) -- captures accessibility requirements early
+- [feature-development](../feature-development/SKILL.md) -- implements the required behavior
+- [testing-strategy](../testing-strategy/SKILL.md) -- verifies accessibility checks
 
 ## Distribution
 
@@ -89,3 +89,5 @@ If gaps already exist, document the minimum remediation sequence and who owns ea
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

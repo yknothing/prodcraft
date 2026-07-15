@@ -210,10 +210,10 @@ See [Gotchas](references/gotchas.md) before debating scanner noise, approving on
 
 ## Related Skills
 
-- [feature-development](../../04-implementation/feature-development/SKILL.md) -- produces the code under review
+- [feature-development](../feature-development/SKILL.md) -- produces the code under review
 - [testing-strategy](../testing-strategy/SKILL.md) -- defines the testing standards applied during review
 - [security-audit](../security-audit/SKILL.md) -- deeper security analysis for high-risk changes
-- [tech-debt-management](../../08-evolution/tech-debt-management/SKILL.md) -- consumes review findings to track systemic issues
+- [tech-debt-management](../tech-debt-management/SKILL.md) -- consumes review findings to track systemic issues
 
 ## Distribution
 
@@ -222,3 +222,5 @@ See [Gotchas](references/gotchas.md) before debating scanner noise, approving on
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

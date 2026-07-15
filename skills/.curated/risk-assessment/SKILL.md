@@ -103,8 +103,8 @@ Make the register concrete enough that estimation, sprint planning, and later re
 
 - [task-breakdown](../task-breakdown/SKILL.md) -- supplies the work and dependency map to assess
 - [estimation](../estimation/SKILL.md) -- uses the risk register to calibrate confidence
-- [monitoring-observability](../../07-operations/monitoring-observability/SKILL.md) -- consumes operational risks later in the lifecycle
-- [incident-response](../../07-operations/incident-response/SKILL.md) -- provides evidence when past incidents should alter future risk posture
+- [monitoring-observability](../monitoring-observability/SKILL.md) -- consumes operational risks later in the lifecycle
+- [incident-response](../incident-response/SKILL.md) -- provides evidence when past incidents should alter future risk posture
 
 ## Distribution
 
@@ -113,3 +113,5 @@ Make the register concrete enough that estimation, sprint planning, and later re
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

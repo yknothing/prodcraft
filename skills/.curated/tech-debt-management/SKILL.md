@@ -123,8 +123,8 @@ For each top debt item, define:
 
 ## Related Skills
 
-- [code-review](../../05-quality/code-review/SKILL.md) -- identifies debt during review
-- [refactoring](../../04-implementation/refactoring/SKILL.md) -- the primary tool for paying down debt
+- [code-review](../code-review/SKILL.md) -- identifies debt during review
+- [refactoring](../refactoring/SKILL.md) -- the primary tool for paying down debt
 - [retrospective](../retrospective/SKILL.md) -- surfaces systemic debt issues
 - `migration-strategy` (planned) -- for large-scale debt remediation
 
@@ -135,3 +135,5 @@ For each top debt item, define:
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
 - Capability readiness: `beta`
+- Portability: `portable_with_caveat`
+- Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.
