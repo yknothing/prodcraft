@@ -14,17 +14,41 @@
     "acceptance_summary"
   ],
   "properties": {
-    "artifact": { "const": "requirements-doc" },
-    "schema_version": { "const": "requirements-doc.v1" },
-    "status": { "enum": ["draft", "reviewed", "approved"] },
-    "source_language": { "enum": ["en", "zh", "mixed"] },
-    "artifact_record_language": { "const": "en" },
-    "user_presentation_locale": { "enum": ["en", "zh"] },
+    "artifact": {
+      "const": "requirements-doc"
+    },
+    "schema_version": {
+      "const": "requirements-doc.v1"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "reviewed",
+        "approved"
+      ]
+    },
+    "source_language": {
+      "type": "string",
+      "pattern": "^([a-z]{2,3}(-[A-Za-z0-9]{1,8})*|mixed)$",
+      "description": "BCP-47 primary language tag of the incoming request, or `mixed` for multilingual requests."
+    },
+    "artifact_record_language": {
+      "const": "en"
+    },
+    "user_presentation_locale": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(-[A-Za-z0-9]{1,8})*$",
+      "description": "BCP-47 language tag used when presenting results to the user."
+    },
     "requirements": {
       "type": "array",
-      "items": { "type": "string" }
+      "items": {
+        "type": "string"
+      }
     },
-    "acceptance_summary": { "type": "string" }
+    "acceptance_summary": {
+      "type": "string"
+    }
   },
   "additionalProperties": false
 }

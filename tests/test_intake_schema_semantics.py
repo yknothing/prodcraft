@@ -91,17 +91,27 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_language_boundary_fields_match_repo_policy(self):
-        self.assertEqual(
-            {"en", "zh", "mixed"},
-            set(self.schema["properties"]["source_language"]["enum"]),
-        )
+        import re as _re
+
+        source_pattern = self.schema["properties"]["source_language"]["pattern"]
+        locale_pattern = self.schema["properties"]["user_presentation_locale"]["pattern"]
+
+        # Open BCP-47 contract: any well-formed language tag is valid, plus
+        # `mixed` for multilingual source requests. Only the canonical artifact
+        # record language stays pinned by repo policy.
+        for valid in ("en", "zh", "fr", "pt-BR", "zh-Hans", "mixed"):
+            self.assertIsNotNone(_re.fullmatch(source_pattern, valid), valid)
+        for invalid in ("", "EN", "français", "not a tag!"):
+            self.assertIsNone(_re.fullmatch(source_pattern, invalid), invalid)
+
+        for valid in ("en", "zh", "fr", "pt-BR", "zh-Hans"):
+            self.assertIsNotNone(_re.fullmatch(locale_pattern, valid), valid)
+        for invalid in ("mixed", "", "EN", "not a tag!"):
+            self.assertIsNone(_re.fullmatch(locale_pattern, invalid), invalid)
+
         self.assertEqual(
             "en",
             self.schema["properties"]["artifact_record_language"]["const"],
-        )
-        self.assertEqual(
-            {"en", "zh"},
-            set(self.schema["properties"]["user_presentation_locale"]["enum"]),
         )
 
     def test_runtime_boundary_fields_define_quality_calibration_axis(self):
@@ -199,8 +209,8 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
             ("work_type", "New Feture"),
             ("entry_phase", "whatever"),
             ("workflow_primary", "kanban"),
-            ("source_language", "fr"),
-            ("user_presentation_locale", "fr"),
+            ("source_language", "not a tag!"),
+            ("user_presentation_locale", "mixed"),
         )
         for field_name, invalid_value in invalid_cases:
             payload = dict(valid_full_payload)

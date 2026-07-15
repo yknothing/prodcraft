@@ -45,10 +45,21 @@ class LanguageBoundaryContractTests(unittest.TestCase):
         jsonschema.validate(problem_frame, self.load_schema("problem-frame"))
         jsonschema.validate(requirements_doc, self.load_schema("requirements-doc"))
 
+        # Open BCP-47 contract: any well-formed language tag is valid for
+        # source and presentation fields.
+        jsonschema.validate(
+            {**problem_frame, "source_language": "fr", "user_presentation_locale": "pt-BR"},
+            self.load_schema("problem-frame"),
+        )
+        jsonschema.validate(
+            {**requirements_doc, "user_presentation_locale": "fr"},
+            self.load_schema("requirements-doc"),
+        )
+
         invalid_payloads = (
-            ("problem-frame", {**problem_frame, "source_language": "fr"}),
+            ("problem-frame", {**problem_frame, "source_language": "not a tag!"}),
             ("problem-frame", {**problem_frame, "artifact_record_language": "zh"}),
-            ("requirements-doc", {**requirements_doc, "user_presentation_locale": "fr"}),
+            ("requirements-doc", {**requirements_doc, "user_presentation_locale": "mixed"}),
             ("requirements-doc", {**requirements_doc, "artifact_record_language": "zh"}),
         )
         for artifact_name, payload in invalid_payloads:

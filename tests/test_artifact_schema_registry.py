@@ -69,9 +69,9 @@ class ArtifactSchemaRegistryTests(unittest.TestCase):
             set(schema["required"]),
         )
         self.assertFalse(schema["additionalProperties"])
-        self.assertIn("enum", schema["properties"]["source_language"])
+        self.assertIn("pattern", schema["properties"]["source_language"])
         self.assertEqual("en", schema["properties"]["artifact_record_language"]["const"])
-        self.assertIn("enum", schema["properties"]["user_presentation_locale"])
+        self.assertIn("pattern", schema["properties"]["user_presentation_locale"])
         self.assertIn("enum", schema["properties"]["work_type"])
         self.assertIn("enum", schema["properties"]["entry_phase"])
         quality_target = schema["properties"]["quality_target_context"]
@@ -419,9 +419,11 @@ class ArtifactSchemaRegistryTests(unittest.TestCase):
                 self.assertIn("source_language", schema["required"])
                 self.assertIn("artifact_record_language", schema["required"])
                 self.assertIn("user_presentation_locale", schema["required"])
-                self.assertEqual({"en", "zh", "mixed"}, set(schema["properties"]["source_language"]["enum"]))
+                # Open BCP-47 contract: language fields are pattern-validated
+                # strings, not an operator-specific closed enum.
+                self.assertIn("pattern", schema["properties"]["source_language"])
                 self.assertEqual("en", schema["properties"]["artifact_record_language"]["const"])
-                self.assertEqual({"en", "zh"}, set(schema["properties"]["user_presentation_locale"]["enum"]))
+                self.assertIn("pattern", schema["properties"]["user_presentation_locale"])
                 self.assertFalse(schema["additionalProperties"])
 
                 for field_name in schema["required"]:

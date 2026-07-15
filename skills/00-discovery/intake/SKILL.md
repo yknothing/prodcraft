@@ -141,7 +141,7 @@ Default to the smallest question budget that still changes the routing decision.
 Present a concise intake brief. Compare **path options**, not detailed implementation or architecture options:
 
 - Use plain language and keep the brief easy to scan.
-- Default to Chinese for user-facing output unless the user asks for another language.
+- Present the brief in the user's language and record that choice as `user_presentation_locale`. Operator-level locale defaults live in the host or repository instruction layer, not in this skill.
 - Call out system shape and collaboration quality when they materially affect routing, risk, or the next handoff.
 
 Name concrete Prodcraft skills whenever the next step is already known. Avoid generic labels like `specification`, `architecture`, `planning`, or `implementation` when a specific skill can already be named. If the exact downstream skill is still genuinely undecided, say that explicitly as an open routing question rather than pretending a generic phase label is a settled handoff target.
@@ -190,7 +190,7 @@ Intake must leave behind a usable record of **why** the work entered the system 
 
 The `intake-brief` must capture:
 - `request_summary`
-- `source_language` (`en`, `zh`, or `mixed`) for the incoming request
+- `source_language` (BCP-47 language tag, or `mixed`) for the incoming request
 - `artifact_record_language` for the canonical artifact record (`en` under current repo policy)
 - `user_presentation_locale` for the language used when presenting the intake result to the user
 - why intake was invoked, fast-tracked, or resumed

@@ -418,21 +418,31 @@ def validate_intake_brief_schema_contract(schema: dict, schema_path: Path, manif
         errors.append(f"{schema_path}: `additionalProperties` must be `false` to keep the routing contract closed")
 
 
+# Language fields are open BCP-47 tags, not a closed operator-specific list.
+# `source_language` additionally accepts the literal `mixed` for multilingual requests.
+SOURCE_LANGUAGE_PATTERN = "^([a-z]{2,3}(-[A-Za-z0-9]{1,8})*|mixed)$"
+PRESENTATION_LOCALE_PATTERN = "^[a-z]{2,3}(-[A-Za-z0-9]{1,8})*$"
+
+
 def validate_language_boundary_schema_contract(schema: dict, schema_path: Path, errors: list[str]) -> None:
-    source_language_enum = schema_string_enum(schema, "source_language", schema_path, errors)
-    if source_language_enum and source_language_enum != {"en", "zh", "mixed"}:
-        errors.append(
-            f"{schema_path}: `source_language` enum must be ['en', 'mixed', 'zh']; found {sorted(source_language_enum)}"
-        )
-
-    presentation_locale_enum = schema_string_enum(schema, "user_presentation_locale", schema_path, errors)
-    if presentation_locale_enum and presentation_locale_enum != {"en", "zh"}:
-        errors.append(
-            f"{schema_path}: `user_presentation_locale` enum must be ['en', 'zh']; found {sorted(presentation_locale_enum)}"
-        )
-
     properties = schema.get("properties", {})
-    artifact_record_language = properties.get("artifact_record_language", {}) if isinstance(properties, dict) else {}
+    if not isinstance(properties, dict):
+        errors.append(f"{schema_path}: `properties` must be a mapping")
+        return
+
+    source_language = properties.get("source_language", {})
+    if not isinstance(source_language, dict) or source_language.get("pattern") != SOURCE_LANGUAGE_PATTERN:
+        errors.append(
+            f"{schema_path}: `source_language` must be an open BCP-47 string with pattern `{SOURCE_LANGUAGE_PATTERN}`"
+        )
+
+    presentation_locale = properties.get("user_presentation_locale", {})
+    if not isinstance(presentation_locale, dict) or presentation_locale.get("pattern") != PRESENTATION_LOCALE_PATTERN:
+        errors.append(
+            f"{schema_path}: `user_presentation_locale` must be an open BCP-47 string with pattern `{PRESENTATION_LOCALE_PATTERN}`"
+        )
+
+    artifact_record_language = properties.get("artifact_record_language", {})
     if not isinstance(artifact_record_language, dict) or artifact_record_language.get("const") != "en":
         errors.append(f"{schema_path}: `artifact_record_language` must be a const `en` under current repo policy")
 
