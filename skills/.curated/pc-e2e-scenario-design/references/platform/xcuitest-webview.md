@@ -178,7 +178,7 @@ XCTAssertTrue(
 )
 ```
 
-**Genuine persistence via re-entry:**
+**State retention across product re-entry:**
 
 ```swift
 // Navigate completely away
@@ -191,22 +191,24 @@ let tripLink = webView.links.matching(
 XCTAssertTrue(tripLink.waitForExistence(timeout: 15))
 tripLink.tap()
 
-// Verify server-persisted state survived
+// Verify UI state across this navigation boundary
 let expensesTab = webView.buttons.matching(NSPredicate(format: "label CONTAINS[c] 'Expenses'")).firstMatch
 XCTAssertTrue(expensesTab.waitForExistence(timeout: 15))
 expensesTab.tap()
 XCTAssertTrue(
     webView.buttons.matching(NSPredicate(format: "label CONTAINS[c] 'Hotel'")).firstMatch
         .waitForExistence(timeout: 15),
-    "Expense must persist across full navigate-away and re-entry"
+    "Expense must remain visible across product navigation and re-entry"
 )
 ```
 
 ---
 
+This example alone does not prove server persistence: the web view may retain client state. For that claim, add a product-specific authoritative read or a fresh context that fetches the saved expense independently of the prior UI cache.
+
 ## Server Availability Guard
 
-Live tests require the dev server. Skip gracefully without infrastructure:
+Live tests require the dev server. A local optional run may skip when it is absent; required CI/release checks must report the missing environment as an unmet gate, not a pass:
 
 ```swift
 override func setUpWithError() throws {

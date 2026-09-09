@@ -10,14 +10,14 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 class IntakeQaPostureTests(unittest.TestCase):
-    def test_intake_manifest_entry_is_critical_routed_and_production(self):
+    def test_revised_intake_is_critical_routed_and_under_review(self):
         manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
         entries = {entry["name"]: entry for entry in manifest["skills"]}
 
         intake = entries["pc-intake"]
 
         self.assertEqual("00-discovery", intake["phase"])
-        self.assertEqual("production", intake["status"])
+        self.assertEqual("review", intake["status"])
         self.assertEqual("critical", intake["qa_tier"])
         self.assertEqual("routed", intake["evaluation_mode"])
 
@@ -37,7 +37,7 @@ class IntakeQaPostureTests(unittest.TestCase):
             REPO_ROOT / "eval" / "00-discovery" / "pc-intake" / "current-evidence-status.md"
         ).read_text(encoding="utf-8")
 
-        self.assertIn("`pc-intake` is now `production` under a `routed` QA posture", findings)
+        self.assertIn("execution-design revision is `review`", findings)
         self.assertIn("mandatory gateway enforced by Prodcraft workflow contracts", findings)
         self.assertIn("Anthropic trigger-discoverability remains useful diagnostic evidence", findings)
 

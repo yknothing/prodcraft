@@ -5,7 +5,7 @@
       "name": "pc-prodcraft",
       "source": "generated:prodcraft",
       "stability": "beta",
-      "readiness": "core",
+      "readiness": "beta",
       "manual_allowlist": true,
       "portability": "portable_with_caveat",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
@@ -14,7 +14,7 @@
       "name": "pc-intake",
       "source": "skills/00-discovery/pc-intake",
       "stability": "beta",
-      "readiness": "core",
+      "readiness": "beta",
       "manual_allowlist": true,
       "portability": "portable_with_caveat",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
@@ -23,7 +23,7 @@
       "name": "pc-problem-framing",
       "source": "skills/00-discovery/pc-problem-framing",
       "stability": "beta",
-      "readiness": "core",
+      "readiness": "beta",
       "manual_allowlist": true,
       "portability": "portable_with_caveat",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
@@ -41,7 +41,7 @@
       "name": "pc-requirements-engineering",
       "source": "skills/01-specification/pc-requirements-engineering",
       "stability": "beta",
-      "readiness": "core",
+      "readiness": "beta",
       "manual_allowlist": true,
       "portability": "portable_with_caveat",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
@@ -122,7 +122,7 @@
       "name": "pc-task-breakdown",
       "source": "skills/03-planning/pc-task-breakdown",
       "stability": "beta",
-      "readiness": "core",
+      "readiness": "beta",
       "manual_allowlist": true,
       "portability": "portable_with_caveat",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
@@ -158,7 +158,7 @@
       "name": "pc-tdd",
       "source": "skills/04-implementation/pc-tdd",
       "stability": "beta",
-      "readiness": "core",
+      "readiness": "beta",
       "manual_allowlist": true,
       "portability": "portable_with_caveat",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
@@ -293,7 +293,7 @@
       "name": "pc-verification-before-completion",
       "source": "skills/cross-cutting/pc-verification-before-completion",
       "stability": "beta",
-      "readiness": "core",
+      "readiness": "beta",
       "manual_allowlist": true,
       "portability": "portable_with_caveat",
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."

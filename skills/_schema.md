@@ -29,6 +29,20 @@ metadata:
 
 Keep frontmatter limited to discovery metadata. Do not pack edge cases, troubleshooting rules, or workflow caveats into `description` or `metadata`; use a `## Gotchas` section or `references/gotchas.md` instead so the runtime-discovery surface stays concise.
 
+## Execution Design
+
+A skill should resolve a specific decision or produce a usable outcome. Its process must make these choices explicit:
+
+- **Enter**: name the concrete trigger and cases that should stay with another skill or an existing approved route.
+- **Consume**: distinguish required, conditional, and optional inputs in `references/io-contract.md`. Frontmatter lists artifact relationships; it does not make every input mandatory for every invocation. Reuse accepted current artifacts rather than rerunning producers for their own sake.
+- **Decide**: state the evidence that selects a branch, with a sensible small-work path. Prefer applicability conditions over unconditional time, reviewer, document, or option quotas.
+- **Produce**: identify the output's consumer and acceptance condition. Use a section of an existing artifact where its contract permits; do not multiply files to make progress appear structured.
+- **Continue or stop**: continue within existing authority; stop only the dependent work when a missing fact, failed gate, or scope change requires resolution. State what would permit resumption.
+
+Keep the main body sufficient to choose the next action. Load required I/O rules before acting, step-specific methods when needed, and gotchas on their trigger. Moving a rule to a reference does not lower its authority. Avoid copying the same policy into several skills; link its owner and keep only the local application.
+
+Use examples to teach meaningful decisions: an existing approved route, an already-satisfied input, an unmet acceptance condition, or a real escalation. Do not teach the agent to emit fields without consuming their meaning.
+
 Follow the runtime guidance shared across Anthropic, OpenAI, Cursor, and Trae:
 
 - keep `description` focused on **when to use** the skill

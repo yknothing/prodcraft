@@ -11,25 +11,25 @@
 ### Historical match becomes confirmation bias
 - Trigger: `pc-bug-history-retrieval` returns a probable prior match or workaround that looks very similar to the current bug.
 - Failure mode: The agent treats the prior ticket as proof and skips reproduction, boundary checks, or release-specific evidence.
-- What to do: Use historical context to narrow hypotheses, then reproduce the current failure and verify the same cause exists in the current branch, release, or environment.
+- What to do: Use history to narrow hypotheses, then verify the current mechanism with a safe reproducer or preserve an explicit diagnosis limit when the environment prevents verification.
 - Escalate when: Two historical lineages remain plausible after checking the current code path and release boundary.
 
 ### Third failed fix still treated as a local bug
-- Trigger: Two fixes have already failed or partially reverted and the next attempt still assumes the problem is a small local defect.
+- Trigger: Repeated corrections against the same symptom fail without new causal evidence. Probe edits and cleanup are not failed fixes.
 - Failure mode: Repeated patching hides a requirements, architecture, or planning mismatch and increases risk without improving confidence.
 - What to do: Pause the patch loop, restate the evidence, and prepare a `course-correction-note` if the failure boundary no longer fits a local code fix.
 - Escalate when: The evidence points upstream but ownership of the route change is disputed or blocked.
 
 ### Debugging code that is not actually running
 - Trigger: Observed behavior contradicts the source being read, or an added log line never appears in output.
-- Failure mode: Hours of hypothesis work are spent against a stale build, cached artifact, wrong branch, or wrong environment, and every collected observation is about some other code.
-- What to do: Place a deliberate marker at the failure site and confirm it appears in observed output. Run the stale-artifact checklist in `references/techniques.md` before trusting any further observation.
-- Escalate when: The marker still does not appear after a clean rebuild and redeploy, which suggests the deployment or routing path itself is the defect.
+- Failure mode: Stale identity or an unreachable path is mistaken for a local logic defect; conversely, valid evidence is discarded merely because a marker is absent.
+- What to do: Check existing artifact identity and trace reachability separately using [techniques](techniques.md). Use a probe only when safe; do not automatically rebuild, redeploy, or clear shared caches.
+- Escalate when: Identity or routing cannot be inspected within current access, and name the evidence/access needed to resume.
 
 ### Flaky failure "fixed" by rerunning
 - Trigger: A test or job fails intermittently and passes on retry, and the retry is about to be accepted as resolution.
 - Failure mode: A real race, ordering, or shared-state bug is reclassified as noise, ships to production, and returns as an incident that no longer has a fresh trail.
-- What to do: Treat the flakiness as the bug. Force the failure with repetition, randomized ordering, or latency injection; replace time-based waits with condition-based waits; isolate shared state.
+- What to do: In a safe isolated environment, investigate with repetition, controlled ordering, or latency injection; replace time-based waits with condition-based waits and isolate shared state. Preserve a verification gap if the failure cannot be safely exercised.
 - Escalate when: The nondeterminism traces to shared infrastructure or another team's harness and cannot be stabilized within the current scope.
 
 ### Error message names the victim, not the culprit

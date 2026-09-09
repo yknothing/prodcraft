@@ -33,9 +33,8 @@ class PublicSkillPositioningTests(unittest.TestCase):
     def test_curated_prodcraft_skill_sets_routed_expectation(self):
         prodcraft_skill = (REPO_ROOT / "skills" / ".curated" / "pc-prodcraft" / "SKILL.md").read_text(encoding="utf-8")
 
-        self.assertIn("## Routed Invocation", prodcraft_skill)
-        self.assertIn("stable packaging contract", prodcraft_skill)
-        self.assertIn("deeper lifecycle skills", prodcraft_skill)
+        self.assertIn("Deeper lifecycle skills are routed", prodcraft_skill)
+        self.assertIn("Curated packaging does not promise metadata-only auto-discovery", prodcraft_skill)
         self.assertIn("## Runtime Resolution", prodcraft_skill)
         self.assertIn("partial-entry mode", prodcraft_skill)
         self.assertIn("Packaging stability", prodcraft_skill)

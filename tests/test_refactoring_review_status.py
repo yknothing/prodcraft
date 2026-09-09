@@ -13,12 +13,13 @@ class RefactoringReviewStatusTests(unittest.TestCase):
     def setUp(self):
         self.manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
 
-    def test_manifest_registers_refactoring_as_tested_routed(self):
+    def test_manifest_registers_refactoring_as_review_candidate_routed(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
         refactoring = entries["pc-refactoring"]
 
         self.assertEqual("04-implementation", refactoring["phase"])
-        self.assertEqual("tested", refactoring["status"])
+        self.assertEqual("review", refactoring["status"])
+        self.assertIn("revalidation_plan_path", refactoring["qa"])
         self.assertEqual("standard", refactoring["qa_tier"])
         self.assertEqual("routed", refactoring["evaluation_mode"])
 

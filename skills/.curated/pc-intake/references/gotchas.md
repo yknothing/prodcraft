@@ -17,5 +17,5 @@
 ### Urgency claims that collapse the question budget
 - Trigger: The user frames the task as urgent, blocked, or time-sensitive.
 - Failure mode: Intake asks zero questions, guesses the path, and loses the routing rationale.
-- What to do: Keep the smallest question budget that can still change the routing decision, even in urgent cases. Default to one decisive question rather than silent guessing.
+- What to do: Inspect available context first. Ask one decisive question if a route-changing fact is missing; ask zero when the evidence already settles the route. Urgency neither supplies missing facts nor requires another approval for an unchanged approved action.
 - Escalate when: The work may qualify as a true hotfix but the production impact or urgency is still ambiguous.

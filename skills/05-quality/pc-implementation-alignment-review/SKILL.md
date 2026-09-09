@@ -44,6 +44,8 @@ State the intended outcome in one or two concrete sentences. Separate must-have 
 
 Map each user requirement, acceptance criterion, and priority item to implementation evidence. Mark each row as implemented, partially implemented, deferred, contradicted, or unverifiable.
 
+Reuse current requirement mappings and report only changed or unresolved rows when the context is unchanged. A short request can use a compact list in `review-report`. Deferral changes the acceptance boundary only when the user or authorized owner accepted it; it cannot turn an unmet must-have into completion.
+
 ### Step 3: Compare Behavior to Claims
 
 Check final messages, docs, quality reports, release notes, and test names against the actual code and runtime evidence. Flag any claim that turns simulated, fake, fixture, local-only, or partial evidence into a stronger statement.
@@ -51,6 +53,8 @@ Check final messages, docs, quality reports, release notes, and test names again
 ### Step 4: Check Consistency Across Artifacts
 
 Verify that code, tests, docs, runbooks, risk registers, and quality snapshots tell the same story. Mismatches are findings even when each file is locally coherent.
+
+Inspect artifacts relevant to the claim; do not create missing runbooks or risk registers unless the approved route requires them. Leave code-defect analysis to `pc-code-review` and evidence-substitution analysis to `pc-implementation-integrity-audit`, linking their findings when they affect intent coverage.
 
 ### Step 5: Classify Gaps
 

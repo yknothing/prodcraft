@@ -44,7 +44,7 @@ See [context](references/context.md) and [anti-pattern](references/anti-patterns
 
 ### Step 1: Identify Architectural Drivers
 
-Extract the top 5-7 quality attributes that will shape the architecture. Rank them by importance. Common drivers include:
+Start from the existing system and the requested change. Name the decision that actually needs architecture work; preserve boundaries that already satisfy the requirements. Extract only the quality attributes that can change this decision and rank them. Common drivers include:
 - Performance (latency, throughput)
 - Scalability (horizontal, vertical)
 - Availability (uptime targets, failover)
@@ -68,7 +68,7 @@ If a driver is implied but not yet quantified, keep it as an architectural quest
 
 ### Step 2: Choose Architectural Style
 
-Select the primary style based on drivers. Map each driver to the style that best supports it:
+Use the current architecture or simplest in-process design as the baseline. Introduce a new service, queue, framework, or storage boundary only when a concrete driver cannot be met more simply. State the unmet requirement, added operating cost, and reversal path. The labels below are options, not a required technology menu:
 - **Monolith** -- Small team, simple deployment, strong consistency needs
 - **Microservices** -- Independent scaling, team autonomy, polyglot requirements
 - **Serverless** -- Event-driven workloads, unpredictable traffic, minimal ops budget
@@ -79,7 +79,7 @@ When multiple styles satisfy the top-ranked drivers, prefer reversibility over p
 
 ### Step 3: Define Component Boundaries
 
-Use the C4 model to work top-down:
+Use the C4 model to explain the affected boundary, stopping at the level needed to make the decision reviewable. A local module or skill does not require invented deployment containers:
 1. **Context level** -- Draw the system boundary. Identify all external actors (users, systems, services). Document what crosses the boundary.
 2. **Container level** -- Break the system into deployable units (web app, API, database, message queue). Assign responsibilities to each.
 3. **Component level** -- Within each container, identify major structural components (modules, services, repositories). Define interfaces between them.
@@ -92,7 +92,7 @@ For brownfield work, explicitly identify:
 
 ### Step 4: Design Communication Patterns
 
-For each component-to-component interaction, decide:
+For each affected interaction, first decide whether an ordinary function call or existing interface suffices. For actual process or network boundaries, decide:
 - Synchronous (REST, gRPC) vs asynchronous (message queue, event bus)
 - Request/response vs publish/subscribe vs command/query
 - Data format and contract (JSON, Protobuf, Avro)
@@ -100,7 +100,7 @@ For each component-to-component interaction, decide:
 
 ### Step 5: Document Deployment Topology
 
-Define where each container runs:
+Describe the actual runtime: host process and files for a local tool, or deployment units for a service. Do not add cloud infrastructure to fill this section. For deployed containers, define only relevant choices:
 - Cloud provider and region strategy
 - Container orchestration (Kubernetes, ECS) or serverless platform
 - Network boundaries (VPC, subnets, load balancers)
@@ -163,15 +163,15 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] Architecture review completed with at least two reviewers
+- [ ] The decision and affected boundary were reviewed at the depth required by project policy; independent review is identified when required
 - [ ] Ranked quality attribute table exists with stimulus, response, measure, and source/assumption fields
 - [ ] All significant decisions captured as ADRs
 - [ ] Component boundaries align with domain bounded contexts
 - [ ] Quality attribute trade-offs explicitly documented
 - [ ] Hard-to-reverse decisions include reversibility or exit-cost discussion
 - [ ] Fitness functions exist for the top drivers, or missing evidence is assigned to an owner
-- [ ] Deployment topology accounts for failure modes
-- [ ] C4 diagrams at context, container, and component levels exist
+- [ ] Actual runtime or deployment topology accounts for relevant failure modes
+- [ ] The component diagram explains the changed responsibilities and interfaces; additional C4 levels are included only when needed for the decision
 - [ ] No circular dependencies between components
 
 ## Distribution

@@ -6,6 +6,7 @@ metadata:
   inputs:
   - intake-brief
   - problem-frame
+  - design-direction
   - market-research-report
   outputs:
   - research-plan
@@ -13,7 +14,7 @@ metadata:
   - user-journey-map
   prerequisites:
   - pc-intake
-  quality_gate: Research findings are backed by real user evidence, at least 3 personas or an explicit rationale for fewer segments are documented, and unresolved discovery questions are either answered or clearly carried forward
+  quality_gate: Delivered plans are executable; delivered findings require real evidence and method/sample limits, with unresolved questions explicit
   roles:
   - product-manager
   methodologies:
@@ -44,11 +45,11 @@ See [context](references/context.md) and [anti-pattern](references/anti-patterns
 
 ### Step 1: Define Research Questions
 
-Start from the upstream artifact before inventing new questions:
+Start from the approved question and available context:
 
-- if a `problem-frame` exists, extract the target user hypothesis, non-goals, chosen direction, and open questions
+- use `problem-frame` for user hypotheses, non-goals, and open questions; preserve the chosen direction from `design-direction` or the approved handoff
 - if market analysis exists, use it to narrow which segments are worth validating first
-- if neither exists, stop and request clearer discovery framing rather than guessing
+- otherwise use intake, observed workflows, or operator/user evidence when the audience, goal, and uncertainty are clear; clarify only what prevents choosing a useful study
 
 Then define the research questions. Focus on behavior, not opinions:
 - What workflows do users currently follow?
@@ -59,12 +60,12 @@ Then define the research questions. Focus on behavior, not opinions:
 
 ### Step 2: Choose Research Methods
 
-- **Interviews** (5-8 users): Deep qualitative understanding. Best for early discovery.
-- **Surveys** (50+ responses): Quantitative validation. Best after interviews surface patterns.
+- **Interviews**: Understand behavior and why it occurs.
+- **Surveys**: Estimate patterns when recruitment and sample quality support that inference.
 - **Observation**: Watch users in their natural workflow. Reveals behavior they can't articulate.
 - **Analytics review**: If existing product exists, mine usage data for behavioral patterns.
 
-If no real-user evidence has been collected yet, produce a scoped research plan first:
+Choose recruitment, sample size, and stopping criteria from the decision's risk and evidence gaps; counts alone do not establish validity. If evidence is missing, produce a scoped research plan:
 
 - target segments to recruit
 - key hypotheses or open questions to test
@@ -73,26 +74,26 @@ If no real-user evidence has been collected yet, produce a scoped research plan 
 
 ### Step 3: Synthesize into Personas
 
-Create 3-5 personas, each representing a distinct user segment:
-- Name and role (make them memorable)
+Group observed differences that change a product decision; use one segment when the evidence supports one. For each persona record:
+- Role and evidence sources
 - Goals (what they're trying to achieve)
 - Pain points (what frustrates them today)
 - Behaviors (how they work, tools they use)
-- Quote (a real or representative statement capturing their perspective)
+- Verbatim sourced quotes when useful; label paraphrases and never invent participant testimony
 
 ### Step 4: Map User Journeys
 
 For each primary persona, map the journey through the problem space:
-- Stages (awareness, consideration, adoption, retention)
+- Stages of the actual task, including failure, recovery, and repeat use where relevant
 - Actions at each stage
 - Emotions and pain points
 - Opportunities for your product to intervene
 
 ### Step 5: Validate Personas
 
-Test personas against real data. Can you match each persona to at least 2-3 real users? If not, refine.
+Trace each segment and journey claim to observations. Identify contradictory cases, recruitment bias, and what the sample cannot establish.
 
-If the research has not yet been executed, do **not** fake this step. Record that the quality gate is still open and hand off the research plan for execution.
+If research has not run, deliver the plan with findings explicitly pending. Do not pass an evidence-dependent downstream gate using a plan.
 
 ## Outputs
 
@@ -100,11 +101,10 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] At least 3 distinct personas documented, or an explicit justification exists for fewer segments
-- [ ] Each persona backed by real user data (not assumptions)
-- [ ] User journey mapped for primary persona
-- [ ] Pain points prioritized by frequency and severity
-- [ ] Upstream discovery questions are either answered or explicitly carried forward
+- [ ] When a study is planned, its plan identifies the decision, audience, methods, recruitment, and evidence threshold
+- [ ] Delivered personas and journeys trace to real evidence; unexecuted work is marked planned
+- [ ] Findings distinguish observed frequency/severity from assumptions and sample limits
+- [ ] Unanswered questions identify the next investigation and any blocked downstream decision
 
 ## Distribution
 

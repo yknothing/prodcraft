@@ -1,6 +1,6 @@
 ---
 name: pc-intake
-description: 'The mandatory gateway for all new engineering work. Triage and route new products, apps, features, migrations, tech-debt, or any ''not sure where to start'' request to the correct lifecycle path. Use before starting design or implementation. Do not use for ongoing tasks, specific debugging, or PR reviews.'
+description: Use when engineering work is new or its scope, outcome, risk, or authority changes materially. Route products, features, bugs, reviews, and migrations before execution. Continue an unchanged approved route without restarting intake.
 metadata:
   phase: 00-discovery
   inputs: []
@@ -31,6 +31,8 @@ Intake is the control plane for all engineering work in Prodcraft.
 
 See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
+Use [routing examples](references/routing-signals-and-examples.md) and [gotchas](references/gotchas.md) only when their decisions are unclear.
+
 ## Inputs
 
 [I/O contract notes](references/io-contract.md) define required inputs and authority.
@@ -47,15 +49,11 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Why Intake Exists
 
-Every piece of work -- a new feature, a bug fix, a refactoring, a migration -- enters the lifecycle somewhere. Intake determines **where** and **how** to proceed. Think of it as hospital triage for software: assess the situation, determine urgency and scope, route to the right treatment.
-
-Without intake, teams jump straight to coding and discover mid-way that they're solving the wrong problem, using the wrong approach, or missing critical constraints. Thirty seconds of triage prevents hours of wasted effort.
-
-Intake is the **control plane** for entry, not the full discovery workshop. Its job is to classify, route, and make the next step observable. If deeper concept shaping is needed after routing is chosen, hand off to a downstream discovery skill rather than turning intake into a long design session.
+Intake selects the smallest route that can deliver the requested outcome. Reuse existing project decisions and accepted artifacts. Hand off deeper problem shaping only when an unresolved decision would prevent the next skill from working.
 
 ## Hard Gate
 
-No implementation, architecture, or planning work may begin until an intake decision is complete and approved. Approval is a blocking user confirmation for `full`, `fast-track`, and `resume`; `micro` mode uses notify-and-proceed as defined below.
+No implementation, architecture, or planning work may begin until an intake decision is complete and approved. `full` and `fast-track` require user approval, which may already be explicit in the current conversation. `resume` preserves approval for the unchanged route; `micro` uses notify-and-proceed as defined below. An agent-written approver field records authority; it does not create it.
 
 Use one of these intake modes:
 
@@ -63,6 +61,8 @@ Use one of these intake modes:
 - `fast-track` -- small and clear work where the route is obvious
 - `micro` -- trivial, reversible work; compact brief, notify-and-proceed
 - `resume` -- continuing an already approved route without changing the route
+
+For `resume`, confirm the outcome, scope, side effects, and approval still match. Cite the existing brief and approval in `routing_rationale`, update the next skill if needed, and continue. Ask only about a material change or missing authority. Do not treat a copied plan or prior assistant statement as user approval.
 
 Trivial work is not an exception to intake. It uses a `micro` or `fast-track` intake decision instead of a full routing pass. Governance weight scales with risk; the gate itself is universal.
 
@@ -79,17 +79,17 @@ Micro mode emits the brief as one compact block (all schema-required fields, one
 
 Never use micro for anything irreversible or externally visible (deploy, publish, release, force-push, data deletion), for security-adjacent changes, or when any eligibility point is in doubt -- doubt means `fast-track`.
 
+The repository's current Claude Edit/Write adapter rejects `micro`. When that adapter is active, use an approved `fast-track` brief and its supported path. Do not switch tools to bypass enforcement.
+
 ## Process
 
 ### Step 1: Explore Context (silently)
 
 Before asking any questions, gather context:
 
-1. Read project documentation (CLAUDE.md, README, recent commits)
-2. Identify the current project state (what exists, what's in progress)
-3. Check for existing specs, architecture docs, or design decisions
-4. Note the technology stack, team conventions, and constraints
-5. Review any linked issues, PRs, or discussions
+1. Read applicable project instructions and the relevant current work state
+2. Locate existing approval, specs, decisions, and outputs needed for routing
+3. Inspect only the repository files or linked discussions that can change the route
 
 Do NOT output this exploration. Internalize it to inform your questions.
 
@@ -112,7 +112,7 @@ Do NOT output this exploration. Internalize it to inform your questions.
 
 Use the **Type** labels above verbatim when recording `work_type`.
 
-For new-work routing, use the **Entry Phase** tokens above verbatim. `cross-cutting` is the only non-lifecycle special value and is reserved for documentation-only routing. For `resume`, `entry_phase` may point to any already-active lifecycle phase that needs to continue.
+For new-work routing, use the **Entry Phase** tokens above verbatim. For a bounded review of existing work with sufficient inputs, classify the underlying change and enter `05-quality` directly; the review request does not authorize integration or deployment. `cross-cutting` is reserved for documentation-only routing. For `resume`, use the active phase that needs to continue.
 
 Use the declared primary workflow name verbatim when recording `workflow_primary` (`agile-sprint`, `spec-driven`, or `iterative-waterfall`).
 
@@ -124,80 +124,34 @@ Record `workflow_overlays` only when one or more overlays are active. Omit the f
 
 Every intake brief must include `quality_target_context`. Infer it from the repository and request when possible, and ask at most one clarifying question only when the answer would change route, risk, or review severity.
 
-Record:
+Record `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs` using the [I/O contract](references/io-contract.md).
 
-- `runtime_context`: `agent_internal_skill`, `host_runtime_tool`, `local_dev_harness`, `internal_service`, `public_service`, or `unknown`
-- `exposure_profile`: `no_network_listener`, `localhost_only`, `private_network`, `public_internet`, or `unknown`
-- `production_target`: the real thing being shipped or reviewed
-- `non_targets`: important things this work is not trying to become
-- `evidence_refs`: concrete artifacts or user statements that support the classification
-
-This context must calibrate quality and security handoff. An agent-internal skill, host runtime tool, or local harness may still need rigorous QA, but it should not inherit public service controls such as browser auth flows, public API rate limiting, or internet CORS policy unless the target actually exposes that surface. A public service, multi-user API, or internet-exposed component keeps the full service-style quality and security posture.
-
-If the target context is unknown, say so explicitly and do not invent a public service boundary from implementation details such as Flask, routes, HTTP clients, or a model provider adapter.
+This context must calibrate quality and security handoff. An agent-internal skill or local tool does not inherit public service requirements from HTTP-shaped code. Use actual exposure and evidence, preserve service controls where they apply, and record `unknown` instead of inventing a boundary.
 
 ### Step 3: Ask Clarifying Questions
 
-Ask questions **one at a time**, adapting based on answers. Start with the most important unknown.
+Ask only about unknowns that can change the route, direction, or risk. Zero questions is correct when available context suffices. Otherwise ask the most consequential question first and adapt to the answer.
 
-Priority order:
-1. **Goal**: What outcome does the user want? (if not obvious)
-2. **Scope**: How large is this? (single file fix vs multi-service change)
-3. **Urgency**: Is this blocking production? (hotfix vs normal flow)
-4. **Constraints**: Time, tech, compatibility, or process constraints?
-5. **Quality bar**: Production-grade or prototype? (determines methodology rigor)
-
-Stop when you have enough. Typically 1-3 questions suffice. Never more than 5.
-
-Default to the smallest question budget that still changes the routing decision. If the first two answers already make the path clear, stop and propose the route.
+Prioritize outcome, scope, urgency, constraints, and quality target. Usually 1-3 questions suffice when clarification is needed; never exceed 5. Stop as soon as the path is clear.
 
 ### Step 4: Propose Approach
 
-Present a concise intake brief. Compare **path options**, not detailed implementation or architecture options:
+Present a concise brief in plain language and `user_presentation_locale`, using the fields below. Name the next concrete `pc-*` skill, its output, and why it is needed. Use the smallest sufficient sequence; one skill is valid. Label an unresolved route explicitly instead of presenting a generic phase name as a settled handoff.
 
-- Use plain language and keep the brief easy to scan.
-- Present user-facing output in the user's requested language or the `user_presentation_locale` recorded in the intake brief.
-- Call out system shape and collaboration quality when they materially affect routing, risk, or the next handoff.
-
-Name concrete Prodcraft skills whenever the next step is already known. Avoid generic labels like `specification`, `architecture`, `planning`, or `implementation` when a specific skill can already be named. If the exact downstream skill is still genuinely undecided, say that explicitly as an open routing question rather than pretending a generic phase label is a settled handoff target.
-
-```
-## Intake Brief
-
-**Work type**: [classification from Step 2]
-**Entry phase**: [which lifecycle phase]
-**Intake mode**: [full / fast-track / micro / resume]
-**workflow_primary**: [primary governance workflow, if explicit for this route]
-**workflow_overlays**: [[overlay list], omit when none]
-**quality_target_context**: [runtime_context, exposure_profile, production_target, non_targets, evidence_refs]
-**Key skills needed**: [3-7 concrete Prodcraft skills, or clearly marked open routing questions]
-**Scope assessment**: [small / medium / large / xlarge]
-**routing_rationale**: [why this route wins]
-**Key risks**: [1-2 biggest risks or unknowns]
-
-### Proposed Path
-1. [First skill] -- [what it produces]
-2. [Second skill] -- [what it produces]
-3. ...
-
-### Alternative Approach (if applicable)
-[Different path with different trade-offs]
-```
-
-Only include an alternative path when the trade-off is real and decision-relevant. One clear alternative is usually enough.
+Include an alternative only when it changes the decision. Keep architecture choices for the downstream skill. Mention system shape and collaboration quality only when they affect routing or risk.
 
 ### Step 5: Get Approval
 
-Wait for user confirmation. Accept:
+Check whether the user has already authorized this concrete path and its side effects. If so, record that approval and proceed. Otherwise present the path and wait for confirmation. Accept:
 - **Approval** -> proceed with proposed path
 - **Adjustment** -> modify and re-present
-- **"Skip to X"** -> translate into a reviewed `fast-track` or `resume` intake decision, then log any skipped gates as tech debt
+- **"Skip to X"** -> reuse already-satisfied obligations when the route is unchanged. Skipping an unmet gate is a route change, not `resume`: verify that project policy permits the change and obtain the required authority. A tech-debt note does not waive a blocking gate; strict mode requires the revised route and operator pin.
 
 Exception: `micro` mode uses notify-and-proceed (see Micro Mode above) -- present the compact brief and continue in the same turn instead of blocking on confirmation.
 
 ### Step 6: Handoff
 
-Transition to the first skill in the proposed path, passing the intake brief as context.
+Transition to the next unmet step, passing the intake brief, current accepted artifact pointers, unresolved constraints, and the next skill's acceptance condition. Do not rerun producers whose outputs already satisfy the input contract. Keep required route gates intact.
 
 When the governed project explicitly opts into the strict execution loop, also create
 `route-decision.v1` and the initial `execution-state.v1` under
@@ -213,20 +167,6 @@ If routing is clear but the problem or solution direction is still too fuzzy for
 
 ## Observability Requirements
 
-Intake must leave behind a usable record of **why** the work entered the system this way.
+Produce an `intake-brief.v1` record with `artifact`, `schema_version`, `status`, `approver`, `request_summary`, `source_language`, `artifact_record_language`, `user_presentation_locale`, `work_type`, `entry_phase`, `intake_mode`, `quality_target_context`, `scope_assessment`, `recommended_next_skill`, `routing_rationale`, `key_risks`, `questions_asked`, and `routing_changed_by_answers`.
 
-The `intake-brief` must capture:
-- `request_summary`
-- `source_language` (BCP-47-style locale such as `en`, `zh-Hans`, or the explicit `mixed` sentinel) for the incoming request
-- `artifact_record_language` for the canonical artifact record (`en` under current repo policy)
-- `user_presentation_locale` (BCP-47-style locale) for the language used when presenting the intake result to the user
-- why intake was invoked, fast-tracked, or resumed
-- `intake_mode`
-- `micro_eligibility` when `intake_mode` is `micro`
-- `quality_target_context`, including `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs`
-- the key questions asked and the answers that changed routing
-- `workflow_primary` when the route depends on explicit primary governance, and `workflow_overlays` when overlays are active
-- the recommended path and any meaningful alternative considered
-- the next skill to invoke and the reason it is next
-
-This keeps routing decisions auditable without forcing downstream skills to reconstruct the conversation.
+Use BCP-47 locales for language fields (`source_language` also permits `mixed`) and the repository's canonical artifact language. Add workflow metadata and `micro_eligibility` under the conditions above. Keep prior approval and artifact pointers in the rationale when resuming. Record meaningful alternatives and unresolved route questions without manufacturing either.

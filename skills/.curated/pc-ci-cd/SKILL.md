@@ -1,6 +1,6 @@
 ---
 name: pc-ci-cd
-description: Use when a reviewed implementation slice needs an automated build, test, and deployment pipeline, especially when brownfield rollback, release-boundary checks, contract/integration gates, and staged delivery must be explicit before shipping.
+description: Use when a repository needs automated validation, builds, packaging, or deployment, or when an existing pipeline must enforce changed test, compatibility, or release requirements.
 metadata:
   phase: 06-delivery
   inputs:
@@ -11,9 +11,8 @@ metadata:
   outputs:
   - ci-cd-pipeline
   - build-artifacts
-  prerequisites:
-  - pc-testing-strategy
-  quality_gate: Pipeline runs end-to-end, all stages pass, deployment to staging automated
+  prerequisites: []
+  quality_gate: Pipeline enforces applicable checks and release policy, with execution evidence and any unverified stages explicit
   roles:
   - devops-engineer
   - developer
@@ -29,7 +28,7 @@ metadata:
 
 # CI/CD
 
-> Automate everything between code commit and production deployment. Manual steps are bugs waiting to happen.
+> Automate repeatable validation and delivery while preserving required approvals.
 
 ## Context
 
@@ -45,14 +44,14 @@ See [context notes](references/context.md).
 
 ### Step 1: Design Pipeline Stages
 
-A typical pipeline:
+Select stages from the artifact and delivery target. A service may use:
 ```
 Commit -> Lint -> Build -> Unit Test -> Integration Test -> Security Scan -> Deploy Staging -> Deploy Production
 ```
 
-Each stage should:
+Documentation repositories may need only schema/link checks; a library or CLI may add packaging without a staging service. Each selected stage should:
 - Fail fast (cheapest checks first)
-- Run in isolation (no shared state between stages)
+- Use isolated workspaces and explicit artifact inputs
 - Produce artifacts usable by downstream stages
 
 For brownfield or compatibility-sensitive delivery, include explicit gates for:
@@ -62,34 +61,34 @@ For brownfield or compatibility-sensitive delivery, include explicit gates for:
 
 ### Step 2: Configure Build Environment
 
-- Use containerized builds for reproducibility (same result locally and in CI)
+- Use a reproducible environment compatible with the target platform: pinned native runners or containers as appropriate
 - Pin dependency versions (lockfile committed)
 - Cache dependencies between runs for speed
-- Matrix builds for multi-platform support
+- Matrix builds for supported platforms only
 
 ### Step 3: Automate Testing
 
-- Unit tests run on every commit (< 5 min)
-- Integration tests run on every PR (< 15 min)
-- E2E tests run before deployment (< 30 min)
-- Parallelize test suites where possible
+- Place required checks at the PR, merge, or release boundary they protect
+- Agree feedback-time targets from actual workload and risk; measure slow stages
+- Parallelize independent suites when shared resources and cost permit it
 
 Match stages to the reviewed test strategy rather than assuming a generic default. Unsupported-flow or coexistence tests should run where they can actually stop an unsafe deploy.
 
-### Step 4: Automate Deployment
+### Step 4: Configure Delivery When In Scope
 
-- Staging: auto-deploy on merge to main
-- Production: one-click (or auto) deploy with approval gate
-- Use infrastructure-as-code for environment consistency
-- Implement rollback automation
+- Follow the authorized release triggers, environments, and approval policy
+- Use infrastructure-as-code where it manages the actual target
+- Verify the rollback/recovery path before enabling deployment
+
+For validation-only or package-build pipelines, record deployment as out of scope. A pipeline definition does not authorize a live deployment or bypass release approval.
 
 If release boundaries or sync semantics remain constrained, use staging and gated rollout steps that fail closed rather than pipelines that assume instant full production rollout.
 
 ### Step 5: Configure Notifications
 
-- Notify on failure (but not on success -- reduce noise)
+- Notify the responsible owner on actionable failure
 - Link to logs and artifacts for quick debugging
-- Alert on deployment completion
+- Report deployment completion according to the project's notification policy
 
 ## Outputs
 
@@ -97,19 +96,18 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] Pipeline runs on every PR and merge to main
-- [ ] Build time < 15 minutes for fast feedback
-- [ ] All test types automated (unit, integration, security scan)
-- [ ] Staging deployment automated
-- [ ] Rollback mechanism tested
+- [ ] Configured triggers enforce the required validation and release boundaries
+- [ ] Selected stages have current execution evidence; unrun stages remain explicitly unverified
+- [ ] Feedback time is measured against the project's target
+- [ ] Deployment environments and tested rollback apply when deployment is in scope
 - [ ] Brownfield coexistence or release-boundary checks are enforced where applicable
 
 ## Anti-Patterns
 
-1. **"It works on my machine"** -- Containerize builds. Environment differences are bugs.
-2. **Slow pipelines** -- If CI takes 30+ minutes, developers skip it. Optimize relentlessly.
-3. **Flaky tests in CI** -- Quarantine or fix immediately. A flaky pipeline is a useless pipeline.
-4. **Manual deployment steps** -- "SSH into the server and run this script" is not CI/CD.
+1. **"It works on my machine"** -- Match supported build/runtime assumptions; containers do not replace platform requirements.
+2. **Slow pipelines** -- Measure queue and execution bottlenecks before optimizing.
+3. **Flaky tests in CI** -- Fix or quarantine with an owner and an explicit disposition for any affected required gate.
+4. **Hidden manual steps** -- Document necessary approval or recovery actions; automate repeatable operations within that authority.
 5. **No rollback plan** -- Every deployment must have a tested rollback path.
 6. **Pipeline that ignores release boundaries** -- Shipping a generic pipeline that never verifies unsupported-flow behavior, coexistence, or rollback readiness for the current slice.
 

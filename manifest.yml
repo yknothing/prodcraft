@@ -1,11 +1,6 @@
 version: 1.0.0
 name: prodcraft
 description: Lifecycle-aware skills system for production-grade software development
-
-# Declared iterative feedback edges in the artifact_flow graph.
-# These are intentional backward flows (later-phase skill feeding earlier-phase skill)
-# that represent the review-and-revise loops inherent in software development.
-# The acyclicity validator skips these edges when checking for unintended cycles.
 iterative_feedback_edges:
 - from: pc-code-review
   to: pc-feature-development
@@ -25,7 +20,6 @@ iterative_feedback_edges:
 - from: pc-refactoring
   to: pc-feature-development
   rationale: Refactored source re-enters the pc-feature-development cycle for integration.
-
 phases:
 - id: 00-discovery
   name: Discovery
@@ -103,9 +97,9 @@ skills:
 - name: pc-intake
   phase: 00-discovery
   file: skills/00-discovery/pc-intake/SKILL.md
-  evidence_verified_against: contract-sha256:fe01dc30dd81c7e9c100d8f34a0f6b01493a34b66dbc931c634af3087b7800a5
+  evidence_verified_against: contract-sha256:3409c6247d7950646732e6906fa205a5dfb6ccb40a9525f06f8c4229ece0f2c8
   gateway: true
-  status: production
+  status: review
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -114,69 +108,83 @@ skills:
     benchmark_plan_path: eval/00-discovery/pc-intake/post-redesign-benchmark-plan.md
     benchmark_results_path: eval/00-discovery/pc-intake/post-redesign-benchmark-review.md
     integration_test_path: eval/00-discovery/pc-intake/post-redesign-integration-review.md
-    findings_path: eval/00-discovery/pc-intake/current-evidence-status.md
+    findings_path: eval/meta/2026-09-08-skill-design-handoff.md
     security_review_path: eval/00-discovery/pc-intake/security-review.md
     redesign_notes_path: eval/00-discovery/pc-intake/redesign-notes.md
-    revalidation_plan_path: eval/00-discovery/pc-intake/evals/eval-strategy.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
     historical_trigger_eval_results_path: eval/00-discovery/pc-intake/optimization/iter-2/results-mixed.json
     historical_benchmark_results_path: eval/00-discovery/pc-intake/iteration-1/benchmark.md
+    design_revision_path: docs/architecture/2026-09-08-skill-execution-design.md
+    historical_findings_path: eval/00-discovery/pc-intake/current-evidence-status.md
 - name: pc-problem-framing
   phase: 00-discovery
   file: skills/00-discovery/pc-problem-framing/SKILL.md
-  evidence_verified_against: contract-sha256:c15e8a3394af79a61aafc7dc3c9f80dfd7abb6060efdf77f836be5c591fd1379
-  status: production
+  evidence_verified_against: contract-sha256:daeb269dfde011ccfcdd223266a4c62e3f17bd8affa1b5598f83837fca0ad614
+  status: review
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/00-discovery/pc-problem-framing/evals/eval-strategy.md
-    findings_path: eval/00-discovery/pc-problem-framing/findings.md
+    findings_path: docs/reviews/2026-09-09-skill-design-acceptance.md
     security_review_path: eval/00-discovery/pc-problem-framing/security-review.md
     explicit_invocation_plan_path: eval/00-discovery/pc-problem-framing/explicit-invocation-benchmark.md
     benchmark_results_path: eval/00-discovery/pc-problem-framing/isolated-benchmark-review.md
     integration_test_path: eval/00-discovery/pc-problem-framing/intake-handoff-review.md
     downstream_integration_test_path: eval/01-specification/pc-requirements-engineering/problem-framing-handoff-review.md
     secondary_downstream_integration_test_path: eval/00-discovery/pc-user-research/problem-framing-handoff-review.md
+    historical_findings_path: eval/00-discovery/pc-problem-framing/findings.md
+    design_revision_path: docs/reviews/2026-09-09-skill-design-acceptance.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
 - name: pc-market-analysis
   phase: 00-discovery
   file: skills/00-discovery/pc-market-analysis/SKILL.md
-  evidence_verified_against: contract-sha256:2fcfc5ef0854203a4c17357cc0c3e4ecf98a9a6197fbb9ea4f83e4952504b936
+  evidence_verified_against: contract-sha256:17b644013f101b4fdbc57816bef2df80a5ffade0647378812801858215223bb6
   status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/00-discovery/pc-market-analysis/evals/eval-strategy.md
+    findings_path: docs/reviews/2026-09-09-skill-design-acceptance.md
+    design_revision_path: docs/reviews/2026-09-09-skill-design-acceptance.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
 - name: pc-user-research
   phase: 00-discovery
   file: skills/00-discovery/pc-user-research/SKILL.md
-  evidence_verified_against: contract-sha256:3b1977a7cf9499e1e1b15bfca3fc8b23ca475ac7072bfc123380f8634fc6ddf9
-  status: tested
+  evidence_verified_against: contract-sha256:10cdcefb698492cca3db01dd8dc0ca2804acee8da0cd5d31b1e214d83d97f7d7
+  status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/00-discovery/pc-user-research/evals/eval-strategy.md
-    findings_path: eval/00-discovery/pc-user-research/findings.md
+    findings_path: docs/reviews/2026-09-09-skill-design-acceptance.md
     benchmark_plan_path: eval/00-discovery/pc-user-research/semi-isolated-benchmark.md
     benchmark_results_path: eval/00-discovery/pc-user-research/semi-isolated-benchmark-review.md
     integration_test_path: eval/00-discovery/pc-user-research/problem-framing-handoff-review.md
     downstream_spec_integration_test_path: eval/01-specification/pc-requirements-engineering/user-research-handoff-review.md
+    historical_findings_path: eval/00-discovery/pc-user-research/findings.md
+    design_revision_path: docs/reviews/2026-09-09-skill-design-acceptance.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
 - name: pc-feasibility-study
   phase: 00-discovery
   file: skills/00-discovery/pc-feasibility-study/SKILL.md
-  evidence_verified_against: contract-sha256:8063a6abbbefe68d1fa423ba6de98d3df3f852cae801b3076b36fc7915affe7c
+  evidence_verified_against: contract-sha256:efa422f9ed71b08af88187b156f3023cf7f93755402e2bb5e366f34ef9ac8968
   status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/00-discovery/pc-feasibility-study/evals/eval-strategy.md
+    findings_path: docs/reviews/2026-09-09-skill-design-acceptance.md
+    design_revision_path: docs/reviews/2026-09-09-skill-design-acceptance.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
 - name: pc-requirements-engineering
   phase: 01-specification
   file: skills/01-specification/pc-requirements-engineering/SKILL.md
-  evidence_verified_against: contract-sha256:c6a8a6af40ea243703390c08db563f4bca08192f9eadf1252693db3ca1d549ee
-  status: production
+  evidence_verified_against: contract-sha256:4c5b7a9f4f5916638b7b89c088a50fd388eba61be9511bc1205f035453d3c6fd
+  status: review
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -184,7 +192,7 @@ skills:
     eval_strategy_path: eval/01-specification/pc-requirements-engineering/evals/eval-strategy.md
     trigger_eval_set_path: eval/01-specification/pc-requirements-engineering/evals/trigger-eval.json
     trigger_eval_results_path: eval/01-specification/pc-requirements-engineering/results-trigger-iter3.json
-    findings_path: eval/01-specification/pc-requirements-engineering/findings.md
+    findings_path: docs/reviews/2026-09-09-skill-design-acceptance.md
     security_review_path: eval/01-specification/pc-requirements-engineering/security-review.md
     explicit_invocation_plan_path: eval/01-specification/pc-requirements-engineering/explicit-invocation-benchmark.md
     benchmark_results_path: eval/01-specification/pc-requirements-engineering/problem-framing-routed-benchmark-review.md
@@ -193,11 +201,14 @@ skills:
     user_research_integration_test_path: eval/01-specification/pc-requirements-engineering/user-research-handoff-review.md
     user_research_benchmark_plan_path: eval/01-specification/pc-requirements-engineering/user-research-semi-isolated-benchmark.md
     user_research_benchmark_results_path: eval/01-specification/pc-requirements-engineering/user-research-semi-isolated-benchmark-review.md
+    historical_findings_path: eval/01-specification/pc-requirements-engineering/findings.md
+    design_revision_path: docs/reviews/2026-09-09-skill-design-acceptance.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
 - name: pc-spec-writing
   phase: 01-specification
   file: skills/01-specification/pc-spec-writing/SKILL.md
-  evidence_verified_against: contract-sha256:da824adc5b6658e4e6a486772a1257f1ba3faded2eaefdba5683f0f5b79e417d
-  status: tested
+  evidence_verified_against: contract-sha256:2d528fc1d8bed0300a64c33348f833ae71f4888f2103490c20a44a52d21b51f2
+  status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
@@ -205,12 +216,15 @@ skills:
     eval_strategy_path: eval/01-specification/pc-spec-writing/evals/eval-strategy.md
     benchmark_plan_path: eval/01-specification/pc-spec-writing/isolated-benchmark-plan.md
     benchmark_results_path: eval/01-specification/pc-spec-writing/manual-benchmark-review.md
-    findings_path: eval/01-specification/pc-spec-writing/findings.md
+    findings_path: docs/reviews/2026-09-09-skill-design-acceptance.md
     integration_test_path: eval/01-specification/pc-spec-writing/api-design-handoff-review.md
+    historical_findings_path: eval/01-specification/pc-spec-writing/findings.md
+    design_revision_path: docs/reviews/2026-09-09-skill-design-acceptance.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
 - name: pc-domain-modeling
   phase: 01-specification
   file: skills/01-specification/pc-domain-modeling/SKILL.md
-  evidence_verified_against: contract-sha256:745bd8617ed1c35490a089941985c876203e25eb01817ca233f85cfdad30aeb8
+  evidence_verified_against: contract-sha256:59f7eb4a7c91db98c346089c20c1b150aa1f39efc6c07f1d14181bd38979f471
   status: tested
   qa_tier: standard
   evaluation_mode: routed
@@ -224,7 +238,7 @@ skills:
 - name: pc-acceptance-criteria
   phase: 01-specification
   file: skills/01-specification/pc-acceptance-criteria/SKILL.md
-  evidence_verified_against: contract-sha256:30b04ce320570e4636d69aae044bf99ab6661657d78514f1a6b1e6edb2a6520c
+  evidence_verified_against: contract-sha256:e26844c2679772a90fee8dd3d3f150f74391d097871820ce9a95b2ce998dcf50
   status: tested
   qa_tier: standard
   evaluation_mode: routed
@@ -238,7 +252,7 @@ skills:
 - name: pc-system-design
   phase: 02-architecture
   file: skills/02-architecture/pc-system-design/SKILL.md
-  evidence_verified_against: contract-sha256:e91620343ebca8b4c6752169f3396587af06c1b7ed7a10761bbbd8cb6ba09460
+  evidence_verified_against: contract-sha256:b0e845ad2f0a7671fe69d09773cb10e730bea992ab716e4f9a3ad3f30271a04b
   status: review
   qa_tier: critical
   evaluation_mode: routed
@@ -246,12 +260,15 @@ skills:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/02-architecture/pc-system-design/evals/eval-strategy.md
     benchmark_plan_path: eval/02-architecture/pc-system-design/isolated-benchmark-plan.md
-    findings_path: eval/02-architecture/pc-system-design/findings.md
+    findings_path: eval/meta/2026-09-08-skill-design-handoff.md
     integration_test_path: eval/02-architecture/pc-system-design/requirements-handoff-review.md
+    design_revision_path: docs/architecture/2026-09-08-skill-execution-design.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
+    historical_findings_path: eval/02-architecture/pc-system-design/findings.md
 - name: pc-data-modeling
   phase: 02-architecture
   file: skills/02-architecture/pc-data-modeling/SKILL.md
-  evidence_verified_against: contract-sha256:915e9f94d8c1905e701ff67dbd0a8da04200ee0293a79e17a951576419068ee4
+  evidence_verified_against: contract-sha256:217979e9280cdc88b47693af0b16f8be897e231da45bd30ce5876290b896103b
   status: tested
   qa_tier: standard
   evaluation_mode: routed
@@ -265,7 +282,7 @@ skills:
 - name: pc-security-design
   phase: 02-architecture
   file: skills/02-architecture/pc-security-design/SKILL.md
-  evidence_verified_against: contract-sha256:7374bbca96193cb19bbf6c39d564b11f58e59e19914a39aeb88af122b047b2b3
+  evidence_verified_against: contract-sha256:b0c511b8c4eb825e115897b6395437c61e7592beb8e8e699cfb155cfccb0d289
   status: tested
   qa_tier: standard
   evaluation_mode: routed
@@ -279,7 +296,7 @@ skills:
 - name: pc-tech-selection
   phase: 02-architecture
   file: skills/02-architecture/pc-tech-selection/SKILL.md
-  evidence_verified_against: contract-sha256:a3c4ff25142a3675a1a820290205a34fce0a4e85fefe72cad42fe4bb1cace19a
+  evidence_verified_against: contract-sha256:cad302afc54e3865ca236732e7da29fbd202ba9af3c5998414aa068b6a3e4479
   status: tested
   qa_tier: standard
   evaluation_mode: routed
@@ -293,8 +310,8 @@ skills:
 - name: pc-api-design
   phase: 02-architecture
   file: skills/02-architecture/pc-api-design/SKILL.md
-  evidence_verified_against: contract-sha256:46e9d2990275a72d619c85aa24d95ef37b554d4aadbed0d47ca8772edce3d6ec
-  status: tested
+  evidence_verified_against: contract-sha256:dff22bc23a88dbc0e7187c3f8892453f228685c53868ec2085386b186fe00c72
+  status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
@@ -302,13 +319,16 @@ skills:
     eval_strategy_path: eval/02-architecture/pc-api-design/evals/eval-strategy.md
     benchmark_plan_path: eval/02-architecture/pc-api-design/isolated-benchmark-plan.md
     benchmark_results_path: eval/02-architecture/pc-api-design/manual-benchmark-review.md
-    findings_path: eval/02-architecture/pc-api-design/findings.md
+    findings_path: docs/reviews/2026-09-09-skill-design-acceptance.md
     integration_test_path: eval/02-architecture/pc-api-design/architecture-handoff-review.md
+    historical_findings_path: eval/02-architecture/pc-api-design/findings.md
+    design_revision_path: docs/reviews/2026-09-09-skill-design-acceptance.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
 - name: pc-task-breakdown
   phase: 03-planning
   file: skills/03-planning/pc-task-breakdown/SKILL.md
-  evidence_verified_against: contract-sha256:4b22e7963a19a8083b58c4f57db29c25d1a4fcf1b144a8ab8e79827e686d377f
-  status: production
+  evidence_verified_against: contract-sha256:cfd9b99a984ed64e263e7b96acd6ebd785c7ac59b0171161f63397018cb88119
+  status: review
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -316,14 +336,17 @@ skills:
     eval_strategy_path: eval/03-planning/pc-task-breakdown/evals/eval-strategy.md
     benchmark_plan_path: eval/03-planning/pc-task-breakdown/isolated-benchmark-plan.md
     benchmark_results_path: eval/03-planning/pc-task-breakdown/isolated-benchmark-review.md
-    findings_path: eval/03-planning/pc-task-breakdown/findings.md
+    findings_path: eval/meta/2026-09-08-skill-design-handoff.md
     security_review_path: eval/03-planning/pc-task-breakdown/security-review.md
     integration_test_path: eval/03-planning/pc-task-breakdown/architecture-handoff-review.md
+    design_revision_path: docs/architecture/2026-09-08-skill-execution-design.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
+    historical_findings_path: eval/03-planning/pc-task-breakdown/findings.md
 - name: pc-estimation
   phase: 03-planning
   file: skills/03-planning/pc-estimation/SKILL.md
-  evidence_verified_against: contract-sha256:7811a78afd2ad7c4aede60e8bd6cd42a5795773b2fb673d14b0665365f406efb
-  status: tested
+  evidence_verified_against: contract-sha256:fd73c0bb9d39ed85eb59a9c6371f4c081666b4e089a865787bd3e33d7adf3043
+  status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
@@ -331,12 +354,15 @@ skills:
     eval_strategy_path: eval/03-planning/pc-estimation/evals/eval-strategy.md
     benchmark_plan_path: eval/03-planning/pc-estimation/isolated-benchmark-plan.md
     benchmark_results_path: eval/03-planning/pc-estimation/isolated-benchmark-review.md
-    findings_path: eval/03-planning/pc-estimation/findings.md
+    findings_path: eval/meta/2026-09-08-skill-design-handoff.md
+    historical_findings_path: eval/03-planning/pc-estimation/findings.md
+    design_revision_path: docs/architecture/2026-09-08-skill-execution-design.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
     integration_test_path: eval/03-planning/pc-estimation/sprint-planning-handoff-review.md
 - name: pc-risk-assessment
   phase: 03-planning
   file: skills/03-planning/pc-risk-assessment/SKILL.md
-  evidence_verified_against: contract-sha256:64d8fd2021152b17bc02ea7036299f6ce5aafd660b790471942a86288b02fb3c
+  evidence_verified_against: contract-sha256:34122225860a3b180305cf99a77bd806e11ee38556c1946510ae6d1246d0fa2f
   status: tested
   qa_tier: standard
   evaluation_mode: routed
@@ -350,8 +376,8 @@ skills:
 - name: pc-sprint-planning
   phase: 03-planning
   file: skills/03-planning/pc-sprint-planning/SKILL.md
-  evidence_verified_against: contract-sha256:b2405b036ed90672e618e0d819cce12bfce3aa5a2ba9b618c45304bc47b5a122
-  status: tested
+  evidence_verified_against: contract-sha256:cfcc7bf07543afe379ae60d8c27a6acc1adff3405cd2a17564933745a7063a19
+  status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
@@ -359,13 +385,16 @@ skills:
     eval_strategy_path: eval/03-planning/pc-sprint-planning/evals/eval-strategy.md
     benchmark_plan_path: eval/03-planning/pc-sprint-planning/isolated-benchmark-plan.md
     benchmark_results_path: eval/03-planning/pc-sprint-planning/isolated-benchmark-review.md
-    findings_path: eval/03-planning/pc-sprint-planning/findings.md
+    findings_path: eval/meta/2026-09-08-skill-design-handoff.md
+    historical_findings_path: eval/03-planning/pc-sprint-planning/findings.md
+    design_revision_path: docs/architecture/2026-09-08-skill-execution-design.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
     integration_test_path: eval/03-planning/pc-sprint-planning/estimation-handoff-review.md
 - name: pc-tdd
   phase: 04-implementation
   file: skills/04-implementation/pc-tdd/SKILL.md
-  evidence_verified_against: contract-sha256:bb4ef1f16760738ced9ac0c9b9601bbc6e104fc26d2b36b1323e4708392cf302
-  status: production
+  evidence_verified_against: contract-sha256:2ee5d8f8e69bd93f33ac09ba322a44b80c7936d02fd72d2d2a51979a2207b5e9
+  status: review
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -373,14 +402,17 @@ skills:
     eval_strategy_path: eval/04-implementation/pc-tdd/evals/eval-strategy.md
     benchmark_plan_path: eval/04-implementation/pc-tdd/isolated-benchmark-plan.md
     benchmark_results_path: eval/04-implementation/pc-tdd/isolated-benchmark-review.md
-    findings_path: eval/04-implementation/pc-tdd/findings.md
+    findings_path: eval/meta/2026-09-08-skill-design-handoff.md
     security_review_path: eval/04-implementation/pc-tdd/security-review.md
     integration_test_path: eval/04-implementation/pc-tdd/task-handoff-review.md
+    design_revision_path: docs/architecture/2026-09-08-skill-execution-design.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
+    historical_findings_path: eval/04-implementation/pc-tdd/findings.md
 - name: pc-systematic-debugging
   phase: 04-implementation
   file: skills/04-implementation/pc-systematic-debugging/SKILL.md
-  evidence_verified_against: contract-sha256:b8d7ae008a2147415aff2a16b3a8fcc1e4805d3c6a30f9281406803f16a61b0a
-  status: tested
+  evidence_verified_against: contract-sha256:ab8d649fbd8b6f348d4c8b2c081ac695ca3b011ed7e1baababb245a3a4525f77
+  status: review
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -388,14 +420,17 @@ skills:
     eval_strategy_path: eval/04-implementation/pc-systematic-debugging/evals/eval-strategy.md
     benchmark_plan_path: eval/04-implementation/pc-systematic-debugging/isolated-benchmark-plan.md
     benchmark_results_path: eval/04-implementation/pc-systematic-debugging/isolated-benchmark-review.md
-    findings_path: eval/04-implementation/pc-systematic-debugging/findings.md
+    findings_path: docs/reviews/2026-09-09-skill-design-acceptance.md
     integration_test_path: eval/04-implementation/pc-systematic-debugging/bugfix-review.md
-    revalidation_plan_path: eval/04-implementation/pc-systematic-debugging/post-rewrite-revalidation-plan.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
+    historical_findings_path: eval/04-implementation/pc-systematic-debugging/findings.md
+    historical_revalidation_plan_path: eval/04-implementation/pc-systematic-debugging/post-rewrite-revalidation-plan.md
+    design_revision_path: docs/reviews/2026-09-09-skill-design-acceptance.md
 - name: pc-task-execution
   phase: 04-implementation
   file: skills/04-implementation/pc-task-execution/SKILL.md
-  evidence_verified_against: contract-sha256:a0319dd4eadccd6bdc6d5a18eaab7f4c8b19225d4b9761e2f5f6dafc2f02fdf4
-  status: tested
+  evidence_verified_against: contract-sha256:d2c83646e20f68d7d3446dfb06e5ff246b0d06be5d3adf57d5496db394e6f537
+  status: review
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -403,13 +438,16 @@ skills:
     eval_strategy_path: eval/04-implementation/pc-task-execution/evals/eval-strategy.md
     benchmark_plan_path: eval/04-implementation/pc-task-execution/isolated-benchmark-plan.md
     benchmark_results_path: eval/04-implementation/pc-task-execution/isolated-benchmark-review.md
-    findings_path: eval/04-implementation/pc-task-execution/findings.md
+    findings_path: eval/meta/2026-09-08-skill-design-handoff.md
     integration_test_path: eval/04-implementation/pc-task-execution/tactical-batch-review.md
+    design_revision_path: docs/architecture/2026-09-08-skill-execution-design.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
+    historical_findings_path: eval/04-implementation/pc-task-execution/findings.md
 - name: pc-feature-development
   phase: 04-implementation
   file: skills/04-implementation/pc-feature-development/SKILL.md
-  evidence_verified_against: contract-sha256:1256bc941412f9c9564f15fcfa28195884e9ab141d14b8f3be4cee394ee4075b
-  status: tested
+  evidence_verified_against: contract-sha256:e15919318a84ec4719f81b6cd25039a6dc0e85810738fe451adc93e053afba6a
+  status: review
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -417,13 +455,16 @@ skills:
     eval_strategy_path: eval/04-implementation/pc-feature-development/evals/eval-strategy.md
     benchmark_plan_path: eval/04-implementation/pc-feature-development/isolated-benchmark-plan.md
     benchmark_results_path: eval/04-implementation/pc-feature-development/isolated-benchmark-review.md
-    findings_path: eval/04-implementation/pc-feature-development/findings.md
+    findings_path: eval/meta/2026-09-08-skill-design-handoff.md
+    historical_findings_path: eval/04-implementation/pc-feature-development/findings.md
+    design_revision_path: docs/architecture/2026-09-08-skill-execution-design.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
     integration_test_path: eval/04-implementation/pc-feature-development/tdd-handoff-review.md
 - name: pc-refactoring
   phase: 04-implementation
   file: skills/04-implementation/pc-refactoring/SKILL.md
-  evidence_verified_against: contract-sha256:5373e66ee466dab5f75661452c6adb48a0cbdfcb9463ce77c029966e9e504c86
-  status: tested
+  evidence_verified_against: contract-sha256:3bdb47114b613484865b6d9e277b1b8abe3094a7885fcbeb7f563f6bab82e31a
+  status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
@@ -431,13 +472,16 @@ skills:
     eval_strategy_path: eval/04-implementation/pc-refactoring/evals/eval-strategy.md
     benchmark_plan_path: eval/04-implementation/pc-refactoring/isolated-benchmark-plan.md
     benchmark_results_path: eval/04-implementation/pc-refactoring/isolated-benchmark-review.md
-    findings_path: eval/04-implementation/pc-refactoring/findings.md
+    findings_path: eval/meta/2026-09-08-skill-design-handoff.md
+    historical_findings_path: eval/04-implementation/pc-refactoring/findings.md
+    design_revision_path: docs/architecture/2026-09-08-skill-execution-design.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
     integration_test_path: eval/04-implementation/pc-refactoring/code-review-handoff-review.md
 - name: pc-code-review
   phase: 05-quality
   file: skills/05-quality/pc-code-review/SKILL.md
-  evidence_verified_against: contract-sha256:ada324d1cae1aefd376184fd7aba35bb15114ef08ccda9f7d9d0e1e8145d8619
-  status: tested
+  evidence_verified_against: contract-sha256:2cedc3cc6248fb851a0373a4c2c239a85fae636ee33a2e497900b0aa81850df6
+  status: review
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -445,12 +489,15 @@ skills:
     eval_strategy_path: eval/05-quality/pc-code-review/evals/eval-strategy.md
     benchmark_plan_path: eval/05-quality/pc-code-review/isolated-benchmark-plan.md
     benchmark_results_path: eval/05-quality/pc-code-review/isolated-benchmark-review.md
-    findings_path: eval/05-quality/pc-code-review/findings.md
+    findings_path: eval/meta/2026-09-08-skill-design-handoff.md
     integration_test_path: eval/05-quality/pc-code-review/changeset-review.md
+    design_revision_path: docs/architecture/2026-09-08-skill-execution-design.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
+    historical_findings_path: eval/05-quality/pc-code-review/findings.md
 - name: pc-implementation-alignment-review
   phase: 05-quality
   file: skills/05-quality/pc-implementation-alignment-review/SKILL.md
-  evidence_verified_against: contract-sha256:343c2aa3cc2c71277cc2ecf703df4fff9fb2fd94b945b9138db3f252a3bd9dec
+  evidence_verified_against: contract-sha256:e1c4c0c0e021f7a0a2bedf6c2653f53ca4f3ae5e7a3950b685ccfc8c4858391e
   status: review
   qa_tier: critical
   evaluation_mode: routed
@@ -458,11 +505,14 @@ skills:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/05-quality/pc-implementation-alignment-review/evals/eval-strategy.md
     benchmark_plan_path: eval/05-quality/pc-implementation-alignment-review/isolated-benchmark-plan.md
-    findings_path: eval/05-quality/pc-implementation-alignment-review/findings.md
+    findings_path: eval/meta/2026-09-08-skill-design-handoff.md
+    design_revision_path: docs/architecture/2026-09-08-skill-execution-design.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
+    historical_findings_path: eval/05-quality/pc-implementation-alignment-review/findings.md
 - name: pc-implementation-integrity-audit
   phase: 05-quality
   file: skills/05-quality/pc-implementation-integrity-audit/SKILL.md
-  evidence_verified_against: contract-sha256:d9003dc76d1ac78d460deeecb381f1bdfef7e64e4f6bbe27be63ede5e42d680e
+  evidence_verified_against: contract-sha256:035f44335c94db18644b362235f423e514f7f137258b11f7b1631467b1de7c56
   status: review
   qa_tier: critical
   evaluation_mode: routed
@@ -470,12 +520,15 @@ skills:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/05-quality/pc-implementation-integrity-audit/evals/eval-strategy.md
     benchmark_plan_path: eval/05-quality/pc-implementation-integrity-audit/isolated-benchmark-plan.md
-    findings_path: eval/05-quality/pc-implementation-integrity-audit/findings.md
+    findings_path: eval/meta/2026-09-08-skill-design-handoff.md
+    design_revision_path: docs/architecture/2026-09-08-skill-execution-design.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
+    historical_findings_path: eval/05-quality/pc-implementation-integrity-audit/findings.md
 - name: pc-receiving-code-review
   phase: 05-quality
   file: skills/05-quality/pc-receiving-code-review/SKILL.md
-  evidence_verified_against: contract-sha256:bb5b74722f118df5dfb220e7dd51b6f863aaf5be6856c87815de5bfb8953cfba
-  status: tested
+  evidence_verified_against: contract-sha256:5ef82534649f981ba7084e7cd488b92bd7fbc50240cab38af31be3eea5dac509
+  status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
@@ -483,13 +536,16 @@ skills:
     eval_strategy_path: eval/05-quality/pc-receiving-code-review/evals/eval-strategy.md
     benchmark_plan_path: eval/05-quality/pc-receiving-code-review/isolated-benchmark-plan.md
     benchmark_results_path: eval/05-quality/pc-receiving-code-review/isolated-benchmark-review.md
-    findings_path: eval/05-quality/pc-receiving-code-review/findings.md
+    findings_path: eval/meta/2026-09-08-skill-design-handoff.md
+    historical_findings_path: eval/05-quality/pc-receiving-code-review/findings.md
+    design_revision_path: docs/architecture/2026-09-08-skill-execution-design.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
     integration_test_path: eval/05-quality/pc-receiving-code-review/feedback-response-review.md
 - name: pc-testing-strategy
   phase: 05-quality
   file: skills/05-quality/pc-testing-strategy/SKILL.md
-  evidence_verified_against: contract-sha256:ec86e964097078aa78dccff36f4569e409b11578a2583eb3f09cef50f80c4126
-  status: tested
+  evidence_verified_against: contract-sha256:0f622394c9f0d423f08b8ee977eed8361fbdce7467e1622f8b4135098a42b4fd
+  status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
@@ -497,25 +553,31 @@ skills:
     eval_strategy_path: eval/05-quality/pc-testing-strategy/evals/eval-strategy.md
     benchmark_plan_path: eval/05-quality/pc-testing-strategy/isolated-benchmark-plan.md
     benchmark_results_path: eval/05-quality/pc-testing-strategy/isolated-benchmark-review.md
-    findings_path: eval/05-quality/pc-testing-strategy/findings.md
+    findings_path: eval/meta/2026-09-08-skill-design-handoff.md
+    historical_findings_path: eval/05-quality/pc-testing-strategy/findings.md
+    design_revision_path: docs/architecture/2026-09-08-skill-execution-design.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
     integration_test_path: eval/05-quality/pc-testing-strategy/strategy-review.md
 - name: pc-e2e-scenario-design
   phase: 05-quality
   file: skills/05-quality/pc-e2e-scenario-design/SKILL.md
-  evidence_verified_against: contract-sha256:ae571bd2eb6a9cae07a50d7772d705ea160e2db0cd48a7ee27293d31c87fe334
-  status: tested
+  evidence_verified_against: contract-sha256:5dcd35f4fce0649819bb19a336dc9d32ec5240da6bade2bc4a1f543fc19339cc
+  status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
     eval_strategy_path: eval/05-quality/pc-e2e-scenario-design/evals/eval-strategy.md
     benchmark_results_path: eval/05-quality/pc-e2e-scenario-design/isolated-benchmark-review.md
-    findings_path: eval/05-quality/pc-e2e-scenario-design/findings.md
+    findings_path: docs/reviews/2026-09-09-skill-design-acceptance.md
     integration_test_path: eval/05-quality/pc-e2e-scenario-design/testing-strategy-handoff-review.md
+    historical_findings_path: eval/05-quality/pc-e2e-scenario-design/findings.md
+    design_revision_path: docs/reviews/2026-09-09-skill-design-acceptance.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
 - name: pc-security-audit
   phase: 05-quality
   file: skills/05-quality/pc-security-audit/SKILL.md
-  evidence_verified_against: contract-sha256:5ef3f43c7ff9a51d30168647361f04c2f9a4166366e6c301d25eac434d2cd307
+  evidence_verified_against: contract-sha256:dcf750aad67d80c30fb1b55248e47f223840d842ba7b4b7f31ef3fe7c4cfc2c4
   status: tested
   qa_tier: critical
   evaluation_mode: routed
@@ -529,8 +591,8 @@ skills:
 - name: pc-ci-cd
   phase: 06-delivery
   file: skills/06-delivery/pc-ci-cd/SKILL.md
-  evidence_verified_against: contract-sha256:a916ef94096cdce3c25d30e45421234ca8871c7ea8e2efead986c5bf1f931921
-  status: tested
+  evidence_verified_against: contract-sha256:ef1d948451f5573b5d89211483f9a10a6f53fc76e6027433dda427d175b3eec4
+  status: review
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -538,13 +600,16 @@ skills:
     eval_strategy_path: eval/06-delivery/pc-ci-cd/evals/eval-strategy.md
     benchmark_plan_path: eval/06-delivery/pc-ci-cd/isolated-benchmark-plan.md
     benchmark_results_path: eval/06-delivery/pc-ci-cd/isolated-benchmark-review.md
-    findings_path: eval/06-delivery/pc-ci-cd/findings.md
+    findings_path: docs/reviews/2026-09-09-skill-design-acceptance.md
     integration_test_path: eval/06-delivery/pc-ci-cd/pipeline-review.md
+    historical_findings_path: eval/06-delivery/pc-ci-cd/findings.md
+    design_revision_path: docs/reviews/2026-09-09-skill-design-acceptance.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
 - name: pc-delivery-completion
   phase: 06-delivery
   file: skills/06-delivery/pc-delivery-completion/SKILL.md
-  evidence_verified_against: contract-sha256:e05fe996929928866bdae25baf561cfd60adc6c7bba5faf11f2e84c1e2f806d1
-  status: tested
+  evidence_verified_against: contract-sha256:305913f911cca54a09330dd307b3ce18e28492f1dc4a7405bb7b4872cdf884a4
+  status: review
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -552,12 +617,15 @@ skills:
     eval_strategy_path: eval/06-delivery/pc-delivery-completion/evals/eval-strategy.md
     benchmark_plan_path: eval/06-delivery/pc-delivery-completion/isolated-benchmark-plan.md
     benchmark_results_path: eval/06-delivery/pc-delivery-completion/isolated-benchmark-review.md
-    findings_path: eval/06-delivery/pc-delivery-completion/findings.md
+    findings_path: eval/meta/2026-09-08-skill-design-handoff.md
     integration_test_path: eval/06-delivery/pc-delivery-completion/completion-handoff-review.md
+    design_revision_path: docs/architecture/2026-09-08-skill-execution-design.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
+    historical_findings_path: eval/06-delivery/pc-delivery-completion/findings.md
 - name: pc-deployment-strategy
   phase: 06-delivery
   file: skills/06-delivery/pc-deployment-strategy/SKILL.md
-  evidence_verified_against: contract-sha256:2f9d5ce24c68d1ec700ef58ea3ac8eac33f970c40b7cde705a463a757331ea31
+  evidence_verified_against: contract-sha256:b2d41a1428625dfc8c8f25a4bc6934418ae508407541e76add08599bfa990f38
   status: tested
   qa_tier: critical
   evaluation_mode: routed
@@ -571,7 +639,7 @@ skills:
 - name: pc-release-management
   phase: 06-delivery
   file: skills/06-delivery/pc-release-management/SKILL.md
-  evidence_verified_against: contract-sha256:c531049a1f9ff485aa5118981dc09de8d58ebd6350a61d39581df6dab1e9f2c6
+  evidence_verified_against: contract-sha256:5ecc47ce59e76437433048bc6c53fd60cb2c0c2d24e1ffbd9663c28aad68e6fd
   status: tested
   qa_tier: standard
   evaluation_mode: routed
@@ -585,7 +653,7 @@ skills:
 - name: pc-incident-response
   phase: 07-operations
   file: skills/07-operations/pc-incident-response/SKILL.md
-  evidence_verified_against: contract-sha256:839e10dfdbc843ac4e55f6cfb6f4828f08e4108730861e90d30f274e4f8a1bf3
+  evidence_verified_against: contract-sha256:a5be68658e78a84cb7f21a352b23c0e3e0c72fa0d0511190b5a159a18f006e79
   status: tested
   qa_tier: critical
   evaluation_mode: routed
@@ -599,7 +667,7 @@ skills:
 - name: pc-monitoring-observability
   phase: 07-operations
   file: skills/07-operations/pc-monitoring-observability/SKILL.md
-  evidence_verified_against: contract-sha256:4e5bf3a3f4920a3ac03479b47963caf4b0322350a53ba16a8cf4a75769d946d3
+  evidence_verified_against: contract-sha256:d25a879751234ebcaa5cc7ac2501ecd849bb55d7ad3f0a70100eb373d681425b
   status: tested
   qa_tier: critical
   evaluation_mode: routed
@@ -613,7 +681,7 @@ skills:
 - name: pc-runbooks
   phase: 07-operations
   file: skills/07-operations/pc-runbooks/SKILL.md
-  evidence_verified_against: contract-sha256:de4687c29125b48b66877b60bf81fb65c7ba12d712eaac7e6fd65da91e4aae84
+  evidence_verified_against: contract-sha256:9240c3298f26d2eef4ba34b2ee049ed16c5039ad53727ce126f23a7079a2f059
   status: tested
   qa_tier: standard
   evaluation_mode: routed
@@ -627,8 +695,8 @@ skills:
 - name: pc-tech-debt-management
   phase: 08-evolution
   file: skills/08-evolution/pc-tech-debt-management/SKILL.md
-  evidence_verified_against: contract-sha256:d623217c68740b877f88951bf115a055a5f395e73a62785b253a7fe5d4824884
-  status: tested
+  evidence_verified_against: contract-sha256:f31640caeeb40bd8a8fc9eb2552c95c91813ef980c8a2c550b536ed6a554df34
+  status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
@@ -636,13 +704,16 @@ skills:
     eval_strategy_path: eval/08-evolution/pc-tech-debt-management/evals/eval-strategy.md
     benchmark_plan_path: eval/08-evolution/pc-tech-debt-management/isolated-benchmark-plan.md
     benchmark_results_path: eval/08-evolution/pc-tech-debt-management/manual-benchmark-review.md
-    findings_path: eval/08-evolution/pc-tech-debt-management/findings.md
+    findings_path: docs/reviews/2026-09-09-skill-design-acceptance.md
     integration_test_path: eval/08-evolution/pc-tech-debt-management/debt-review.md
+    historical_findings_path: eval/08-evolution/pc-tech-debt-management/findings.md
+    design_revision_path: docs/reviews/2026-09-09-skill-design-acceptance.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
 - name: pc-retrospective
   phase: 08-evolution
   file: skills/08-evolution/pc-retrospective/SKILL.md
-  evidence_verified_against: contract-sha256:c1024d4b05bb33fd8bb09a84be5ef59a42d08f5f9cca570ff6283d22e2eaeb94
-  status: tested
+  evidence_verified_against: contract-sha256:df992dd02f1afef4495509aa841cbaaec051ddd98c4655a62e364de10048cb91
+  status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
@@ -650,13 +721,16 @@ skills:
     eval_strategy_path: eval/08-evolution/pc-retrospective/evals/eval-strategy.md
     benchmark_plan_path: eval/08-evolution/pc-retrospective/isolated-benchmark-plan.md
     benchmark_results_path: eval/08-evolution/pc-retrospective/manual-benchmark-review.md
-    findings_path: eval/08-evolution/pc-retrospective/findings.md
+    findings_path: docs/reviews/2026-09-09-skill-design-acceptance.md
     integration_test_path: eval/08-evolution/pc-retrospective/retro-review.md
+    historical_findings_path: eval/08-evolution/pc-retrospective/findings.md
+    design_revision_path: docs/reviews/2026-09-09-skill-design-acceptance.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
 - name: pc-documentation
   phase: cross-cutting
   file: skills/cross-cutting/pc-documentation/SKILL.md
-  evidence_verified_against: contract-sha256:f0e06493284dcf0df73f3a4f8303312f9557541e5bbad687def7e66f3fad2a3d
-  status: tested
+  evidence_verified_against: contract-sha256:ebdaa7b590cc3738c65d9dd730555317c453a660260a5928eb0b0c8b7f5adad1
+  status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
@@ -664,14 +738,17 @@ skills:
     eval_strategy_path: eval/cross-cutting/pc-documentation/evals/eval-strategy.md
     benchmark_plan_path: eval/cross-cutting/pc-documentation/isolated-benchmark-plan.md
     benchmark_results_path: eval/cross-cutting/pc-documentation/isolated-benchmark-review.md
-    findings_path: eval/cross-cutting/pc-documentation/findings.md
+    findings_path: docs/reviews/2026-09-09-skill-design-acceptance.md
     integration_test_path: eval/cross-cutting/pc-documentation/documentation-handoff-review.md
     manual_review_path: eval/cross-cutting/pc-documentation/documentation-handoff-review.md
+    historical_findings_path: eval/cross-cutting/pc-documentation/findings.md
+    design_revision_path: docs/reviews/2026-09-09-skill-design-acceptance.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
 - name: pc-observability
   phase: cross-cutting
   file: skills/cross-cutting/pc-observability/SKILL.md
-  evidence_verified_against: contract-sha256:edae8ad51fbd6c6524806b282145de4f8436355dbb4e458f54635460bac285d8
-  status: tested
+  evidence_verified_against: contract-sha256:39e76a44c7ff34528caf635815af2305f202329098df57376dcb920110876cff
+  status: review
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -679,13 +756,16 @@ skills:
     eval_strategy_path: eval/cross-cutting/pc-observability/evals/eval-strategy.md
     benchmark_plan_path: eval/cross-cutting/pc-observability/isolated-benchmark-plan.md
     benchmark_results_path: eval/cross-cutting/pc-observability/isolated-benchmark-review.md
-    findings_path: eval/cross-cutting/pc-observability/findings.md
+    findings_path: docs/reviews/2026-09-09-skill-design-acceptance.md
     integration_test_path: eval/cross-cutting/pc-observability/runtime-contract-review.md
     manual_review_path: eval/cross-cutting/pc-observability/runtime-contract-review.md
+    historical_findings_path: eval/cross-cutting/pc-observability/findings.md
+    design_revision_path: docs/reviews/2026-09-09-skill-design-acceptance.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
 - name: pc-bug-history-retrieval
   phase: cross-cutting
   file: skills/cross-cutting/pc-bug-history-retrieval/SKILL.md
-  evidence_verified_against: contract-sha256:ddc07d688fc335120ac4bba12e238a7fb424b47fad0de212c328bc03f56ef408
+  evidence_verified_against: contract-sha256:415cd5d1c0e22e55c3af664197597582d2161fcb41c5eddb362c9897912f8e15
   status: review
   qa_tier: standard
   evaluation_mode: routed
@@ -695,8 +775,8 @@ skills:
 - name: pc-verification-before-completion
   phase: cross-cutting
   file: skills/cross-cutting/pc-verification-before-completion/SKILL.md
-  evidence_verified_against: contract-sha256:d83f7f8519f22013fc0bd8635f816f5908385d71bf3c93378a492f00e6d9163c
-  status: production
+  evidence_verified_against: contract-sha256:938cb1db83b0fbdea1b4b952bc964e04ff31a41f14d24604d61f4ba800264ea2
+  status: review
   qa_tier: critical
   evaluation_mode: routed
   qa:
@@ -704,13 +784,16 @@ skills:
     eval_strategy_path: eval/cross-cutting/pc-verification-before-completion/evals/eval-strategy.md
     benchmark_plan_path: eval/cross-cutting/pc-verification-before-completion/isolated-benchmark-plan.md
     benchmark_results_path: eval/cross-cutting/pc-verification-before-completion/isolated-benchmark-review.md
-    findings_path: eval/cross-cutting/pc-verification-before-completion/findings.md
+    findings_path: eval/meta/2026-09-08-skill-design-handoff.md
     security_review_path: eval/cross-cutting/pc-verification-before-completion/security-review.md
     integration_test_path: eval/cross-cutting/pc-verification-before-completion/completion-claim-review.md
+    design_revision_path: docs/architecture/2026-09-08-skill-execution-design.md
+    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
+    historical_findings_path: eval/cross-cutting/pc-verification-before-completion/findings.md
 - name: pc-accessibility
   phase: cross-cutting
   file: skills/cross-cutting/pc-accessibility/SKILL.md
-  evidence_verified_against: contract-sha256:e724c548da23aa4cc4c8bb76d0296cd6bc5de034dc1c0207afb33989eabb8885
+  evidence_verified_against: contract-sha256:89d8c0b9291ce6196baab82e765805f18b59e10e41b3d56e2e323a8700a3d58b
   status: tested
   qa_tier: standard
   evaluation_mode: routed
@@ -724,7 +807,7 @@ skills:
 - name: pc-internationalization
   phase: cross-cutting
   file: skills/cross-cutting/pc-internationalization/SKILL.md
-  evidence_verified_against: contract-sha256:5776093eba3233f301ea9c56dd49ddd9c6d1123a342121adef20d7ef6acd203d
+  evidence_verified_against: contract-sha256:8af1874a1ae7763ef84c29ffa60974428f693e98d0df1a2164d13c9de6a42783
   status: review
   qa_tier: standard
   evaluation_mode: routed
@@ -734,7 +817,7 @@ skills:
 - name: pc-compliance
   phase: cross-cutting
   file: skills/cross-cutting/pc-compliance/SKILL.md
-  evidence_verified_against: contract-sha256:10fe87e2cfa86158d24d245effa7a23dfbd6da7c265d0442f66c16e713851ec0
+  evidence_verified_against: contract-sha256:99e0cca7dcf62b1a95a5e75fe4c42aadbe5c0196f51415b9c4de31f8b42ad7e0
   status: review
   qa_tier: standard
   evaluation_mode: routed
@@ -880,8 +963,6 @@ personas:
   - 07-operations
   - 08-evolution
 artifact_flow:
-# `produced_by` is usually a single skill name. Use a list only when multiple
-# skills intentionally produce the same artifact type, such as implementation code.
 - artifact: market-research-report
   produced_by: pc-market-analysis
   consumed_by:
@@ -970,6 +1051,7 @@ artifact_flow:
   produced_by: pc-problem-framing
   consumed_by:
   - pc-requirements-engineering
+  - pc-user-research
 - artifact: requirements-doc
   produced_by: pc-requirements-engineering
   consumed_by:

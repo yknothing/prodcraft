@@ -1,56 +1,26 @@
 # Intake Routing Signals and Examples
 
-Use this reference when the main `pc-intake` workflow is clear but you need a quick calibration aid for classification or workflow selection.
+Use this reference for a route decision, not as a full artifact template. The examples are partial routing projections; a saved brief must still contain every `intake-brief.v1` required field.
 
 ## Methodology Selection Signals
 
-- **Spec-driven**: regulated industry, contractual deliverable, large team, compliance, safety-critical
-- **Agile**: product iteration, startup, evolving requirements, small team, SaaS
-- **Waterfall**: well-understood requirements, enterprise, distributed teams, compliance checkpoints
-- **Hotfix**: production down, security vulnerability, data corruption, revenue impact
-- **Greenfield**: no existing codebase, new product/service, proof of concept
-- **Brownfield**: legacy system exists, migration needed, modernization goal
+- `spec-driven`: explicit specifications, contractual delivery, or regulated work
+- `agile-sprint`: iterative product work or no stronger methodology requirement
+- `iterative-waterfall`: explicit phase gates and staged approval
+- `hotfix` overlay: active production failure or urgent containment
+- `greenfield` overlay: a new system without an existing implementation
+- `brownfield` overlay: coexistence, compatibility, or migration constraints
 
-## Worked Examples
+An overlay supplements a primary workflow; it is not a replacement primary.
 
-### Feature Request
+## Worked Decisions
 
-```text
-User: "Add dark mode support to the settings page"
+| Request and available evidence | Route decision | Next useful action |
+|---|---|---|
+| "Continue the approved settings change"; scope and authority are unchanged | Reuse the approved route; `resume` if an updated brief is needed | Consume the current task and evidence at the next unmet step; ask no repeat approval |
+| "Add dark mode"; requirements and accepted architecture already exist | `New Feature`, `01-specification`, `agile-sprint`; record which upstream obligations are already satisfied | Route to `pc-task-breakdown` only if the task slice is missing, otherwise continue the implementation discipline |
+| "Checkout is returning 500"; cause is unknown | `Hotfix`, `04-implementation`, `agile-sprint` plus `hotfix` | Use `pc-incident-response` for active containment first; reuse current containment evidence before `pc-systematic-debugging` |
+| "Fix this README typo"; reversible wording only | `Documentation`, `cross-cutting`, `micro` if all eligibility fields hold | Use `pc-documentation`; under the Claude Edit/Write adapter use approved `fast-track` instead |
+| "Build a CLI migration tool"; desired users and problem are unclear | `New Product`, `00-discovery`, `agile-sprint` plus `greenfield` | Use `pc-problem-framing` to settle the problem before choosing a full design chain |
 
-Intake Brief:
-- Work type: New Feature
-- Entry phase: 01-specification
-- Workflow: agile-sprint
-- Skills: requirements-engineering -> acceptance-criteria -> task-breakdown -> tdd -> code-review
-- Scope: medium
-- Risks: current styling approach may not support clean theming boundaries
-```
-
-### Production Bug
-
-```text
-User: "Users are getting 500 errors on checkout"
-
-Intake Brief:
-- Work type: Hotfix
-- Entry phase: 04-implementation
-- Workflow: hotfix
-- Skills: incident-response -> tdd -> code-review -> ci-cd
-- Scope: small
-- Risks: the root cause may be upstream of the application code
-```
-
-### New Project
-
-```text
-User: "I want to build a CLI tool for managing database migrations"
-
-Intake Brief:
-- Work type: New Product
-- Entry phase: 00-discovery
-- Workflow: greenfield
-- Skills: feasibility-study -> requirements-engineering -> system-design -> task-breakdown -> tdd
-- Scope: large
-- Risks: scope creep and unclear differentiation from existing tools
-```
+Existing files alone do not prove acceptance. Cite their current content and the actual approval. A new requested outcome in an old repository is new work, not automatically a resume.

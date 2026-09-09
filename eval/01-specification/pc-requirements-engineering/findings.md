@@ -1,5 +1,7 @@
 # Requirements Engineering QA Findings
 
+> Historical evidence: the September 9, 2026 whole-library design revision supersedes the package assessed below. The current candidate is `review`; these earlier results do not validate the changed behavior. See the [current revision and evaluation handoff](../../meta/2026-09-08-skill-design-handoff.md).
+
 ## Summary
 
 `pc-requirements-engineering` moved from `review` to `tested` and now advances to `production` after a clean package security review.

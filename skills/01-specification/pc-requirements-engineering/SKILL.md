@@ -41,7 +41,7 @@ See [context](references/context.md) and [anti-pattern](references/anti-patterns
 
 ### Step 1: Gather Functional Requirements
 
-For each user persona and journey, identify what the system must do:
+For each affected user/workflow, reuse available personas and journeys to identify what the system must do:
 - User actions (login, create, search, purchase, export)
 - System responses (validate, calculate, notify, persist)
 - Business rules (pricing logic, access control, workflow transitions)
@@ -51,11 +51,10 @@ Use a consistent format: "The system shall [action] when [condition] so that [be
 ### Step 2: Identify Non-Functional Requirements
 
 Quantify quality attributes **only when the source material supports a bound or when you clearly label an assumption that still needs owner confirmation**:
-- **Performance**: Response time < 200ms p95, support 1000 concurrent users
-- **Security**: OWASP Top 10 compliance, SOC2 Type II, data encryption at rest
-- **Scalability**: Handle 10x growth without architecture changes
-- **Availability**: 99.9% uptime (8.7 hours downtime/year)
-- **Accessibility**: WCAG 2.1 AA compliance
+- **Performance**: Workload, measurement boundary, percentile, and justified target
+- **Security**: Actual exposure, data obligations, and required controls
+- **Scalability/availability**: Expected demand, tolerated interruption, and recovery needs
+- **Accessibility**: Applicable users, platforms, and required conformance scope
 
 When the source gives a direction but not a number:
 - Convert it into a bounded requirement only if the bound is explicitly sourced
@@ -74,7 +73,7 @@ Use MoSCoW (Must/Should/Could/Won't) or RICE (Reach x Impact x Confidence / Effo
 
 - Review with stakeholders for completeness
 - Check for contradictions between requirements
-- Verify technical feasibility with architect
+- Resolve material feasibility doubts with the responsible engineer
 - Ensure traceability (each requirement links to a user need)
 - Flag any requirement or NFR whose precision is assumption-driven rather than source-driven
 - Preserve upstream non-goals and open questions from `problem-frame`, `design-direction`, or `intake-brief` instead of silently collapsing them into solution commitments

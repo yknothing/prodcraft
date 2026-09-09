@@ -2,7 +2,7 @@
 
 Delivery completion is the narrow bridge between "the work is verified" and "the work has an explicit fate." It does **not** replace release management or deployment strategy. It answers a smaller question first: what should happen to this verified branch or change set right now?
 
-Use this skill when implementation and review are complete, verification evidence is fresh, and the team needs an explicit completion outcome instead of an implied next step.
+Use this skill when work needs an explicit outcome. Landing requires completed review and current passing evidence; preservation or authorized discard may record incomplete or failing work without claiming successful completion.
 
 ## Reference Material
 

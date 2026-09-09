@@ -4,13 +4,15 @@ description: Use when discovery has narrowed an idea enough that the team must m
 metadata:
   phase: 00-discovery
   inputs:
+  - intake-brief
+  - problem-frame
   - market-research-report
   - user-persona-set
   outputs:
   - feasibility-report
   prerequisites:
-  - pc-market-analysis
-  quality_gate: Go/no-go decision made with documented rationale across all feasibility dimensions
+  - pc-intake
+  quality_gate: Applicable viability dimensions support a recommendation, with assumptions, unknowns, and approval needed for commitment explicit
   roles:
   - product-manager
   - tech-lead
@@ -44,15 +46,15 @@ Can we build it?
 - Are there hard technical constraints (latency, data volume, regulatory)?
 - What are the biggest technical risks?
 
-Build a minimal proof-of-concept for the riskiest technical assumption.
+Reuse current implementation and prior experiment evidence. For an unresolved decision-critical assumption, choose the smallest informative research or isolated proof of concept; record what remains unverified.
 
 ### Step 2: Economic Feasibility
 
 Should we build it?
 - Estimated development cost (team size x duration x rate)
 - Estimated operational cost (infrastructure, support, maintenance)
-- Revenue model and projected income
-- Break-even timeline
+- Expected value: revenue for commercial work; avoided cost, risk reduction, or operational benefit for internal changes
+- Budget, payback where meaningful, and sensitivity to uncertain estimates
 - Opportunity cost (what else could we build instead?)
 
 ### Step 3: Operational Feasibility
@@ -66,7 +68,7 @@ Can we run it?
 ### Step 4: Timeline Feasibility
 
 Can we ship in time?
-- Is there a market window we need to hit?
+- Is there an external deadline or operational window?
 - What's the minimum viable timeline?
 - What scope can be delivered in that timeline?
 
@@ -77,13 +79,15 @@ Write a clear go/no-go/pivot recommendation:
 - Key risks and mitigations
 - Recommended next steps (proceed to specification, pivot direction, or shelve)
 
+Use a conditional recommendation when missing evidence can change the decision. Name the next investigation and its owner. A recommendation does not authorize spending, deployment, or an unapproved scope change.
+
 ## Outputs
 
 Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] All four feasibility dimensions assessed
-- [ ] Highest-risk technical assumption validated with POC or research
-- [ ] Cost/revenue model documented with assumptions explicit
-- [ ] Clear go/no-go/pivot recommendation with rationale
+- [ ] Technical, economic, operational, and timing applicability assessed
+- [ ] Decision-critical assumptions have evidence or an explicit investigation blocking commitment
+- [ ] Cost and expected value use sourced ranges or labeled unknowns
+- [ ] Go/no-go/pivot or conditional recommendation explains trade-offs and next action

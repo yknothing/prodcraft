@@ -8,6 +8,7 @@ import re
 
 
 PORTABLE_ROUTING_SECTIONS = (
+    "Core Rule",
     "Skill Selection Priority",
     "Workflow Selection",
     "Fast-Track Rules",

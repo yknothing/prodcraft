@@ -7,7 +7,7 @@ metadata:
   outputs:
   - market-research-report
   prerequisites: []
-  quality_gate: Market research report reviewed and opportunities ranked by viability
+  quality_gate: Reviewed market evidence supports ranked opportunities or an explicit no-supported-opportunity conclusion
   roles:
   - product-manager
   methodologies:
@@ -42,7 +42,7 @@ Map existing solutions:
 - Indirect competitors (same problem, different approach)
 - Adjacent solutions (related problem, potential pivot)
 
-For each: note pricing, features, strengths, weaknesses, user reviews.
+For relevant alternatives, including manual work and doing nothing, record pricing, capability, constraints, and user evidence. Cite sources and dates; distinguish vendor claims from observed use.
 
 ### Step 3: Identify Market Gaps
 
@@ -54,11 +54,11 @@ Where do existing solutions fall short? Look for:
 
 ### Step 4: Assess Market Size
 
-Estimate TAM (Total Addressable Market), SAM (Serviceable Available Market), SOM (Serviceable Obtainable Market). Use bottom-up estimation when possible (number of potential users x willingness to pay).
+Size the reachable opportunity when it affects the decision. Use bottom-up assumptions for potential buyers, access, and willingness to pay; distinguish total, serviceable, and realistically obtainable demand. Show ranges and unknowns rather than inventing missing numbers.
 
 ### Step 5: Document Opportunities
 
-Rank opportunities by: market size, competition intensity, team capability fit, and time-to-market.
+Rank supported opportunities by reachable demand, alternatives, capability fit, and timing. If none is supported, report that conclusion and the search limits; do not invent a gap to justify entry.
 
 ## Outputs
 
@@ -66,7 +66,7 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] At least 5 competitors analyzed
-- [ ] Market gaps identified with evidence (user reviews, forum posts, survey data)
-- [ ] TAM/SAM/SOM estimated with methodology documented
-- [ ] Opportunities ranked with clear criteria
+- [ ] Relevant direct, indirect, and status-quo alternatives covered; search limits explicit
+- [ ] Evidence supports the stated gaps or an explicit no-supported-opportunity conclusion
+- [ ] Decision-relevant market estimates state sources, method, uncertainty, and missing evidence
+- [ ] Supported opportunities are ranked, or the no-entry/further-research recommendation is explained

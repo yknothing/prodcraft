@@ -27,7 +27,8 @@ class ReceivingCodeReviewSkillTests(unittest.TestCase):
         entry = entries["pc-receiving-code-review"]
 
         self.assertEqual("05-quality", entry["phase"])
-        self.assertEqual("tested", entry["status"])
+        self.assertEqual("review", entry["status"])
+        self.assertIn("revalidation_plan_path", entry["qa"])
         self.assertEqual("standard", entry["qa_tier"])
         self.assertEqual("routed", entry["evaluation_mode"])
         self.assertIn("eval_strategy_path", entry["qa"])

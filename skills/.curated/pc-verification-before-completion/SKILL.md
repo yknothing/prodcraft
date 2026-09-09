@@ -23,7 +23,7 @@ metadata:
   distribution_surface: curated
   source_path: skills/cross-cutting/pc-verification-before-completion/SKILL.md
   public_stability: beta
-  public_readiness: core
+  public_readiness: beta
 ---
 
 # Verification Before Completion
@@ -79,13 +79,17 @@ Use this quick reference before moving on:
 
 ### Step 3: Run the Verification Now
 
-Execute the relevant verification in the current message or session:
+Check the evidence against the current work state. Reuse a run from this session only when the relevant files, dependencies, configuration, and environment are unchanged and the same claim is covered. Rerun affected checks after a change; do not repeat unchanged checks merely because the next skill is active. Strict-mode freshness and operator-pin rules still apply.
+
+When a required check is missing or stale, execute it:
 
 - run the full command, not a weaker proxy
 - read the actual output and exit status
 - confirm the expected artifact or file exists
 - confirm the current phase gate is satisfied
 - note any unverified areas explicitly
+
+Choose checks from the claim and risk: a skill edit needs frontmatter, reference, contract, export, and loader checks; a behavior fix needs regression evidence; a release needs its release gates. Do not inflate a narrow check into a stronger claim or run unrelated suites to make the report look more complete. If behavior evaluation is explicitly deferred, record a design or structural handoff, not behavior readiness.
 
 For `fast-track` work, run the narrowest command set that still proves the claim. "Fast" changes the scope of proof, not the need for proof. NEVER assume a file was modified or a task was completed based on context or conversational history. If you cannot see the change via a diff, `cat`, or directory listing, the evidence is missing and the verification MUST fail. Proof cannot be hallucinated or waived just because a fix is small.
 
@@ -157,7 +161,7 @@ Produce only declared outputs at their documented quality boundary.
 ## Quality Gate
 
 - [ ] The completion claim is explicit rather than implied
-- [ ] Fresh verification was run for the actual claim, not a nearby proxy
+- [ ] Current evidence covers the actual claim; reused runs still match the relevant work and environment
 - [ ] Relevant artifacts and handoff requirements were checked
 - [ ] Failures, skips, or unknowns are stated plainly
 - [ ] The final wording matches the evidence instead of the hoped-for result
@@ -169,6 +173,6 @@ Produce only declared outputs at their documented quality boundary.
 - Canonical authoring source: `skills/cross-cutting/pc-verification-before-completion/SKILL.md`
 - This package is exported for `npx skills add/update` compatibility.
 - Packaging stability: `beta`
-- Capability readiness: `core`
+- Capability readiness: `beta`
 - Portability: `portable_with_caveat`
 - Public caveat: Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks.

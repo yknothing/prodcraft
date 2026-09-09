@@ -11,7 +11,7 @@ metadata:
   - sprint-plan
   prerequisites:
   - pc-estimation
-  quality_gate: Sprint scope matches capacity, dependencies and risks are visible, and the team can explain why this slice is achievable now
+  quality_gate: The plan separates supported commitments from stretch or blocked work using actual capacity, dependency constraints, and explicit ownership
   roles:
   - tech-lead
   - product-manager
@@ -36,31 +36,25 @@ See [context](references/context.md) and [anti-pattern](references/anti-patterns
 
 ## Process
 
-### Step 1: Start From Capacity, Not Desire
+### Step 1: Establish the Goal and Available Capacity
 
-Confirm the real capacity for the iteration: available people, external blockers, carry-over work, and operational load. Adjust for on-call or release overhead when relevant.
+Read current tasks, estimates, risks, carry-over, operational load, and the actual iteration horizon. Reuse an accepted plan when these remain unchanged. Confirm availability of the people, reviewers, shared environments, and external dependencies that constrain the work.
 
-### Step 2: Select Work That Fits the Goal
+If capacity or a necessary owner is unknown, publish a provisional plan and identify the missing decision; do not invent a team, velocity, approval, or delivery date. Solo or agent-assisted work does not require a fictional sprint ceremony.
 
-Choose the smallest set of tasks that:
+### Step 2: Select a Feasible Slice
 
-- fits the available capacity
-- preserves dependency order
-- advances the sprint goal
-- does not overload the team with too many simultaneous high-risk items
+Choose the smallest task set that advances the goal and fits known capacity. Respect dependency order and avoid counting shared resources twice. Parallel agents do not create independent reviewer capacity or eliminate integration work. Keep blocked or poorly understood work outside committed scope until its constraint is resolved.
 
-### Step 3: Make Sequence and Ownership Explicit
+### Step 3: Record Ownership and Trade-offs
 
-Document:
+For selected tasks, identify the responsible owner, start dependencies, acceptance condition, and handoff. Separate committed, stretch, deferred, and blocked work. Explain the opportunity cost when a priority displaces another item. A proposed owner is not confirmed availability.
 
-- what starts first
-- what can run in parallel
-- where handoffs occur
-- which tasks are stretch goals versus committed work
+### Step 4: Publish and Replan Deliberately
 
-### Step 4: Publish a Defensible Sprint Plan
+Publish `sprint-plan` under its I/O contract. When a dependency or assumption changes, show the scope/capacity trade-off and obtain approval for changed commitments. Do not silently add overtime or extend the deadline.
 
-The output should let anyone understand what the team is betting on, what was deferred, and which risks or assumptions could force replanning mid-sprint.
+For a one-task horizon, a compact section in the existing plan is enough. A provisional plan can be handed off for decisions, but cannot be described as an accepted sprint commitment.
 
 ## Outputs
 
@@ -68,8 +62,7 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] Committed scope fits actual capacity
-- [ ] Sequencing respects dependencies and major risks
-- [ ] Stretch work is distinguished from committed work
-- [ ] Deferred items are explicit
-- [ ] The team can explain why the sprint is achievable
+- [ ] The plan is explicitly committed or provisional according to available capacity and authority
+- [ ] Selected scope accounts for dependencies, review/integration, and shared resources
+- [ ] Owners, acceptance conditions, stretch work, and deferred/blocked work are explicit
+- [ ] Missing decisions and replan triggers are actionable without fabricated dates or capacity

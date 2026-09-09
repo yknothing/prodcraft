@@ -12,7 +12,7 @@ metadata:
   - source-code
   prerequisites:
   - pc-tdd
-  quality_gate: The planned slice is implemented behind passing tests, contract and scope boundaries remain explicit, and the change is ready for code review
+  quality_gate: The accepted slice works with current verification, preserved contracts, and a consumable review handoff
   roles:
   - developer
   - tech-lead
@@ -37,30 +37,23 @@ See [context](references/context.md) and [anti-pattern](references/anti-patterns
 
 ## Process
 
-### Step 1: Pick the Smallest Reviewable Slice
+### Step 1: Consume the Accepted Slice
 
-Choose one reviewed task or thin vertical slice. Rewrite it in concrete implementation terms: what behavior lands now, what stays out of scope, and what boundary must remain stable.
+Identify the approved outcome, acceptance conditions, exclusions, and stable boundaries from current task or decision references. Do not rewrite an adequate plan or create architecture/API documents for a local change that needs none. If a required decision is missing, stop only the dependent work and route that decision to its owner.
 
-If the slice is still too large to review comfortably, split it before coding.
+### Step 2: Check the Behavioral Starting Point
 
-### Step 2: Implement Behind the Test Boundary
+Inspect the current implementation and relevant tests. Reuse current test-first evidence from `pc-tdd`; do not regenerate tests to repeat the handoff. If new behavior lacks a meaningful failing check, return to the applicable TDD step. Passing characterization protects existing behavior and does not prove new behavior. Continue an already-implemented slice from its actual state after checking freshness.
 
-Use the failing or targeted tests as the implementation guardrail. Add only the code needed to satisfy the current slice. Keep new abstractions local until a second use proves they belong.
+### Step 3: Implement One Reviewable Increment
 
-Prefer vertical progress over partial framework setup. A small end-to-end slice is more valuable than three half-finished layers.
+Add the code needed for the slice. Introduce an abstraction only for a present boundary, invariant, or shared concept; a second use is neither mandatory nor sufficient by itself. Prefer vertical progress, preserving configuration, observability, compatibility, and rollout obligations that actually apply.
 
-### Step 3: Preserve Scope and Contract Boundaries
+Record discovered contract changes instead of silently choosing new product behavior. Keep opportunistic cleanup outside the slice. Invoke `pc-task-execution` only if batching or coordination adds value; it is not another mandatory implementation pass.
 
-Before each commit or reviewable checkpoint, verify:
+### Step 4: Hand Off the Actual Result
 
-- unsupported or deferred behavior is still explicit
-- public contract changes are intentional and reflected in tests
-- brownfield coexistence or compatibility seams still hold
-- configuration, observability, and rollout hooks required by downstream phases are not skipped
-
-### Step 4: Prepare the Increment for Review
-
-Clean up obvious naming, dead code, and accidental noise that would distract review, but do not turn implementation into a refactoring detour. The output should be a small, understandable diff with passing tests and explicit notes on any trade-offs.
+Verify affected behavior and callers, remove accidental diff noise, and hand off the actual result under the I/O contract. Passing implementation checks do not authorize integration or replace independent approval.
 
 ## Outputs
 
@@ -68,8 +61,7 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] One reviewed task slice is fully implemented
-- [ ] Relevant tests pass locally or in CI
-- [ ] Scope, unsupported behavior, and release boundaries remain explicit
-- [ ] Public contract changes are intentional and documented
-- [ ] The diff is small enough for effective review
+- [ ] The accepted slice is implemented without unapproved scope changes
+- [ ] Current relevant verification supports the implemented behavior
+- [ ] Compatibility and release obligations are preserved where applicable
+- [ ] The review handoff identifies the diff, evidence, and unresolved boundaries

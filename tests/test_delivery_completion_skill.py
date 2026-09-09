@@ -28,7 +28,7 @@ class DeliveryCompletionSkillTests(unittest.TestCase):
 
         entry = entries["pc-delivery-completion"]
         self.assertEqual("06-delivery", entry["phase"])
-        self.assertEqual("tested", entry["status"])
+        self.assertEqual("review", entry["status"])
         self.assertEqual("critical", entry["qa_tier"])
         self.assertEqual("routed", entry["evaluation_mode"])
         self.assertIn("qa", entry)
@@ -50,12 +50,12 @@ class DeliveryCompletionSkillTests(unittest.TestCase):
         phase_text = (REPO_ROOT / "skills" / "06-delivery" / "_phase.md").read_text(encoding="utf-8")
         gateway_text = (REPO_ROOT / "skills" / "_gateway.md").read_text(encoding="utf-8")
 
-        self.assertIn("Present these four outcomes", skill_text)
+        self.assertIn("Reuse the Authorized Outcome or Resolve the Choice", skill_text)
         self.assertIn("typed `discard` confirmation", skill_text)
         self.assertIn("does **not** replace release management or deployment strategy", skill_text)
         self.assertIn("pc-delivery-completion", phase_text)
         self.assertIn("pc-delivery-completion", gateway_text)
-        self.assertIn("finishing-a-development-branch", gateway_text)
+        self.assertIn("scope, authority, and artifact freshness", gateway_text)
 
     def test_tested_artifacts_exist(self):
         targets = [

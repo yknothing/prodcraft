@@ -296,6 +296,8 @@ Status transitions should be evidence-backed:
 - `tested` -> `secure`: security review artifact exists with no blocking findings
 - `secure` -> `production`: integration tests exist and all required QA artifacts are present
 
+When a revision materially changes routing, authority, applicability, or the execution process, previous behavioral evidence does not automatically qualify the new contract. Return the changed skill to `review` when behavioral revalidation is deferred. Preserve the previous digest, maturity, and evidence as history, bind the current design review, and name the missing evaluation. An existing public allowlist may retain a beta candidate; it must not retain `core` readiness solely from an older revision. Structural checks or refreshing a digest do not establish model behavior or promote maturity.
+
 ## Continuous Improvement
 
 After a skill has been in production:

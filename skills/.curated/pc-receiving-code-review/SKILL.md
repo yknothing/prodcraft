@@ -9,9 +9,8 @@ metadata:
   - test-suite
   outputs:
   - review-response-record
-  prerequisites:
-  - pc-code-review
-  quality_gate: Every review item is understood, verified against current codebase reality, and either implemented with evidence or answered with technical reasoning
+  prerequisites: []
+  quality_gate: Each finding has an evidence-backed disposition, dependent blockers remain visible, and accepted changes are ready for the required re-review
   roles:
   - developer
   - tech-lead
@@ -41,74 +40,23 @@ See [context](references/context.md) and [anti-pattern](references/anti-patterns
 
 ## Process
 
-### Step 1: Read the Whole Review Before Acting
+### Step 1: Reconcile Findings With the Current Revision
 
-Do not start implementing the first comment immediately. Read the full review and group items into:
+Read the whole review before changing code. Preserve finding identifiers and group comments by root cause or shared decision. Classify items as accepted, disputed, clarification-needed, already-resolved, or optional. Check whether the reviewed revision still matches; stale locations are not proof that the defect is gone.
 
-- blocking corrections
-- clarifications needed
-- technically questionable suggestions
-- optional improvements
+### Step 2: Isolate Ambiguity and Authority
 
-If multiple comments appear related, keep them together until the interaction is understood as a whole.
+An unclear comment blocks its dependent changes, not unrelated work. State the missing fact and affected group. Continue an independent accepted correction only when it stays valid under each plausible answer and existing authority covers it. If the items interact, clarify first rather than guessing.
 
-### Step 2: Clarify Before Partial Implementation
+A review suggestion does not expand scope or authorize publishing, deletion, dependency changes, or a new architecture. Route material scope/contract changes to the appropriate decision owner; keep unrelated authorized corrections moving.
 
-If any review item is ambiguous, stop and ask before changing code. Do not implement the subset you understand while guessing at the rest.
+### Step 3: Verify and Apply the Correction
 
-Clarify when:
+Check the actual defect, compatibility constraints, upstream decisions, and proposed remedy. Prefer the smallest fix for the root cause; reject unused complexity with evidence. Apply related corrections as one reviewable batch when they share a cause and proof; verify independent risky changes separately. Use the relevant implementation discipline, including `pc-tdd` for new or changed behavior and `pc-systematic-debugging` for uncertain causes.
 
-- the requested behavior is unclear
-- the suggested scope is larger than the current slice
-- the comment may conflict with an architecture or product boundary
-- the reviewer appears to assume context that is not visible in the diff
+### Step 4: Record the Response and Handoff
 
-### Step 3: Verify Against Codebase Reality
-
-For each review item, check:
-
-- does the suggestion fit the current code and tests
-- does it preserve brownfield compatibility and unsupported-flow rules
-- does it violate YAGNI or introduce unused complexity
-- does it conflict with reviewed architecture or contract decisions
-- is the reviewer pointing at the real defect, or only at a local symptom
-
-If the feedback is correct, implement it. If not, respond with technical reasoning and evidence instead of social agreement.
-
-### Step 4: Respond Factually, Not Performatively
-
-Do not write praise or social filler such as:
-
-- "You're absolutely right"
-- "Great point"
-- "Excellent feedback"
-
-Instead:
-
-- restate the technical issue
-- say what changed
-- say what remains unclear
-- say why the suggestion should not be applied when evidence contradicts it
-
-### Step 5: Implement One Verified Item at a Time
-
-Apply accepted feedback in a controlled order:
-
-1. blocking correctness or security fixes
-2. scope-safe cleanups
-3. optional or stylistic improvements last
-
-Run the relevant tests after each meaningful change. If one item reopens another, record that explicitly instead of silently batch-editing everything at once.
-
-### Step 6: Produce a Review Response Record
-
-Produce a `review-response-record` that captures:
-
-- each review item
-- whether it was implemented, challenged, or clarified
-- the evidence used to decide
-- the tests or checks run after accepted changes
-- any remaining disputed items that still need reviewer or user resolution
+Update the existing `review-response-record` using the I/O contract. Respond with technical facts, link duplicate findings, and mark fixes ready for re-review, not reviewer-approved. A disputed blocker remains until the authorized reviewer or policy resolves it. If it recurs without new evidence, resolve the missing cause or decision before another pass.
 
 ## Outputs
 
@@ -116,12 +64,11 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] Every review item is classified before implementation begins
-- [ ] Ambiguous feedback is clarified before partial implementation
-- [ ] Accepted suggestions are verified against current codebase reality
-- [ ] Pushback, when needed, is technical and evidence-based
-- [ ] Relevant tests are rerun after accepted changes
-- [ ] The final response states what changed and what remains unresolved
+- [ ] Every finding has a disposition and evidence tied to the current revision
+- [ ] Unclear or disputed items block only their dependent work; independence is justified
+- [ ] Accepted changes preserve scope and have relevant verification
+- [ ] Remaining blockers, decision owners, and the re-review boundary are explicit
+- [ ] A completed response does not claim integration approval
 
 ## Distribution
 

@@ -141,3 +141,13 @@ python3 scripts/validate_prodcraft.py \
 ## Key Principle
 
 Workflows compose existing skills. They define when skills run, which artifacts cross boundaries, and what evidence authorizes progression. Skill files remain the source of truth for how to perform the work.
+
+## Execution and Handoff
+
+Use the [gateway](../skills/_gateway.md) to select the next unmet obligation within the approved workflow. The phase sequence is a contract to satisfy, not a command to regenerate artifacts that already meet it. Reuse is allowed only when the artifact's scope, freshness, quality, and required approval still hold.
+
+Keep one primary skill for each decision or deliverable. Overlays add their declared constraints to that same route; they do not start a duplicate lifecycle. Cross-cutting `must_consider` calls for an applicability decision, while `must_produce` remains an output obligation unless an authorized exception applies.
+
+Handoff the outcome, current scope and authority, accepted artifact pointers, unresolved gaps, and next acceptance condition. Several reviews may share a report with named sections; retain separate required conclusions and reviewer provenance. Reusing a report never supplies a missing independent approval.
+
+Repeat a skill to address an identified gap or changed input. If a loop has no new evidence, resolve the missing fact or use the documented course-correction route instead of repeating the same sequence. In strict mode, these conventions do not change obligation ids, legal transitions, or operator-pin requirements.

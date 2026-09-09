@@ -31,6 +31,8 @@ from tools.execution_state import (  # noqa: E402
     STRICT_JSON_MAX_BYTES,
     StrictJSONError,
     parse_strict_json_bytes,
+    file_sha256,
+    read_protocol_file,
 )
 from tools.workflow_contract import (  # noqa: E402
     validate_workflow_contract,
@@ -201,16 +203,8 @@ EVIDENCE_BINDING_PREFIX = "contract-sha256:"
 EVIDENCE_BINDING_RE = re.compile(r"^contract-sha256:[0-9a-f]{64}$")
 EVIDENCE_BINDING_RECORD_RELATIVE_PATH = Path("eval/meta/skill-evidence-bindings.yml")
 EVIDENCE_BINDING_RECORD_SCHEMA = "skill-evidence-bindings.v1"
-EVIDENCE_BINDING_ALGORITHM = "contract-projection.v2"
-EVIDENCE_BINDING_NON_CONTRACT_HEADINGS = {
-    "Context",
-    "Inputs",
-    "Outputs",
-    "Anti-Patterns",
-    "Reference Material",
-    "Related Skills",
-    "Distribution",
-}
+EVIDENCE_BINDING_ALGORITHM = "skill-package.v3"
+EVIDENCE_BINDING_RESOURCE_DIRS = ("references", "scripts", "assets")
 
 REQUIRED_SKILL_BODY_HEADINGS = (
     "Context",
@@ -278,37 +272,52 @@ def extract_markdown_section(text: str, heading: str) -> str | None:
 
 
 def compute_skill_contract_digest(path: Path) -> str:
-    """Hash the skill contract while excluding non-contract prose.
+    """Bind full SKILL.md bytes and the same resource closure as public export.
 
-    The binding covers complete YAML frontmatter plus every H2 section except
-    explicitly informational/artifact-index sections. This keeps Context and
-    Anti-Patterns pruning outside the digest while retaining Hard Gate, Iron
-    Law, stop-signal, gotcha, Process, and Quality Gate contracts.
+    Paths and contents both matter. Cross-skill/workflow links remain separate
+    contracts; this is package identity, not a transitive runtime attestation.
     """
-
-    frontmatter = raw_frontmatter(path).replace("\r\n", "\n").strip()
-    _metadata, body = load_frontmatter(path)
+    if path.parent.is_symlink():
+        raise ValueError(f"{path.parent}: skill package must not be a symlink")
+    source = read_protocol_file(path)
+    text = source.decode("utf-8")
+    parts = text.split("---\n", 2)
+    if not text.startswith("---\n") or len(parts) != 3:
+        raise ValueError(f"{path}: missing or malformed YAML frontmatter")
+    body = parts[2]
     heading_matches = list(re.finditer(r"^##\s+(.+?)\s*$", body, re.MULTILINE))
-    sections: list[tuple[str, str]] = []
     seen_headings: set[str] = set()
-    for index, match in enumerate(heading_matches):
+    for match in heading_matches:
         heading = match.group(1).strip()
         if heading in seen_headings:
             raise ValueError(f"{path}: duplicate H2 heading `{heading}` makes the contract projection ambiguous")
         seen_headings.add(heading)
-        start = match.end()
-        end = heading_matches[index + 1].start() if index + 1 < len(heading_matches) else len(body)
-        if heading not in EVIDENCE_BINDING_NON_CONTRACT_HEADINGS:
-            sections.append((heading, body[start:end].strip()))
 
     missing = sorted({"Process", "Quality Gate"} - seen_headings)
     if missing:
         raise ValueError(f"{path}: cannot compute contract digest; missing sections {missing}")
 
-    contract_parts = ["frontmatter.v2", frontmatter]
-    for heading, section in sections:
-        contract_parts.extend((f"section:{heading}", section))
-    contract = "\n".join((*contract_parts, ""))
+    files = [("SKILL.md", "sha256:" + hashlib.sha256(source).hexdigest())]
+
+    def collect(directory: Path) -> None:
+        if directory.is_symlink():
+            raise ValueError(f"{directory}: package resource must not be a symlink")
+        if not directory.is_dir():
+            raise ValueError(f"{directory}: package resource root must be a directory")
+        for child in sorted(directory.iterdir()):
+            mode = child.lstat().st_mode
+            if stat.S_ISLNK(mode):
+                raise ValueError(f"{child}: package resource must not be a symlink")
+            if stat.S_ISDIR(mode):
+                collect(child)
+            else:
+                files.append((child.relative_to(path.parent).as_posix(), file_sha256(child)))
+
+    for name in EVIDENCE_BINDING_RESOURCE_DIRS:
+        directory = path.parent / name
+        if directory.exists() or directory.is_symlink():
+            collect(directory)
+    contract = json.dumps([EVIDENCE_BINDING_ALGORITHM, sorted(files)], ensure_ascii=True, separators=(",", ":"))
     digest = hashlib.sha256(contract.encode("utf-8")).hexdigest()
     return f"{EVIDENCE_BINDING_PREFIX}{digest}"
 

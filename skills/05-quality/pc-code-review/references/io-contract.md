@@ -2,12 +2,12 @@
 
 ## Inputs
 
-- **source-code**: The diff or changeset under review, with sufficient context to understand the change.
-- **test-suite**: Accompanying tests that validate the change. Verify they exist and are meaningful.
-- **task-list**: The reviewed implementation slice or task context that defines what was actually supposed to land now.
-- **api-contract**: The contract or externally visible behavior that the changeset must preserve or implement.
-- **architecture-doc**: System design context to verify the change aligns with architectural decisions.
-- **intake-brief**: Must include `quality_target_context` with `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs`.
+- **source-code**: Required. The concrete diff or changeset, including skill/document changes when they are the reviewed implementation, with enough surrounding context to trace consequences.
+- **intake-brief**: Required approved scope and `quality_target_context` with `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs`.
+- **task-list**: Required task or acceptance context; a small approved slice can be embedded in an existing artifact instead of a separate planning document.
+- **test-suite**: Required when changed executable behavior needs regression protection or project policy requires it. For skill prose or documents, consume the relevant contract, reference, export, or loader evidence and state any deferred behavioral evaluation.
+- **api-contract**: Conditional on an affected public or inter-service contract. Inspect the authoritative specification or source boundary; report a relevant missing contract rather than inventing an unrelated API document.
+- **architecture-doc**: Conditional on an affected architectural decision or compatibility seam. Reuse current accepted context; do not require a new architecture document for every diff.
 
 In a lifecycle-aware system, review should not silently approve code that closes unresolved upstream questions by accident. Brownfield coexistence, unsupported release-1 flows, and contract boundaries are review concerns, not "later" concerns.
 

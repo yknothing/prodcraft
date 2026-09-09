@@ -2,6 +2,8 @@
 
 Deep recipes for the systematic-debugging loop. Load this file when the core process needs a concrete technique, not before.
 
+Run active experiments in an authorized, safe environment. Preserve incident evidence and containment; do not replay harmful production effects. Without a safe experiment, record the missing proof and resumption condition in the diagnosis report.
+
 ## Bisection
 
 Use when a regression has any known-good reference point.
@@ -33,16 +35,15 @@ Instrument to observe **actual values at boundaries**, not to narrate execution.
 
 ## Stale-Artifact Checklist
 
-Work through this whenever observed behavior contradicts the code you are reading:
+Check identity separately from reachability when behavior contradicts the source. Start with existing evidence; rebuilds, restarts, and cache changes are experiments, not automatic prerequisites:
 
-- [ ] Correct branch and commit checked out; no uncommitted local edits confusing the picture
-- [ ] Build actually re-ran; artifact timestamp is newer than the source edit
-- [ ] Caches invalidated: package cache, bytecode/JIT cache, bundler cache, CDN, service worker, browser cache
-- [ ] The process was restarted after the change (long-lived workers, hot-reload that silently failed)
+- [ ] Observed branch/revision and relevant uncommitted changes identified
+- [ ] Build/runtime identity matches the intended candidate; timestamp alone is not proof
+- [ ] Relevant cache and process lifecycle understood; change them only to test a stated hypothesis safely
 - [ ] The environment under test is the one you deployed to (correct container tag, correct cluster, correct database)
-- [ ] A deliberate marker (print/log/version string) placed at the failure site is visible in the observed output
+- [ ] Existing trace or a safe targeted marker establishes whether the expected path was reached
 
-If the marker does not appear, every observation collected so far is about some other code. Discard those observations before continuing.
+If a marker is absent, distinguish stale identity, unreachable control flow, and missing logging. A current handler skipped by a faulty dispatcher is useful evidence. Retain observations with their confirmed scope rather than discarding them by assumption.
 
 ## Flaky Failures
 

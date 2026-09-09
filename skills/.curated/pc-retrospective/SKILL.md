@@ -41,48 +41,49 @@ See [context notes](references/context.md).
 
 ## Process
 
-### Step 1: Set the Stage (5 min)
+### Step 1: Set the Stage
 
 Establish psychological safety. The retrospective must be a blame-free zone:
 - "We're here to improve the system, not to assign blame"
 - Check in: how is everyone feeling about the last sprint/phase?
 
-### Step 2: Gather Evidence (15 min)
+### Step 2: Gather Evidence
 
 What happened? Use facts and metrics before opinions:
+- delivered outcomes, user feedback, and what helped work succeed
 - incident timeline and postmortem findings
 - review findings that should have stopped the issue earlier
 - deployment or rollback decisions
 - bugs found in production
 - team coordination friction that was visible during execution
 
-### Step 3: Generate Insights (15 min)
+### Step 3: Generate Insights
 
 Why did it happen? Techniques:
-- **5 Whys**: For each problem, ask "why" five times to reach root cause
+- **5 Whys**: Trace causes using evidence; stop at an actionable explanation, not a fixed question count
 - **Fishbone diagram**: Categorize causes (people, process, tools, environment)
 - **Start/Stop/Continue**: What should we begin, stop, or keep doing?
 - **4Ls**: Liked, Learned, Lacked, Longed-for
 
 Stay at the system/process level. If a problem belongs in a concrete downstream skill (`pc-testing-strategy`, `pc-ci-cd`, `pc-incident-response`, `pc-tech-debt-management`), call that out explicitly.
 
-### Step 4: Decide Actions (10 min)
+### Step 4: Decide Actions
 
-Select 3-5 improvements (not 20). Each must be:
+Choose only evidence-backed changes the team can act on. One action is sufficient; zero is valid when no useful new action is supported and the reason is recorded. Each selected action must be:
 - **Specific**: "Add integration tests for payment flow" not "improve testing"
 - **Assigned**: One person owns it
-- **Timeboxed**: Deadline within the next sprint/phase
+- **Timeboxed**: An agreed target or explicit pending scheduling decision
 - **Measurable**: How will we know it's done?
 - **Routable**: It is clear whether the action should go through intake, planning, delivery, or evolution next
 
 Prefer actions that reduce recurrence risk and improve future handoffs instead of vague morale language.
 
-### Step 5: Close (5 min)
+### Step 5: Close
 
 - Recap the action items
 - Appreciations: call out what went well and who helped
 - Confirm which follow-up items become intake-ready work
-- Rate the retrospective itself (meta-improvement)
+- Change the review format only when it would address observed friction
 
 ## Outputs
 
@@ -90,11 +91,11 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] No more than 5 improvement actions chosen
-- [ ] Each action has an owner and a deadline
+- [ ] The selected actions are justified and manageable; no-action decisions explain why
+- [ ] Each action has an owner and agreed timing or an explicit scheduling decision
 - [ ] Each action has a measurable success signal
 - [ ] Each action identifies its next lifecycle destination
-- [ ] Actions from previous retrospective reviewed (were they completed?)
+- [ ] Previous actions reviewed when available; the first review does not invent history
 - [ ] Insights documented for future reference
 
 ## Anti-Patterns
@@ -103,7 +104,7 @@ Produce only declared outputs at their documented quality boundary.
 2. **Blame fest** -- Degenerates into finger-pointing. Facilitator must redirect to systems thinking.
 3. **Too many actions** -- 3 completed improvements > 10 abandoned ones. Be selective.
 4. **Skipping retro when things went well** -- Good sprints have learnings too. What made it good? How do we replicate it?
-5. **Same format every time** -- Rotate formats to prevent staleness (sailboat, timeline, mad/sad/glad).
+5. **Ceremony without a decision** -- Use the lightest format that explains the evidence and next action; do not rotate formats just for novelty.
 6. **Action items with no route back into the system** -- If follow-ups never become planned work, the retro is theater.
 
 ## Distribution

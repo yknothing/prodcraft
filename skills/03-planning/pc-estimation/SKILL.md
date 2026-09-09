@@ -10,7 +10,7 @@ metadata:
   - estimate-set
   prerequisites:
   - pc-task-breakdown
-  quality_gate: Each task has an estimate, confidence signal, and explicit assumption set suitable for sequencing or sprint commitment
+  quality_gate: Tasks have comparable estimate ranges or explicit unknowns, with units, assumptions, and evidence sufficient for the planning decision
   roles:
   - tech-lead
   - developer
@@ -35,32 +35,25 @@ See [context](references/context.md) and [anti-pattern](references/anti-patterns
 
 ## Process
 
-### Step 1: Normalize the Unit of Estimation
+### Step 1: Identify the Planning Decision
 
-Pick one estimation approach for the planning horizon: hours, ideal days, story points, or size buckets. Keep it consistent within the same plan.
+Estimate only enough to compare scope, sequence work, or assess a requested deadline. A single authorized short task may need only an uncertainty note unless the route requires more. Reuse accepted estimates when scope, dependencies, capacity, and execution assumptions still match.
 
-### Step 2: Estimate Task by Task
+### Step 2: State Units and Evidence
 
-For each task, record:
+Choose compatible units for the decision. Keep relative size separate from elapsed time; never add story points to hours or convert them without calibration. Use comparable completed work when available and state differences.
 
-- base size
-- confidence level
-- key assumptions
-- blockers or external dependencies that could widen the range
+Separate active work, external waiting, review/integration, and risk contingency. For agent-assisted execution, identify human review and tool/runtime dependencies; do not convert human days into agent minutes or assume speedup without comparable measured runs.
 
-If the estimate depends on an unresolved question, say so explicitly instead of guessing low.
+### Step 3: Size the Work With Visible Uncertainty
 
-### Step 3: Calibrate Against Risk and History
+For each relevant task, record a range or size bucket, confidence, assumptions, and evidence. Mark unresolved work unknown when a credible range is unavailable; name the fact or bounded investigation that would make it estimable. Do not manufacture a point estimate to fill the table.
 
-Adjust estimates when risk, novelty, or coordination cost makes the base number misleading. Compare against similar recent work when available.
+Include shared setup and dependencies once. Show sequencing constraints so parallel-looking tasks do not imply elapsed-time savings they cannot deliver.
 
-### Step 4: Publish the Estimate Set
+### Step 4: Hand Off the Planning Signal
 
-Package the estimates in a form sprint or milestone planning can consume directly. Distinguish between:
-
-- confident work
-- work with wide uncertainty
-- work that should not be scheduled until a risk or dependency is resolved
+Publish the `estimate-set` under its I/O contract. Distinguish schedulable from blocked or low-confidence work and state re-estimation triggers. The estimate informs `pc-sprint-planning`; it does not promise delivery or assign capacity.
 
 ## Outputs
 
@@ -68,8 +61,7 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] Every planned task has an estimate
-- [ ] Confidence or uncertainty is explicit
-- [ ] Key assumptions and blockers are recorded
-- [ ] Risk materially changes estimates where appropriate
-- [ ] The output is usable by downstream sprint or milestone planning
+- [ ] Relevant tasks have comparable ranges/buckets or explicit unknowns
+- [ ] Units, evidence, confidence, dependencies, and assumptions are visible
+- [ ] Active work and waiting are distinguished without invented agent-speed claims
+- [ ] The consumer can identify schedulable work and re-estimation triggers

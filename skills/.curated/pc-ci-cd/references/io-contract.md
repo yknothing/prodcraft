@@ -2,12 +2,12 @@
 
 ## Inputs
 
-- **source-code** -- produced by the preceding skill in the lifecycle
-- **test-strategy-doc** -- produced by the preceding skill in the lifecycle
-- **architecture-doc** -- produced by the preceding skill in the lifecycle
-- **task-list** -- produced by the preceding skill in the lifecycle
+- **source-code** -- Required repository content, existing workflows/build commands, and target artifacts; documentation-only repositories are valid inputs.
+- **test-strategy-doc** -- Required validation obligations, from a reviewed strategy or existing project policy. Route unresolved coverage decisions to testing strategy instead of inventing test types.
+- **architecture-doc** -- Conditional target-platform, dependency, compatibility, and deployment constraints; reuse existing documented facts when sufficient.
+- **task-list** -- Optional scope context. The approved request and release policy define which pipeline changes and external actions are authorized.
 
 ## Outputs
 
-- **ci-cd-pipeline** -- produced by this skill
-- **build-artifacts** -- produced by this skill
+- **ci-cd-pipeline** -- Triggers, required checks, artifact flow, platform/environment configuration, and release approvals. Record actual run evidence and unverified stages for review and delivery.
+- **build-artifacts** -- Only when a build/package ran: resulting candidate identity and provenance. Validation-only pipelines can produce check reports without inventing a deployable binary.

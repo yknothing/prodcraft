@@ -9,6 +9,6 @@
 
 ## Outputs
 
-- **execution-batch-plan** -- The next 2-5 minute step sequence, with files, commands, verification points, and stop conditions.
+- **execution-batch-plan** -- The next bounded step sequence, with affected files or behaviors, verification points, and stop conditions; no fixed step duration is required.
 - **execution-checkpoint** -- What the batch completed, how it was verified, what remains open, and the next recommended action.
 - **execution-state** -- Optional strict-mode checkpoint with replayable lifecycle, phase, and artifact-binding history.

@@ -2,15 +2,14 @@
 
 ## Inputs
 
-- **source-code**: The codebase under test, including its module boundaries and dependency graph.
-- **task-list**: The reviewed implementation slice or change scope that defines what must be verified now.
-- **architecture-doc**: System topology that determines integration points and test boundaries.
-- **api-contract**: API specifications (OpenAPI, GraphQL schema) that drive contract tests.
-- **intake-brief**: Must include `quality_target_context` with `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs`.
+- **intake-brief** -- Required approved scope and `quality_target_context`, including runtime, exposure, production target, non-targets, and evidence references.
+- **task-list** -- Required change/acceptance context from an existing reviewed task or equivalent accepted section. A separate task-list file is unnecessary unless the workflow requires it.
+- **source-code** -- Required for claims about an existing implementation. Before implementation, use accepted behavior/contracts and mark implementation-dependent checks as planned.
+- **architecture-doc**, **api-contract** -- Conditional on affected architecture or interface boundaries. Current accepted references can satisfy them; no public API artifact is needed for a target with no such surface.
 
-In a lifecycle-aware system, testing strategy must preserve upstream scope boundaries. Do not hide unsupported release-1 behavior, coexistence risks, or unresolved contract questions under a generic "we have E2E tests" answer.
+Preserve upstream scope, coexistence constraints, unsupported behavior, and explicit policy gates. Missing context blocks only the dependent test-design or execution decision.
 
 ## Outputs
 
-- **test-report**: Results from executing the test strategy, including coverage metrics, pass/fail status, and identified gaps.
-- **test-strategy-doc**: Written document describing the layers, coverage targets, CI integration plan, and test data approach.
+- **test-strategy-doc** -- Required for strategy work. Map each material risk to a check/layer, meaningful assertion, real versus isolated dependency, data/environment, acceptance condition, and owner or consumer. `pc-ci-cd` consumes the scheduling/gate decisions; `pc-e2e-scenario-design` consumes only the selected E2E risks. A compact table in an existing document can suffice.
+- **test-report** -- Conditional on actual execution. Record the source revision, environment, commands/checks, observed results, and unverified scope for `pc-release-management`. Do not manufacture a report of passing runs during strategy-only work. If a workflow requires execution evidence, the strategy alone cannot satisfy that obligation.

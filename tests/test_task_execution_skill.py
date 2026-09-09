@@ -22,12 +22,12 @@ class TaskExecutionSkillTests(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertTrue(path.exists(), path)
 
-    def test_manifest_registers_task_execution_as_critical_tested_skill(self):
+    def test_manifest_keeps_revised_task_execution_under_review(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
         entry = entries["pc-task-execution"]
 
         self.assertEqual("04-implementation", entry["phase"])
-        self.assertEqual("tested", entry["status"])
+        self.assertEqual("review", entry["status"])
         self.assertEqual("critical", entry["qa_tier"])
         self.assertEqual("routed", entry["evaluation_mode"])
         self.assertIn("benchmark_results_path", entry["qa"])

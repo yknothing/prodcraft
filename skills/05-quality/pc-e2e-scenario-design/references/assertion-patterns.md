@@ -17,14 +17,14 @@ The right assertion target depends on what the system contract actually is. Iden
 For operations that span multiple system boundaries, verify consistency across all of them — not just the last one.
 
 **Price / value consistency across a flow:**
-Assert that the value displayed at each stage matches. A price shown on a product page must match the cart, the checkout summary, and the stored order record. Discrepancies between stages are a common production bug that single-step tests never catch.
+Assert the documented value relationship at each stage, including legitimate discounts, tax, shipping, and rounding. Verify that the displayed final total matches the authoritative order result; do not require raw product and checkout prices to be identical when the contract transforms them.
 
 ```
 product page price → cart line item → checkout total → order confirmation → order record in DB
 ```
 
 **Inventory / quota consistency:**
-When an item is reserved or consumed, verify that the reservation is reflected system-wide. Adding an item to a cart should reduce available stock. Completing a purchase should finalize the reduction. Race conditions (two users purchasing the last unit) are common and only detectable with concurrency tests.
+Identify when the product reserves or consumes capacity: cart addition, checkout, or another documented transition. Verify the corresponding authoritative state and release behavior. Use targeted concurrency checks when two users can claim the same remaining capacity.
 
 **Ownership and permissions:**
 When a resource is created, verify the creator has the correct role. When a role is changed, verify the change propagates to all UI surfaces that depend on it — not just the page where the change was made.
@@ -36,22 +36,22 @@ When a resource is created, verify the creator has the correct role. When a role
 Single-user sequential tests cannot find concurrency bugs. Add targeted concurrency checks to the edge case layer.
 
 **Rapid repeated submission:**
-Submit the same form twice in quick succession. The system should create one record, not two. Optimistic UI should show a single pending state, not two.
+Where one user intent must be idempotent, submit it twice in quick succession and verify one authoritative effect. Distinguish retries from two valid independent intents; assert the product's pending-state behavior.
 
 **Concurrent resource access:**
-Simulate two sessions acting on the same resource simultaneously. Verify that the conflict is detected and resolved predictably — not silently corrupted. A lost-update (the last write wins without notifying the loser) is a common production bug.
+Simulate two sessions acting on one resource. Verify the declared conflict policy: rejection, merge, serialization, or intentional last-write-wins. Check that no required update is silently lost under that policy.
 
 **Inventory oversell:**
-For any resource with a finite quantity, test what happens when two users attempt to claim the last unit at the same time. One should succeed; the other should receive a clear error.
+Test competing claims for the last available unit. Verify the declared allocation policy and capacity invariant: a rejected, waitlisted, or backordered request must be represented accurately, not silently treated as an allocated unit.
 
 ---
 
 ## Failure Recovery Assertions
 
-Optimistic updates are a common source of silent data loss. When an action shows immediate feedback before server confirmation, assert that the rollback is correct when the server rejects it.
+When UI feedback precedes authoritative confirmation, distinguish confirmed rejection, an unsent operation, and an unknown commit outcome. Verify the product's rollback, pending/retry, or reconciliation policy for each state.
 
 **Optimistic update rollback:**
-Intercept the network request for a mutation and force a failure. The UI should revert to the pre-action state. The user should see a clear error. The underlying data should be unchanged.
+For a confirmed rejection before commit, verify the declared UI rollback or failed/pending state and that no unauthorized effect occurred. For a lost response, read authoritative state or reconcile using the operation identity; do not assume the server did not commit. An offline-first queue may retain pending work when that is the documented policy.
 
 **Partial failure:**
 For multi-step server operations (create + associate + notify), assert the system's behaviour when a mid-chain step fails. Is the prior step rolled back? Is the user informed? Is the partial state visible or hidden?
@@ -65,15 +65,17 @@ Expire the auth token while the user is mid-flow (between form fill and submit).
 
 Distinguish what should and should not survive different re-entry paths:
 
-| Re-entry type | What persists | What resets |
+| Re-entry type | What to establish | What the transition does not prove |
 |---|---|---|
-| Tab / page switch (SPA) | React state, localStorage | Network request cache (may) |
-| Soft reload (same session) | localStorage, sessionStorage | In-memory React state |
-| Hard reload / new tab | Server-persisted data, localStorage | sessionStorage, React state |
-| App background + foreground (mobile) | Server-persisted data, local DB | In-memory state |
-| App killed + relaunch | Server-persisted data, local DB | All in-memory state |
+| SPA route or tab switch | Which components, stores, and query caches survive | Server persistence or process restart |
+| Page reload, including hard reload | New document/JS state; same-tab sessionStorage normally survives | Clearing sessionStorage, local storage, or server data |
+| New tab or isolated browser context | Actual storage/session setup; opener cloning or shared origin storage may apply | A clean session merely because a new tab exists |
+| App background then foreground | Whether the process actually survived, froze, or terminated | Automatic loss of in-memory state |
+| Confirmed process termination and relaunch | Persisted source, restore behavior, and session policy | Server persistence if restoration came from a local store |
 
 For each re-entry type that matters to the product, write one test that explicitly takes that path and asserts the correct persistence boundary.
+
+Browser facts: same-tab `sessionStorage` survives reloads and can be copied from an opener ([MDN](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)); hidden, frozen, and discarded pages are distinct lifecycle states ([Chrome lifecycle guidance](https://developer.chrome.com/docs/web-platform/page-lifecycle-api)). Derive expected application state from its storage contract, not a generic navigation label.
 
 ---
 

@@ -10,7 +10,7 @@ metadata:
   - spec-doc
   prerequisites:
   - pc-requirements-engineering
-  quality_gate: Spec reviewed by engineering team, all open questions resolved
+  quality_gate: Spec reviewed for the next stage, blocking scope questions resolved, and remaining decisions assigned without implying implementation readiness
   roles:
   - product-manager
   - architect
@@ -45,7 +45,7 @@ See [context](references/context.md) and [anti-pattern](references/anti-patterns
 
 ### Step 1: Structure the Document
 
-Use a consistent template:
+Use the relevant template sections; mark inapplicable sections with a reason:
 - product / feature scope documents: `templates/prd.md`
 - technical design proposals: `templates/rfc.md`
 1. **Overview** -- One paragraph explaining what this is and why it matters
@@ -55,7 +55,7 @@ Use a consistent template:
 5. **Security Considerations** -- Threat vectors and mitigations
 6. **Testing Strategy** -- How to verify this works
 7. **Rollout Plan** -- How to ship safely
-8. **Open Questions** -- Unresolved items (must be empty before implementation)
+8. **Open Questions** -- Owner, decision stage, and the work each unresolved item blocks
 
 ### Step 2: Write for Your Audience
 
@@ -82,10 +82,10 @@ For every feature, explicitly state:
 
 ### Step 4: Review Cycle
 
-- **Self-review**: Re-read after 24 hours with fresh eyes
+- **Self-review**: Check ambiguity, contradictions, and unsupported assumptions
 - **Peer review**: Have another PM or architect review for completeness
 - **Engineering review**: Have the implementing team review for feasibility and questions
-- **Resolve all open questions** before approving for implementation
+- Resolve questions that block the next authorized stage. Carry architecture decisions to design with owners; implementation waits for decisions its scope depends on. A spec review does not waive a stricter workflow gate.
 
 ## Outputs
 
@@ -93,9 +93,9 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] All sections of the template completed
-- [ ] Open Questions section is empty (all resolved)
-- [ ] Engineering team has reviewed and has no blocking concerns
+- [ ] Applicable sections define the current contract without invented detail
+- [ ] Open questions identify owners, decision stages, and dependent work
+- [ ] Required reviewers approve the stated next stage; its blocking concerns are resolved
 - [ ] Spec is versioned and accessible to all team members
 
 ## Distribution

@@ -8,5 +8,5 @@
 
 ## Outputs
 
-- **observability-spec** -- The written boundary definition: what is instrumented, why it matters, and who consumes it
-- **execution-event-schema** -- Versioned event definitions for execution telemetry, including skill invocation and model usage fields
+- **observability-spec** -- Boundary, questions, source fields, privacy/cardinality constraints, consumers, and design/runtime verification status. Reuse an existing contract section where sufficient.
+- **execution-event-schema** -- Applicable log/metric/trace/event definitions or a versioned change to the existing contract. Include skill/model/usage fields only for AI boundaries; downstream monitoring consumes the actual supported signals.

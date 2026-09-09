@@ -10,8 +10,7 @@ metadata:
   outputs:
   - api-contract
   - api-documentation
-  prerequisites:
-  - pc-system-design
+  prerequisites: []
   quality_gate: API contract reviewed, backward compatibility verified, documentation complete
   roles:
   - architect
@@ -23,12 +22,11 @@ metadata:
 
 # API Design
 
-> APIs are contracts. Design them as carefully as you would a legal agreement -- they're hard to change once published.
+> Define what callers can rely on before changing either side of an interface.
 
 ## Context
 
-API design defines how system components communicate.
-
+API design specifies communication across an existing component or consumer boundary.
 See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
@@ -37,69 +35,37 @@ See [context](references/context.md) and [anti-pattern](references/anti-patterns
 
 ## Process
 
-### Step 1: Choose API Style
+### Step 1: Establish the Boundary
 
-| Style | Best For | Trade-offs |
-|-------|----------|------------|
-| REST | CRUD resources, public APIs | Simple, cacheable, but over/under-fetching |
-| GraphQL | Complex data graphs, mobile clients | Flexible queries, but complex caching |
-| gRPC | Service-to-service, high performance | Fast, typed, but not browser-native |
-| Event-driven | Async workflows, decoupling | Loose coupling, but eventual consistency |
+Identify callers, providers, use cases, trust, timing, and compatibility obligations. Reuse the current transport unless a concrete requirement justifies changing it. Preserve unresolved architecture decisions; do not choose transport to hide a consistency question.
 
-Choose style from the architecture and consumer boundary, not from fashion. If the architecture leaves a timing or consistency question unresolved, preserve that uncertainty in the contract assumptions instead of collapsing it into a premature transport decision.
+### Step 2: Specify the Actual Interface
 
-### Step 2: Design Resource Model
+Choose the relevant contract form:
 
-Map domain entities to API resources. Use nouns, not verbs:
-- `GET /orders` not `GET /getOrders`
-- `POST /orders/{id}/cancel` for actions on resources
-- Use consistent naming: plural nouns, kebab-case for multi-word
+| Interface | Specify |
+|---|---|
+| REST | Resources, methods, request/response schemas, status codes, and bounded list behavior |
+| GraphQL | Types, queries/mutations/subscriptions, nullability, errors, and query limits |
+| gRPC | Services, messages, status, deadlines, and streaming behavior |
+| Events | Producer/consumer, payload/version, delivery and ordering guarantees, duplicate handling, and failure/replay behavior |
+| In-process | Signatures/types, preconditions, return/error behavior, ownership, and side effects |
 
-For brownfield work, explicitly separate:
-- externally visible contract resources
-- legacy compatibility or adapter surfaces
-- internal implementation details that must not leak into the published contract
+Keep names consistent with the domain. Separate caller-visible behavior, legacy adapters, and internal implementation. For example, REST resource routes use `GET /orders`, not `GET /getOrders`; do not impose that naming rule on events or functions.
 
-### Step 3: Define Operations
+### Step 3: Define Observable Semantics
 
-For each resource: which CRUD operations? What request/response schemas? What status codes?
+For each operation or message, specify valid input, success, errors, and access rules at its actual trust boundary. Include timeouts, cancellation, retries, idempotency, pagination, or backpressure where callers depend on them. State bounds for collections; a small fixed enumeration need not invent pagination.
 
-Document contract boundaries explicitly:
-- what the API guarantees in release 1
-- what remains unsupported or out of scope
-- which fields or behaviors are conditional on unresolved upstream decisions
+Mark supported release behavior and non-goals. Assign an owner to any unresolved decision and identify the operation it blocks; a draft assumption does not authorize dependent implementation.
 
-### Step 4: Plan Versioning
+### Step 4: Plan Compatibility
 
-Choose a strategy before the first release:
-- **URL versioning**: `/v1/orders` (simple, explicit)
-- **Header versioning**: `Accept: application/vnd.api+json;version=1` (clean URLs)
-- **No versioning + evolution**: Additive changes only, never remove fields
+Compare old and new caller behavior. Define additive/breaking changes, schema or API version handling, and deprecation obligations for this interface. In brownfield work, state guarantees during coexistence. Keep migration choreography in the deployment/design owner unless it is part of the caller contract.
 
-For brownfield modernization, include backward-compatibility rules between legacy and new surfaces. If coexistence exists, define what callers can rely on during the coexistence window without committing to migration choreography.
+### Step 5: Produce and Review the Contract
 
-### Step 5: Design Error Handling
-
-Consistent error responses across all endpoints:
-```json
-{
-  "error": { "code": "VALIDATION_ERROR", "message": "Human-readable message", "details": [...] }
-}
-```
-
-### Step 6: Document with OpenAPI/Protobuf
-
-Write the contract specification before implementation. Use OpenAPI for REST, protobuf for gRPC. This enables contract testing and client code generation.
-
-### Step 7: Preserve Open Questions and Assumptions
-
-If architecture or requirements still leave uncertainty around:
-- synchronization timing
-- legacy-read behavior
-- tenant-specific compatibility rules
-- authorization edge cases
-
-record those as explicit contract assumptions, deferred fields, or open questions. Do not silently hard-code them into endpoint behavior.
+Use a checkable format already suited to the project: OpenAPI, GraphQL SDL, protobuf, event payload schemas, or typed function interfaces. Include representative valid/error examples and consumer expectations. Review with affected owners; implementation and contract tests consume the same version.
 
 ## Outputs
 
@@ -107,8 +73,8 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] API contract specified in OpenAPI/protobuf/GraphQL schema
-- [ ] Consistent naming, error handling, and pagination across all endpoints
-- [ ] Versioning strategy documented
-- [ ] Authentication and authorization specified per endpoint
-- [ ] Backward compatibility policy defined
+- [ ] Contract format matches the actual interface and its consumers
+- [ ] Operations/messages define data, success, failure, and applicable access/collection rules
+- [ ] Compatibility obligations and version evolution are explicit
+- [ ] Required reviewers approve the defined scope; unresolved decisions block only dependent work
+- [ ] Documentation and examples are sufficient for implementation and consumer verification

@@ -8,5 +8,5 @@
 
 ## Outputs
 
-- **architecture-doc** -- Written document covering the ranked quality attribute table, architectural style, component boundaries, communication patterns, deployment topology, significant ADRs, and the fitness functions that will validate the most important decisions. Must be understandable by any developer joining the team.
-- **component-diagram** -- C4 diagrams at context, container, and component levels. Use a tool that supports version control (Structurizr DSL, Mermaid, PlantUML).
+- **architecture-doc** -- The decision, ranked drivers, affected responsibilities and interfaces, actual runtime topology, significant ADRs, and relevant fitness functions. Reuse accepted context and keep detail proportional to the change. Must be understandable by a developer joining the work.
+- **component-diagram** -- A version-controlled diagram of the affected boundary and interactions. Use C4 levels only where they clarify the decision; a local module or skill need not invent deployable containers. Mermaid, PlantUML, or Structurizr DSL are options, not mandatory dependencies.

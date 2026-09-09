@@ -23,12 +23,11 @@ metadata:
 
 # Problem Framing
 
-> Turn an approved intake route into a crisp problem statement and a small set of decision-ready options.
+> Clarify the problem and the decision that prevents the approved route from continuing.
 
 ## Context
 
-Problem framing sits immediately after [pc-intake](../pc-intake/SKILL.md) when routing is clear but the work is still underspecified.
-
+Use after [pc-intake](../pc-intake/SKILL.md) when routing is clear but scope or direction is not.
 See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
 ## Inputs
@@ -37,76 +36,31 @@ See [context](references/context.md) and [anti-pattern](references/anti-patterns
 
 ## Process
 
-### Step 1: Read the Intake Route
+### Step 1: Consume the Current Route
 
-Review the intake brief before asking anything new.
+Read the approved outcome, constraints, risks, current artifacts, and next phase. Identify exactly which missing decision framing must resolve. Preserve settled choices; do not restart intake or repeat answered questions.
 
-Extract:
-- the requested outcome
-- the routing rationale
-- the risks and unknowns already identified
-- the downstream phase that this framing is meant to unlock
+### Step 2: Resolve Decision-Changing Unknowns
 
-### Step 2: Ask Only Decision-Changing Questions
+Ask only about success criteria, scope, non-goals, or dependencies that change the decision. Zero questions is valid when evidence suffices. Usually 1–3 questions suffice; exceed that only for material uncertainty, up to 5. If research is needed, hand off that question instead of extending an interview without evidence.
 
-Ask questions one at a time.
+### Step 3: Record the Problem Frame
 
-Default budget:
-- 1-3 questions in normal cases
-- up to 5 only if each additional answer materially changes scope, risk, or option selection
+State the problem, affected users/operators, constraints, non-goals, assumptions, and open questions. Carry `source_language`, `artifact_record_language`, and `user_presentation_locale` from intake. Canonical records remain English; use plain language and the user's locale for presentation.
 
-Focus on:
-- success criteria
-- hard constraints
-- non-goals
-- irreversible decisions or dependencies
+Preserve `quality_target_context`: an internal skill or local harness does not become a public service merely because an interface resembles HTTP. Note ownership, collaboration quality, or system shape only when they affect this decision.
 
-Do not restate intake questions unless the answer is still ambiguous or conflicting.
+### Step 4: Compare Viable Directions
 
-### Step 3: Write the Problem Frame
+In `options-brief`, compare materially different choices by fit, benefit, cost/risk, and rejection condition. If approved constraints leave one direction, explain exclusions and the remaining scope decision. Do not manufacture alternatives or reopen settled choices to reach a count.
 
-Produce a concise `problem-frame` covering:
-- problem statement
-- target users or operators
-- constraints
-- non-goals
-- assumptions
-- open questions
+Keep this at product/solution direction; system structure belongs to architecture.
 
-The canonical `problem-frame` record stays in English under current repo policy, but user-facing framing output may still be presented in the user's locale. Carry `source_language`, `artifact_record_language`, and `user_presentation_locale` forward explicitly.
+### Step 5: Recommend and Hand Off
 
-Carry `quality_target_context` forward explicitly when it affects scope, risk, or downstream QA. If the target is an agent-internal skill, host runtime tool, or local harness, do not let problem framing drift into a public service design unless the user chose that product target.
+Record `design-direction` with the selected option, rationale, preserved assumptions, and next concrete skill: `pc-market-analysis`, `pc-user-research`, `pc-feasibility-study`, or `pc-requirements-engineering` as appropriate.
 
-The problem frame must be sharp enough that downstream skills do not have to rediscover the core problem.
-Use plain language, present user-facing output in the user's requested language or the `user_presentation_locale`, and explicitly note system shape or collaboration quality when they materially affect the framing.
-
-### Step 4: Compare 2-3 Directions
-
-Produce an `options-brief` with 2-3 plausible directions.
-
-For each direction, note:
-- why it is viable
-- what it optimizes for
-- what it risks or defers
-- when it should be rejected
-
-Keep these at the level of product or solution direction, not low-level implementation detail.
-
-### Step 5: Recommend One Direction
-
-Record a `design-direction` that includes:
-- the recommended option
-- why it wins over the alternatives
-- what must remain open for downstream skills
-- the next lifecycle destination (`pc-market-analysis`, `pc-user-research`, `pc-feasibility-study`, or `pc-requirements-engineering`)
-
-When the route depends on team boundaries, ownership clarity, workflow friction, or architectural sprawl, say so directly as a collaboration quality or system shape concern instead of hiding it inside generic risk wording.
-
-### Step 6: Get Approval and Handoff
-
-Ask the user to confirm the framing and chosen direction.
-
-After approval, hand off the framing artifacts to the next skill named in the `design-direction`.
+Reuse explicit approval only when the conversation already approves this framing and direction. Obtain missing approval before handoff; a new scope or direction requires its own decision. Pass the accepted frame, options, and direction without asking the next skill to rediscover them.
 
 ## Outputs
 
@@ -114,8 +68,8 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] `problem-frame` states the problem, constraints, non-goals, assumptions, and open questions
-- [ ] `options-brief` compares 2-3 viable directions with explicit trade-offs
-- [ ] `design-direction` recommends one direction and names the next skill to invoke
-- [ ] The total question load stayed within the default budget or justified why it exceeded it
-- [ ] The user approved the framing output before handoff
+- [ ] `problem-frame` makes the problem, constraints, non-goals, assumptions, and questions explicit
+- [ ] `options-brief` compares real alternatives or explains why only one remains
+- [ ] `design-direction` records rationale, unresolved decisions, and the next skill
+- [ ] Questions stayed within the stated budget and changed a material decision
+- [ ] User approval covers the framing and direction before handoff

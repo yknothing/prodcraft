@@ -15,11 +15,11 @@
 
 ## Detailed Design
 
-<!-- The technical meat. Describe the proposal in enough detail that someone could implement it. -->
+<!-- Describe the decision and contract at the current stage. Include implementation detail only when the proposal decides it; preserve questions assigned to downstream architecture. -->
 
 ### Implementation Plan
 
-<!-- How would this be implemented? Phases, milestones, dependencies. -->
+<!-- If implementation planning is in scope, record phases, milestones, and dependencies. Otherwise identify the next design/planning owner and inputs without inventing a task plan. -->
 
 ## Drawbacks
 
@@ -31,7 +31,7 @@
 
 ## Unresolved Questions
 
-<!-- What needs to be answered before this RFC is accepted? -->
+<!-- Name owners, decision stages, and dependent work. Distinguish questions blocking this RFC's acceptance from those explicitly handed to a later stage. -->
 
 - [ ]
 

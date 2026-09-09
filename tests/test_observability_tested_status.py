@@ -14,11 +14,13 @@ class ObservabilityTestedStatusTests(unittest.TestCase):
         self.manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
         self.entries = {entry["name"]: entry for entry in self.manifest["skills"]}
 
-    def test_manifest_registers_observability_as_tested(self):
+    def test_manifest_registers_observability_as_review_candidate(self):
         entry = self.entries["pc-observability"]
 
         self.assertEqual("cross-cutting", entry["phase"])
-        self.assertEqual("tested", entry["status"])
+        self.assertEqual("review", entry["status"])
+        self.assertIn("historical_findings_path", entry["qa"])
+        self.assertIn("revalidation_plan_path", entry["qa"])
         self.assertEqual("critical", entry["qa_tier"])
         self.assertEqual("routed", entry["evaluation_mode"])
 

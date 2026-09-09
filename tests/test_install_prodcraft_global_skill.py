@@ -90,8 +90,8 @@ class InstallProdcraftGlobalSkillTests(unittest.TestCase):
             content,
         )
         self.assertIn("default entry system for software-development tasks", content)
-        self.assertIn("user explicitly chooses it", content)
-        self.assertIn("skipping Prodcraft preserves the same lifecycle guarantees", content)
+        self.assertIn("honor explicit alternatives", content)
+        self.assertIn("Preserve required workflow gates and strict-mode operator pins", content)
 
         state = json.loads(self.state_path.read_text(encoding="utf-8"))
         self.assertEqual("installed", state["status"])

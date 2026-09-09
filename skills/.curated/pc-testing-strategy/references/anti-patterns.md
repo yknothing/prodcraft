@@ -1,6 +1,6 @@
 # Anti-Pattern Notes
 
-1. **Ice cream cone**: Inverted pyramid with most tests at the E2E layer. Produces slow, brittle, expensive suites that nobody trusts.
+1. **Wrong-layer confidence**: Using expensive full-stack checks where a narrower test proves the same contract, or forcing a unit-test quota when the real risk is interaction between components.
 2. **Testing implementation, not behavior**: Tests that break on every refactor because they assert on internal method calls instead of outputs. Test the contract, not the wiring.
 3. **Shared mutable test state**: Tests that depend on execution order or shared database rows. Each test must set up and tear down its own state.
 4. **Ignoring flaky tests**: Treating intermittent failures as "just flaky" instead of fixing them. Flaky tests erode confidence in the entire suite.

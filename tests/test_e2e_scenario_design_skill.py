@@ -22,12 +22,14 @@ class E2EScenarioDesignSkillTests(unittest.TestCase):
         self.assertTrue(findings_path.exists(), findings_path)
         self.assertTrue(eval_strategy_path.exists(), eval_strategy_path)
 
-    def test_manifest_registers_skill_as_tested_routed(self):
+    def test_manifest_registers_skill_as_review_candidate_routed(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
         entry = entries["pc-e2e-scenario-design"]
 
         self.assertEqual("05-quality", entry["phase"])
-        self.assertEqual("tested", entry["status"])
+        self.assertEqual("review", entry["status"])
+        self.assertIn("historical_findings_path", entry["qa"])
+        self.assertIn("revalidation_plan_path", entry["qa"])
         self.assertEqual("standard", entry["qa_tier"])
         self.assertEqual("routed", entry["evaluation_mode"])
         self.assertIn("benchmark_results_path", entry["qa"])

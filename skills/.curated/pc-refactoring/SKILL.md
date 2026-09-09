@@ -1,6 +1,6 @@
 ---
 name: pc-refactoring
-description: Use when existing code is correct but structurally costly to change, and the team needs to improve clarity, coupling, duplication, or seam quality without changing externally observable behavior.
+description: Use when existing structure creates a concrete maintenance cost or risk and a bounded change can improve it while preserving externally observable behavior.
 metadata:
   phase: 04-implementation
   inputs:
@@ -10,9 +10,8 @@ metadata:
   - tech-debt-registry
   outputs:
   - source-code
-  prerequisites:
-  - pc-feature-development
-  quality_gate: Behavior remains stable under tests, structural complexity is reduced, and the refactor stays narrow enough for confident review
+  prerequisites: []
+  quality_gate: The targeted maintenance problem improves with explicit before/after evidence while behavior and compatibility remain stable
   roles:
   - developer
   - tech-lead
@@ -42,30 +41,25 @@ See [context](references/context.md) and [anti-pattern](references/anti-patterns
 
 ## Process
 
-### Step 1: Choose One Structural Problem
+### Step 1: Name the Cost and the Preservation Boundary
 
-Pick a focused target such as duplication, oversized functions, unstable seams, hidden dependencies, or naming that obscures intent. Define the invariant that must not change.
+Identify one costly change path, duplication problem, hidden dependency, or unclear responsibility. Show where it causes work or risk and state what must stay stable: results, errors, ordering, side effects, persisted data, and public interfaces as applicable. Existing code need not have been produced by Prodcraft.
 
-Avoid combining unrelated cleanup goals into one refactor.
+Compare the smallest local change with leaving the code alone. A new layer, generic framework, or future extension point needs a present benefit. Do not mix a behavior correction into structural work; route that separately when approved.
 
-### Step 2: Strengthen the Behavioral Safety Net
+### Step 2: Establish Relevant Behavioral Protection
 
-Before moving code, verify the tests protect the behavior that matters. Add characterization or regression coverage first if the current suite would allow a silent behavior change.
+Inspect existing tests and real callers. Add characterization for uncovered preservation boundaries before moving code. Preserve known behavior, including unusual edge cases, unless a separate change is approved. If evidence is insufficient, narrow the transformation or report the blocked boundary rather than claiming equivalence.
 
-### Step 3: Refactor in Reversible Steps
+### Step 3: Change in Reversible Increments
 
-Make the change as a sequence of small transformations:
+Rename, move, extract, inline, or consolidate only what addresses the chosen problem. Keep a usable rollback point and verify at each meaningful transformation; dependent moves can share one coherent check. Avoid updating tests merely to endorse changed behavior. Test doubles may isolate external dependencies, not replace the code being refactored.
 
-- rename for clarity
-- extract or inline with tests green
-- move responsibilities to cleaner seams
-- remove duplication after the new shape is proven
+### Step 4: Compare the Result With the Original Cost
 
-Run the relevant tests after every step.
+Show the same concrete maintenance operation before and after: fewer places to edit, a clearer dependency direction, or a directly testable boundary. Quantify a relevant metric when useful; do not require every complexity, coupling, or line-count metric to decrease. Explain any added indirection and its payoff. If the benefit does not justify it, simplify or revert the refactor.
 
-### Step 4: Prove the Design Actually Improved
-
-Before review, state what got better: smaller surface area, clearer boundaries, lower duplication, simpler control flow, or safer extension points. If you cannot name the gain, the change is probably unnecessary.
+Hand off the changed source with preservation evidence, the demonstrated benefit, and any unverified scope. Tests support the checked boundaries; they do not prove universal equivalence.
 
 ## Outputs
 
@@ -73,11 +67,10 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] Tests prove behavior stayed stable
-- [ ] The refactor addresses a concrete structural problem
+- [ ] One concrete maintenance cost or risk has improved with before/after evidence
+- [ ] Relevant preservation boundaries are checked and unverified scope is explicit
 - [ ] The change is narrow, reviewable, and reversible
-- [ ] Complexity, coupling, or duplication is measurably lower
-- [ ] No opportunistic feature work is mixed into the refactor
+- [ ] Added structure is justified and no unapproved behavior change is hidden in it
 
 ## Distribution
 

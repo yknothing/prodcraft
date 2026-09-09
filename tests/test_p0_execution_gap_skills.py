@@ -25,7 +25,7 @@ class P0ExecutionGapSkillTests(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertTrue(path.exists(), path)
 
-    def test_manifest_registers_both_p0_skills_as_critical_tested_or_better_routed(self):
+    def test_manifest_keeps_revised_debugging_and_verification_under_review(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
 
         systematic = entries["pc-systematic-debugging"]
@@ -33,8 +33,11 @@ class P0ExecutionGapSkillTests(unittest.TestCase):
 
         self.assertEqual("04-implementation", systematic["phase"])
         self.assertEqual("cross-cutting", verification["phase"])
-        self.assertEqual("tested", systematic["status"])
-        self.assertEqual("production", verification["status"])
+        self.assertEqual("review", systematic["status"])
+        self.assertIn("revalidation_plan_path", systematic["qa"])
+        self.assertIn("historical_revalidation_plan_path", systematic["qa"])
+        self.assertEqual("review", verification["status"])
+        self.assertIn("revalidation_plan_path", verification["qa"])
         self.assertEqual("critical", systematic["qa_tier"])
         self.assertEqual("critical", verification["qa_tier"])
         self.assertEqual("routed", systematic["evaluation_mode"])
@@ -86,7 +89,7 @@ class P0ExecutionGapSkillTests(unittest.TestCase):
                 conditional_skills = {item["skill"] for item in entries[phase_id]["conditional"]}
                 self.assertIn("pc-verification-before-completion", conditional_skills)
 
-    def test_p0_skills_include_quick_reference_discipline_tables(self):
+    def test_p0_skills_preserve_claim_limits_and_safe_causal_checks(self):
         systematic = (
             REPO_ROOT / "skills" / "04-implementation" / "pc-systematic-debugging" / "SKILL.md"
         ).read_text(encoding="utf-8")
@@ -94,9 +97,10 @@ class P0ExecutionGapSkillTests(unittest.TestCase):
             REPO_ROOT / "skills" / "cross-cutting" / "pc-verification-before-completion" / "SKILL.md"
         ).read_text(encoding="utf-8")
 
-        self.assertIn("| Failed fix count | Required response |", systematic)
-        self.assertIn("## Rationalization Prevention", systematic)
-        self.assertIn("| Excuse | Required response |", systematic)
+        self.assertIn("Count failed hypotheses/corrections, not file edits or probe cleanup", systematic)
+        self.assertIn("A preserved matching pre-fix run can supply the negative control", systematic)
+        self.assertIn("not a verified fix", systematic)
+        self.assertIn("## Stop Signals", systematic)
 
         self.assertIn("| Claim | Requires now | Not sufficient |", verification)
         self.assertIn('the release is ready', verification)

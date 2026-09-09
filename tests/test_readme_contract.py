@@ -9,7 +9,8 @@ from urllib.parse import unquote
 REPO_ROOT = Path(__file__).resolve().parents[1]
 README = REPO_ROOT / "README.md"
 CHINESE_README = REPO_ROOT / "README.zh-CN.md"
-LOCALIZED_COMPANION_DOCS = {CHINESE_README}
+CHINESE_DESIGN = REPO_ROOT / "docs" / "architecture" / "2026-09-08-skill-execution-design.zh-CN.md"
+LOCALIZED_COMPANION_DOCS = {CHINESE_README, CHINESE_DESIGN}
 TEXT_FILE_SUFFIXES = {".json", ".md", ".py", ".yaml", ".yml"}
 SKIPPED_DIRS = {".git", ".pytest_cache", "__pycache__", "build"}
 CANONICAL_SCAN_ROOTS = (
@@ -105,7 +106,7 @@ class ReadmeContractTests(unittest.TestCase):
                 self.assertIsNone(CJK_RE.search(path.read_text(encoding="utf-8")))
 
     def test_readme_relative_links_resolve(self):
-        for source in (README, CHINESE_README):
+        for source in (README, *sorted(LOCALIZED_COMPANION_DOCS)):
             text = source.read_text(encoding="utf-8")
             for raw_target in MARKDOWN_LINK_RE.findall(text):
                 if re.match(r"^[a-z][a-z0-9+.-]*:", raw_target, re.IGNORECASE):

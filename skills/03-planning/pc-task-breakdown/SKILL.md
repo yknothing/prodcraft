@@ -1,6 +1,6 @@
 ---
 name: pc-task-breakdown
-description: Use when reviewed architecture or API contracts must be decomposed into implementation-ready work items, especially when sequencing, reversible brownfield increments, dependency mapping, and vertical slices must be explicit before coding begins.
+description: Use when an approved outcome needs implementation-ready tasks, acceptance evidence, and dependency ordering, including small changes within existing boundaries and reversible brownfield increments.
 metadata:
   phase: 03-planning
   inputs:
@@ -10,9 +10,8 @@ metadata:
   outputs:
   - task-list
   - dependency-graph
-  prerequisites:
-  - pc-system-design
-  quality_gate: All tasks completable in 1-3 days, dependencies mapped, no orphan tasks
+  prerequisites: []
+  quality_gate: Each task delivers a bounded outcome with acceptance evidence, real dependencies, and no orphan work
   roles:
   - tech-lead
   - developer
@@ -23,7 +22,7 @@ metadata:
 
 # Task Breakdown
 
-> Break big work into small, shippable pieces. If a task takes more than 3 days, it's not broken down enough.
+> Break work into the smallest independently reviewable outcomes, preserving real dependencies and a usable next step.
 
 ## Context
 
@@ -39,19 +38,14 @@ See [context](references/context.md) and [anti-pattern](references/anti-patterns
 
 ### Step 1: Identify Work Packages
 
-From the architecture, identify major work areas:
-- Backend API endpoints
-- Data model and migrations
-- Frontend components and pages
-- Infrastructure and deployment
-- Integration points and third-party services
+Read the approved outcome and affected boundaries from current artifacts or source references. Require reviewed architecture decisions only where the change or approved workflow needs them. Identify work packages by observable behavior or contract boundary; do not invent backend, frontend, database, or infrastructure work when the target does not need it.
 
 For brownfield work, identify work packages around **reversible seams**, coexistence adapters, compatibility boundaries, and characterization/regression safety rather than assuming replacement-only implementation.
 
 ### Step 2: Decompose into Tasks
 
 Each task should be:
-- **Completable in 1-3 days** (if longer, decompose further)
+- **Bounded**: use 1-3 days as a sizing ceiling, not a minimum; a small change may be one short task
 - **Independently testable** (has a clear "done" state)
 - **Single-responsibility** (one concern per task)
 
@@ -64,28 +58,21 @@ Where possible, decompose into **vertical slices** that preserve user-visible or
 
 ### Step 3: Map Dependencies
 
-Identify which tasks must complete before others can start:
-- Data model before API, API before frontend
-- Core functionality before edge cases
-- Infrastructure before deployment
+Add a dependency only when a task consumes an output or decision another task must produce. Record that dependency and why it blocks progress. Layer names alone do not establish execution order: an agreed contract can permit parallel implementation, while a risky edge case may need resolving first.
 
-Visualize as a DAG (directed acyclic graph) to identify critical path and parallelism opportunities.
+For a multi-task plan, represent dependencies as a DAG to identify the critical path. A small plan can use an inline list of edges; one task can record no dependencies. Avoid a separate diagram that adds no decision value.
 
 Flag tasks that are blocked by unresolved upstream questions. Do not hide those blockers inside optimistic sequencing.
 
 ### Step 4: Define Done Criteria
 
-Each task has explicit "done" criteria:
-- Code written and self-reviewed
-- Tests written and passing
-- Documentation updated (if applicable)
-- Ready for code review
+For each task, state the observable outcome, affected boundary, acceptance evidence, and scope exclusions. Use code, tests, visual inspection, or document/contract checks according to the work. Add rollback conditions when the change has material side effects. A completed checklist without the requested behavior is not done.
 
 ### Step 5: Sequence for Optimal Flow
 
 Order tasks to:
 1. Reduce blocked time (dependencies resolved early)
-2. Enable parallel work (independent tasks can happen simultaneously)
+2. Enable parallel work only when its coordination cost is lower than the delay it avoids
 3. Deliver value incrementally (shippable slices, not layers)
 4. Preserve rollback and coexistence safety when working in brownfield systems
 
@@ -105,9 +92,9 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] Every task is 1-3 days of effort
+- [ ] Every task is small enough to review and verify independently; short work was not expanded to meet a time quota
 - [ ] Dependencies mapped and no circular dependencies
 - [ ] Critical path identified
 - [ ] Each task has clear done criteria
-- [ ] Tasks are sequenced for maximum parallelism
+- [ ] Sequencing respects actual dependencies, risk, and coordination cost
 - [ ] Brownfield tasks preserve coexistence and reversibility constraints where applicable

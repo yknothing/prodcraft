@@ -1,6 +1,6 @@
 ---
 name: pc-delivery-completion
-description: Use when verified implementation work must be merged, handed off through a PR, preserved for later, or explicitly discarded with a recorded outcome instead of an ambiguous "done".
+description: Use when implementation work needs an explicit merge, PR handoff, preservation, or authorized discard outcome, including incomplete or failing work that must be preserved without a completion claim.
 metadata:
   phase: 06-delivery
   inputs:
@@ -28,7 +28,7 @@ metadata:
 
 # Delivery Completion
 
-> Turn verified work into an explicit integration decision: land it, open a PR, keep it for later, or discard it deliberately.
+> Give work an explicit outcome with the evidence and authority that outcome requires.
 
 ## Context
 
@@ -42,18 +42,20 @@ See [context](references/context.md) and [anti-pattern](references/anti-patterns
 
 ## Process
 
-### Step 1: Confirm Fresh Verification Evidence
+### Step 1: Identify the Outcome and Evidence Boundary
 
-Do not present completion options until you have current evidence that the work is actually passing. If merge-base drift, dependency updates, or additional commits changed the verified surface, re-run the necessary verification first.
+Read the requested outcome before deciding what verification is needed. Merge, landing, or a ready-for-review PR requires current passing evidence. If the verified surface changed, re-run the affected checks before that action.
 
-When strict execution state is active, require a fresh `terminal-authorized`
+When strict execution state is active, a successful completion claim requires a fresh `terminal-authorized`
 result for the canonical state and operator-pinned route and completion digests. Do not substitute
 `--artifact-instance`, `gate-authorized`, a historical snapshot, or an earlier
 terminal result from a different worktree state.
 
+Keeping work for later or explicitly discarding it does not require passing tests. Record current failures, incomplete checks, and remaining obligations without marking the work successfully completed. A preservation record does not satisfy a strict terminal gate or authorize deletion of its evidence. An explicitly authorized draft PR may carry the same incomplete status; do not describe it as ready to merge.
+
 ### Step 2: Determine the Completion Target
 
-Clarify:
+Read the user's existing instructions and repository policy first. Resolve only missing facts:
 
 - the intended base branch or integration target
 - whether the work should land now or wait for later handling
@@ -62,16 +64,18 @@ Clarify:
 
 If the user asks to discard work that affects an active hotfix, incident follow-up, or team-owned branch, escalate before deleting anything.
 
-### Step 3: Present Exactly Four Completion Options
+### Step 3: Reuse the Authorized Outcome or Resolve the Choice
 
-Present these four outcomes, with the concrete branch names or paths filled in:
+If the user already authorized a concrete outcome and target, proceed to Step 4 after verification. Do not ask them to choose it again. Carry only the authorized actions: commit, push, PR creation, merge, and deployment are separate actions. A request to commit and push does not imply creating a PR or deploying.
+
+If the outcome is unresolved, present the applicable choices with concrete branch names or paths:
 
 1. Merge or land to the integration branch now
 2. Push and create a PR for review or later release handling
 3. Keep the branch or worktree as-is for later
 4. Discard the work
 
-Do not offer vague "what do you want to do next?" prompts. Completion should end in an explicit outcome.
+Exclude choices forbidden by repository policy. Do not force a destructive option into a routine handoff. If the task only requests local edits or a review, preserve the work and record that boundary without an unnecessary integration question.
 
 ### Step 4: Execute the Chosen Outcome
 
@@ -84,8 +88,8 @@ Do not offer vague "what do you want to do next?" prompts. Completion should end
 
 #### Option 2: Push and Create a PR
 
-- push the branch
-- create the PR with a concise summary and explicit verification evidence
+- push the branch when authorized
+- create a PR only when that action is authorized or required by the agreed integration path; include a concise summary and explicit verification evidence
 - record the PR path or remote branch name
 - hand off to `pc-release-management` when the change now needs coordinated release handling
 
@@ -115,7 +119,7 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] Fresh verification evidence was checked before offering completion options
+- [ ] Evidence and authorization match the chosen outcome; incomplete preservation or discard is not reported as successful implementation
 - [ ] Exactly one completion outcome was chosen and recorded
 - [ ] Discard path requires typed confirmation
 - [ ] Cleanup behavior matches the chosen outcome

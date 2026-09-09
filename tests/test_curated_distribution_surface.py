@@ -459,7 +459,8 @@ class CuratedDistributionSurfaceTests(unittest.TestCase):
         content = (CURATED_DIR / "pc-prodcraft" / "SKILL.md").read_text(encoding="utf-8")
 
         self.assertIn("default entry system for software-development tasks", content)
-        self.assertIn("skipping Prodcraft preserves the same lifecycle guarantees", content)
+        self.assertIn("honor explicit alternatives", content)
+        self.assertIn("Preserve required workflow gates and strict-mode operator pins", content)
 
     def test_curated_prodcraft_skill_defends_gateway_self_location_boundary(self):
         content = (CURATED_DIR / "pc-prodcraft" / "SKILL.md").read_text(encoding="utf-8")

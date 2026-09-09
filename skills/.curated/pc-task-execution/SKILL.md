@@ -1,6 +1,6 @@
 ---
 name: pc-task-execution
-description: Use when an approved task slice already exists and the team needs a 2-5 minute execution plan with checkpoints, stop conditions, and batch discipline before or during implementation, especially when brownfield seams or review-sensitive changes make ad hoc execution unsafe.
+description: Use when an approved task needs bounded execution batches, checkpoints, or stop conditions because dependencies, review risk, or brownfield seams make direct execution difficult. Skip the wrapper when the next action and proof are already clear.
 metadata:
   phase: 04-implementation
   inputs:
@@ -57,13 +57,13 @@ Pick one approved task or one thin vertical slice from the `task-list`. Restate:
 - what boundary must not move
 - what proof will show the batch is complete
 
-If the task still reads like a multi-hour blob instead of a sequence of verifiable steps, split it before proceeding.
+If the next action and proof are already clear, execute them through the relevant implementation skill. Use this wrapper only when batching resolves a real coordination, dependency, or checkpoint problem. Do not recreate the upstream task list.
 
 ### Step 2: Build the Next Execution Batch
 
 Convert the current slice into a short batch of steps. Each step should usually be:
 
-- 2-5 minutes of work
+- short enough to observe one meaningful result; 2-5 minutes is a planning heuristic, not a timing requirement
 - independently checkable
 - tied to a file, command, or concrete behavior change
 
@@ -75,6 +75,8 @@ For each step, record:
 - stop condition
 
 Do not generate a long speculative script for the whole day. Produce only the next executable batch.
+
+Keep accepted constraints and evidence as references to their existing artifacts. Crossing a batch boundary does not require another user approval when scope and authority are unchanged.
 
 ### Step 3: Choose the Right Implementation Discipline Per Step
 
@@ -96,7 +98,7 @@ Name what should pause execution immediately:
 - failing verification that contradicts the current plan
 - evidence that the problem belongs upstream in architecture or requirements
 
-If a blocker hits, stop and either:
+If a blocker hits, pause the dependent step and continue independent authorized work when useful. Resolve the blocker by choosing the smallest action:
 
 - clarify the task
 - invoke `pc-systematic-debugging`
@@ -125,7 +127,7 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] The current slice is narrower than the parent `task-list` item and clear enough to execute now
+- [ ] The current batch is clear enough to execute; it may equal a small parent task without artificial subdivision
 - [ ] Each batch step has an expected output and verification method
 - [ ] Stop conditions are explicit
 - [ ] The selected implementation discipline matches the batch type

@@ -12,7 +12,7 @@ metadata:
   - bug-fix-report
   - course-correction-note
   prerequisites: []
-  quality_gate: Root cause is evidenced, fix causality is proven both ways, the chosen fix is the smallest safe change, regression coverage exists, and structural mismatches are escalated instead of patched around
+  quality_gate: Fixed claims require causal and regression evidence; limited diagnoses identify missing proof and resumption conditions, with upstream contradictions routed explicitly
   roles:
   - developer
   - tech-lead
@@ -24,21 +24,12 @@ metadata:
 
 # Systematic Debugging
 
-> No code fix without an evidenced root cause for the specific behavior being changed.
-
-## The Iron Law
-
-```
-NO FIX WITHOUT A REPRODUCED FAILURE AND A FALSIFIABLE ROOT CAUSE
-```
-
-If you cannot state what is wrong, predict what evidence would prove you wrong, and reproduce the failure on demand, you are guessing -- and a guess that happens to make the symptom disappear is still a guess.
+> Do not claim a code fix without an evidenced cause and verification of the changed behavior.
 
 ## Context
 
-Systematic debugging turns a bug report, failing test, or bad runtime behavior into a defensible fix.
-
-See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
+Turn a failure into a defensible correction or an explicit diagnosis limit.
+See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes. Use [gotchas](references/gotchas.md) when a matching failure pattern appears.
 
 ## Inputs
 
@@ -46,70 +37,43 @@ See [context](references/context.md) and [anti-pattern](references/anti-patterns
 
 ## Process
 
-### Step 1: Read the Evidence You Already Have
+### Step 1: Establish Evidence and Safety
 
-Before forming any theory:
+Read the complete error and cause chain. Confirm the observed revision/artifact, environment, and configuration using existing identity and runtime evidence. Compare recent code, dependency, and configuration changes.
 
-1. Read the **entire** error message and the **full** stack trace, not the first line. Error text frequently names the exact cause, file, and line -- treating it as noise is the single most common debugging failure.
-2. Confirm you are observing the code you think you are: right branch, right environment, rebuilt artifacts, cleared caches, correct deploy target. If a print statement or deliberate syntax error at the failure site does not show up, stop -- you are debugging the wrong code.
-3. Check what changed recently: `git log`/`git diff` around the failure window, dependency bumps, config and environment changes.
+Separate code identity from reachability: a missing log marker can mean stale deployment, wrong logging, or a current code path that was never reached. Preserve observations while distinguishing these hypotheses.
 
-### Step 2: Pin the Failure Boundary
+Live user impact routes through `pc-incident-response` for containment first. Use passive evidence before probes. Replays, fault injection, restarts, cache changes, or removing a fix require an authorized environment where their effects are safe; do not restore a harmful production condition merely to prove causality.
 
-Write down concretely: what fails, where it fails, expected vs actual behavior, and how to trigger it. Classify whether the failure is local, integration-boundary, or release-boundary sensitive. If the symptom plausibly has lineage, invoke `pc-bug-history-retrieval` now -- use matches to narrow the search, never to skip the investigation.
+### Step 2: Define and Reproduce the Failure
 
-### Step 3: Reproduce, Then Minimize
+Record expected versus actual behavior, affected boundary, trigger, and observed frequency. If history may help, use `pc-bug-history-retrieval` as a hypothesis source, not proof.
 
-Get a reproduction you can run on demand -- a failing automated test when possible, a deterministic manual repro otherwise. Then shrink it: smaller input, fewer components, shorter path to failure. A minimal repro is usually most of the diagnosis.
+Build the smallest safe reproducer: an automated test where possible, otherwise a repeatable manual procedure. For intermittent failures, control ordering/state or measure a justified failure-rate baseline; an unexplained green rerun is not resolution. Choose a recipe from [techniques](references/techniques.md) only when needed.
 
-- Regression with a known-good past? Bisect the history (`git bisect` or manual halving).
-- Works in one environment, fails in another? Diff the two configurations and halve the differences.
-- Failure is intermittent? Treat the flakiness itself as the bug. Do not rerun until green -- make the race, ordering, or state dependency deterministic first.
+When reproduction or active verification is unsafe or unavailable, preserve containment and current evidence. Report the diagnosis as limited or unverified, the missing discriminator, owner, and safe resumption condition. This completes a bounded investigation report, not a verified fix.
 
-Concrete recipes are in [references/techniques.md](references/techniques.md). Do not move to fixes while the reproduction is unstable.
+### Step 3: Test a Falsifiable Hypothesis
 
-### Step 4: Run the Hypothesis Loop
+State “X causes Y because Z,” predict supporting and disproving observations, and run the cheapest discriminating check. Inspect the real boundary values before changing the theory. Record hypothesis, prediction, and result in a compact journal; vary one suspected cause per experiment.
 
-One hypothesis at a time, cheapest test first:
+A failed correction triggers reassessment. After repeated failures against the same symptom, pause patching and review the causal model and fix layer. Count failed hypotheses/corrections, not file edits or probe cleanup. Produce `course-correction-note` only when evidence identifies a requirements, architecture, or planning contradiction. An access or reproduction gap alone is not an upstream design defect.
 
-1. State a single falsifiable hypothesis: "X causes Y because Z."
-2. Predict what a specific observation will show if the hypothesis is true -- and what would disprove it.
-3. Test with the least invasive instrument: read the code path, then add targeted logging or assertions at component boundaries, capturing **actual runtime values** rather than reasoning from memory of the code.
-4. Record hypothesis, prediction, and result in a short debug journal before the next iteration. Change one variable per experiment.
+### Step 4: Choose the Smallest Causal Correction
 
-If evidence disproves the hypothesis, discard it fully -- do not stack a patch for the old theory under a new one.
+Explain the cause using the observed mechanism and relevant counterevidence. Preserve the accepted scope and compatibility boundary. For a local defect, reuse the reproducer as TDD regression protection before implementation expands. For an upstream contradiction, hand off its evidence and required decision before dependent edits.
 
-### Step 5: Confirm Root Cause and Classify It
+Distinguish a permanent correction from a workaround. A different failure after a change is a new hypothesis to investigate; it does not by itself prove that the first fix worked or should be reverted.
 
-State the narrowest cause that explains **all** observed evidence, not just the headline symptom. Then classify:
+### Step 5: Verify the Claim
 
-- **Local defect** -- proceed to Step 6.
-- **Structural mismatch** (requirements, architecture, or planning contradiction) -- stop patching, produce a `course-correction-note`, and route upstream.
+In a safe isolated comparison, show the failure on the unfixed revision and success on the corrected revision, holding relevant inputs/environment constant. A preserved matching pre-fix run can supply the negative control; do not repeat destructive actions or disturb unrelated work. Run the affected surrounding checks.
 
-Escalation rule across failed fix attempts:
+If the negative control does not fail, return to the hypothesis loop. If causality cannot be checked, narrow the report to diagnosis or mitigation with explicit verification gaps; do not label it fixed. Clean up temporary probes and identify retained instrumentation.
 
-| Failed fix count | Required response |
-|------------------|-------------------|
-| first | gather better evidence before changing more code |
-| second | challenge the current hypothesis in writing and identify what evidence would falsify it |
-| third or more | stop local patching, assume a structural mismatch until disproven, and prepare `course-correction-note` |
+### Step 6: Hand Off the Result
 
-Distinguish outcomes precisely: the **same** failure persisting after a fix means the hypothesis was wrong; a **new, different** failure appearing often means the first fix was correct and a second bug is now exposed. The first resets your hypothesis; the second is progress -- start a fresh loop for the new failure instead of reverting blindly.
-
-### Step 6: Fix Once, Prove Causality Both Ways
-
-Define the smallest safe change for the verified cause: what changes, what must not change, which brownfield seam or compatibility boundary stays protected, and whether this is a permanent fix or a declared workaround. Hand off to `pc-tdd` so a reproducing test exists before implementation expands.
-
-Then prove causality in both directions:
-
-- **Fix applied** -- the original reproduction passes, plus the surrounding test scope.
-- **Fix removed** -- the original failure returns.
-
-If removing the fix does not bring the failure back, you have not fixed the cause; something else moved. Return to Step 4.
-
-### Step 7: Record the Result
-
-Produce a `bug-fix-report`: reproduction, root cause, confirming evidence, fix boundary, regression protection, and any follow-up debt if a workaround shipped. Keep the debug journal reference when the session had multiple attempts -- failed hypotheses are lineage for the next debugger.
+Produce `bug-fix-report` with status, evidence/reproducer, cause or remaining hypotheses, correction/workaround boundary, regression results, containment, and next action. Review and verification consume the same revision and evidence. Keep failed hypotheses only when they explain the remaining uncertainty or prevent repeated work.
 
 ## Outputs
 
@@ -117,38 +81,12 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] The full error output was read and the failure is reproducible on demand
-- [ ] The observed code path is confirmed current (no stale build, cache, or wrong environment)
-- [ ] Root cause is stated as a falsifiable explanation that accounts for all evidence, not a symptom label
-- [ ] Historical matches were checked when the symptom plausibly had lineage
-- [ ] Fix causality is proven both ways: repro passes with the fix, fails again without it
-- [ ] Regression or characterization protection is defined before broader implementation proceeds
-- [ ] Structural mismatches are escalated through `course-correction-note` instead of patched around
+- [ ] Observed revision, environment, failure boundary, and evidence limits are explicit
+- [ ] A fixed claim has a falsifiable cause, matching negative/positive evidence, and relevant regression checks
+- [ ] Diagnosis-only or mitigation outcomes state what is unverified and how verification can resume
+- [ ] Experiments respect the actual environment and authority; containment is not root-cause proof
+- [ ] Upstream contradictions route through `course-correction-note`; other gaps have an owned next action
 
-## Rationalization Prevention
+## Stop Signals
 
-When one of these thoughts appears, treat it as a stop signal:
-
-| Excuse | Required response |
-|--------|-------------------|
-| "I'll try the obvious fix first and investigate if it fails" | Stop. Return to reproduction and evidence gathering before changing code. |
-| "The error message is generic, no point reading the rest" | Read all of it, including the trace bottom and caused-by chain. It usually names the culprit. |
-| "I saw this bug before, so I know the cause" | Use history to narrow the search, then prove the current root cause anyway. |
-| "Rollback fixed it, so we know what happened" | Containment is not explanation; identify why the bad behavior existed. |
-| "The repro is flaky, but I can still patch around it" | Stabilize the failure boundary or instrument it before writing the fix. |
-| "Rerunning made it pass, so it's fine" | An unexplained pass is the same bug waiting; find the nondeterminism. |
-| "This is probably just environment weirdness" | Name the environment difference and prove it explains the symptom. |
-| "It's too hard to reproduce, I'll fix it by inspection" | Inspection produces hypotheses, not proof; instrument the boundary instead. |
-| "I'll make the broad fix now and tighten it later" | Choose the smallest safe change for the evidenced root cause. |
-| "This is the third try, but I think this version will work" | Stop local patching and prepare `course-correction-note`. |
-| "The test passes now, so the fix works" | Also remove the fix and watch the failure return; otherwise causality is unproven. |
-| "Another agent already investigated this" | Read the evidence yourself before accepting the conclusion. |
-
-## Red Flags -- Stop and Restart the Loop
-
-- code changed before the failure was reproduced
-- more than one variable changed per experiment
-- a fix explanation contains "probably", "somehow", or "should"
-- the same file is being patched for the third time this session
-- each fix attempt reveals the same failure in a new costume
-- instrumentation output was never actually read before the next change
+Pause the affected patch loop when evidence was not read, several suspected causes changed at once, repeated corrections add no new information, or a success claim exceeds the observed result. Resolve the missing discriminator before continuing. Prior familiarity, a similar ticket, or another agent's conclusion never replaces current evidence.

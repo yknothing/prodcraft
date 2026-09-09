@@ -5,13 +5,13 @@
 ### Heuristic scanners flag idiomatic literals
 - Trigger: A lightweight hook or regex flags `0`, `1`, `""`, or `[]` in tests, indexing, or standard library patterns.
 - Failure mode: Review time burns on false positives, or teams disable the gate to "make CI green".
-- What to do: Require the standardized exception token `ALLOW_MAGIC_NUMBER: reason, ticket` with a concrete ticket id, and prefer extracting named constants only when the literal carries domain meaning.
+- What to do: Confirm which scanner and policy apply. Under the Prodcraft scanner policy, use `ALLOW_MAGIC_NUMBER: reason, ticket` for a justified local exception. Otherwise follow project conventions. Extract constants only when they represent a shared concept, not merely to silence an inapplicable checklist.
 - Escalate when: The flagged literal is part of a language/framework contract and cannot be expressed cleanly without harming readability.
 
 ### Exceptions without traceability
 - Trigger: A reviewer accepts a magic value "just this once" without a ticket-backed rationale.
 - Failure mode: The exception becomes permanent tribal knowledge and spreads as copy-paste.
-- What to do: Block merge until the exception includes `ALLOW_MAGIC_NUMBER: reason, ticket` on the same line or within two preceding lines, and the ticket explains why a named constant/config is worse.
+- What to do: If the project requires ticket-backed scanner exceptions, block on that explicit policy and cite it. Use `ALLOW_MAGIC_NUMBER: reason, ticket` in the Prodcraft source repository. Without that policy, evaluate the actual correctness or maintenance risk instead of inventing a required token.
 - Escalate when: The same exception pattern repeats across files in one changeset (signals a missing shared constant or configuration surface).
 
 ### Hardcoding disguised as configuration

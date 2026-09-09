@@ -1,6 +1,6 @@
 ---
 name: pc-tdd
-description: Use when a reviewed task is ready for implementation and the team must drive the work by writing failing tests first, especially when contract behavior, brownfield regressions, unsupported flows, or coexistence safety must be proven before code changes.
+description: Use before changing executable behavior that needs regression protection, or when adding characterization tests before a refactor. Distinguish new behavior from an existing baseline; use document, visual, or boundary checks for work that test-first does not model usefully.
 metadata:
   phase: 04-implementation
   inputs:
@@ -11,7 +11,7 @@ metadata:
   - test-suite
   prerequisites:
   - pc-task-breakdown
-  quality_gate: All acceptance criteria have corresponding tests, all tests pass, coverage meets threshold
+  quality_gate: Changed behavior has relevant failing-then-passing evidence, preserved behavior has a checked baseline, and applicable project test requirements pass
   roles:
   - developer
   methodologies:
@@ -31,19 +31,15 @@ See [context](references/context.md) and [anti-pattern](references/anti-patterns
 
 ## The Iron Law
 
+Default to writing and observing the behavioral test failure before changing implementation. Baseline verification after an early patch is recovery from that ordering mistake, not the normal TDD path.
+
 ```
-NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST
+NEW OR CHANGED BEHAVIOR NEEDS BASELINE FAILURE EVIDENCE
 ```
 
-If you wrote implementation code before the failing test, delete it and start over from RED.
+For new or changed executable behavior without an applicable exception below, observe the relevant failure before accepting the implementation. If your unaccepted change came first, isolate your own patch and prove the test fails against the unchanged baseline, then reapply the patch and observe GREEN. Record the order honestly. Never delete existing working code, another person's changes, or characterization tests to manufacture RED.
 
-`Delete it` means:
-
-- do not keep it as a "reference"
-- do not lightly adapt it while pretending to start TDD
-- do not look at it and then rewrite a cosmetically different version
-
-If you did not watch the relevant test fail first, you do not yet know that the test proves the intended behavior.
+Characterization protects behavior that already exists. Its first run may pass; establish the baseline and show the assertion detects a meaningful contrary result before refactoring. Do not label it a new-feature RED run.
 
 ## Inputs
 
@@ -55,7 +51,7 @@ If you did not watch the relevant test fail first, you do not yet know that the 
 
 1. Pick the next reviewed task slice, acceptance criterion, or contract behavior
 2. Write a test that describes the expected behavior
-3. Run the test -- it MUST fail (if it passes, you have a wrong test or the feature already exists)
+3. For new or changed behavior, run the test against the unchanged implementation; it must fail for the intended behavioral reason, not setup or import errors
 4. The test name should read like a specification: `test_user_can_reset_password_with_valid_token`
 
 For brownfield or coexistence work, decide first which safety net is needed:
@@ -63,13 +59,13 @@ For brownfield or coexistence work, decide first which safety net is needed:
 - contract test for the new or changed API behavior
 - unsupported-flow or compatibility test for cases intentionally excluded from release 1
 
-If the test passes immediately, stop. You are either testing existing behavior or wrote the test after the implementation leaked in. Fix the test, or delete the implementation and start over.
+If a new-behavior test passes immediately, inspect whether the behavior already exists or the assertion misses it. If the requirement is already satisfied, record that result instead of adding redundant code. For characterization, keep the passing baseline and check assertion sensitivity using an isolated contrary expectation or controlled mutation that is restored before proceeding.
 
 ### Step 2: GREEN -- Make it Pass
 
 1. Write the MINIMUM code to make the test pass
-2. It's okay to be ugly, hardcode values, take shortcuts
-3. The only goal is a green test
+2. Keep the implementation simple while respecting input, contract, security, and configuration boundaries
+3. Make the behavioral test pass without hardcoding its fixture or bypassing the real logic
 4. Do NOT add code the test doesn't require
 
 Do not silently implement behavior that upstream planning marked as blocked, unsupported, or deferred.
@@ -89,6 +85,8 @@ Pick the next requirement, write the next failing test. The test suite grows inc
 
 ## Rationalization Prevention
 
+Apply this section and the Red Flags below to new or changed executable behavior after checking the explicit exceptions. Characterization and a justified document or visual check do not need a fabricated RED run.
+
 When you hear one of these thoughts, treat it as a stop signal:
 
 | Excuse | Required response |
@@ -96,7 +94,7 @@ When you hear one of these thoughts, treat it as a stop signal:
 | "I'll write the tests after" | Stop and return to RED now |
 | "This code is tiny, I don't need TDD" | Tiny bugs still regress; write the test |
 | "I already know what the fix is" | Knowledge without a failing test is unproven confidence |
-| "I'll keep the code as reference" | Delete it and restart from the test |
+| "The implementation came first, so a green test proves it" | Isolate your patch and prove the failure against the unchanged baseline |
 | "This is just a workaround" | Workarounds still need failing and passing evidence |
 | "Manual testing is enough for now" | Manual checks do not replace executable regression protection |
 | "The feature is urgent" | Urgency increases the need for discipline |
@@ -104,9 +102,9 @@ When you hear one of these thoughts, treat it as a stop signal:
 
 ## Red Flags -- Stop and Start Over
 
-- implementation code appeared before a failing test
-- the "RED" run was skipped
-- the test passed on the first run without proving missing behavior
+- changed behavior has no demonstrated failure against the unchanged baseline
+- the behavioral RED run was skipped for new or changed executable behavior without an applicable exception
+- a new-behavior test passed immediately without checking whether the behavior already exists
 - multiple behaviors are being added under one test because "they are related"
 - you are defending extra code with "the next step will need it"
 - the new behavior changes a contract or compatibility seam without an explicit test
@@ -145,6 +143,7 @@ TDD is the default. Narrow exceptions exist only when test-first does not yet mo
 - exploratory prototypes, with the explicit obligation to add tests once the design stabilizes
 - pure UI layout work, where visual regression or interaction checks are the real proof
 - configuration and glue code, where the enabled behavior should be tested at the boundary it affects
+- documentation, skill prose, and reversible wording changes, where contract consistency, references, and runtime loading are the relevant checks
 
 If an exception is used, state it explicitly. "We'll add tests later" without a named reason is rationalization, not an exception.
 
@@ -154,9 +153,7 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] The relevant RED run was observed before implementation code was accepted
-- [ ] Every acceptance criterion has at least one corresponding test
-- [ ] All tests pass
-- [ ] Code coverage meets project threshold (e.g., 80% for new code)
-- [ ] No tests are skipped or ignored
-- [ ] Tests run in < 30 seconds (unit) / < 5 minutes (full suite)
+- [ ] Changed behavior has an observed behavioral RED and GREEN; characterization has a checked baseline
+- [ ] Each in-scope behavior has an appropriate test or an explicit applicable exception
+- [ ] Relevant tests and project-required checks pass; skipped checks and limits are explicit
+- [ ] Coverage and runtime meet project requirements where defined; no arbitrary percentage or duration was invented

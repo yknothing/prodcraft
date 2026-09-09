@@ -14,7 +14,7 @@ class RoutedTestedPromotionsWaveTests(unittest.TestCase):
         self.manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
         self.entries = {entry["name"]: entry for entry in self.manifest["skills"]}
 
-    def test_manifest_registers_wave_skills_as_tested_with_benchmark_results(self):
+    def test_manifest_distinguishes_revised_candidates_and_retains_benchmark_results(self):
         targets = {
             "pc-user-research": "00-discovery",
             "pc-incident-response": "07-operations",
@@ -27,7 +27,11 @@ class RoutedTestedPromotionsWaveTests(unittest.TestCase):
             with self.subTest(skill=name):
                 entry = self.entries[name]
                 self.assertEqual(phase, entry["phase"])
-                self.assertEqual("tested", entry["status"])
+                expected = "tested" if name in {"pc-incident-response", "pc-runbooks"} else "review"
+                self.assertEqual(expected, entry["status"])
+                if expected == "review":
+                    self.assertIn("historical_findings_path", entry["qa"])
+                    self.assertIn("revalidation_plan_path", entry["qa"])
                 self.assertEqual("routed", entry["evaluation_mode"])
                 qa = entry["qa"]
                 self.assertIn("benchmark_results_path", qa)

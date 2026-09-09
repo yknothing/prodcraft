@@ -67,7 +67,7 @@
 
 ## 8. Open Questions
 
-<!-- Unresolved items. Must be empty before implementation begins. -->
+<!-- For each unresolved item, name its owner, decision stage, and blocked work. Resolve it before dependent implementation; later-stage questions may remain visible unless the governing workflow requires closure now. -->
 
 - [ ] Question 1
 - [ ] Question 2

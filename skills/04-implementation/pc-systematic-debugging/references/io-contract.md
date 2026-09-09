@@ -9,5 +9,5 @@
 
 ## Outputs
 
-- **bug-fix-report** -- Root cause, supporting evidence, fix boundary, regression protection, and follow-up notes.
+- **bug-fix-report** -- Fixed, mitigated, or diagnosis-limited outcome; cause or remaining hypotheses, observed revision/environment, evidence, verification limits, containment, and next action. A limited investigation can finish its report without claiming the defect is fixed. Review and verification consume only the supported claim.
 - **course-correction-note** -- Only when evidence shows the problem belongs upstream in specification, architecture, or planning.

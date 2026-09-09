@@ -14,11 +14,12 @@ class EstimationTestedStatusTests(unittest.TestCase):
         manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
         self.entries = {entry["name"]: entry for entry in manifest["skills"]}
 
-    def test_manifest_registers_estimation_as_tested_routed(self):
+    def test_manifest_registers_estimation_as_review_candidate_routed(self):
         entry = self.entries["pc-estimation"]
 
         self.assertEqual("03-planning", entry["phase"])
-        self.assertEqual("tested", entry["status"])
+        self.assertEqual("review", entry["status"])
+        self.assertIn("revalidation_plan_path", entry["qa"])
         self.assertEqual("standard", entry["qa_tier"])
         self.assertEqual("routed", entry["evaluation_mode"])
 

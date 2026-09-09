@@ -11,10 +11,10 @@ This English README is the canonical project overview. A non-authoritative Chine
 
 ## Current State
 
-As of 2026-07-10, the checked-in system contains:
+As of 2026-09-09, the current source tree contains:
 
 - 46 lifecycle skill packages in `skills/00-discovery/` through `skills/cross-cutting/`
-- authored-skill maturity in `manifest.yml`: 6 `production`, 32 `tested`, 8 `review`, 0 `draft`
+- authored-skill maturity in `manifest.yml`: 0 `production`, 13 `tested`, 33 `review`, 0 `draft`; thirty revised contracts await behavioral revalidation
 - 6 workflow files: 3 primary methodology workflows and 3 overlays
 - 7 advisory personas
 - 8 registered protocol artifact schemas
@@ -75,10 +75,15 @@ Most development skill systems are flat collections. Prodcraft adds the control 
 Prodcraft treats `pc-intake` as a system rule, not just a trigger hint:
 
 - New work should route through `skills/00-discovery/pc-intake/SKILL.md`.
+- Continuing an unchanged approved route reuses its authority and current accepted artifacts. Choose the next unmet obligation, not the whole lifecycle again.
 - Every workflow declares `entry_skill: pc-intake`.
 - Every workflow requires an `intake-brief`.
 - Entry-layer decisions should stay observable through `intake-brief` and, when needed, `problem-frame`.
 - CI and local validators check workflow entry rules so the gate cannot silently drift.
+
+The [September skill design revision](docs/architecture/2026-09-08-skill-execution-design.md) defines bounded routing, reference loading, review composition, and the [behavioral evaluation handoff](eval/meta/2026-09-08-skill-design-handoff.md). These are candidate design changes, not a claim of measured model improvement.
+
+A [non-authoritative Chinese companion](docs/architecture/2026-09-08-skill-execution-design.zh-CN.md) explains the same design and its self-review. This revision primarily improves skill instructions and composition guidance. The September 9 follow-up repairs package binding and intake recovery, separates review-report completion from integration approval, and trims the static entry stack from 37,978 to 35,721 characters. Reference loading and artifact reuse remain agent-executed guidance; runtime context savings and better engineering outcomes have not been established. The next five design tasks refine author-side review, feature implementation, refactoring, testing strategy, and estimation/sprint planning across six additional skills; their changed behavior remains under review. The [whole-library design acceptance](docs/reviews/2026-09-09-skill-design-acceptance.md) now records all 46 dispositions, fourteen further repaired packages, and [three complete repository-grounded walkthroughs](examples/README.md). These walkthroughs explain actual changes and evidence; they are not fresh model runs.
 
 Use the validator locally:
 

@@ -3,5 +3,5 @@
 1. **Horizontal slicing** -- "Build all the database layer, then all the API layer, then all the UI." Vertical slices (one feature end-to-end) deliver value faster.
 2. **Mega-tasks** -- "Implement authentication" is not a task. Break into: registration, login, password reset, session management, etc.
 3. **No dependencies mapped** -- Developers blocked waiting for other tasks creates idle time and frustration.
-4. **Over-decomposition** -- Tasks smaller than 2 hours create overhead. Find the sweet spot.
+4. **Over-decomposition** -- Splitting an already reviewable outcome into administrative steps adds overhead. Small work can remain one short task; duration alone does not justify expansion or subdivision.
 5. **Planning as rewrite fantasy** -- Turning a coexistence architecture into a replacement-only task plan that ignores rollback and compatibility work.

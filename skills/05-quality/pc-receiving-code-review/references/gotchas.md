@@ -11,7 +11,7 @@
 ### One unclear item inside a larger review batch
 - Trigger: Most review items are clear, but one or two comments are ambiguous or appear related to the rest.
 - Failure mode: The author implements the understood subset, then later learns the ambiguous items changed the scope or intent of the batch.
-- What to do: Pause and ask for clarification before implementing any of the grouped items.
+- What to do: Pause the dependent group and ask for clarification. Continue a separate accepted correction only when it remains valid under the plausible answers and existing authority covers it.
 - Escalate when: Clarification would materially delay a hotfix or release decision and the remaining ambiguity affects correctness.
 
 ### Praise-first reply masks lack of verification

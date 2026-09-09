@@ -94,5 +94,5 @@ contract:
 
 - Active security incidents add evidence-preservation, disclosure, and trust-boundary review requirements.
 - Data corruption requires backups, reconciliation, and a tested recovery path before destructive repair.
-- If staging is unavailable, record that exception and use the safest canary or shadow verification available; do not silently omit the gate.
+- If staging is unavailable, stop dependent delivery until the governing workflow approves an explicit alternative verification route. Record its evidence and remaining limits; a canary or shadow run does not silently satisfy the staging gate or replace strict-mode route approval.
 - Repeated hotfixes for one area trigger a separate root-cause and debt-remediation route.

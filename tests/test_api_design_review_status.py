@@ -13,12 +13,14 @@ class ApiDesignReviewStatusTests(unittest.TestCase):
     def setUp(self):
         self.manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
 
-    def test_manifest_registers_api_design_as_tested_routed(self):
+    def test_manifest_registers_api_design_as_review_candidate_routed(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
         entry = entries["pc-api-design"]
 
         self.assertEqual("02-architecture", entry["phase"])
-        self.assertEqual("tested", entry["status"])
+        self.assertEqual("review", entry["status"])
+        self.assertIn("historical_findings_path", entry["qa"])
+        self.assertIn("revalidation_plan_path", entry["qa"])
         self.assertEqual("standard", entry["qa_tier"])
         self.assertEqual("routed", entry["evaluation_mode"])
 

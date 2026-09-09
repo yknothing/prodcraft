@@ -13,7 +13,7 @@ class FeatureAndDeploymentStrategyReviewStatusTests(unittest.TestCase):
     def setUp(self):
         self.manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
 
-    def test_manifest_registers_feature_development_and_deployment_strategy_as_critical_tested_routed(self):
+    def test_manifest_tracks_revised_feature_and_unchanged_deployment_maturity(self):
         entries = {entry["name"]: entry for entry in self.manifest["skills"]}
 
         feature = entries["pc-feature-development"]
@@ -21,7 +21,8 @@ class FeatureAndDeploymentStrategyReviewStatusTests(unittest.TestCase):
 
         self.assertEqual("04-implementation", feature["phase"])
         self.assertEqual("06-delivery", deployment["phase"])
-        self.assertEqual("tested", feature["status"])
+        self.assertEqual("review", feature["status"])
+        self.assertIn("revalidation_plan_path", feature["qa"])
         self.assertEqual("tested", deployment["status"])
         self.assertEqual("critical", feature["qa_tier"])
         self.assertEqual("critical", deployment["qa_tier"])

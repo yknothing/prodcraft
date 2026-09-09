@@ -17,9 +17,9 @@ class CodeReviewPrecisionContractTests(unittest.TestCase):
         )
 
         for text in (source, curated):
-            self.assertIn("Every blocking finding must be backed by evidence", text)
-            self.assertIn("Do **not** report hypothetical regressions", text)
-            self.assertIn("if a concern is only a plausible consequence of a blocker already reported", text)
+            self.assertIn("evidence-backed consequence", text)
+            self.assertIn("Mark unverified concerns as questions", text)
+            self.assertIn("Report one root cause once", text)
             self.assertIn("Inventing blockers from suspicion alone", text)
 
     def test_code_review_calibrates_service_blockers_to_runtime_boundary(self):

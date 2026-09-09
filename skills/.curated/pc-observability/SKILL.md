@@ -8,7 +8,7 @@ metadata:
   - observability-spec
   - execution-event-schema
   prerequisites: []
-  quality_gate: Relevant execution boundaries emit structured, versioned observability events with clear field definitions, ownership, and downstream consumption paths
+  quality_gate: Signal contracts answer the agreed questions with supported fields, ownership, consumers, and explicit design versus runtime evidence
   roles:
   - developer
   - devops-engineer
@@ -25,13 +25,11 @@ metadata:
 
 # Observability
 
-> If a boundary matters to delivery, debugging, cost, or safety, instrument it deliberately and name the signal contract explicitly.
+> Make the boundaries that matter to debugging, delivery, cost, or safety observable.
 
 ## Context
 
-This skill covers **cross-cutting instrumentation design**, not just runtime dashboards.
-
-See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
+This skill designs instrumentation contracts. [Context](references/context.md) separates signal production from monitoring; [anti-patterns](references/anti-patterns.md) identify common mistakes.
 
 ## Inputs
 
@@ -39,88 +37,33 @@ See [context](references/context.md) and [anti-pattern](references/anti-patterns
 
 ## Process
 
-### Step 1: Map the Boundary That Must Become Visible
+### Step 1: Name the Consumer's Question
 
-Start from the operational or product question, not from logging APIs.
+Choose questions that change an actual decision: which request/job failed, where latency occurred, which skill/runner ran, or what an AI invocation cost. Identify the boundary, consumer, and required evidence before choosing a logging API. Discard signals with no useful consumer.
 
-Examples:
+### Step 2: Reuse or Define the Signal Contract
 
-- which skill was invoked, by what route, and what happened next
-- which model was used, with what token input and output
-- which runner or wrapper failed, timed out, or retried
-- which execution chain consumed the most cost or latency
+Start with the existing log, metric, trace, or event schema. Define only needed changes: identity/correlation, outcome, timing, field meaning, units, unavailable-data rules, and version compatibility. Consider data sensitivity and cardinality before collecting payloads or labels.
 
-If the question cannot change debugging, product decisions, or operational behavior, it is probably noise.
+For AI accounting, use `model_name`, `token_input`, `token_output`, and `token_total`. Record unavailable provider/runner usage as `null` with its source limitation; never invent it. Keep estimated runner usage separate from exact provider or runner usage.
 
-### Step 2: Define a Small, Versioned Event Schema
+For skill-context measurements, report exact byte/character counts for loaded or deferred content. These are not token counts; label any estimate separately unless a model-specific tokenizer or provider token-count API supplies the count.
 
-Write a stable schema before instrumenting code. At minimum, define:
+### Step 3: Instrument the Relevant Boundary
 
-- event types
-- required fields shared by every event
-- field names for model and token accounting
-- null or unavailable rules for data the runner cannot provide
-- versioning rules for future extensions
+Use an existing request middleware, job wrapper, runner adapter, or workflow seam when it captures the event once with consistent meaning. Avoid both scattered duplicate logging and a new shared abstraction that a single local change does not need.
 
-For AI execution telemetry, prefer canonical field names:
+Ordinary application instrumentation need not emit AI fields. In AI systems, distinguish skill invocation, runner execution, and model usage so retries and nested work are not double-counted.
 
-- `model_name`
-- `token_input`
-- `token_output`
-- `token_total`
+### Step 4: Validate Scope and Evidence
 
-Do not invent token values. If the runner cannot provide usage, record `null` and state the source limitation explicitly.
+Trace representative success/failure signals to the selected questions and the real emitting path. Check identity, units, outcomes, timing, correlation, and missing-data handling. Simple log inspection is sufficient when reliable; no dashboard or backend is mandatory.
 
-### Step 3: Instrument at Shared Entry Points
+A design-only request may deliver a schema and verification plan, with emission explicitly unverified. An implementation claim needs observed signals from the instrumented path. A token-saving claim additionally needs comparable baseline and with-skill exact usage evidence; changed source size alone is insufficient.
 
-Prefer wrappers, decorators, middleware, or context managers around execution boundaries instead of scattering ad hoc logging across many call sites.
+### Step 5: Assign Consumption and Follow-Up
 
-Good candidates:
-
-- model runner adapters
-- skill dispatch or invocation boundaries
-- benchmark or eval execution wrappers
-- workflow orchestration seams
-
-The goal is to capture execution once per boundary with a consistent schema.
-
-For skill systems, capture two different signals:
-
-- real model usage from the provider or runner when exposed
-- exact byte/character measurements for what the skill loaded or deferred
-
-Do not mix the two. Exact provider or runner usage answers token and billing questions. Skill-context byte/character counts answer context-size questions until a model-specific tokenizer or provider token-count API is available.
-
-### Step 4: Separate Signal Capture from Signal Consumption
-
-Keep the instrumentation contract independent from dashboards and alerts.
-
-- this skill defines and emits structured events
-- downstream operational skills consume those events for triage and alerting
-
-That separation keeps instrumentation stable even when dashboard tools or operational needs change.
-
-### Step 5: Validate with Real Failure and Cost Questions
-
-Before calling the design complete, verify that a reviewer can answer:
-
-- which skill ran
-- which model and runner were used
-- how many tokens were consumed
-- how many skill-context bytes and characters were loaded or deferred
-- where the time went
-- where the chain failed or stopped
-
-If those questions still require ad hoc grep or guesswork, the instrumentation boundary is incomplete.
-
-### Step 6: Close the Runtime Feedback Loop
-
-Do not stop at event emission. Summarize recurring failures, missing usage data, and high-risk actions on a regular cadence, then feed the findings back into:
-
-- skill gotchas
-- benchmark plans
-- routing rules
-- approval points for risky actions
+Name who consumes the signals and when to review them. Keep capture independent from dashboard/alert implementation. Route actual recurring failures or missing evidence to the relevant code or operational owner. Skill systems may update gotchas, benchmark plans, or routing from those observations; general application telemetry need not produce those artifacts.
 
 ## Outputs
 
@@ -128,15 +71,12 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] Important execution boundaries are explicitly identified before instrumentation begins
-- [ ] Event schema is versioned and uses stable field names
-- [ ] Skill invocation, runner execution, and model usage are distinguishable event types
-- [ ] Model and token accounting fields use canonical names and never fabricate unavailable values
-- [ ] Estimated runner usage is kept separate from exact provider or runner usage
-- [ ] Skill-context measurements use exact byte/character counts unless a model-specific tokenizer or provider token-count API is available
-- [ ] Runtime summaries can compare baseline and with-skill exact token usage before any token-saving claim is accepted
-- [ ] Ownership and downstream consumption path are documented
-- [ ] Runtime summaries can identify recurring failures, missing usage, and risky actions
+- [ ] Each selected question maps to a scoped signal and an accountable consumer
+- [ ] Field meanings, units, schema compatibility, and unavailable values are explicit
+- [ ] AI usage and skill-context rules apply only to their actual boundaries
+- [ ] Exact usage, estimates, and byte/character measurements remain distinct
+- [ ] Claims match design or runtime evidence; any token-saving claim has a comparable exact baseline
+- [ ] Ownership, consumption, and unresolved verification are documented
 
 ## Distribution
 

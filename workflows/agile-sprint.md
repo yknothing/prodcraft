@@ -45,7 +45,7 @@ contract:
       purpose: Demonstrate working software, capture stakeholder feedback, review system health, and commit owned improvement actions.
       skills: [pc-retrospective, pc-tech-debt-management, pc-documentation]
       inputs: [deployed work, stakeholder feedback, delivery and defect metrics, incident signals]
-      outputs: [accepted outcomes, backlog updates, 1-3 owned improvement actions]
+      outputs: [accepted outcomes, backlog updates, owned improvement actions or an evidenced no-new-action decision]
       duration: 2-3 hours at sprint end
   quality_gates:
     - name: Story acceptance
@@ -69,7 +69,7 @@ contract:
 
 ## Adaptation Notes
 
-- Solo operators replace ceremonies with weekly planning and checklist-based self-review.
+- Solo operators may replace ceremonies with compact planning and self-review. This does not supply independent peer approval where the accepted route or project policy requires it.
 - Small teams may pair instead of running formal review; large teams add cross-team coordination and architecture review.
 - Remote teams may use asynchronous standups and recorded reviews.
 - Regulated work adds traceability and compliance approval to story acceptance without removing sprint feedback loops.

@@ -35,8 +35,10 @@ Use this template whenever `pc-intake` routes new work into a workflow.
 
 - recommended_next_skill:
 - routing_rationale:
+- existing approval and artifact references: `include in routing_rationale when resuming; record the actual user authority`
 - why intake was used:
 - proposed_path: `ordered skill names, when more than the next skill is already clear`
+- selection rule: `one skill is valid; include only required outputs, distinct risks, and unmet gates`
 
 ## Question Budget
 
@@ -67,6 +69,7 @@ Use this template whenever `pc-intake` routes new work into a workflow.
 - constraints:
 - open questions:
 - context that downstream skills must preserve:
+- accepted artifact paths/revisions and the next skill's acceptance condition:
 - should `pc-problem-framing` run next? yes / no
 
 ## Micro Mode Compact Form

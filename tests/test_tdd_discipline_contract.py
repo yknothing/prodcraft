@@ -11,13 +11,13 @@ TDD_SKILL = REPO_ROOT / "skills" / "04-implementation" / "pc-tdd" / "SKILL.md"
 
 
 class TddDisciplineContractTests(unittest.TestCase):
-    def test_tdd_skill_declares_iron_law_and_delete_means_delete(self):
+    def test_tdd_skill_requires_baseline_evidence_without_deleting_existing_work(self):
         content = TDD_SKILL.read_text(encoding="utf-8")
 
         self.assertIn("## The Iron Law", content)
-        self.assertIn("NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST", content)
-        self.assertIn("delete it and start over from RED", content)
-        self.assertIn("do not keep it as a \"reference\"", content)
+        self.assertIn("NEW OR CHANGED BEHAVIOR NEEDS BASELINE FAILURE EVIDENCE", content)
+        self.assertIn("Never delete existing working code", content)
+        self.assertIn("Characterization protects behavior that already exists", content)
 
     def test_tdd_skill_includes_rationalization_prevention_and_red_flags(self):
         content = TDD_SKILL.read_text(encoding="utf-8")
@@ -27,14 +27,14 @@ class TddDisciplineContractTests(unittest.TestCase):
         self.assertIn("\"I'll write the tests after\"", content)
         self.assertIn("the next test will need it anyway", content)
 
-    def test_tdd_manifest_entry_is_critical_routed_and_production_with_benchmark_results(self):
+    def test_revised_tdd_is_under_review_with_historical_benchmark_results(self):
         manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
         entries = {entry["name"]: entry for entry in manifest["skills"]}
 
         tdd = entries["pc-tdd"]
 
         self.assertEqual("04-implementation", tdd["phase"])
-        self.assertEqual("production", tdd["status"])
+        self.assertEqual("review", tdd["status"])
         self.assertEqual("critical", tdd["qa_tier"])
         self.assertEqual("routed", tdd["evaluation_mode"])
 

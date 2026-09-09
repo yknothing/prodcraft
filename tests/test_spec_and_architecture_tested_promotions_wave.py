@@ -15,7 +15,7 @@ class SpecificationAndArchitectureTestedPromotionsWaveTests(unittest.TestCase):
         self.entries = {entry["name"]: entry for entry in self.manifest["skills"]}
         self.artifact_flow = {entry["artifact"]: entry for entry in self.manifest["artifact_flow"]}
 
-    def test_manifest_registers_wave_skills_as_tested(self):
+    def test_manifest_distinguishes_revised_spec_from_unchanged_tested_skills(self):
         targets = {
             "pc-spec-writing": "01-specification",
             "pc-domain-modeling": "01-specification",
@@ -27,7 +27,7 @@ class SpecificationAndArchitectureTestedPromotionsWaveTests(unittest.TestCase):
             with self.subTest(skill=name):
                 entry = self.entries[name]
                 self.assertEqual(phase, entry["phase"])
-                self.assertEqual("tested", entry["status"])
+                self.assertEqual("review" if name == "pc-spec-writing" else "tested", entry["status"])
                 self.assertEqual("standard", entry["qa_tier"])
                 self.assertEqual("routed", entry["evaluation_mode"])
 
@@ -58,7 +58,7 @@ class SpecificationAndArchitectureTestedPromotionsWaveTests(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertTrue(path.exists(), path)
 
-    def test_findings_and_artifact_flow_record_tested_status(self):
+    def test_historical_findings_and_current_artifact_flow_remain_available(self):
         expectations = {
             "pc-domain-modeling": ("domain-model", "pc-spec-writing"),
             "pc-spec-writing": ("spec-doc", "pc-api-design"),
@@ -68,7 +68,11 @@ class SpecificationAndArchitectureTestedPromotionsWaveTests(unittest.TestCase):
 
         for skill_name, (artifact_name, downstream_consumer) in expectations.items():
             with self.subTest(skill=skill_name):
-                findings_path = REPO_ROOT / self.entries[skill_name]["qa"]["findings_path"]
+                qa = self.entries[skill_name]["qa"]
+                findings_path = REPO_ROOT / qa.get("historical_findings_path", qa["findings_path"])
+                if skill_name == "pc-spec-writing":
+                    self.assertNotEqual(qa["historical_findings_path"], qa["findings_path"])
+                    self.assertTrue((REPO_ROOT / qa["revalidation_plan_path"]).is_file())
                 findings = findings_path.read_text(encoding="utf-8")
 
                 self.assertIn("Current status: `tested`", findings)

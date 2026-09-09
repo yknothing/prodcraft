@@ -14,7 +14,7 @@ class QualityTestedPromotionsWaveTests(unittest.TestCase):
         manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
         self.entries = {entry["name"]: entry for entry in manifest["skills"]}
 
-    def test_manifest_registers_quality_wave_skills_as_tested(self):
+    def test_manifest_preserves_unchanged_tested_skills_and_marks_revised_review_candidate(self):
         targets = {
             "pc-code-review": "05-quality",
             "pc-testing-strategy": "05-quality",
@@ -25,7 +25,9 @@ class QualityTestedPromotionsWaveTests(unittest.TestCase):
             with self.subTest(skill=name):
                 entry = self.entries[name]
                 self.assertEqual(phase, entry["phase"])
-                self.assertEqual("tested", entry["status"])
+                self.assertEqual("review" if name in {"pc-code-review", "pc-testing-strategy", "pc-e2e-scenario-design"} else "tested", entry["status"])
+                if name in {"pc-code-review", "pc-testing-strategy", "pc-e2e-scenario-design"}:
+                    self.assertIn("revalidation_plan_path", entry["qa"])
                 self.assertEqual("routed", entry["evaluation_mode"])
                 self.assertIn("benchmark_results_path", entry["qa"])
                 self.assertTrue((REPO_ROOT / entry["qa"]["benchmark_results_path"]).exists())

@@ -6,16 +6,11 @@ This document defines how Prodcraft skills are discovered, selected, and compose
 
 ## Core Rule
 
-**Every interaction starts with skill matching. No exceptions.**
+**Match the work to the next unmet obligation. Reuse an approved route while it still applies.**
 
-Before generating any response -- even a clarifying question -- check if a Prodcraft skill applies. If one does, invoke it. If uncertain, default to `pc-intake`.
+Start new work or a material change to outcome, scope, risk, or authority with `pc-intake`. Continue an approved route across status questions, clarifications, and skill handoffs without repeating intake or approval.
 
-The intake decision gate is enforced in two layers:
-
-1. **Routing policy** -- default to `pc-intake` for new work or ambiguity.
-2. **Workflow contract** -- every workflow requires an approved `intake-brief` before execution, even if the intake mode is `fast-track`, `micro`, or `resume`. For `micro`, "approved" means notify-and-proceed: the brief is presented with the work and stands unless the user objects.
-
-When intake has identified the likely lifecycle path but the problem statement or solution direction is still fuzzy, route next to `pc-problem-framing` before moving into research, specification, or architecture.
+Every workflow requires an approved `intake-brief`. For `micro`, approval means notify-and-proceed unless the user objects. When the route is clear but the problem or direction is not, invoke `pc-problem-framing` next.
 
 ## Skill Selection Priority
 
@@ -23,13 +18,13 @@ When multiple skills could apply, use this priority order:
 
 ### Priority 1: Process Gates (blocking)
 
-These skills MUST be invoked before any work begins:
+Apply each gate when its trigger is reached. A later gate is not an instruction to preload or execute the entire chain before starting:
 
 | Trigger | Skill | Why |
 |---------|-------|-----|
 | New work of any kind | `pc-intake` | Triage and route |
 | Bug, failing test, or unexpected behavior before a fix | `pc-systematic-debugging` | Root cause before code change |
-| Implementation about to start | `pc-tdd` | Tests before code |
+| New or changed executable behavior | `pc-tdd` | Define behavioral proof before implementation; use its explicit exceptions where applicable |
 | Code complete, ready for merge | `pc-code-review` | Quality gate |
 | Need to verify delivered intent and scope consistency | `pc-implementation-alignment-review` | Prevent wrong-thing delivery |
 | Need to audit fake-success, low-level, mock, or evidence-honesty risk | `pc-implementation-integrity-audit` | Prevent deceptive implementation |
@@ -73,6 +68,31 @@ These can be invoked at any phase:
 - `pc-internationalization` -- when handling user-facing text
 - `pc-compliance` -- when regulatory requirements apply
 
+### Select the Smallest Sufficient Route
+
+Choose one primary skill for the decision or deliverable. Add skills only for required outputs, distinct risks, or unmet approved gates; phase membership and `methodologies: all` are not execution orders.
+
+Check the next skill's input contract. Reuse current accepted artifacts by path and section. Route missing required inputs to their producer and contradictory inputs through a course correction. Never fabricate documents to fill a template.
+
+Preserve workflow gates and artifact obligations. Reuse requires the same quality boundary and authority; strict-mode obligation changes require an approved route revision and new operator pin.
+
+### Load Context at the Point of Use
+
+Read the selected skill and required I/O contract first, then methods for the active step and gotchas on their trigger. Keep unchanged material available; defer unrelated bodies, examples, background, and workflows. References retain their authority.
+
+Handoff: outcome, approved scope and authority, artifact paths/revisions, gaps, next skill, and acceptance condition. Use relevant sections rather than the session transcript. This convention adds no artifact type or execution authority.
+
+### Compose Reviews by Question
+
+| Skill | Distinct question |
+|-------|-------------------|
+| `pc-implementation-alignment-review` | Does the delivered behavior satisfy the approved intent and scope? |
+| `pc-code-review` | Does the changed implementation contain a concrete defect or policy violation? |
+| `pc-implementation-integrity-audit` | Can fake success, substituted dependencies, or misleading evidence conceal a failure? |
+| `pc-verification-before-completion` | Does current evidence support the exact completion claim? |
+
+Use the dimensions required by the route and observed risks. Several skills may contribute named sections to one review report. Preserve each required conclusion and its evidence; do not count the same finding repeatedly or call one agent with several personas independent reviewers.
+
 ## Workflow Selection
 
 Once intake determines the work type, select the route in three layers:
@@ -110,71 +130,22 @@ Examples:
 
 ## Skill Composition Patterns
 
-### Sequential Composition
-Skills execute one after another, each consuming the previous skill's output:
-
-```
-pc-spec-writing -> pc-system-design -> pc-task-breakdown -> pc-tdd -> pc-feature-development
-```
-
-### Parallel Composition
-Independent skills execute simultaneously:
-
-```
-                    ┌─> pc-api-design ────────┐
-pc-system-design ──>├─> pc-data-modeling ─────>├─> pc-task-breakdown
-                    └─> pc-security-design ───┘
-```
-
-### Iterative Composition
-A skill repeats until its quality gate is met:
-
-```
-pc-feature-development <──> pc-code-review (loop until approved)
-```
-
-### Conditional Composition
-Skills are included or skipped based on context:
-
-```
-IF regulated_industry THEN pc-security-audit
-IF user_facing THEN pc-accessibility
-IF multi_language THEN pc-internationalization
-```
+- **Sequential**: invoke a producer before its consumer, such as `pc-spec-writing -> pc-system-design -> pc-task-breakdown` when those outputs are required.
+- **Parallel**: run independent work only when coordination costs less than waiting; API, data, and security design may share accepted architecture without waiting on each other.
+- **Iterative**: repeat implementation/review for unresolved findings, checking changed behavior and affected boundaries. A recurring blocker without new evidence needs diagnosis or upstream correction, not another approval loop.
+- **Conditional**: add accessibility for user-facing UI, internationalization for multiple languages, and security/compliance work according to actual exposure and policy.
 
 ## Entry Stack Rules
 
-Prodcraft's entry stack has two layers:
-
-1. `pc-intake` -- classify the work, choose the phase and route, and create the `intake-brief`
-2. `pc-problem-framing` -- only when the route is known but the problem or direction is still too fuzzy for clean downstream work
-
-Use `pc-problem-framing` after intake when:
-- the request is new work and still underspecified after routing
-- 2-3 viable directions need comparison before requirements or research
-- downstream work would otherwise start by rediscovering the problem statement
-
-Do not use `pc-problem-framing` when:
-- the route and problem are already clear enough for the next skill
-- the work is already in progress
-- the task is trivial enough for an intake fast-track
+`pc-intake` owns classification, route selection, and the `intake-brief`. Add `pc-problem-framing` only when downstream work would otherwise rediscover an unresolved problem or compare viable directions. Clear, continuing, and trivial work needs no framing detour.
 
 ### Entry Stack Observability
 
-Each entry-layer handoff must record:
-- why the skill was invoked
-- how many questions were asked and which answers changed the route or direction
-- the primary path or direction selected
-- any meaningful alternative considered
-- the next skill to invoke
+Record the invocation reason, questions asked, answers that changed the route, selected path, meaningful alternatives, and next skill.
 
 ### Entry Stack Usability
 
-Entry skills should minimize user burden:
-- `pc-intake`: default to 1-3 questions, never more than 5
-- `micro` intake asks zero questions -- if a question is needed, the work is not micro
-- `pc-problem-framing`: default to 1-3 additional questions, never more than 5
-- do not ask another question unless its answer could change the route, direction, or risk posture
+Ask only questions that can change route, direction, or risk. Zero is valid with sufficient context and mandatory for `micro`. Otherwise each entry skill defaults to 1-3 questions, never more than 5.
 
 ## Quality Target Context Gate
 
@@ -220,13 +191,13 @@ the CLI, but may not replace the repository contract with host-local state.
 When transitioning between phases:
 
 1. **Verify exit criteria** -- Check the current phase's quality gate
-2. **Document artifacts** -- Ensure all outputs are saved and accessible
+2. **Document artifacts** -- Ensure required outputs are saved and accessible; reuse current accepted outputs
 3. **Brief next phase** -- Pass relevant context to the next skill
 4. **Update status** -- Log the phase transition
 
 If exit criteria are not met:
 - **Option A**: Complete the remaining work in the current phase
-- **Option B**: Proceed with explicit acknowledgment of skipped gates (logged as tech debt)
+- **Option B**: For an advisory gate, record the gap and permitted follow-up. A blocking gate needs an authorized route change or waiver under project policy; a tech-debt note alone is not approval. Strict mode requires a new approved obligation set and operator pin.
 - **Option C**: Escalate to tech-lead for decision
 
 ## Cross-Phase Course Corrections
@@ -269,6 +240,8 @@ Not every task needs the full lifecycle. Governance weight scales with the risk 
 
 `micro` eligibility and its notify-and-proceed semantics are owned by `pc-intake`'s Micro Mode section. Gateway summary: reversible single-revert trivia only, zero questions, never for irreversible or externally visible actions; doubt on any point means `fast-track`.
 
+The current repository Claude Edit/Write adapter rejects `micro`. Under that adapter, use an approved `fast-track` brief; do not work around the gate with another tool. Portable guidance alone provides no host enforcement.
+
 Fast-track still requires:
 - an approved `intake-brief`
 - `intake_mode=fast-track` (or `intake_mode=micro` with notify-and-proceed approval)
@@ -288,46 +261,10 @@ Use the matrix to decide which skills are:
 
 ## Interaction Protocol
 
-### Starting a Session
-
-1. Check project context (CLAUDE.md, recent work)
-2. Determine if there's an active workflow in progress
-3. If new work: invoke `pc-intake`
-4. If continuing work: resume at the appropriate phase/skill
-
-Do not enter a workflow unless the `intake-brief` exists and the user has approved it.
-
-### During a Session
-
-1. Track which phase you're in
-2. Apply the current skill's process
-3. Check quality gates before transitioning
-4. Invoke cross-cutting skills as needed
-
-### Ending a Session
-
-1. Summarize what was accomplished
-2. Note the current phase and next steps
-3. Document any open questions or blockers
-4. If applicable, suggest the next skill to invoke
+At session entry, read applicable project instructions and identify new versus continuing work. Start new work through intake; continue an approved route after checking scope, authority, and artifact freshness. During execution, apply the active skill and required gates. At handoff, report the result, remaining gaps, current phase, and next skill using artifact pointers.
 
 ## Integration with Existing Skills
 
-Prodcraft is designed to complement, not replace, existing skill systems. If your environment has skills like `brainstorming`, `systematic-debugging`, or `writing-plans`:
+External skills may provide deeper expertise when the user chooses them and the approved route permits it. Translate their outputs into local Prodcraft contracts; do not create implicit source-code or runtime dependencies on another skill system. Preserve required gates and report which system actually ran.
 
-- `brainstorming` maps most closely to `pc-intake` -> `pc-problem-framing` -> discovery or specification skills
-- `systematic-debugging` maps directly to repo-local `pc-systematic-debugging`
-- `writing-plans` maps to phase 03 planning skills
-- `executing-plans` maps most closely to repo-local `pc-task-execution` plus the downstream implementation skill for the current batch
-- `requesting-code-review` maps to phase 05 quality skills
-- `receiving-code-review` maps directly to repo-local `pc-receiving-code-review`
-- `verification-before-completion` maps directly to repo-local `pc-verification-before-completion`
-- `finishing-a-development-branch` maps most closely to repo-local `pc-delivery-completion`, with `pc-release-management` and `pc-deployment-strategy` added only when the work continues toward shipping
-
-Use whichever skill system is more appropriate for the context. Prodcraft adds lifecycle awareness; existing skills may have deeper domain-specific guidance.
-
-For repository-local experiments in this repo, Prodcraft may temporarily run in **repo-authoritative mode** for software-development work by installing the global `pc-prodcraft` gateway skill through `scripts/install_prodcraft_global_skill.py` and archiving conflicting global superpowers skill directories through `scripts/archive_superpowers_skills.py`. When that override is active:
-
-- `pc-intake` becomes the mandatory first software-development entry point
-- the override action and restore action must remain observable through the script's JSONL event log
-- non-Prodcraft global skills are still available unless explicitly suppressed separately
+Installing the global `pc-prodcraft` gateway or archiving competing global skills is an explicit deployment operation, not an effect of ordinary routing. The repository-owned install/archive scripts described in CLAUDE.md provide reversible state and event logs. Keep unrelated global skills intact and record any authorized override.

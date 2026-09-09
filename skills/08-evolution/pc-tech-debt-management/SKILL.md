@@ -10,9 +10,8 @@ metadata:
   outputs:
   - tech-debt-registry
   - remediation-plan
-  prerequisites:
-  - pc-retrospective
-  quality_gate: Debt registry is prioritized by impact and recurrence risk, top items have owners and routes, and capacity is allocated for remediation
+  prerequisites: []
+  quality_gate: Debt is evidenced and prioritized, with ownership, next decisions, and proposed versus committed remediation explicit
   roles:
   - tech-lead
   - developer
@@ -40,7 +39,7 @@ See [context notes](references/context.md).
 
 ### Step 1: Identify Debt from Repeated Evidence
 
-Catalog debt from multiple sources:
+Use the available sources; a single evidenced recurring cost or known workaround can establish an initial item:
 - **Code review findings** tagged as "tech debt"
 - **Retrospective actions** that imply recurring structural fixes
 - **Postmortems** showing the same release, rollback, or observability weakness
@@ -67,7 +66,7 @@ Prudent deliberate debt is a valid business choice. Reckless debt needs preventi
 ### Step 3: Quantify Impact and Interest
 
 For each debt item, estimate its "interest rate" -- the ongoing cost:
-- How much developer time does it waste per sprint?
+- How much time does it waste per operation or planning period?
 - What risk does it expose (security, reliability)?
 - Does it block other improvements?
 - What's the remediation cost?
@@ -75,23 +74,20 @@ For each debt item, estimate its "interest rate" -- the ongoing cost:
 
 ### Step 4: Prioritize
 
-Rank by: (impact per sprint) / (remediation cost). High-interest, low-cost debt is fixed first.
+Compare ongoing impact, risk, and remediation cost using consistent units and confidence. Do not force security/reliability risk into an invented numeric ratio. Prefer high-value corrections and record trade-offs with competing work.
 
 Favor debt items that:
 - reduce recurrence of known incidents
 - remove unsafe manual workarounds
 - strengthen handoffs between lifecycle phases
 
-### Step 5: Allocate Capacity
+### Step 5: Propose and Secure Remediation Capacity
 
-Dedicate a consistent percentage of sprint capacity to debt reduction:
-- 20% is a common target for healthy codebases
-- 30-40% for codebases with significant accumulated debt
-- Track debt reduction as a team metric
+Fit remediation to the actual sprint, milestone, or maintenance schedule. Propose effort and a decision owner; record capacity as committed only after the responsible owner allocates it. An unfunded item remains explicit, with a review trigger rather than a fictional deadline.
 
 For each top debt item, define:
-- owner
-- target window
+- owner or the named decision needed to assign one
+- proposed or committed target window
 - success signal
 - next lifecycle destination (`pc-intake`, `planning`, `implementation`, or `delivery`)
 
@@ -102,10 +98,10 @@ Produce only declared outputs at their documented quality boundary.
 ## Quality Gate
 
 - [ ] Debt registry is current and accessible to the team
-- [ ] Top debt items have remediation plans with effort estimates
-- [ ] Each prioritized item has owner, timeline, and next lifecycle destination
-- [ ] Sprint capacity is allocated for debt reduction
-- [ ] Debt trends tracked over time (is it growing or shrinking?)
+- [ ] Top items have a bounded next action, effort range or investigation need, and decision owner
+- [ ] Proposed timing/capacity is distinguished from authorized commitment
+- [ ] Next lifecycle destination and success signal are clear
+- [ ] Initial baseline or comparable trend is recorded; missing history is not invented
 
 ## Anti-Patterns
 

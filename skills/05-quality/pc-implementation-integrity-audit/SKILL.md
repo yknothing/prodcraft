@@ -38,15 +38,17 @@ See [context notes](references/context.md).
 
 ### Step 1: Identify Trust Boundaries
 
-List boundaries where code crosses process, network, tool, model, filesystem, database, approval, tenant, or evidence surfaces. Treat every boundary as suspect until a test or runtime artifact proves the contract.
+Identify changed boundaries where a completion claim depends on process, network, tool, model, filesystem, database, approval, tenant, or evidence behavior. Prioritize the path capable of hiding a real failure. Missing runtime evidence limits the claim; it is not by itself proof of deception.
 
 ### Step 2: Hunt Low-Level Defects
 
 Check obvious failure classes first: wrong default, stale env, blocking subprocess pipes, missing timeout, unhandled invalid input, mutable shared state, broad exception swallowing, wrong status mapping, unsafe fallback, and repeated literals that encode policy.
 
+Reuse concrete defects already reported by `pc-code-review`. Extend a finding only with distinct evidence of false success or hidden failure; do not repeat general correctness review under another role name.
+
 ### Step 3: Audit Mock and Fixture Honesty
 
-Find mocks, fakes, fixtures, simulated adapters, local-only tools, and generated audit files. Verify their names, raw refs, docs, and tests make the boundary explicit. Flag any fake that uses production-looking names or gets counted as real evidence.
+Find mocks, fakes, fixtures, simulated adapters, local-only tools, and generated audit files. Trace whether the actual system under test runs and whether doubles isolate only external dependencies. Flag substitution that conceals the implementation or evidence represented as stronger than its source; a clearly labeled fixture is not itself a defect.
 
 ### Step 4: Challenge Success Claims
 
@@ -66,7 +68,7 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] No fake, fixture, mock, simulated runtime, or manually written audit artifact can be mistaken for real production evidence.
-- [ ] Failure, blocked, rejected, and validation-error paths cannot emit success status or success events.
-- [ ] Tests exercise the risky boundary or clearly label themselves as contract-only.
-- [ ] Runtime evidence is fresh and bound to the current task/request/trace when used for completion claims.
+- [ ] Findings distinguish real runtime evidence from fixture, mock, simulated, or manually produced substitutes.
+- [ ] False-success paths and untested risky boundaries are reported with evidence or marked unverified.
+- [ ] The report identifies stale or unbound evidence and the completion claims it cannot support.
+- [ ] Each blocker has an actionable handoff; unresolved blockers prevent acceptance of the implementation, not completion of the audit report.

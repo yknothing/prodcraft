@@ -9,7 +9,7 @@ DOC_ROOT = REPO_ROOT / "eval" / "cross-cutting" / "pc-documentation"
 
 
 class DocumentationReviewStatusTests(unittest.TestCase):
-    def test_manifest_registers_documentation_as_tested_routed(self):
+    def test_manifest_registers_documentation_as_review_candidate_routed(self):
         import yaml
 
         manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
@@ -17,7 +17,9 @@ class DocumentationReviewStatusTests(unittest.TestCase):
         entry = entries["pc-documentation"]
 
         self.assertEqual("cross-cutting", entry["phase"])
-        self.assertEqual("tested", entry["status"])
+        self.assertEqual("review", entry["status"])
+        self.assertIn("historical_findings_path", entry["qa"])
+        self.assertIn("revalidation_plan_path", entry["qa"])
         self.assertEqual("standard", entry["qa_tier"])
         self.assertEqual("routed", entry["evaluation_mode"])
 

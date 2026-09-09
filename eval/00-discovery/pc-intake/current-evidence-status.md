@@ -2,6 +2,10 @@
 
 ## Current Status
 
+The 2026-09-08 execution-design revision is `review` under the existing `routed` QA posture. Its current contract and deferred behavioral work are recorded in [the design handoff](../../meta/2026-09-08-skill-design-handoff.md). Earlier production claims below describe their historical revisions and do not qualify the new routing and approval behavior. The retained benchmark's stated limits remain in force.
+
+## Historical Status Before the 2026-09-08 Revision
+
 `pc-intake` is now `production` under a `routed` QA posture.
 
 That posture change is intentional. `pc-intake` is a mandatory gateway enforced by Prodcraft workflow contracts and the `intake-brief` artifact, so its primary QA question is whether explicit invocation improves routing discipline and downstream handoff quality. Anthropic trigger-discoverability remains useful diagnostic evidence, but it is no longer the maturity gate for this skill.

@@ -7,7 +7,7 @@ metadata:
   outputs:
   - documentation-artifact
   prerequisites: []
-  quality_gate: Documentation reviewed by target audience, published and discoverable
+  quality_gate: Applicable documentation is current and discoverable at the authorized destination, or a justified no-update decision is recorded
   roles:
   - developer
   - tech-lead
@@ -51,10 +51,9 @@ What documentation is needed? Common triggers:
 - Incident resolved (runbook to prevent recurrence)
 - New team member joining (onboarding tutorial)
 
-Before writing, classify the need explicitly:
-- `must_consider` only: verify that no durable doc update is needed and record that decision in the surrounding artifact or handoff
-- `must_produce`: create or update the durable doc because downstream work, operators, or users would otherwise lose context
-- `skip_when_fast_track`: only use the waiver when the route is explicitly fast-tracked and the change does not create durable knowledge debt
+Read the current phase matrix and approved route. Evaluate conditional documentation triggers against the actual change. `must_consider` requires a decision; `must_produce` requires its output unless an authorized exception applies. Use `skip_when_fast_track` only when the route actually grants it.
+
+When no durable knowledge changes and no output obligation remains, record why existing documentation suffices in the handoff and finish. Otherwise update the smallest authoritative page that its audience needs.
 
 ### Step 2: Write for Your Audience
 
@@ -65,15 +64,15 @@ Before writing, classify the need explicitly:
 
 ### Step 3: Keep Docs Close to Code
 
-- Use docs-as-code: Markdown in the repository, versioned alongside code
-- Auto-generate API docs from code annotations (OpenAPI, JSDoc, docstrings)
-- README.md in every significant directory explaining its purpose
-- Architecture Decision Records in `docs/adr/`
+- Use the project's canonical documentation location and versioning conventions
+- Generate reference material when an existing source of truth supports it; avoid duplicate hand-maintained copies
+- Add entry links or directory guidance only where they help readers find required information
+- Record architecture decisions in the established decision log
 
 ### Step 4: Review and Maintain
 
 - Documentation reviews as part of PR process (if docs were changed)
-- Quarterly documentation audit: remove outdated content
+- Recheck affected instructions when their source changes; choose periodic audits according to drift risk
 - Track documentation debt alongside tech debt
 
 ## Outputs
@@ -82,14 +81,15 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] Target audience can complete their task using only the documentation
-- [ ] Documentation is discoverable (linked from README, searchable)
-- [ ] Auto-generated docs are integrated into CI pipeline
-- [ ] No outdated information (verified within last quarter)
+- [ ] Need and route obligation are resolved; a no-update outcome has a reason
+- [ ] Changed guidance supports the intended reader task, with prerequisites and limits explicit
+- [ ] Updated documentation has a discoverable canonical location and current source references
+- [ ] Relevant examples/links are checked; generated docs are checked in CI when generation is used
+- [ ] Required review and publication authority match the delivery; local edits are not claimed as published
 
 ## Anti-Patterns
 
 1. **Write once, abandon forever** -- Outdated docs are worse than no docs. They mislead.
 2. **Documentation dump** -- A 200-page doc no one reads. Keep it focused and findable.
-3. **Separate documentation system** -- If docs aren't next to code, they won't be updated with code.
+3. **Divergent copies** -- Keep one authoritative source and an update path, even when documentation lives in a separate system.
 4. **No documentation at all** -- "The code is self-documenting" is only true for WHAT, never for WHY.

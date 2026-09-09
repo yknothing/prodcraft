@@ -2,8 +2,8 @@
 
 `pc-task-execution` is the tactical companion to `pc-task-breakdown`.
 
-- `pc-task-breakdown` decides the 1-3 day implementation slice
-- `pc-task-execution` turns that slice into the next batch of 2-5 minute steps, verification points, and stop conditions
+- `pc-task-breakdown` defines the bounded, independently reviewable implementation slice
+- `pc-task-execution` adds a short batch with verification points and stop conditions when direct execution needs that coordination; 2-5 minutes is a heuristic
 
 This skill exists to prevent a common failure mode: a task is "small enough" on paper, but execution still drifts into long, unverified editing sessions, hidden blockers, or broad opportunistic changes.
 

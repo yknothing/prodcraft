@@ -15,7 +15,7 @@ class CoreProductionWaveTests(unittest.TestCase):
         manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
         self.entries = {entry["name"]: entry for entry in manifest["skills"]}
 
-    def test_core_spine_skills_are_now_production_with_security_reviews(self):
+    def test_core_spine_maturity_distinguishes_revised_candidates_from_historical_production(self):
         targets = {
             "pc-intake": "00-discovery",
             "pc-problem-framing": "00-discovery",
@@ -29,7 +29,8 @@ class CoreProductionWaveTests(unittest.TestCase):
             with self.subTest(skill=name):
                 entry = self.entries[name]
                 self.assertEqual(phase, entry["phase"])
-                self.assertEqual("production", entry["status"])
+                self.assertEqual("review", entry["status"])
+                self.assertIn("revalidation_plan_path", entry["qa"])
                 self.assertEqual("critical", entry["qa_tier"])
                 self.assertEqual("routed", entry["evaluation_mode"])
 
@@ -52,11 +53,11 @@ class CoreProductionWaveTests(unittest.TestCase):
         self.assertIn("do not mass-promote the entire `tested` set", content)
         self.assertIn("public core spine", content)
 
-    def test_verification_before_completion_is_now_public_core(self):
+    def test_revised_verification_before_completion_is_public_beta(self):
         index = json.loads((REPO_ROOT / "skills" / ".curated" / "index.json").read_text(encoding="utf-8"))
         entries = {entry["name"]: entry for entry in index["skills"]}
 
-        self.assertEqual("core", entries["pc-verification-before-completion"]["readiness"])
+        self.assertEqual("beta", entries["pc-verification-before-completion"]["readiness"])
 
 
 if __name__ == "__main__":

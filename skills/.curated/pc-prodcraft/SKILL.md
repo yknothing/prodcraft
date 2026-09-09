@@ -6,7 +6,7 @@ metadata:
   distribution_surface: curated
   source_path: skills/_gateway.md
   public_stability: beta
-  public_readiness: core
+  public_readiness: beta
 ---
 
 # Prodcraft
@@ -15,7 +15,7 @@ Use Prodcraft as the software-development entry system for this machine.
 
 ## Entry Rule
 
-For new, unclear, or cross-phase software-development work:
+For new software-development work or a material change to scope, outcome, risk, or authority:
 
 1. Start with `pc-intake`
 2. If the route is clear but the problem direction is still fuzzy, continue with `pc-problem-framing`
@@ -23,21 +23,13 @@ For new, unclear, or cross-phase software-development work:
 
 For clearly tactical software-development work, route quickly but keep the lifecycle decision observable instead of silently bypassing Prodcraft.
 
+For continuing approved work, reuse the route and prior authorization while they still apply. A status question, clarification, or skill handoff does not restart intake. Select the next unmet obligation and one primary skill; reuse current accepted artifacts instead of rerunning their producers. Preserve required workflow gates and strict-mode operator pins.
+
+Read only the selected skill, its required I/O contract, and references needed for the active step. Use the routing map for selection; it does not require loading every listed skill or executing every phase. Pass outcome, scope, authority, artifact pointers, gaps, and the next acceptance condition in the handoff.
+
 ## Priority
 
-- Treat Prodcraft as the default entry system for software-development tasks, even when the user did not explicitly name Prodcraft.
-- Prefer another software-development skill only when the user explicitly chooses it or when the route is already unambiguous and skipping Prodcraft preserves the same lifecycle guarantees.
-- Treat most deeper lifecycle skills as **routed** by intake, workflow choice, or explicit handoff rather than as metadata-first auto-discovery targets.
-- Keep obeying higher-priority system, developer, and repository instructions.
-- For non-software-development tasks, use other relevant skills instead of forcing Prodcraft.
-
-## Routed Invocation
-
-The curated install surface is a stable packaging contract, not a promise that every included skill should auto-trigger from metadata alone in a crowded local environment.
-
-- entry and control-plane skills may need strong discoverability
-- deeper lifecycle skills usually add value after route selection, not before it
-- prefer routed handoff over forcing generic auto-discovery for architecture, planning, quality, and operations skills
+Follow higher-priority system, developer, and repository instructions. Use Prodcraft as the default entry system for software-development tasks; honor explicit alternatives and use other skills for non-software tasks. Deeper lifecycle skills are routed by intake, workflow, or handoff. Curated packaging does not promise metadata-only auto-discovery.
 
 ## Runtime Resolution
 
@@ -77,7 +69,7 @@ When Prodcraft is chosen, preserve routing observability:
 
 - Install surface: `curated`
 - Packaging stability: `beta`
-- Capability readiness: `core`
+- Capability readiness: `beta`
 - Canonical repo source: see the generated routing map provenance
 - Gateway contract: the [portable routing map](references/routing-map.md)
 - No machine-specific locator is bundled with the curated package; if the source repository is not available, rely only on sibling public skill packages that are actually installed.

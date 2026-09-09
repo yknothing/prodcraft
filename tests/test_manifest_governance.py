@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import unittest
 from pathlib import Path
 
@@ -59,13 +60,9 @@ class ManifestGovernanceTests(unittest.TestCase):
         allowed.update(entry["name"] for entry in manifest.get("planned_skills", []))
         examples = (REPO_ROOT / "examples" / "README.md").read_text(encoding="utf-8")
 
-        for line in examples.splitlines():
-            if "Key skills:" not in line:
-                continue
-            _, raw_skills = line.split("Key skills:", 1)
-            for raw_token in raw_skills.split(","):
-                skill_name = raw_token.strip().strip(".").strip("` ")
-                self.assertIn(skill_name, allowed)
+        skill_names = set(re.findall(r"\bpc-[a-z0-9]+(?:-[a-z0-9]+)*\b", examples))
+        self.assertTrue(skill_names, "Workflow examples must name their skill responsibilities")
+        self.assertEqual(set(), skill_names - allowed)
 
     def test_non_draft_skills_have_minimum_review_artifacts(self):
         manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
@@ -114,7 +111,7 @@ class ManifestGovernanceTests(unittest.TestCase):
 
         self.assertEqual(set(), tested_or_better - public_names)
 
-    def test_public_registry_only_keeps_one_below_tested_exception(self):
+    def test_public_registry_keeps_explicit_review_candidates_at_beta(self):
         manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
         registry = json.loads(PUBLIC_SKILL_REGISTRY_PATH.read_text(encoding="utf-8"))
 
@@ -125,7 +122,19 @@ class ManifestGovernanceTests(unittest.TestCase):
             if statuses.get(entry["name"]) not in {None, "tested", "secure", "production"}
         }
 
-        self.assertEqual({"pc-system-design"}, below_tested)
+        self.assertEqual({
+            "pc-system-design", "pc-intake", "pc-task-breakdown", "pc-task-execution",
+            "pc-tdd", "pc-code-review", "pc-delivery-completion", "pc-verification-before-completion",
+            "pc-feature-development", "pc-refactoring", "pc-receiving-code-review",
+            "pc-testing-strategy", "pc-estimation", "pc-sprint-planning",
+            "pc-problem-framing", "pc-user-research", "pc-requirements-engineering",
+            "pc-spec-writing", "pc-api-design", "pc-systematic-debugging",
+            "pc-e2e-scenario-design", "pc-ci-cd", "pc-tech-debt-management",
+            "pc-retrospective", "pc-documentation", "pc-observability",
+        }, below_tested)
+        for entry in registry["public_skills"]:
+            if entry["name"] in below_tested:
+                self.assertEqual("beta", entry["readiness"], entry["name"])
 
     def test_public_portability_registry_covers_exported_public_skills(self):
         registry = json.loads(PUBLIC_SKILL_REGISTRY_PATH.read_text(encoding="utf-8"))

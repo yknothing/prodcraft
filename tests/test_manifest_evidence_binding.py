@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -72,7 +73,7 @@ None.
 
 
 class ManifestEvidenceBindingTests(unittest.TestCase):
-    def test_contract_digest_changes_for_process_edits_but_not_context_typos(self):
+    def test_contract_digest_covers_the_complete_skill_body(self):
         validator = load_validator()
         with tempfile.TemporaryDirectory() as tmpdir:
             skill_path = Path(tmpdir) / "SKILL.md"
@@ -80,7 +81,7 @@ class ManifestEvidenceBindingTests(unittest.TestCase):
             original = validator.compute_skill_contract_digest(skill_path)
 
             skill_path.write_text(skill_text(note="Background note corrected."), encoding="utf-8")
-            self.assertEqual(original, validator.compute_skill_contract_digest(skill_path))
+            self.assertNotEqual(original, validator.compute_skill_contract_digest(skill_path))
 
             skill_path.write_text(skill_text(process="Do the safer work."), encoding="utf-8")
             self.assertNotEqual(original, validator.compute_skill_contract_digest(skill_path))
@@ -93,6 +94,52 @@ class ManifestEvidenceBindingTests(unittest.TestCase):
                 encoding="utf-8",
             )
             self.assertNotEqual(original, validator.compute_skill_contract_digest(skill_path))
+
+    def test_package_resources_are_content_and_path_bound(self):
+        validator = load_validator()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            skill = root / "SKILL.md"
+            skill.write_text(skill_text(), encoding="utf-8")
+            original = validator.compute_skill_contract_digest(skill)
+            for directory in ("references", "scripts", "assets"):
+                with self.subTest(directory=directory):
+                    resource = root / directory / "nested" / "contract.txt"
+                    resource.parent.mkdir(parents=True)
+                    resource.write_text("Require approval.", encoding="utf-8")
+                    added = validator.compute_skill_contract_digest(skill)
+                    self.assertNotEqual(original, added)
+                    resource.write_text("Approval is optional.", encoding="utf-8")
+                    self.assertNotEqual(added, validator.compute_skill_contract_digest(skill))
+                    resource.write_text("Require approval.", encoding="utf-8")
+                    moved = resource.with_name("renamed.txt")
+                    resource.rename(moved)
+                    self.assertNotEqual(added, validator.compute_skill_contract_digest(skill))
+                    moved.unlink()
+                    self.assertEqual(original, validator.compute_skill_contract_digest(skill))
+
+    def test_package_rejects_symlinked_resources_and_special_files(self):
+        validator = load_validator()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            skill = root / "SKILL.md"
+            skill.write_text(skill_text(), encoding="utf-8")
+            refs = root / "references"
+            refs.mkdir()
+            resource = refs / "contract.md"
+            resource.symlink_to(skill)
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                validator.compute_skill_contract_digest(skill)
+            resource.unlink()
+            os.mkfifo(resource)
+            with self.assertRaisesRegex(ValueError, "regular file"):
+                validator.compute_skill_contract_digest(skill)
+            resource.unlink()
+            refs.rmdir()
+            refs.symlink_to(root, target_is_directory=True)
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                validator.compute_skill_contract_digest(skill)
+
 
     def test_contract_digest_rejects_duplicate_h2_contract_sections(self):
         validator = load_validator()
@@ -143,7 +190,7 @@ class ManifestEvidenceBindingTests(unittest.TestCase):
                 "\n".join(
                     (
                         "schema_version: skill-evidence-bindings.v1",
-                        "algorithm: contract-projection.v2",
+                        "algorithm: skill-package.v3",
                         "bindings:",
                         "- skill: pc-demo",
                         f"  evidence_verified_against: {entry['evidence_verified_against']}",
@@ -190,7 +237,7 @@ class ManifestEvidenceBindingTests(unittest.TestCase):
                 "\n".join(
                     (
                         "schema_version: skill-evidence-bindings.v1",
-                        "algorithm: contract-projection.v2",
+                        "algorithm: skill-package.v3",
                         "bindings:",
                         "- skill: pc-demo",
                         f"  evidence_verified_against: {digest}",
@@ -278,7 +325,7 @@ class ManifestEvidenceBindingTests(unittest.TestCase):
                 "\n".join(
                     (
                         "schema_version: skill-evidence-bindings.v1",
-                        "algorithm: contract-projection.v2",
+                        "algorithm: skill-package.v3",
                         "bindings:",
                         "- skill: pc-demo",
                         f"  evidence_verified_against: {digest}",
@@ -324,7 +371,7 @@ class ManifestEvidenceBindingTests(unittest.TestCase):
                 "\n".join(
                     (
                         "schema_version: skill-evidence-bindings.v1",
-                        "algorithm: contract-projection.v2",
+                        "algorithm: skill-package.v3",
                         "bindings:",
                         "- skill: pc-demo",
                         f"  evidence_verified_against: {digest}",

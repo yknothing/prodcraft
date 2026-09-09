@@ -63,7 +63,7 @@ For each scenario step, identify what changed and what invariants must still hol
 
 ### Step 4: Identify the Re-Entry Point
 
-Every multi-session scenario has a point where the user leaves and returns. Design one test that navigates completely away via the product's own navigation, then re-enters. This is the persistence test; a tab switch is not.
+Choose the lifecycle boundary the product promises to survive: route change, reload, new session, or process restart. Exercise that path and identify the state source. Navigation alone can reuse client caches; a server-persistence claim needs an independent authoritative read or a fresh context that demonstrably fetches saved state.
 
 ### Step 5: Write Edge Cases from a Taxonomy
 
@@ -82,8 +82,8 @@ Organize in four layers — each with a different contract. Read [`references/me
 | Layer | Backend | Depth | Purpose |
 |---|---|---|---|
 | Fixture / stub | Controlled stub | Shallow | Routing, chrome, loading states |
-| Live flow | Real backend | 2–4 steps | Per-feature smoke coverage |
-| Scenario | Real backend | 8–20 steps | Multi-step session, state accumulation |
+| Live flow | Real backend | Focused | Per-feature smoke coverage |
+| Scenario | Real backend | Required journey | Multi-step session, state accumulation |
 | Edge case | Real + offline | Variable | Boundaries, failure modes, lifecycle |
 
 ## What to Assert
