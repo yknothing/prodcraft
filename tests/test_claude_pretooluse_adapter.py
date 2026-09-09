@@ -67,6 +67,7 @@ raise SystemExit(int(os.environ.get("STUB_VALIDATOR_EXIT", "0")))
         tool_name: str = "Write",
         work_id: str | None = "work-123",
         extra_env: dict[str, str] | None = None,
+        tool_input: dict | None = None,
     ) -> subprocess.CompletedProcess[str]:
         env = os.environ.copy()
         env["CLAUDE_PROJECT_DIR"] = str(root)
@@ -80,6 +81,7 @@ raise SystemExit(int(os.environ.get("STUB_VALIDATOR_EXIT", "0")))
             "tool_name": tool_name,
             "tool_input": {"file_path": str(file_path or (root / "src" / "app.py"))},
         }
+        payload["tool_input"].update(tool_input or {})
         return subprocess.run(
             [sys.executable, str(ADAPTER_PATH)],
             input=json.dumps(payload),
@@ -109,7 +111,7 @@ raise SystemExit(int(os.environ.get("STUB_VALIDATOR_EXIT", "0")))
             self.make_repo(root)
             brief = root / ".prodcraft" / "artifacts" / "work-123" / "intake-brief.json"
 
-            bootstrap = self.run_adapter(root, file_path=brief)
+            bootstrap = self.run_adapter(root, file_path=brief, tool_input={"content": json.dumps({"status": "draft"})})
             self.assertEqual(0, bootstrap.returncode, bootstrap.stderr)
 
             wrong_work = self.run_adapter(
@@ -117,6 +119,112 @@ raise SystemExit(int(os.environ.get("STUB_VALIDATOR_EXIT", "0")))
                 file_path=root / ".prodcraft" / "artifacts" / "work-456" / "intake-brief.json",
             )
             self.assertEqual(2, wrong_work.returncode)
+
+    def test_fifo_brief_is_rejected_without_waiting_for_a_writer(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            self.make_repo(root)
+            brief = self.write_brief(root)
+            brief.unlink()
+            os.mkfifo(brief)
+            result = self.run_adapter(root)
+            self.assertEqual(2, result.returncode)
+            self.assertIn("regular file", result.stderr)
+
+    def test_draft_and_malformed_briefs_can_be_replaced_but_do_not_authorize_work(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            self.make_repo(root)
+            brief = self.write_brief(root, status="draft")
+            for old in (brief.read_text(), "broken JSON"):
+                brief.write_text(old)
+                result = self.run_adapter(root, file_path=brief, tool_input={"content": json.dumps({"status": "draft"})})
+                self.assertEqual(0, result.returncode, result.stderr)
+                self.assertEqual("", result.stdout)
+                self.assertEqual(2, self.run_adapter(root).returncode)
+
+    def test_approved_candidate_requires_host_confirmation_even_for_bootstrap(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            self.make_repo(root)
+            brief = self.write_brief(root, status="draft")
+            candidate = json.dumps({"status": "approved", "approver": "reviewer", "intake_mode": "fast-track"})
+            for existing in (True, False):
+                if not existing:
+                    brief.unlink()
+                result = self.run_adapter(root, file_path=brief, tool_input={"content": candidate})
+                self.assertEqual(0, result.returncode, result.stderr)
+                self.assertEqual("ask", json.loads(result.stdout)["hookSpecificOutput"]["permissionDecision"])
+
+    def test_control_file_edit_or_invalid_candidate_is_blocked(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            self.make_repo(root)
+            brief = self.write_brief(root)
+            self.assertEqual(2, self.run_adapter(root, file_path=brief, tool_name="Edit").returncode)
+            for content in (None, "{", "[]", json.dumps({"status": "unknown"}), json.dumps({"status": "approved", "approver": "reviewer", "intake_mode": "micro"})):
+                with self.subTest(content=content):
+                    result = self.run_adapter(root, file_path=brief, tool_input={"content": content})
+                    self.assertEqual(2, result.returncode)
+            rejected = self.run_adapter(root, file_path=brief, tool_input={"content": json.dumps({"status": "draft"})}, extra_env={"STUB_VALIDATOR_EXIT": "1"})
+            self.assertEqual(2, rejected.returncode)
+
+    def test_control_write_preserves_snapshot_and_path_guards(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            self.make_repo(root)
+            brief = self.write_brief(root)
+            candidate = {"content": brief.read_text()}
+            unchanged = self.run_adapter(root, file_path=brief, tool_input=candidate)
+            self.assertEqual(0, unchanged.returncode, unchanged.stderr)
+            self.assertEqual("", unchanged.stdout)
+            raced = self.run_adapter(root, file_path=brief, tool_input=candidate, extra_env={"STUB_SWAP_BRIEF": str(brief)})
+            self.assertEqual(2, raced.returncode)
+            self.assertIn("changed during validation", raced.stderr)
+            alias = root / "alias.json"
+            alias.symlink_to(brief)
+            self.assertEqual(2, self.run_adapter(root, file_path=alias, tool_input=candidate).returncode)
+            hardlink = root / "hardlink.json"
+            os.link(brief, hardlink)
+            self.assertEqual(2, self.run_adapter(root, file_path=hardlink, tool_input=candidate).returncode)
+            case_alias = brief.with_name("INTAKE-BRIEF.JSON")
+            if case_alias.exists() and case_alias.samefile(brief):
+                self.assertEqual(2, self.run_adapter(root, file_path=case_alias, tool_input=candidate).returncode)
+            brief.unlink()
+            os.mkfifo(brief)
+            self.assertEqual(2, self.run_adapter(root, file_path=brief, tool_input=candidate).returncode)
+
+    def test_repair_uses_real_repository_schema_and_route_validation(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            self.make_repo(root)
+            (root / "scripts" / "validate_prodcraft.py").write_text(
+                "import runpy\nrunpy.run_path(" + repr(str(REPO_ROOT / "scripts" / "validate_prodcraft.py")) + ", run_name='__main__')\n"
+            )
+            brief = self.write_brief(root, status="draft")
+            candidate = {
+                "artifact": "intake-brief", "schema_version": "intake-brief.v1",
+                "status": "draft", "approver": "pending",
+                "request_summary": "Repair the approved adapter defects.",
+                "source_language": "en", "artifact_record_language": "en", "user_presentation_locale": "en",
+                "intake_mode": "fast-track", "work_type": "Bug Fix", "entry_phase": "04-implementation",
+                "quality_target_context": {"runtime_context": "host_runtime_tool", "exposure_profile": "no_network_listener", "production_target": "Local hook", "non_targets": [], "evidence_refs": []},
+                "scope_assessment": "small", "recommended_next_skill": "pc-systematic-debugging",
+                "routing_rationale": "Known adapter defect", "key_risks": [], "questions_asked": [],
+                "routing_changed_by_answers": False,
+            }
+            result = self.run_adapter(root, file_path=brief, tool_input={"content": json.dumps(candidate)})
+            self.assertEqual(0, result.returncode, result.stderr)
+            brief.write_text(json.dumps(candidate))
+            self.assertEqual(2, self.run_adapter(root).returncode)
+            candidate.update(status="approved", approver="reviewer")
+            result = self.run_adapter(root, file_path=brief, tool_input={"content": json.dumps(candidate)})
+            self.assertEqual("ask", json.loads(result.stdout)["hookSpecificOutput"]["permissionDecision"])
+            brief.write_text(json.dumps(candidate))  # Simulate the host-approved tool result.
+            self.assertEqual(0, self.run_adapter(root).returncode)
+            candidate["recommended_next_skill"] = "pc-does-not-exist"
+            rejected = self.run_adapter(root, file_path=brief, tool_input={"content": json.dumps(candidate)})
+            self.assertEqual(2, rejected.returncode)
 
     def test_approved_non_micro_brief_passes_and_invalid_states_fail_closed(self):
         with tempfile.TemporaryDirectory() as tmpdir:

@@ -20,12 +20,23 @@ python scripts/validate_prodcraft.py \
 
 Set `PRODCRAFT_WORK_ID` before starting a new Claude Code session. The adapter
 looks only at `.prodcraft/artifacts/$PRODCRAFT_WORK_ID/intake-brief.json`, which
-binds the preflight to the current work directory. The exact first `Write` to
-that path is the bootstrap escape; no other Edit or Write proceeds until the
+binds the preflight to the current work directory. A complete `Write` to
+that canonical path can bootstrap or repair the brief; no other Edit or Write proceeds until the
 brief is structurally valid, `status: approved`, and has a non-empty approver.
 Artifact-instance CLI invocations validate only the supplied instance unless
 the caller explicitly adds `--check`; unrelated repository-wide drift cannot
 lock every governed write.
+
+Bootstrap and repair validate the proposed content through the same repository
+validator before returning. An existing draft or malformed JSON may be replaced
+with a valid draft. Drafts do not authorize ordinary work. Use complete `Write`
+replacement for this control file; `Edit` cannot bypass candidate validation.
+A new or changed approved candidate returns
+`hookSpecificOutput.permissionDecision: "ask"` to the host. An identical approved
+record needs no new approval. The adapter never emits `allow`; ordinary host
+permissions still apply. The host confirmation covers the displayed intake and
+scope, not strict execution authority. See the official
+[PreToolUse decision contract](https://code.claude.com/docs/en/hooks#pretooluse-decision-control).
 
 After validation, the adapter securely reopens the canonical brief and requires
 the file identity and bytes to match the validated snapshot. A symlinked parent,
@@ -33,6 +44,12 @@ file replacement, or content change fails closed. This binds one hook decision
 to one stable brief snapshot. It does not claim to prevent an unrelated process
 from changing repository state after the `PreToolUse` decision has returned;
 that later event belongs to the host/tool execution boundary.
+
+Reads use nonblocking descriptors before checking the regular-file type, so a
+FIFO is rejected immediately. Repair preserves path and snapshot checks;
+symlink aliases, symlinked parents, special files, and validation-time replacement
+remain blocked. The hook is an Edit/Write preflight, not a filesystem security
+boundary against unrelated tools or processes.
 
 `micro` briefs do not grant blocking adapter authority. The schema records the
 eligibility assertions, but micro approval is still notify-and-proceed rather
@@ -66,5 +83,8 @@ after changing the hook configuration.
 
 `tests/test_claude_pretooluse_adapter.py` exercises a scratch repository with
 missing, draft, invalid, micro, wrong-work, and symlinked briefs and parents;
-validator-time brief replacement; validator failure; bootstrap behavior; and
-the required blocking exit code.
+validator-time brief replacement; validator failure; FIFO rejection; draft and
+malformed-content recovery; approved-candidate confirmation; and the blocking
+exit code. A real-validator integration case covers draft -> approved -> ordinary
+write and rejects an unknown routed skill. This does not establish live Claude
+UI confirmation behavior; no fresh native Claude session was run for the repair.

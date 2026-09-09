@@ -106,7 +106,7 @@ def read_project_file_snapshot(
         try:
             file_fd = os.open(
                 relative_path.name,
-                os.O_RDONLY | nofollow | cloexec,
+                os.O_RDONLY | nofollow | cloexec | getattr(os, "O_NONBLOCK", 0),
                 dir_fd=current_fd,
             )
         except OSError as exc:
@@ -201,7 +201,20 @@ def main() -> int:
         requested_path = Path(tool_input["file_path"])
         if not requested_path.is_absolute():
             return block("Claude Edit/Write file_path must be absolute")
-        requested_normalized = Path(os.path.realpath(os.path.normpath(requested_path)))
+        if ".." in requested_path.parts:
+            return block("Claude Edit/Write file_path must not contain parent traversal")
+        requested_normalized = Path(os.path.normpath(requested_path))
+        # macOS may expose the project through /var or /tmp aliases. Resolve
+        # only that already-trusted root, never an in-project path component.
+        try:
+            relative_request = requested_normalized.relative_to(Path(os.path.abspath(project_dir)))
+        except ValueError:
+            pass
+        else:
+            requested_normalized = project_root / relative_request
+        control_write = requested_normalized == brief_path
+        if not control_write and Path(os.path.realpath(requested_normalized)) == brief_path:
+            return block("write the canonical intake path directly, without a symlink alias")
 
         try:
             approved_snapshot = read_project_file_snapshot(
@@ -211,11 +224,57 @@ def main() -> int:
                 MAX_BRIEF_BYTES,
             )
         except FileNotFoundError:
-            if tool_name == "Write" and requested_normalized == brief_path:
-                return 0
-            return block(
-                f"approved intake brief is missing at {brief_path}; bootstrap it with Write first"
-            )
+            approved_snapshot = None
+
+        if not control_write and approved_snapshot is not None:
+            try:
+                requested_metadata = requested_normalized.stat()
+            except FileNotFoundError:
+                pass
+            else:
+                if (requested_metadata.st_dev, requested_metadata.st_ino) == approved_snapshot.identity[:2]:
+                    return block("write the canonical intake path directly, without a filesystem alias")
+
+        if control_write:
+            if tool_name != "Write":
+                return block("replace the canonical intake brief with Write so the complete candidate can be validated")
+            content = tool_input.get("content")
+            if not isinstance(content, str):
+                return block("intake Write must include string content")
+            candidate_data = content.encode("utf-8")
+            if len(candidate_data) > MAX_BRIEF_BYTES:
+                return block("intake candidate exceeds 1 MiB")
+            candidate = json.loads(content)
+            if not isinstance(candidate, dict) or candidate.get("status") not in {"draft", "approved"}:
+                return block("intake candidate must be an object with draft or approved status")
+            if candidate.get("intake_mode") == "micro":
+                return block("micro intake does not grant blocking host-adapter authority")
+            with tempfile.TemporaryDirectory(prefix="prodcraft-intake-candidate-") as temp_dir:
+                validation_path = Path(temp_dir) / "intake-brief.json"
+                validation_path.write_bytes(candidate_data)
+                run_repository_validator(project_root, validation_path)
+            try:
+                current_snapshot = read_project_file_snapshot(project_root, brief_relative, "intake brief", MAX_BRIEF_BYTES)
+            except FileNotFoundError:
+                current_snapshot = None
+            if current_snapshot != approved_snapshot:
+                return block("intake brief changed during validation; retry with a stable brief")
+            if candidate["status"] == "approved":
+                approver = candidate.get("approver")
+                if not isinstance(approver, str) or not approver.strip():
+                    return block("intake brief approver must be non-empty")
+                # An unchanged approved record adds no authority. A changed one
+                # requires host confirmation; the candidate cannot approve itself.
+                if approved_snapshot is None or candidate_data != approved_snapshot.data:
+                    print(json.dumps({"hookSpecificOutput": {
+                        "hookEventName": "PreToolUse",
+                        "permissionDecision": "ask",
+                        "permissionDecisionReason": "Confirm this approved Prodcraft intake and its scope. The intake content is not itself proof of user approval.",
+                    }}))
+            return 0
+
+        if approved_snapshot is None:
+            return block(f"approved intake brief is missing at {brief_path}; bootstrap it with Write first")
 
         with tempfile.TemporaryDirectory(prefix="prodcraft-intake-snapshot-") as temp_dir:
             validation_path = Path(temp_dir) / "intake-brief.json"
