@@ -7,6 +7,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SCRIPT_PATH = REPO_ROOT / "scripts" / "install_prodcraft_global_skill.py"
@@ -92,6 +93,13 @@ class InstallProdcraftGlobalSkillTests(unittest.TestCase):
         self.assertIn("default entry system for software-development tasks", content)
         self.assertIn("honor explicit alternatives", content)
         self.assertIn("Preserve required workflow gates and strict-mode operator pins", content)
+
+        registry = json.loads((REPO_ROOT / "schemas/distribution/public-skill-registry.json").read_text())
+        gateway = next(entry for entry in registry["public_skills"] if entry["name"] == "pc-prodcraft")
+        metadata = yaml.safe_load(content.split("---", 2)[1])["metadata"]
+        self.assertEqual(gateway["readiness"], metadata["public_readiness"])
+        self.assertEqual(gateway["stability"], metadata["public_stability"])
+        self.assertIn(f"Capability readiness: `{gateway['readiness']}`", content)
 
         state = json.loads(self.state_path.read_text(encoding="utf-8"))
         self.assertEqual("installed", state["status"])

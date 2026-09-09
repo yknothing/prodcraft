@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import yaml
@@ -23,9 +24,23 @@ def render_prodcraft_skill(
     repo_root: Path,
     *,
     install_surface: str,
-    public_stability: str = "beta",
-    public_readiness: str = "core",
+    public_stability: str | None = None,
+    public_readiness: str | None = None,
 ) -> str:
+    if public_stability is None or public_readiness is None:
+        registry_path = repo_root / "schemas/distribution/public-skill-registry.json"
+        registry = json.loads(registry_path.read_text(encoding="utf-8"))
+        gateways = [entry for entry in registry["public_skills"] if entry["name"] == GATEWAY_SKILL_NAME]
+        if registry.get("schema_version") != "public-skill-registry.v1" or len(gateways) != 1:
+            raise ValueError("public registry must identify exactly one pc-prodcraft gateway")
+        gateway = gateways[0]
+        if public_stability is None:
+            public_stability = gateway["stability"]
+        if public_readiness is None:
+            public_readiness = gateway["readiness"]
+    if public_stability not in {"beta", "stable"} or public_readiness not in {"core", "beta", "experimental"}:
+        raise ValueError("gateway distribution labels must use registered stability and readiness values")
+
     if install_surface == "curated":
         intake_ref = "`pc-intake`"
         problem_framing_ref = "`pc-problem-framing`"

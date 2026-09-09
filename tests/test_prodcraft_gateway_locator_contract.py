@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import importlib.util
+import json
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -51,6 +53,22 @@ class ProdcraftGatewayLocatorContractTests(unittest.TestCase):
         self.assertIn("exposure_profile", content)
         self.assertIn("do not assume public HTTP service", content)
         self.assertNotIn(str(REPO_ROOT), content)
+
+    def test_default_gateway_labels_follow_the_selected_repository_registry(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            registry = root / "schemas/distribution/public-skill-registry.json"
+            registry.parent.mkdir(parents=True)
+            registry.write_text(json.dumps({
+                "schema_version": "public-skill-registry.v1",
+                "public_skills": [{"name": "pc-prodcraft", "stability": "stable", "readiness": "experimental"}],
+            }))
+            for surface in ("global", "curated"):
+                with self.subTest(surface=surface):
+                    content = self.module.render_prodcraft_skill(root, install_surface=surface)
+                    self.assertIn("public_readiness: experimental", content)
+                    self.assertIn("public_stability: stable", content)
+                    self.assertIn("Capability readiness: `experimental`", content)
 
 
 if __name__ == "__main__":

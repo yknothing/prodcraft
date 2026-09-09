@@ -411,8 +411,6 @@ def install_skill(
             render_prodcraft_skill(
                 repo_root,
                 install_surface="global",
-                public_stability="beta",
-                public_readiness="core",
             ),
             encoding="utf-8",
         )

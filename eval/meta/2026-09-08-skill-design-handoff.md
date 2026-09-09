@@ -50,7 +50,7 @@ Historical evidence is retained under `previous_revision` in [the evidence regis
 | File | Content hash |
 |---|---|
 | `skills/_gateway.md` | `sha256:f3e3accfb5e904b719e3082eeed7592922e4b605a94c850718fefed0bf6a0b2e` |
-| `scripts/prodcraft_gateway_skill.py` | `sha256:16b4c6d9e5138732217203b6ab13f07406f2742ace83e915538580ce5f2df961` |
+| `scripts/prodcraft_gateway_skill.py` | `sha256:f2904d94a8db69db84daa7490d37181fce2539f52f747a0efc83f663eaaaa102` |
 | `scripts/gateway_routing.py` | `sha256:8b87d14117143ce28f7a21a4d91e8ba31244b3a24cf38a4867a593b9255c4c75` |
 | `skills/_schema.md` | `sha256:21a3e5aad39bc4bbb4aa32916cf7d029517ad4e487116313127961298124f1c7` |
 | `workflows/_schema.md` | `sha256:dbe388b9329dc6c0008227dc7f63d556617203e3182f77e9b4d42e37dfdb4738` |
@@ -61,6 +61,7 @@ Historical evidence is retained under `previous_revision` in [the evidence regis
 | `templates/rfc.md` | `sha256:2434915a0082cfe0f16023f26df0c9c6199ed19486b80f8999dc43a02b237a70` |
 | `workflows/agile-sprint.md` | `sha256:971ccc2a1eac754a0f197519b288f3c12941b0ac03c8fef77db8502542cf600f` |
 | `workflows/hotfix.md` | `sha256:b72f64fb7cffac6be51e41ed472d54920881a3b4b3a6264a230c42e80e973e61` |
+| `scripts/install_prodcraft_global_skill.py` | `sha256:8a4a1240e0937ddce757646c0233c45d76240ffd8e7c67ed811bfc47c965db6d` |
 
 ## Checks Performed on September 8
 
@@ -172,6 +173,14 @@ python scripts/validate_prodcraft.py
 python scripts/measure_context_cost.py --check
 python -m unittest discover -s tests -q
 ```
+
+## Pre-Installation Audit — September 9
+
+The user authorized pushing the reviewed installation branch and updating the existing global managed collection after audit. Independent code and contract reviews of candidate `a92b608bcdda8597728bea66f5ff9f74da831fa3` identified one P2: the singleton installer and shared renderer default still declared `core` although the public gateway registry declared `beta`. The managed collection uses curated bytes and was not affected by that particular path.
+
+The shared renderer now obtains omitted stability/readiness values from the selected repository's public registry; the singleton installer no longer overrides them. Explicit exporter labels remain unchanged. A failing regression reproduced both the real installer mismatch and default rendering against another registry before the fix. All 40 relevant installer, renderer, and curated tests pass after correction. Re-export changes no curated file or authored skill package identity. The system table above now binds thirteen files, including the singleton installer; earlier twelve-file checks describe the preceding design snapshot.
+
+The audit distinguishes source publication, collection activation, and runtime behavior. The installer must bind the pushed exact revision, predecessor collection, all forty public members, gateway locator, and existing Agent projections. It must retain recoverable old bytes and report fresh filesystem status. Model outcomes and cached-session refresh remain separate evidence classes.
 
 ## Promotion Boundary
 
