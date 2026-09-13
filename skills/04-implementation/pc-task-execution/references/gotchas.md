@@ -10,7 +10,7 @@
 
 ### Wrong implementation discipline chosen for the batch
 - Trigger: The task involves a failing bug, a behavior change, and some cleanup all at once.
-- Failure mode: The agent starts coding directly, skipping `pc-systematic-debugging` or `pc-tdd`, because the batch looks small enough to improvise.
+- Failure mode: The agent starts coding directly, skipping `pc-debug-expert` or `pc-tdd`, because the batch looks small enough to improvise.
 - What to do: Route each batch to the real underlying discipline first, then resume execution with explicit verification steps.
 - Escalate when: The batch no longer fits a single safe discipline and the slice must be split or rerouted.
 

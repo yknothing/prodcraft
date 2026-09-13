@@ -98,7 +98,7 @@ Once mitigated, investigate root cause with less time pressure:
 - Build timeline (what happened, in what order)
 - Identify root cause (not just the symptom)
 - Compare observed behavior against the reviewed contract or release boundary
-- Hand off code-level root-cause work to `pc-systematic-debugging` when the next step is a real code fix rather than an operational mitigation
+- Hand off code-level root-cause work to `pc-debug-expert` when the next step is a real code fix rather than an operational mitigation
 - Implement the proper fix only after the root-cause path is evidenced
 - Deploy fix with extra monitoring
 

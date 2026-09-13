@@ -97,7 +97,7 @@ skills:
 - name: pc-intake
   phase: 00-discovery
   file: skills/00-discovery/pc-intake/SKILL.md
-  evidence_verified_against: contract-sha256:3409c6247d7950646732e6906fa205a5dfb6ccb40a9525f06f8c4229ece0f2c8
+  evidence_verified_against: contract-sha256:01448a408ae2a44159e831fd514b356451f42d4a96f74302f53248db3d6355b9
   gateway: true
   status: review
   qa_tier: critical
@@ -408,28 +408,31 @@ skills:
     design_revision_path: docs/architecture/2026-09-08-skill-execution-design.md
     revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
     historical_findings_path: eval/04-implementation/pc-tdd/findings.md
-- name: pc-systematic-debugging
+- name: pc-debug-expert
   phase: 04-implementation
-  file: skills/04-implementation/pc-systematic-debugging/SKILL.md
-  evidence_verified_against: contract-sha256:ab8d649fbd8b6f348d4c8b2c081ac695ca3b011ed7e1baababb245a3a4525f77
+  file: skills/04-implementation/pc-debug-expert/SKILL.md
+  evidence_verified_against: contract-sha256:3df2d00210c1ad2148e5945394094b89aeae60d9d531c1294c13b6495dc84002
   status: review
   qa_tier: critical
   evaluation_mode: routed
   qa:
     structure_validation_path: scripts/validate_prodcraft.py
-    eval_strategy_path: eval/04-implementation/pc-systematic-debugging/evals/eval-strategy.md
-    benchmark_plan_path: eval/04-implementation/pc-systematic-debugging/isolated-benchmark-plan.md
-    benchmark_results_path: eval/04-implementation/pc-systematic-debugging/isolated-benchmark-review.md
-    findings_path: docs/reviews/2026-09-09-skill-design-acceptance.md
-    integration_test_path: eval/04-implementation/pc-systematic-debugging/bugfix-review.md
-    revalidation_plan_path: eval/meta/2026-09-08-skill-design-handoff.md
+    findings_path: docs/architecture/2026-09-13-debug-expert-design.md
+    revalidation_plan_path: eval/04-implementation/pc-debug-expert/eval-strategy.md
     historical_findings_path: eval/04-implementation/pc-systematic-debugging/findings.md
     historical_revalidation_plan_path: eval/04-implementation/pc-systematic-debugging/post-rewrite-revalidation-plan.md
-    design_revision_path: docs/reviews/2026-09-09-skill-design-acceptance.md
+    historical_eval_strategy_path: eval/04-implementation/pc-systematic-debugging/evals/eval-strategy.md
+    historical_benchmark_plan_path: eval/04-implementation/pc-systematic-debugging/isolated-benchmark-plan.md
+    historical_benchmark_results_path: eval/04-implementation/pc-systematic-debugging/isolated-benchmark-review.md
+    historical_integration_test_path: eval/04-implementation/pc-systematic-debugging/bugfix-review.md
+    historical_design_revision_path: docs/reviews/2026-09-09-skill-design-acceptance.md
+    eval_strategy_path: eval/04-implementation/pc-debug-expert/eval-strategy.md
+    benchmark_plan_path: eval/04-implementation/pc-debug-expert/eval-strategy.md
+    design_revision_path: docs/architecture/2026-09-13-debug-expert-design.md
 - name: pc-task-execution
   phase: 04-implementation
   file: skills/04-implementation/pc-task-execution/SKILL.md
-  evidence_verified_against: contract-sha256:d2c83646e20f68d7d3446dfb06e5ff246b0d06be5d3adf57d5496db394e6f537
+  evidence_verified_against: contract-sha256:3e268edce5400de81e2ce42f00825d531fa5f0b1b21b2b8c98742f3645f64ae6
   status: review
   qa_tier: critical
   evaluation_mode: routed
@@ -527,7 +530,7 @@ skills:
 - name: pc-receiving-code-review
   phase: 05-quality
   file: skills/05-quality/pc-receiving-code-review/SKILL.md
-  evidence_verified_against: contract-sha256:5ef82534649f981ba7084e7cd488b92bd7fbc50240cab38af31be3eea5dac509
+  evidence_verified_against: contract-sha256:4bbbf5f3d57f37a81dbf555bb5021238412a6d7fb6d4a95b3c2c8de1245d40e1
   status: review
   qa_tier: standard
   evaluation_mode: routed
@@ -653,7 +656,7 @@ skills:
 - name: pc-incident-response
   phase: 07-operations
   file: skills/07-operations/pc-incident-response/SKILL.md
-  evidence_verified_against: contract-sha256:a5be68658e78a84cb7f21a352b23c0e3e0c72fa0d0511190b5a159a18f006e79
+  evidence_verified_against: contract-sha256:25f89cf75bfad322ecdef386e435b6bde8880cde144cda46cd85ab78cbf070b6
   status: tested
   qa_tier: critical
   evaluation_mode: routed
@@ -1000,7 +1003,7 @@ artifact_flow:
   - pc-testing-strategy
 - artifact: course-correction-note
   produced_by:
-  - pc-systematic-debugging
+  - pc-debug-expert
   - pc-feature-development
   - pc-refactoring
   - pc-code-review
@@ -1174,7 +1177,7 @@ artifact_flow:
   - pc-refactoring
   consumed_by:
   - pc-receiving-code-review
-  - pc-systematic-debugging
+  - pc-debug-expert
   - pc-refactoring
   - pc-code-review
   - pc-implementation-alignment-review
@@ -1190,7 +1193,7 @@ artifact_flow:
   - pc-e2e-scenario-design
   consumed_by:
   - pc-receiving-code-review
-  - pc-systematic-debugging
+  - pc-debug-expert
   - pc-feature-development
   - pc-refactoring
   - pc-code-review
@@ -1202,7 +1205,7 @@ artifact_flow:
   produced_by: pc-task-execution
   consumed_by:
   - pc-feature-development
-  - pc-systematic-debugging
+  - pc-debug-expert
   - pc-verification-before-completion
 - artifact: execution-checkpoint
   produced_by: pc-task-execution
@@ -1211,7 +1214,7 @@ artifact_flow:
   - pc-receiving-code-review
   - pc-delivery-completion
 - artifact: bug-fix-report
-  produced_by: pc-systematic-debugging
+  produced_by: pc-debug-expert
   consumed_by:
   - pc-code-review
   - pc-verification-before-completion
@@ -1345,11 +1348,11 @@ artifact_flow:
 - artifact: historical-defect-context
   produced_by: pc-bug-history-retrieval
   consumed_by:
-  - pc-systematic-debugging
+  - pc-debug-expert
 - artifact: fix-lineage-brief
   produced_by: pc-bug-history-retrieval
   consumed_by:
-  - pc-systematic-debugging
+  - pc-debug-expert
 - artifact: verification-record
   produced_by: pc-verification-before-completion
   consumed_by:

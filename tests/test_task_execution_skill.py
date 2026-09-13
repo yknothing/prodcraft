@@ -43,10 +43,10 @@ class TaskExecutionSkillTests(unittest.TestCase):
         self.assertEqual("pc-task-execution", artifact_flow["execution-batch-plan"]["produced_by"])
         self.assertEqual("pc-task-execution", artifact_flow["execution-checkpoint"]["produced_by"])
         self.assertIn("pc-feature-development", artifact_flow["execution-batch-plan"]["consumed_by"])
-        self.assertIn("pc-systematic-debugging", artifact_flow["execution-batch-plan"]["consumed_by"])
+        self.assertIn("pc-debug-expert", artifact_flow["execution-batch-plan"]["consumed_by"])
         self.assertIn("pc-verification-before-completion", artifact_flow["execution-checkpoint"]["consumed_by"])
 
-        self.assertIn("It does **not** replace `pc-feature-development`, `pc-systematic-debugging`, or `pc-tdd`", skill_text)
+        self.assertIn("It does **not** replace `pc-feature-development`, `pc-debug-expert`, or `pc-tdd`", skill_text)
         self.assertIn("2-5 minute", skill_text)
         self.assertIn("### Implementation Routing Quick Map", gateway)
         self.assertIn("optional tactical wrapper", gateway)

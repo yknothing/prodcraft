@@ -22,7 +22,7 @@ def load_module():
 class ScoreExplicitSkillBenchmarkTests(unittest.TestCase):
     def setUp(self):
         self.module = load_module()
-        self.manifest_skills = {"pc-systematic-debugging", "pc-tdd", "pc-system-design"}
+        self.manifest_skills = {"pc-debug-expert", "pc-tdd", "pc-system-design"}
 
     def test_machine_assertions_accept_structured_bug_fix_report(self):
         scenario = {

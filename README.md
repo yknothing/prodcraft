@@ -17,6 +17,7 @@ As of 2026-09-09, the current source tree contains:
 - authored-skill maturity in `manifest.yml`: 0 `production`, 13 `tested`, 33 `review`, 0 `draft`; thirty revised contracts await behavioral revalidation
 - 6 workflow files: 3 primary methodology workflows and 3 overlays
 - 7 advisory personas
+- A dedicated [debug expert Skill](skills/04-implementation/pc-debug-expert/SKILL.md) for causal diagnosis and correction
 - 8 registered protocol artifact schemas
 - 40 generated public skills in `skills/.curated/`
 

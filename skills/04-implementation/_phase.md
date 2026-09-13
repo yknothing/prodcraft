@@ -28,7 +28,7 @@ All planned features are code-complete. Unit and integration tests pass. Code me
 | Skill | Purpose | Effort |
 |---|---|---|
 | pc-task-execution | Turn approved slices into short execution batches with checkpoints and stop conditions | medium |
-| pc-systematic-debugging | Find root cause before code fixes and escalate structural mismatches cleanly | medium |
+| pc-debug-expert | Find root cause before code fixes and escalate structural mismatches cleanly | medium |
 | pc-tdd | Write tests first to drive design and catch regressions | medium |
 | pc-feature-development | Implement features incrementally and verifiably | large |
 | pc-refactoring | Improve code structure without changing behavior | medium |
@@ -44,17 +44,17 @@ All planned features are code-complete. Unit and integration tests pass. Code me
 ## Skill Sequence
 
 ```
-pc-task-execution ──> pc-systematic-debugging ──> pc-tdd ←──→ pc-feature-development ←──→ pc-refactoring
+pc-task-execution ──> pc-debug-expert ──> pc-tdd ←──→ pc-feature-development ←──→ pc-refactoring
                                                                   ↑
                                                           pc-pair-programming
 ```
 
-Implementation skills are iterative and interwoven. `pc-task-execution` turns approved slices into tactical batches. `pc-systematic-debugging` establishes the defect boundary before code fixes. TDD and feature development form a tight loop. Refactoring happens continuously. Pair programming applies to any of the above.
+Implementation skills are iterative and interwoven. `pc-task-execution` turns approved slices into tactical batches. `pc-debug-expert` establishes the defect boundary before code fixes. TDD and feature development form a tight loop. Refactoring happens continuously. Pair programming applies to any of the above.
 
 ### Implementation Routing Quick Map
 
 - use `pc-task-execution` only when the batch itself needs explicit checkpoints, stop conditions, or handoff-friendly execution records
-- use `pc-systematic-debugging` when the next move depends on proving root cause before changing code
+- use `pc-debug-expert` when the next move depends on proving root cause before changing code
 - use `pc-tdd` when behavior is changing and the next proof should be a failing test
 - use `pc-feature-development` when the tested slice is ready to become a small reviewable diff
 - use `pc-refactoring` when behavior is already protected and the next goal is structural cleanup
@@ -63,7 +63,7 @@ If two of these seem equally primary, prefer the skill that changes the verifica
 
 In brownfield work, implementation should start with the smallest safe slice and the tests that protect coexistence or contract behavior before new code expands.
 
-When the work starts from a bug, failing test, or regression, `pc-systematic-debugging` should run before implementation code changes unless the root cause is already evidenced and recorded.
+When the work starts from a bug, failing test, or regression, `pc-debug-expert` should run before implementation code changes unless the root cause is already evidenced and recorded.
 
 If implementation discovers that requirements or architecture are materially wrong, produce a `course-correction-note` and jump directly to `01-specification` or `02-architecture` instead of silently patching around the mismatch.
 

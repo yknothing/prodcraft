@@ -13,7 +13,7 @@ The [whole-library acceptance record](../docs/reviews/2026-09-09-skill-design-ac
 | Responsibility | Input consumed | Decision and output consumed next |
 |---|---|---|
 | pc-intake | Explicitly approved adapter repair, observed failure, local host-tool target | Direct bug-fix route with a bounded file/behavior scope; no market, architecture, or sprint artifact is needed |
-| pc-systematic-debugging | Reproducer, real adapter open flags, and observed blocking point | Cause: blocking FIFO open precedes `fstat`; define nonblocking open followed by regular-file validation |
+| pc-debug-expert | Reproducer, real adapter open flags, and observed blocking point | Cause: blocking FIFO open precedes `fstat`; define nonblocking open followed by regular-file validation |
 | pc-tdd / implementation | Same failure boundary and the existing adapter tests | Regression protects prompt rejection; implementation retains symlink and snapshot checks rather than broadly exempting intake files |
 | pc-code-review | Actual diff, rejection/authorized-recovery cases, and scope | Review the file-descriptor behavior and approval boundary; actionable findings go back to the author without pretending integration is approved |
 | pc-verification-before-completion | Current test output and inspected source | Claim only local adapter regression coverage, with native host dispatch/confirmation explicitly unverified |

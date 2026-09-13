@@ -34,6 +34,7 @@ from tools.execution_state import (
     validate_execution_state_contract,
     validate_route_decision_contract,
     validate_terminal_completion,
+    validate_completion_evidence,
     validate_control_ref,
 )
 
@@ -783,6 +784,36 @@ def _load_previous_execution_chain(
         current_state = archived
         expected_revision -= 1
     return historical_states
+
+
+def validate_completion_preflight(
+    state: dict, *, repo_root: Path, control_root: Path,
+    view: CandidateBundleView,
+) -> list[str]:
+    """Validate the immutable claim commitment without inventing terminal authority."""
+    errors: list[str] = []
+    if state.get("lifecycle_state") != "completion_claimed":
+        return ["completion preflight requires completion_claimed state"]
+    attempt = next((item for item in state.get("completion_attempts", [])
+                    if item.get("attempt_id") == state.get("current_completion_attempt_id")), None)
+    if not isinstance(attempt, dict):
+        return ["completion claim has no current attempt"]
+    commitment = attempt.get("verification_commitment")
+    if not isinstance(commitment, dict):
+        return ["completion claim has no verification commitment"]
+    try:
+        document, digest, path = _load_strict_from_bundle(view, commitment["verification_record_ref"])
+        valid = validate_registered_artifact_payload(document, path, errors)
+        if not valid or document.get("artifact") != "verification-record":
+            return [*errors, "claim requires a registered verification-record"]
+        errors.extend(validate_completion_evidence(
+            attempt, commitment, control_root=control_root, repo_root=repo_root,
+            verification_document=document, verification_document_digest=digest,
+            bundle_io=view,
+        ))
+    except (KeyError, TypeError, ValueError) as exc:
+        errors.append(f"completion preflight failed: {exc}")
+    return errors
 
 
 def validate_execution_candidate(

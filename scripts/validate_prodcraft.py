@@ -2818,7 +2818,7 @@ def validate_curated_surface(errors: list[str]) -> None:
         )
 
     try:
-        from export_curated_skills import export_curated_skills
+        from scripts.export_curated_skills import export_curated_skills
     except Exception as exc:
         errors.append(f"{Path(__file__).resolve()}: failed to import curated exporter for parity validation: {exc}")
         return

@@ -367,11 +367,28 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
                     "auth_exposure": "auth.json-symlink",
                     "source_user_config_loaded": False,
                     "forbidden_path_fragment": "systematic-debugging",
+                    "forbidden_path_fragments": ["systematic-debugging", "pc-debug-expert"],
                     "preflight_forbidden_path_matches": 0,
                     "postflight_forbidden_path_matches": 0,
                     "cleanup": "automatic-after-each-case",
                 },
             )
+
+    def test_codex_home_rejects_legacy_and_renamed_debug_packages(self):
+        module = load_module()
+        for name in ("systematic-debugging", "pc-systematic-debugging", "pc-debug-expert"):
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as tmpdir:
+                isolated_home = Path(tmpdir) / "home"
+                (isolated_home / "skills" / name).mkdir(parents=True)
+                with self.assertRaisesRegex(OSError, "preflight.*" + name):
+                    module.assert_codex_home_has_no_forbidden_paths(isolated_home, "preflight")
+
+    def test_codex_home_inspects_contents_not_ancestor_names(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory(prefix="systematic-debugging-") as tmpdir:
+            isolated_home = Path(tmpdir) / "home"
+            (isolated_home / "skills" / "unrelated-skill").mkdir(parents=True)
+            module.assert_codex_home_has_no_forbidden_paths(isolated_home, "preflight")
 
     def test_run_prompt_rejects_codex_home_pollution_after_process_completion(self):
         module = load_module()

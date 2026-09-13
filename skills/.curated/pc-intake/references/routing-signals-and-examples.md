@@ -19,7 +19,7 @@ An overlay supplements a primary workflow; it is not a replacement primary.
 |---|---|---|
 | "Continue the approved settings change"; scope and authority are unchanged | Reuse the approved route; `resume` if an updated brief is needed | Consume the current task and evidence at the next unmet step; ask no repeat approval |
 | "Add dark mode"; requirements and accepted architecture already exist | `New Feature`, `01-specification`, `agile-sprint`; record which upstream obligations are already satisfied | Route to `pc-task-breakdown` only if the task slice is missing, otherwise continue the implementation discipline |
-| "Checkout is returning 500"; cause is unknown | `Hotfix`, `04-implementation`, `agile-sprint` plus `hotfix` | Use `pc-incident-response` for active containment first; reuse current containment evidence before `pc-systematic-debugging` |
+| "Checkout is returning 500"; cause is unknown | `Hotfix`, `04-implementation`, `agile-sprint` plus `hotfix` | Use `pc-incident-response` for active containment first; reuse current containment evidence before `pc-debug-expert` |
 | "Fix this README typo"; reversible wording only | `Documentation`, `cross-cutting`, `micro` if all eligibility fields hold | Use `pc-documentation`; under the Claude Edit/Write adapter use approved `fast-track` instead |
 | "Build a CLI migration tool"; desired users and problem are unclear | `New Product`, `00-discovery`, `agile-sprint` plus `greenfield` | Use `pc-problem-framing` to settle the problem before choosing a full design chain |
 

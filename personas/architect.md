@@ -2,7 +2,7 @@
 name: architect
 description: "Owns system structure, quality attributes, and technical vision"
 leads: ["02-architecture"]
-advises: ["01-specification", "02-architecture", "03-planning", "04-implementation"]
+advises: ["01-specification", "03-planning", "04-implementation"]
 ---
 
 # Architect

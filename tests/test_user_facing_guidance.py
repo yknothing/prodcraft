@@ -8,9 +8,11 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 class UserFacingGuidanceTests(unittest.TestCase):
-    def test_claude_mentions_default_chinese_and_plain_language(self):
+    def test_claude_follows_current_request_language_and_plain_language(self):
         content = (REPO_ROOT / "CLAUDE.md").read_text(encoding="utf-8")
-        self.assertIn("User-facing responses default to Chinese", content)
+        self.assertIn("English requests receive English; Chinese requests receive Chinese", content)
+        self.assertIn("An explicit language request takes precedence", content)
+        self.assertIn("human-facing tags", content)
         self.assertIn("Use plain language", content)
         self.assertIn("system shape and collaboration quality", content)
 
@@ -22,8 +24,8 @@ class UserFacingGuidanceTests(unittest.TestCase):
         self.assertIn("system shape and collaboration quality", content)
 
     def test_exported_skill_bodies_carry_no_operator_locale_default(self):
-        # Operator locale policy lives in CLAUDE.md; exported skill prose must
-        # stay locale-neutral so public installs do not inherit it.
+        # Public installs must select the user's language without inheriting a
+        # maintainer-specific locale default.
         curated_root = REPO_ROOT / "skills" / ".curated"
         for skill_file in sorted(curated_root.rglob("SKILL.md")):
             content = skill_file.read_text(encoding="utf-8")

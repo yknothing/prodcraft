@@ -128,7 +128,7 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "pc-systematic-debugging",
+      "name": "pc-debug-expert",
       "portability": "portable_with_caveat",
       "hidden_dependencies": ["Prodcraft repository routing, artifact contracts, and QA evidence"],
       "required_context": "Works best when the Prodcraft repository, gateway routing, artifact contracts, and validation checks are available.",

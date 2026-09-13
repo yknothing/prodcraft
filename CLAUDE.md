@@ -52,7 +52,8 @@ When integrating ideas from external skill systems:
 - Re-express imported ideas as local Prodcraft contracts, artifacts, or skills so validation and QA remain repository-owned
 
 When producing user-facing skill outputs:
-- User-facing responses default to Chinese unless the user explicitly asks for another language
+- Match user-facing responses to the current substantive request's language: English requests receive English; Chinese requests receive Chinese. An explicit language request takes precedence. Ignore code, paths, API names, and quoted source text when choosing the language. For mixed prose use its dominant language; retain the established presentation locale when ambiguous.
+- Apply that language to explanations, headings, questions, human-facing tags, status labels, and completion feedback. Preserve canonical machine fields/enums, skill IDs, code, commands, paths, API names, and original diagnostics. Keep canonical repository artifact records in English and localize their user-facing summaries.
 - Use plain language, short sentences, and direct explanations rather than abstract or inflated wording
 - Keep checking current system shape and collaboration quality when they materially affect routing, scope, risk, or handoff
 

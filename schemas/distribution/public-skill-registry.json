@@ -19,7 +19,7 @@
     { "name": "pc-risk-assessment", "source": "skills/03-planning/pc-risk-assessment", "stability": "beta", "readiness": "beta", "manual_allowlist": true },
     { "name": "pc-sprint-planning", "source": "skills/03-planning/pc-sprint-planning", "stability": "beta", "readiness": "beta", "manual_allowlist": true },
     { "name": "pc-tdd", "source": "skills/04-implementation/pc-tdd", "stability": "beta", "readiness": "beta", "manual_allowlist": true },
-    { "name": "pc-systematic-debugging", "source": "skills/04-implementation/pc-systematic-debugging", "stability": "beta", "readiness": "beta", "manual_allowlist": true },
+    { "name": "pc-debug-expert", "source": "skills/04-implementation/pc-debug-expert", "stability": "beta", "readiness": "beta", "manual_allowlist": true },
     { "name": "pc-task-execution", "source": "skills/04-implementation/pc-task-execution", "stability": "beta", "readiness": "beta", "manual_allowlist": true },
     { "name": "pc-feature-development", "source": "skills/04-implementation/pc-feature-development", "stability": "beta", "readiness": "beta", "manual_allowlist": true },
     { "name": "pc-refactoring", "source": "skills/04-implementation/pc-refactoring", "stability": "beta", "readiness": "beta", "manual_allowlist": true },

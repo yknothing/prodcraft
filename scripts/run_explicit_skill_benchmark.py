@@ -37,6 +37,7 @@ from tools.model_usage_normalization import (  # noqa: E402
 
 SUPPORTED_RUNNERS = {"claude", "codex", "copilot", "gemini"}
 CODEX_HOME_FORBIDDEN_PATH_FRAGMENT = "systematic-debugging"
+CODEX_HOME_FORBIDDEN_PATH_FRAGMENTS = (CODEX_HOME_FORBIDDEN_PATH_FRAGMENT, "pc-debug-expert")
 GEMINI_PREAMBLE_LINE_PREFIXES = (
     "Loaded cached credentials.",
     "Loading extension:",
@@ -106,6 +107,7 @@ def codex_home_isolation_metadata() -> dict[str, object]:
         "auth_exposure": "auth.json-symlink",
         "source_user_config_loaded": False,
         "forbidden_path_fragment": CODEX_HOME_FORBIDDEN_PATH_FRAGMENT,
+        "forbidden_path_fragments": list(CODEX_HOME_FORBIDDEN_PATH_FRAGMENTS),
         "preflight_forbidden_path_matches": 0,
         "postflight_forbidden_path_matches": 0,
         "cleanup": "automatic-after-each-case",
@@ -116,13 +118,13 @@ def assert_codex_home_has_no_forbidden_paths(home: Path, stage: str) -> None:
     forbidden_matches = [
         path
         for path in home.rglob("*")
-        if CODEX_HOME_FORBIDDEN_PATH_FRAGMENT in str(path)
+        if any(fragment in path.relative_to(home).as_posix() for fragment in CODEX_HOME_FORBIDDEN_PATH_FRAGMENTS)
     ]
     if forbidden_matches:
         relative_matches = [str(path.relative_to(home)) for path in forbidden_matches]
         raise OSError(
             f"{stage} isolated codex home contains forbidden "
-            f"{CODEX_HOME_FORBIDDEN_PATH_FRAGMENT} paths: {relative_matches}"
+            f"{', '.join(CODEX_HOME_FORBIDDEN_PATH_FRAGMENTS)} paths: {relative_matches}"
         )
 
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import shutil
 import sys
 import tempfile
 import unittest
@@ -13,6 +14,7 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 ADAPTER_PATH = REPO_ROOT / ".claude" / "hooks" / "prodcraft_pretooluse.py"
+RUNTIME_PATH = REPO_ROOT / "scripts" / "prodcraft_runtime.py"
 
 
 class ClaudePreToolUseAdapterTests(unittest.TestCase):
@@ -209,7 +211,7 @@ raise SystemExit(int(os.environ.get("STUB_VALIDATOR_EXIT", "0")))
                 "source_language": "en", "artifact_record_language": "en", "user_presentation_locale": "en",
                 "intake_mode": "fast-track", "work_type": "Bug Fix", "entry_phase": "04-implementation",
                 "quality_target_context": {"runtime_context": "host_runtime_tool", "exposure_profile": "no_network_listener", "production_target": "Local hook", "non_targets": [], "evidence_refs": []},
-                "scope_assessment": "small", "recommended_next_skill": "pc-systematic-debugging",
+                "scope_assessment": "small", "recommended_next_skill": "pc-debug-expert",
                 "routing_rationale": "Known adapter defect", "key_risks": [], "questions_asked": [],
                 "routing_changed_by_answers": False,
             }
@@ -310,7 +312,7 @@ raise SystemExit(int(os.environ.get("STUB_VALIDATOR_EXIT", "0")))
         self.assertEqual("command", hook["type"])
         self.assertEqual("python3", hook["command"])
         self.assertEqual(
-            ["${CLAUDE_PROJECT_DIR}/.claude/hooks/prodcraft_pretooluse.py"],
+            ["${CLAUDE_PROJECT_DIR}/scripts/prodcraft_runtime.py", "run", "pretooluse"],
             hook["args"],
         )
 
@@ -320,6 +322,34 @@ raise SystemExit(int(os.environ.get("STUB_VALIDATOR_EXIT", "0")))
         triggers = workflow[True]
         self.assertIn(".claude/**", triggers["push"]["paths"])
         self.assertIn(".claude/**", triggers["pull_request"]["paths"])
+
+    def test_configured_hook_uses_explicit_runtime_with_missing_bootstrap_dependencies(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.make_repo(root)
+            (root / ".claude" / "hooks").mkdir(parents=True)
+            shutil.copyfile(ADAPTER_PATH, root / ".claude" / "hooks" / ADAPTER_PATH.name)
+            shutil.copyfile(RUNTIME_PATH, root / "scripts" / RUNTIME_PATH.name)
+            # -S models a bootstrap Python without site-installed validator dependencies.
+            bootstrap = [sys.executable, "-S", str(root / "scripts" / RUNTIME_PATH.name)]
+            setup = subprocess.run(
+                [*bootstrap, "setup", "--python", sys.executable],
+                capture_output=True, text=True, cwd=root,
+            )
+            self.assertEqual(0, setup.returncode, setup.stderr)
+            self.write_brief(root)
+            result = subprocess.run(
+                [*bootstrap, "run", "pretooluse"],
+                input=json.dumps({"hook_event_name": "PreToolUse", "tool_name": "Write", "tool_input": {"file_path": str(root / "app.py")}}),
+                capture_output=True, text=True, cwd=root,
+                env={**os.environ, "CLAUDE_PROJECT_DIR": str(root), "PRODCRAFT_WORK_ID": "work-123"},
+            )
+            self.assertEqual(0, result.returncode, result.stderr)
+            config = root / "build" / "prodcraft-runtime.json"
+            config.unlink()
+            missing = subprocess.run([*bootstrap, "run", "pretooluse"], input="{}", capture_output=True, text=True)
+            self.assertEqual(2, missing.returncode)
+            self.assertIn("setup --python", missing.stderr)
 
 
 if __name__ == "__main__":

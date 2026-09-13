@@ -467,7 +467,9 @@ class FilesystemControlBundleIO:
         return tuple(sorted(relative_files))
 
 
-def _run_git(repo_root: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess[bytes]:
+def _run_git(
+    repo_root: Path, *args: str, check: bool = True, input_bytes: bytes | None = None
+) -> subprocess.CompletedProcess[bytes]:
     environment = {
         key: value
         for key, value in os.environ.items()
@@ -516,6 +518,7 @@ def _run_git(repo_root: Path, *args: str, check: bool = True) -> subprocess.Comp
             cwd=repo_root,
             check=check,
             capture_output=True,
+            input=input_bytes,
             env=environment,
             timeout=GIT_COMMAND_TIMEOUT_SECONDS,
         )
@@ -585,13 +588,18 @@ def _untracked_entries(repo_root: Path, *, include_ignored: bool = False) -> set
     return {_decode_git_path(raw_path) for raw_path in output.split(b"\0") if raw_path}
 
 
-def _other_control_entries(repo_root: Path, control_relative: str) -> set[str]:
+def _other_control_entries(
+    repo_root: Path, control_relative: str, tracked: dict[str, tuple[str, str]]
+) -> set[str]:
     """Keep other work-item roots governed even when `.prodcraft/` is ignored."""
 
     artifacts_root = repo_root / ".prodcraft" / "artifacts"
     if not artifacts_root.exists():
         return set()
-    current_control = repo_root / PurePosixPath(control_relative)
+    for candidate in (artifacts_root.parent, artifacts_root):
+        if tracked.get(candidate.relative_to(repo_root).as_posix(), (None, None))[0] == "160000":
+            return set()
+    current_control = repo_root / PurePosixPath(control_relative) if control_relative else None
     entries: set[str] = set()
     def raise_walk_error(exc: OSError) -> None:
         raise WorktreeSnapshotError(f"cannot enumerate reserved control roots: {exc}")
@@ -603,13 +611,19 @@ def _other_control_entries(repo_root: Path, control_relative: str) -> set[str]:
         onerror=raise_walk_error,
     ):
         current_path = Path(current)
-        if current_path == current_control or current_control in current_path.parents:
+        if current_control is not None and (
+            current_path == current_control or current_control in current_path.parents
+        ):
             dirnames[:] = []
             continue
         retained: list[str] = []
         for dirname in dirnames:
             candidate = current_path / dirname
             if candidate == current_control:
+                continue
+            if tracked.get(candidate.relative_to(repo_root).as_posix(), (None, None))[0] == "160000":
+                # The index already contributes the gitlink. Its recursive
+                # snapshot owns all metadata and files below this boundary.
                 continue
             try:
                 candidate_stat = candidate.lstat()
@@ -657,7 +671,8 @@ def _validate_ignore_policy(
             if any(line.strip() and not line.lstrip().startswith("#") for line in lines):
                 raise WorktreeSnapshotError(".git/info/exclude contains a non-comment rule")
 
-    control_abs = repo_root / PurePosixPath(control_relative)
+    control_abs = repo_root / PurePosixPath(control_relative) if control_relative else None
+    reserved_root = repo_root / ".prodcraft" / "artifacts"
     def raise_walk_error(exc: OSError) -> None:
         raise WorktreeSnapshotError(f"cannot enumerate governed worktree: {exc}")
 
@@ -668,22 +683,50 @@ def _validate_ignore_policy(
         onerror=raise_walk_error,
     ):
         current_path = Path(current)
-        dirnames[:] = [name for name in dirnames if name != ".git"]
-        dirnames[:] = [
-            name
-            for name in dirnames
-            if not (
-                (current_path / name) == control_abs
-                or control_abs in (current_path / name).parents
-            )
-        ]
-        if ".gitignore" not in filenames:
-            pass
-        else:
+        if ".gitignore" in filenames:
             ignore_path = current_path / ".gitignore"
             relative = ignore_path.relative_to(repo_root).as_posix()
             if relative not in tracked:
                 raise WorktreeSnapshotError(f"untracked .gitignore is not allowed: {relative}")
+
+        # Only ancestor ignore rules can decide whether a directory is outside
+        # this worktree's scope. Validate the current rule before descending.
+        retained: list[str] = []
+        candidates: list[str] = []
+        for name in dirnames:
+            candidate = current_path / name
+            relative = candidate.relative_to(repo_root).as_posix()
+            if name == ".git" or (
+                control_abs is not None
+                and (candidate == control_abs or control_abs in candidate.parents)
+            ):
+                continue
+            if tracked.get(relative, (None, None))[0] == "160000":
+                # Its own capture checks its index, ignore policy, and content.
+                continue
+            retained.append(name)
+            if not (
+                candidate == reserved_root
+                or candidate in reserved_root.parents
+                or reserved_root in candidate.parents
+                or candidate.is_symlink()
+            ):
+                candidates.append(relative)
+        if candidates:
+            ignored = _run_git(
+                repo_root, "check-ignore", "-z", "--stdin", check=False,
+                input_bytes=b"".join(value.encode("utf-8") + b"\0" for value in candidates),
+            )
+            if ignored.returncode not in {0, 1}:
+                raise WorktreeSnapshotError("cannot determine governed directory ignore rules")
+            ignored_paths = {
+                _decode_git_path(raw) for raw in ignored.stdout.split(b"\0") if raw
+            }
+            retained = [
+                name for name in retained
+                if (current_path / name).relative_to(repo_root).as_posix() not in ignored_paths
+            ]
+        dirnames[:] = retained
 
         for filename in filenames:
             candidate = current_path / filename
@@ -905,17 +948,9 @@ def capture_git_worktree(
     )
     _validate_git_index_path(root)
     tracked = _tracked_entries(root)
-    if canonical_control_root is not None:
-        _validate_ignore_policy(root, tracked, control_relative)
-    untracked = _untracked_entries(
-        root,
-        include_ignored=canonical_control_root is None,
-    )
-    forced_control_entries = (
-        _other_control_entries(root, control_relative)
-        if canonical_control_root is not None
-        else set()
-    )
+    _validate_ignore_policy(root, tracked, control_relative)
+    untracked = _untracked_entries(root)
+    forced_control_entries = _other_control_entries(root, control_relative, tracked)
     paths = sorted(
         {
             path
@@ -1440,6 +1475,26 @@ def validate_terminal_completion(
     if binding.get("terminal_transition_digests") != terminal_digests:
         errors.append("completion binding terminal transition digests do not match the attempt")
 
+    errors.extend(validate_completion_evidence(
+        attempt, binding, control_root=control_root, repo_root=repo_root,
+        verification_document=verification_document,
+        verification_document_digest=verification_document_digest, bundle_io=bundle_io,
+    ))
+    return errors
+
+
+def validate_completion_evidence(
+    attempt: dict[str, Any],
+    binding: dict[str, Any],
+    *,
+    control_root: Path,
+    repo_root: Path,
+    verification_document: dict[str, Any] | None = None,
+    verification_document_digest: str | None = None,
+    bundle_io: ControlBundleIO | None = None,
+) -> list[str]:
+    """Validate claim evidence and live work before or after terminal review."""
+    errors: list[str] = []
     verification_ref = binding.get("verification_record_ref")
     verification: dict[str, Any] | None = verification_document
     if isinstance(verification_ref, str):
@@ -1827,6 +1882,16 @@ def _without_key(payload: dict[str, Any], key: str) -> dict[str, Any]:
     return {name: value for name, value in payload.items() if name != key}
 
 
+def route_content_digest(route: dict[str, Any]) -> str:
+    """Digest the reviewed semantic route, excluding its derived digest field."""
+    return canonical_json_digest(_without_key(route, "route_digest"))
+
+
+def append_record_digest(record: dict[str, Any]) -> str:
+    """Digest one lifecycle or phase record using the shared projection."""
+    return canonical_json_digest(_without_key(record, "record_digest"))
+
+
 def validate_route_decision_contract(
     route: dict[str, Any],
     *,
@@ -1838,7 +1903,7 @@ def validate_route_decision_contract(
     """Validate route semantics that JSON Schema cannot express."""
 
     errors: list[str] = []
-    if canonical_json_digest(_without_key(route, "route_digest")) != route.get("route_digest"):
+    if route_content_digest(route) != route.get("route_digest"):
         errors.append("route_digest does not match canonical route content")
     if _parse_datetime(route.get("approved_at")) is None:
         errors.append("approved_at must be a timezone-aware date-time")
@@ -1942,7 +2007,7 @@ def validate_route_decision_contract(
 
 
 def _record_digest_error(record: dict[str, Any], label: str) -> str | None:
-    expected = canonical_json_digest(_without_key(record, "record_digest"))
+    expected = append_record_digest(record)
     if record.get("record_digest") != expected:
         return f"{label} record_digest does not match canonical record content"
     return None
@@ -2031,7 +2096,7 @@ def validate_execution_state_contract(
     if _parse_datetime(state.get("updated_at")) is None:
         errors.append("updated_at must be a timezone-aware date-time")
     route_digest = route.get("route_digest")
-    if canonical_json_digest(_without_key(route, "route_digest")) != route_digest:
+    if route_content_digest(route) != route_digest:
         errors.append("route_digest does not match canonical route content")
 
     route_binding = state.get("route_binding")

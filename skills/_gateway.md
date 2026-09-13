@@ -12,6 +12,8 @@ Start new work or a material change to outcome, scope, risk, or authority with `
 
 Every workflow requires an approved `intake-brief`. For `micro`, approval means notify-and-proceed unless the user objects. When the route is clear but the problem or direction is not, invoke `pc-problem-framing` next.
 
+Match the current substantive request's language in all user-facing prose, headings, questions, human-facing tags, status labels, and completion feedback. English requests receive English; Chinese requests receive Chinese. An explicit language request takes precedence. Ignore code, paths, API names, and quoted source text when selecting the language. For mixed prose use its dominant language; retain the established presentation locale when ambiguous. Re-evaluate on a substantive follow-up, including a language switch, without restarting intake. Keep canonical machine fields/enums, skill IDs, code, commands, paths, and original diagnostics unchanged; localize their display labels and summaries. Canonical artifact records remain in English.
+
 ## Skill Selection Priority
 
 When multiple skills could apply, use this priority order:
@@ -23,7 +25,7 @@ Apply each gate when its trigger is reached. A later gate is not an instruction 
 | Trigger | Skill | Why |
 |---------|-------|-----|
 | New work of any kind | `pc-intake` | Triage and route |
-| Bug, failing test, or unexpected behavior before a fix | `pc-systematic-debugging` | Root cause before code change |
+| Bug, failing test, or unexpected behavior before a fix | `pc-debug-expert` | Root cause before code change |
 | New or changed executable behavior | `pc-tdd` | Define behavioral proof before implementation; use its explicit exceptions where applicable |
 | Code complete, ready for merge | `pc-code-review` | Quality gate |
 | Need to verify delivered intent and scope consistency | `pc-implementation-alignment-review` | Prevent wrong-thing delivery |
@@ -40,7 +42,7 @@ Match based on what phase the work is currently in:
 | Defining requirements | 01-specification | pc-requirements-engineering, pc-spec-writing, pc-domain-modeling |
 | Designing system structure | 02-architecture | pc-system-design, pc-api-design, pc-data-modeling, pc-security-design, pc-tech-selection |
 | Breaking down work | 03-planning | pc-task-breakdown, pc-estimation, pc-risk-assessment, pc-sprint-planning |
-| Writing code or tactically executing an approved slice | 04-implementation | pc-task-execution, pc-systematic-debugging, pc-tdd, pc-feature-development, pc-refactoring |
+| Writing code or tactically executing an approved slice | 04-implementation | pc-task-execution, pc-debug-expert, pc-tdd, pc-feature-development, pc-refactoring |
 | Reviewing/testing | 05-quality | pc-implementation-alignment-review, pc-implementation-integrity-audit, pc-code-review, pc-receiving-code-review, pc-testing-strategy, pc-security-audit |
 | Deploying/releasing | 06-delivery | pc-ci-cd, pc-delivery-completion, pc-deployment-strategy, pc-release-management |
 | Monitoring/responding | 07-operations | pc-monitoring-observability, pc-incident-response, pc-runbooks |
@@ -51,7 +53,7 @@ Match based on what phase the work is currently in:
 When the work is already in `04-implementation`, choose the primary skill like this:
 
 - need a short 2-5 minute tactical batch with checkpoints or stop conditions -> `pc-task-execution`
-- need root cause before any code fix -> `pc-systematic-debugging`
+- need root cause for code, runtime, or skill-loading failures -> `pc-debug-expert`
 - need a failing test first for new or changed behavior -> `pc-tdd`
 - need to land the already-tested slice as code -> `pc-feature-development`
 - need structural cleanup with protected behavior -> `pc-refactoring`
@@ -233,7 +235,7 @@ Not every task needs the full lifecycle. Governance weight scales with the risk 
 |-----------|------|-----------------|
 | Typo fix, comment update, doc wording | `micro` | Compact brief, notify-and-proceed, straight to the change |
 | Isolated reversible config value | `micro` | Compact brief, notify-and-proceed |
-| Single-file bug fix with clear root cause | `fast-track` | Skip to implementation with pc-systematic-debugging + TDD |
+| Single-file bug fix with clear root cause | `fast-track` | Skip to implementation with pc-debug-expert + TDD |
 | Documentation restructuring | `fast-track` | Skip to `pc-documentation` |
 | Dependency update (patch) | `fast-track` | Skip to implementation + quality |
 | Configuration change with deploy impact | `fast-track` | Skip to implementation + deployment |

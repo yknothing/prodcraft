@@ -52,7 +52,7 @@ A review suggestion does not expand scope or authorize publishing, deletion, dep
 
 ### Step 3: Verify and Apply the Correction
 
-Check the actual defect, compatibility constraints, upstream decisions, and proposed remedy. Prefer the smallest fix for the root cause; reject unused complexity with evidence. Apply related corrections as one reviewable batch when they share a cause and proof; verify independent risky changes separately. Use the relevant implementation discipline, including `pc-tdd` for new or changed behavior and `pc-systematic-debugging` for uncertain causes.
+Check the actual defect, compatibility constraints, upstream decisions, and proposed remedy. Prefer the smallest fix for the root cause; reject unused complexity with evidence. Apply related corrections as one reviewable batch when they share a cause and proof; verify independent risky changes separately. Use the relevant implementation discipline, including `pc-tdd` for new or changed behavior and `pc-debug-expert` for uncertain causes.
 
 ### Step 4: Record the Response and Handoff
 

@@ -77,6 +77,7 @@ def rewrite_lifecycle_skill_links(
     source_dir: Path,
     canonical_skill_paths: set[Path],
     exported_skill_names: dict[Path, str],
+    package_relative_path: Path = Path("SKILL.md"),
 ) -> str:
     def replace(match: re.Match[str]) -> str:
         target = match.group("target")
@@ -91,12 +92,13 @@ def rewrite_lifecycle_skill_links(
             return f"`{label}`"
 
         anchor = f"#{fragment}" if separator else ""
-        return f"[{label}](../{exported_name}/SKILL.md{anchor})"
+        prefix = "../" * len(package_relative_path.parts)
+        return f"[{label}]({prefix}{exported_name}/SKILL.md{anchor})"
 
     return MARKDOWN_SKILL_LINK_RE.sub(replace, body)
 
 
-def validate_exported_surface(output_root: Path) -> None:
+def validate_regular_tree(output_root: Path) -> None:
     for current_root, dirnames, filenames in os.walk(output_root, followlinks=False):
         current = Path(current_root)
         for dirname in dirnames:
@@ -110,7 +112,9 @@ def validate_exported_surface(output_root: Path) -> None:
             if stat.S_ISLNK(mode) or not stat.S_ISREG(mode):
                 raise ValueError(f"curated surface contains a symlink or non-regular file: {path}")
 
-    packaged_root = output_root.resolve()
+
+def validate_exported_surface(output_root: Path) -> None:
+    validate_regular_tree(output_root)
     for skill_path in sorted(output_root.glob("*/SKILL.md")):
         frontmatter, body = load_frontmatter(skill_path)
         if not isinstance(frontmatter, dict):
@@ -124,18 +128,20 @@ def validate_exported_surface(output_root: Path) -> None:
         if len(description) > 1024:
             raise ValueError(f"{skill_path} frontmatter description must be 1024 characters or fewer")
 
-        for match in MARKDOWN_REFERENCE_RE.finditer(body):
+    packaged_root = output_root.resolve()
+    for document in sorted(output_root.rglob("*.md")):
+        for match in MARKDOWN_REFERENCE_RE.finditer(document.read_text(encoding="utf-8")):
             target = match.group("target")
             if target.startswith(("#", "/", "http://", "https://", "mailto:")):
                 continue
 
-            target_path = (skill_path.parent / target.split("#", 1)[0]).resolve()
+            target_path = (document.parent / target.split("#", 1)[0]).resolve()
             try:
                 target_path.relative_to(packaged_root)
             except ValueError as exc:
-                raise ValueError(f"{skill_path} relative reference escapes the packaged surface: {target}") from exc
+                raise ValueError(f"{document} relative reference escapes the packaged surface: {target}") from exc
             if not target_path.exists():
-                raise ValueError(f"{skill_path} has dangling packaged relative reference: {target}")
+                raise ValueError(f"{document} has dangling packaged relative reference: {target}")
 
 
 def curated_note(source_path: str) -> str:
@@ -409,6 +415,22 @@ def export_entry(
         ),
     )
     copy_resources(source_dir, destination_dir)
+    # Check the copied tree before reading it; copying preserves any symlink
+    # introduced after source preflight so validation can reject it safely.
+    validate_regular_tree(destination_dir)
+    for resource_dir in RESOURCE_DIRS:
+        for document in (destination_dir / resource_dir).rglob("*.md"):
+            relative = document.relative_to(destination_dir)
+            text = document.read_text(encoding="utf-8")
+            rewritten = rewrite_lifecycle_skill_links(
+                text,
+                source_dir=(source_dir / relative).parent,
+                canonical_skill_paths=canonical_skill_paths,
+                exported_skill_names=exported_skill_names,
+                package_relative_path=relative,
+            )
+            if rewritten != text:
+                document.write_text(rewritten, encoding="utf-8")
 
 
 def materialize_curated_skills(

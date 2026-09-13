@@ -29,14 +29,14 @@ contract:
     - id: diagnose
       name: Focused diagnosis
       purpose: Establish a falsifiable root cause and the narrowest safe correction after containment.
-      skills: [pc-incident-response, pc-bug-history-retrieval, pc-systematic-debugging, pc-documentation]
+      skills: [pc-incident-response, pc-bug-history-retrieval, pc-debug-expert, pc-documentation]
       inputs: [preserved evidence, history, reproduction, logs and metrics]
       outputs: [root-cause statement, reproducer, fix boundary, identified risks]
       duration: 15 minutes to 2 hours
     - id: 04-implementation
       name: Surgical implementation
       purpose: Write the minimal correction and a regression test without unrelated refactoring or feature work.
-      skills: [pc-systematic-debugging, pc-tdd, pc-feature-development]
+      skills: [pc-debug-expert, pc-tdd, pc-feature-development]
       inputs: [root cause, reproducer, fix boundary, rollback path]
       outputs: [minimal patch, failing-then-passing regression test, implementation diff]
       duration: 30 minutes to 4 hours

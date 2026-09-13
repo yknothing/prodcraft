@@ -128,7 +128,7 @@ class ManifestGovernanceTests(unittest.TestCase):
             "pc-feature-development", "pc-refactoring", "pc-receiving-code-review",
             "pc-testing-strategy", "pc-estimation", "pc-sprint-planning",
             "pc-problem-framing", "pc-user-research", "pc-requirements-engineering",
-            "pc-spec-writing", "pc-api-design", "pc-systematic-debugging",
+            "pc-spec-writing", "pc-api-design", "pc-debug-expert",
             "pc-e2e-scenario-design", "pc-ci-cd", "pc-tech-debt-management",
             "pc-retrospective", "pc-documentation", "pc-observability",
         }, below_tested)

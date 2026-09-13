@@ -88,3 +88,35 @@ malformed-content recovery; approved-candidate confirmation; and the blocking
 exit code. A real-validator integration case covers draft -> approved -> ordinary
 write and rejects an unknown routed skill. This does not establish live Claude
 UI confirmation behavior; no fresh native Claude session was run for the repair.
+
+
+## Explicit Python Runtime
+
+The settings command is `python3 scripts/prodcraft_runtime.py run pretooluse`.
+The bootstrap uses only the standard library, then executes the configured
+Python in isolated mode. Configure the supported runtime once, outside hooks:
+
+```bash
+uv venv --python 3.11 build/prodcraft-runtime
+uv pip install --python build/prodcraft-runtime/bin/python PyYAML==6.0.3 jsonschema==4.26.0
+python3 scripts/prodcraft_runtime.py setup --python "$PWD/build/prodcraft-runtime/bin/python"
+python3 scripts/prodcraft_runtime.py check
+```
+
+Python 3.11 and 3.12 are supported. `setup` validates an existing interpreter and
+its dependencies; `check` and hook execution never install packages or use the
+network. The selection is stored in `build/prodcraft-runtime.json`. A missing,
+unsupported or dependency-incomplete configured runtime fails with actionable
+setup instructions. Hook failures retain blocking exit code `2`.
+
+The September 11 acceptance invoked the exact settings command with the actual
+repository validator while bootstrap `python3` lacked PyYAML: the approved brief
+passed with exit `0`, and the draft brief blocked with exit `2`. Claude's native
+model call was unavailable because of organization subscription policy. This
+configured-command proof does not claim native Claude completion-hook support.
+The separate [Codex strict closure](../reviews/2026-09-11-strict-host-closure.md)
+is the currently exercised native completion surface.
+
+To roll back this runtime integration, restore the previous project hook
+configuration or remove its PreToolUse entry. Removing only the runtime config
+while the hook remains enabled intentionally leaves the hook fail-closed.

@@ -164,8 +164,8 @@
       "public_caveat_text": "Portable as skill guidance; full governance guarantees require the Prodcraft repository contracts and validation checks."
     },
     {
-      "name": "pc-systematic-debugging",
-      "source": "skills/04-implementation/pc-systematic-debugging",
+      "name": "pc-debug-expert",
+      "source": "skills/04-implementation/pc-debug-expert",
       "stability": "beta",
       "readiness": "beta",
       "manual_allowlist": true,

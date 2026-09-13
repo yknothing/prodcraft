@@ -7,7 +7,7 @@
 
 This skill exists to prevent a common failure mode: a task is "small enough" on paper, but execution still drifts into long, unverified editing sessions, hidden blockers, or broad opportunistic changes.
 
-It does **not** replace `pc-feature-development`, `pc-systematic-debugging`, or `pc-tdd`. It prepares and governs the batch that those skills will execute.
+It does **not** replace `pc-feature-development`, `pc-debug-expert`, or `pc-tdd`. It prepares and governs the batch that those skills will execute.
 
 ## Reference Material
 

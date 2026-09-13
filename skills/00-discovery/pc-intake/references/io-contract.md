@@ -5,6 +5,16 @@
 - **user-request** -- the raw description of the work to be done
 - **existing-context** -- project documentation, recent commits, open issues (read silently before asking questions)
 
+## Language Selection
+
+1. An explicit language request takes precedence over detection or an earlier locale.
+2. Otherwise match the current substantive request: English requests receive English; Chinese requests receive Chinese. For mixed prose use its dominant language; retain the established presentation locale when ambiguous. Do not ask a language question when these rules suffice.
+3. Ignore code, commands, paths, API names, and quoted source text when detecting the request language. A Chinese comment in an English coding request does not switch the reply language.
+4. Update `user_presentation_locale` on a substantive follow-up in another language without repeating intake or approval.
+5. Localize prose, headings, questions, human-facing tags, status labels, and completion feedback. An English template heading is a display label to translate, not a fixed user-facing string.
+6. Preserve canonical machine fields/enums, skill IDs, code, commands, paths, API names, and quoted original diagnostics. For example, display a localized approval label while storing the enum `approved` unchanged.
+7. Keep `artifact_record_language: en` for canonical repository records; summarize those records in `user_presentation_locale`. Stored English content does not select the reply language.
+
 ## Quality Target Fields
 
 - `runtime_context`: `agent_internal_skill`, `host_runtime_tool`, `local_dev_harness`, `internal_service`, `public_service`, or `unknown`

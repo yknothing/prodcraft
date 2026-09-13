@@ -143,6 +143,8 @@ Prioritize outcome, scope, urgency, constraints, and quality target. Usually 1-3
 
 Present a concise brief in plain language and `user_presentation_locale`, using the fields below. Name the next concrete `pc-*` skill, its output, and why it is needed. Use the smallest sufficient sequence; one skill is valid. Label an unresolved route explicitly instead of presenting a generic phase name as a settled handoff.
 
+Set `user_presentation_locale` from the current substantive request's language; an explicit language request takes precedence. Apply it to headings, questions, human-facing tags, status labels, and completion feedback as well as prose. Re-evaluate it on substantive follow-ups without restarting intake. Follow the [language-selection rules](references/io-contract.md); preserve canonical field names, enum values, skill IDs, code, paths, and original diagnostics.
+
 Include an alternative only when it changes the decision. Keep architecture choices for the downstream skill. Mention system shape and collaboration quality only when they affect routing or risk.
 
 ### Step 5: Get Approval

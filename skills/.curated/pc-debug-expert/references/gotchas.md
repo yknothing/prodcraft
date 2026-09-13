@@ -1,11 +1,11 @@
-# Systematic Debugging Gotchas
+# Debug Expert Gotchas
 
 ## Gotchas
 
 ### Live incident still hurting users
 - Trigger: The responder starts tracing code paths while the production issue is still actively impacting users and no containment has happened.
 - Failure mode: Debugging consumes the response window while user harm continues and rollback or fail-closed options are ignored.
-- What to do: Route through `pc-incident-response` first, contain the incident, then resume root-cause work with lower pressure and better evidence.
+- What to do: Prioritize containment through `pc-incident-response`; continue safe passive diagnosis while incident owners restore service. Resume active experiments only where containment is preserved.
 - Escalate when: The team cannot agree whether the issue is contained or whether a rollback or fail-closed action is still required.
 
 ### Historical match becomes confirmation bias
@@ -14,7 +14,7 @@
 - What to do: Use history to narrow hypotheses, then verify the current mechanism with a safe reproducer or preserve an explicit diagnosis limit when the environment prevents verification.
 - Escalate when: Two historical lineages remain plausible after checking the current code path and release boundary.
 
-### Third failed fix still treated as a local bug
+### Repeated fixes add no causal information
 - Trigger: Repeated corrections against the same symptom fail without new causal evidence. Probe edits and cleanup are not failed fixes.
 - Failure mode: Repeated patching hides a requirements, architecture, or planning mismatch and increases risk without improving confidence.
 - What to do: Pause the patch loop, restate the evidence, and prepare a `course-correction-note` if the failure boundary no longer fits a local code fix.
@@ -35,5 +35,5 @@
 ### Error message names the victim, not the culprit
 - Trigger: The stack trace points at a line that looks obviously innocent, or the same exception appears across unrelated call sites.
 - Failure mode: The fix hardens the crash site (null guard, catch-and-ignore) while the corrupt state keeps flowing from an upstream producer, so the defect resurfaces at the next consumer.
-- What to do: Trace the bad value backward from the crash site to where it was created; instrument state before the failing call, not just the exception after it. Fix the producing layer and, at most, assert at the consuming layer.
-- Escalate when: The producing layer is outside the current codebase or contract, which makes this a dependency workaround plus upstream report rather than a local fix.
+- What to do: Trace the bad value to its producer and inspect state before the failing call. Correct an owned internal producer; use intentional validation at a trust/adapter boundary when inputs are external or the producer is outside local control. Do not swallow a failed operation merely to hide its symptom.
+- Escalate when: Evidence confirms an external dependency violates its contract and the needed correction is outside local control. A defect in the locally owned adapter contract can still receive a permanent local fix.

@@ -221,7 +221,11 @@ Errors.
             for path in (REPO_ROOT / "eval").glob("*/*")
             if path.is_dir() and path.parent.name != "meta"
         }
-        allowed_eval_only = {("05-quality", "xcuitest-webview-e2e")}
+        allowed_eval_only = {
+            ("05-quality", "xcuitest-webview-e2e"),
+            # Sealed evidence retains the identity evaluated before the rename.
+            ("04-implementation", "pc-systematic-debugging"),
+        }
         self.assertEqual(authored_by_phase, eval_mirrors - allowed_eval_only)
 
         for phase, skill_name in authored_by_phase:

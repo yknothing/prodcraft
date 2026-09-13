@@ -33,7 +33,7 @@ metadata:
 
 `pc-task-execution` is the tactical companion to `pc-task-breakdown`.
 
-It does **not** replace `pc-feature-development`, `pc-systematic-debugging`, or `pc-tdd`; it governs the batch those skills execute.
+It does **not** replace `pc-feature-development`, `pc-debug-expert`, or `pc-tdd`; it governs the batch those skills execute.
 
 See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
@@ -77,7 +77,7 @@ Keep accepted constraints and evidence as references to their existing artifacts
 
 For each batch, route to the right implementation discipline:
 
-- bug or failing behavior first -> `pc-systematic-debugging`
+- bug or failing behavior first -> `pc-debug-expert`
 - new or changed behavior -> `pc-tdd`
 - tested slice ready to code -> `pc-feature-development`
 - structural cleanup with protected behavior -> `pc-refactoring`
@@ -96,7 +96,7 @@ Name what should pause execution immediately:
 If a blocker hits, pause the dependent step and continue independent authorized work when useful. Resolve the blocker by choosing the smallest action:
 
 - clarify the task
-- invoke `pc-systematic-debugging`
+- invoke `pc-debug-expert`
 - produce a `course-correction-note`
 - return to planning if the batch no longer fits the approved slice
 

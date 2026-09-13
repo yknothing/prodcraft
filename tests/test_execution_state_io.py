@@ -265,6 +265,64 @@ class GitWorktreeSnapshotTests(unittest.TestCase):
         with self.assertRaisesRegex(WorktreeSnapshotError, "Git index must be a regular"):
             self.capture()
 
+    def test_ignored_environment_metadata_does_not_invalidate_clean_work(self):
+        (self.root / ".gitignore").write_text(".prodcraft/\n.venv/\n", encoding="utf-8")
+        self.git("add", ".gitignore")
+        self.git("commit", "-qm", "ignore local environment")
+        baseline = self.capture()
+        environment = self.root / ".venv"
+        environment.mkdir()
+        (environment / ".gitignore").write_text("*\n", encoding="utf-8")
+        (environment / "pyvenv.cfg").write_text("version = 3.12\n", encoding="utf-8")
+        self.assertEqual("", self.git("status", "--porcelain"))
+        self.assertEqual(baseline, self.capture())
+
+    def test_untracked_effective_ignore_rule_cannot_hide_new_source(self):
+        source = self.root / "src"
+        source.mkdir()
+        (source / ".gitignore").write_text("*.py\n", encoding="utf-8")
+        (source / "hidden.py").write_text("unverified = True\n", encoding="utf-8")
+        with self.assertRaisesRegex(WorktreeSnapshotError, "untracked .gitignore"):
+            self.capture()
+
+    def test_clean_submodule_owns_its_ignore_rules_and_ignored_build_output(self):
+        with tempfile.TemporaryDirectory() as source_dir:
+            source = Path(source_dir)
+
+            def run(*args: str) -> str:
+                return subprocess.run(
+                    ["git", *args], cwd=source, check=True, capture_output=True, text=True
+                ).stdout.strip()
+
+            run("init", "-q")
+            run("config", "user.email", "test@example.com")
+            run("config", "user.name", "Prodcraft Test")
+            (source / ".gitignore").write_text("build/\n.prodcraft/\n", encoding="utf-8")
+            (source / "library.py").write_text("value = 1\n", encoding="utf-8")
+            run("add", ".")
+            run("commit", "-qm", "library")
+            self.git("-c", "protocol.file.allow=always", "submodule", "add", str(source), "vendor/library")
+            self.git("commit", "-qam", "add library")
+            self.git("-c", "protocol.file.allow=always", "submodule", "add", "-f", str(source), ".prodcraft/artifacts/library")
+            self.git("commit", "-qam", "track reserved-root library")
+            baseline = self.capture()
+            self.assertEqual("clean", baseline["status"])
+            library = self.root / "vendor" / "library"
+            (library / "build").mkdir()
+            (library / "build" / ".gitignore").write_text("*\n", encoding="utf-8")
+            (library / "build" / "cache").write_text("generated\n", encoding="utf-8")
+            self.assertEqual("", self.git("status", "--porcelain"))
+            self.assertEqual(baseline, self.capture())
+            nested_control = library / ".prodcraft" / "artifacts" / "nested-work"
+            nested_control.mkdir(parents=True)
+            (nested_control / "execution-state.json").write_text("{}", encoding="utf-8")
+            with self.assertRaisesRegex(WorktreeSnapshotError, "submodule worktree is dirty"):
+                self.capture()
+            (nested_control / "execution-state.json").unlink()
+            (library / "library.py").write_text("value = 2\n", encoding="utf-8")
+            with self.assertRaisesRegex(WorktreeSnapshotError, "submodule worktree is dirty"):
+                self.capture()
+
     def test_info_exclude_uses_the_safe_descriptor_reader(self):
         info_exclude = self.root / ".git" / "info" / "exclude"
         info_exclude.write_text("# comments only\n", encoding="utf-8")

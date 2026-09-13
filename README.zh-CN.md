@@ -30,6 +30,7 @@ Prodcraft 是一个面向生产级软件开发的生命周期技能系统。它�
 - `manifest.yml` 中的成熟度为：0 个 `production`、13 个 `tested`、33 个 `review`、0 个 `draft`
 - 6 个 workflow 文件，其中 3 个主流程、3 个 overlay
 - 7 个 advisory personas
+- 专用 [pc-debug-expert Skill](skills/04-implementation/pc-debug-expert/SKILL.md)，负责因果诊断与修复
 - 8 个注册的 protocol artifact schemas
 - 40 个生成后的 public skills，位于 `skills/.curated/`
 

@@ -25,6 +25,66 @@ def load_module():
 
 
 class CuratedDistributionSurfaceTests(unittest.TestCase):
+    def make_resource_link_repo(self, root: Path) -> Path:
+        entries = []
+        for phase, name in (("02-architecture", "pc-example"), ("01-specification", "pc-other")):
+            source = f"skills/{phase}/{name}"
+            package = root / source
+            package.mkdir(parents=True)
+            (package / "SKILL.md").write_text(
+                f"---\nname: {name}\ndescription: Use when checking exported resource links.\n---\n\n# Example\n"
+            )
+            entries.append({"name": name, "source": source, "stability": "beta", "readiness": "experimental"})
+        registry = root / "schemas/distribution"
+        registry.mkdir(parents=True)
+        (registry / "public-skill-registry.json").write_text(json.dumps({
+            "schema_version": "public-skill-registry.v1", "public_skills": entries,
+        }))
+        (registry / "public-skill-portability.json").write_text(json.dumps({
+            "schema_version": "public-skill-portability.v1",
+            "skills": [{"name": item["name"], "portability": "portable_as_is",
+                        "hidden_dependencies": [], "required_context": "", "public_caveat_text": ""}
+                       for item in entries],
+        }))
+        return root / entries[0]["source"]
+
+    def test_export_rewrites_nested_resource_skill_links(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            package = self.make_resource_link_repo(root / "repo")
+            other = root / "repo/skills/01-specification/pc-other/SKILL.md"
+            for relative in ("references/guide.md", "references/nested/guide.md", "assets/guide.md"):
+                guide = package / relative
+                guide.parent.mkdir(parents=True, exist_ok=True)
+                target = os.path.relpath(other, guide.parent)
+                guide.write_text(f"[Next skill]({target}#example)\n")
+            output = root / "output"
+            module.export_curated_skills(repo_root=root / "repo", output_root=output)
+            for guide in (output / "pc-example").rglob("guide.md"):
+                target = MARKDOWN_RELATIVE_REFERENCE_RE.search(guide.read_text()).group("target")
+                self.assertTrue(target.endswith("#example"))
+                self.assertEqual((output / "pc-other/SKILL.md").resolve(),
+                                 (guide.parent / target.split("#")[0]).resolve())
+
+    def test_export_rejects_invalid_resource_links_without_replacing_previous_output(self):
+        module = load_module()
+        for target, error in (("missing.md", "dangling"), ("../../../../outside.md", "escapes")):
+            with self.subTest(target=target), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                package = self.make_resource_link_repo(root / "repo")
+                guide = package / "references/nested/guide.md"
+                guide.parent.mkdir(parents=True)
+                guide.write_text(f"[Required context]({target})\n")
+                (root / "outside.md").write_text("outside the install surface")
+                output = root / "output"
+                output.mkdir()
+                (output / "previous.txt").write_text("preserve the previous installation")
+                before = self.snapshot_file_tree(output)
+                with self.assertRaisesRegex(ValueError, error):
+                    module.export_curated_skills(repo_root=root / "repo", output_root=output)
+                self.assertEqual(before, self.snapshot_file_tree(output))
+
     def snapshot_file_tree(self, root: Path) -> dict[str, bytes]:
         return {
             str(path.relative_to(root)): path.read_bytes()
