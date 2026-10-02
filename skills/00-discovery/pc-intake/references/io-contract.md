@@ -31,6 +31,12 @@
 - **route-decision** -- optional strict-mode approved route, workflow focus, obligations, revision, and operator-pinned digest
 - **execution-state** -- optional strict-mode initial routed state bound to that route decision
 
+For a stored machine-readable brief, `scope_assessment` is `small`, `medium`,
+`large`, or `xlarge`; put scope explanations in `routing_rationale`. Check the
+record against the available schema/validator before downstream acceptance.
+User approval and structural validity are separate checks; a malformed field
+does not require repeating an unchanged user decision.
+
 ## Micro Record
 
 Required fields: `artifact=intake-brief`, `schema_version=intake-brief.v1`,

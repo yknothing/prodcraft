@@ -29,7 +29,7 @@ Use this template whenever `pc-intake` routes new work into a workflow.
     -
 - workflow_primary: `required for full/resume; omit when fast-track or micro routing keeps the primary workflow implicit`
 - workflow_overlays: `omit when no overlay is active`
-- scope_assessment:
+- scope_assessment: `small`, `medium`, `large`, or `xlarge`; explain the choice in `routing_rationale`
 - urgency:
 
 ## Routing Decision
