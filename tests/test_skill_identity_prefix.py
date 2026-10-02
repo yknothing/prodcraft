@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import json
 import importlib.util
+import os
 import re
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import yaml
 
@@ -57,6 +59,92 @@ def load_validator_module():
 
 
 class SkillIdentityPrefixTests(unittest.TestCase):
+    def test_archived_eval_references_use_shipped_ignore_rules_without_writes(self):
+        validator = load_validator_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            (root / ".gitignore").write_text(
+                "eval/**/run-*/\n!eval/**/run-published/\n", encoding="utf-8"
+            )
+            validator.ROOT = root
+            before = {p.relative_to(root): p.read_bytes() for p in root.rglob("*")}
+
+            self.assertTrue(validator._is_gitignored_local_artifact("eval/phase/pc-example/run-local"))
+            self.assertTrue(
+                validator._is_gitignored_local_artifact("eval/phase/pc-example/run-local/report.json")
+            )
+            self.assertFalse(
+                validator._is_gitignored_local_artifact("eval/phase/pc-example/run-published/report.json")
+            )
+            self.assertFalse(
+                validator._is_gitignored_local_artifact("eval/phase/pc-example/fixtures/missing.json")
+            )
+            self.assertEqual(before, {p.relative_to(root): p.read_bytes() for p in root.rglob("*")})
+
+    def test_archived_eval_references_ignore_external_git_configuration(self):
+        validator = load_validator_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            parent = Path(tmpdir)
+            root = parent / "archive"
+            root.mkdir()
+            (root / ".gitignore").write_text("eval/**/run-*/\n", encoding="utf-8")
+            external_ignore = parent / "external-ignore"
+            external_ignore.write_text("*\n", encoding="utf-8")
+            external_config = parent / "external-config"
+            external_config.write_text(f"[core]\n\texcludesFile = {external_ignore}\n", encoding="utf-8")
+            validator.ROOT = root
+            with patch.dict(os.environ, {
+                "GIT_DIR": str(parent / "unrelated.git"),
+                "GIT_WORK_TREE": str(parent),
+                "GIT_CONFIG_GLOBAL": str(external_config),
+                "GIT_CONFIG_COUNT": "1",
+                "GIT_CONFIG_KEY_0": "core.excludesFile",
+                "GIT_CONFIG_VALUE_0": str(external_ignore),
+            }):
+                self.assertTrue(
+                    validator._is_gitignored_local_artifact("eval/phase/pc-example/run-local/report.json")
+                )
+                self.assertFalse(
+                    validator._is_gitignored_local_artifact("eval/phase/pc-example/fixtures/missing.json")
+                )
+
+    def test_broken_git_metadata_does_not_enable_archive_fallback(self):
+        validator = load_validator_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            (root / ".gitignore").write_text("eval/**/run-*/\n", encoding="utf-8")
+            (root / ".git").symlink_to(root / "missing-metadata")
+            validator.ROOT = root
+            self.assertFalse(
+                validator._is_gitignored_local_artifact("eval/phase/pc-example/run-local/report.json")
+            )
+
+    def test_archive_ignores_do_not_waive_required_qa_or_benchmark_inputs(self):
+        validator = load_validator_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            (root / ".gitignore").write_text("eval/**/run-*/\n", encoding="utf-8")
+            validator.ROOT = root
+            validator.MANIFEST_PATH = root / "manifest.yml"
+            validator.MANIFEST_PATH.write_text("skills: []\n", encoding="utf-8")
+            required_path = "eval/phase/pc-example/run-local/required.md"
+            qa_errors: list[str] = []
+            validator.validate_manifest_skill_status({"skills": [{
+                "name": "pc-example", "status": "draft",
+                "qa_tier": next(iter(validator.QA_TIERS)),
+                "qa": {"structure_validation_path": required_path},
+            }]}, qa_errors)
+            self.assertTrue(any("missing QA artifact" in error for error in qa_errors), qa_errors)
+
+            benchmark = root / "eval/phase/pc-example/benchmark.json"
+            benchmark.parent.mkdir(parents=True)
+            benchmark.write_text(json.dumps([{"context_files": ["run-local/required.md"]}]), encoding="utf-8")
+            benchmark_errors: list[str] = []
+            validator.validate_manifest(benchmark_errors)
+            self.assertTrue(
+                any("missing context file" in error for error in benchmark_errors), benchmark_errors
+            )
+
     def test_validator_accepts_pc_name_and_rejects_unprefixed_name(self):
         validator = load_validator_module()
 

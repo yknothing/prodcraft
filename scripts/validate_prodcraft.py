@@ -78,17 +78,37 @@ def _is_gitignored_local_artifact(rel_path: str) -> bool:
     """
     import subprocess
 
-    # Directory ignore patterns (`run-*/`) only match paths with a trailing
-    # slash, and the referenced path may be a file or a directory -- probe both.
-    for candidate in (rel_path, rel_path.rstrip("/") + "/"):
-        result = subprocess.run(
-            ["git", "check-ignore", "-q", candidate],
-            cwd=ROOT,
-            capture_output=True,
+    def matches(command: list[str], env: dict[str, str] | None = None) -> bool:
+        # Directory patterns need a trailing slash; references may name either
+        # a file or a directory.
+        for candidate in (rel_path, rel_path.rstrip("/") + "/"):
+            result = subprocess.run(
+                [*command, "-q", "--", candidate], cwd=ROOT, env=env, capture_output=True
+            )
+            if result.returncode == 0:
+                return True
+        return False
+
+    if os.path.lexists(ROOT / ".git"):
+        return matches(["git", "check-ignore"])
+
+    # Installed artifacts contain .gitignore but intentionally omit .git.
+    # Let Git interpret those rules using disposable metadata outside the
+    # immutable source, without adopting a parent repository or user ignores.
+    env = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
+    env.update({"GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": os.devnull})
+    with tempfile.TemporaryDirectory(prefix="prodcraft-eval-ignore-") as metadata:
+        initialized = subprocess.run(
+            ["git", "init", "--bare", "--quiet", "--template=", metadata],
+            env=env, capture_output=True,
         )
-        if result.returncode == 0:
-            return True
-    return False
+        if initialized.returncode != 0:
+            return False
+        return matches(
+            ["git", "--git-dir", metadata, "--work-tree", str(ROOT),
+             "-c", f"core.excludesFile={os.devnull}", "check-ignore", "--no-index"],
+            env,
+        )
 
 SKILL_REQUIRED_FIELDS = [
     "name",
