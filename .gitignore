@@ -26,6 +26,8 @@ __pycache__/
 .orch/
 .prodcraft/artifacts/prodcraft-direction2/
 .prodcraft/artifacts/*/intake-brief.json
+# Machine-local deployment receipt; its evidence lives in ignored build output.
+.prodcraft/artifacts/prodcraft-global-host-deployment-20260909/verification-record.json
 
 # Build artifacts
 dist/
