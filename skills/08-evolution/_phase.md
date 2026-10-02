@@ -14,12 +14,12 @@ Learn from operations, manage technical debt, plan migrations, retire deprecated
 ## Entry Criteria
 
 - Operational metrics are being collected and reviewed.
-- Team has capacity allocated for improvement work (e.g., 20% of sprint).
+- Capacity constraints and the decision owner are known; record proposed work separately from committed capacity.
 - Recent incidents, quality findings, or delivery misses are documented well enough to drive specific follow-up actions.
 
 ## Exit Criteria (Quality Gate)
 
-Retrospective complete. Tech debt cataloged and prioritized. At least 3 actionable improvements identified with owners. Insights documented and fed back to discovery/planning for the next cycle.
+The selected retrospective or debt review is complete. Record evidence-backed actions with owners, agreed timing or a pending scheduling decision, and the next lifecycle destination; an explicit no-new-action decision is valid when supported by the evidence. Catalog and prioritize relevant debt. Feed applicable insights back to discovery/planning without inventing an action quota.
 
 Improvement items should be small enough to route back through intake and planning instead of remaining as vague "we should do better" notes.
 Debt items should be prioritized by real recurrence cost and routed to the right next phase rather than left as an undifferentiated backlog.
@@ -38,7 +38,7 @@ When evolution produces a concrete upstream correction, capture it as a `course-
 ## Typical Duration
 
 - Retrospective: 1-2 hours per sprint
-- Tech debt management: ongoing (20% of sprint capacity)
+- Tech debt management: ongoing within owner-approved capacity; a proposed allocation is not a commitment
 - Migration: weeks to months (project-level)
 - Deprecation: weeks to months per item
 

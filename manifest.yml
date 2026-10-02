@@ -238,8 +238,8 @@ skills:
 - name: pc-acceptance-criteria
   phase: 01-specification
   file: skills/01-specification/pc-acceptance-criteria/SKILL.md
-  evidence_verified_against: contract-sha256:e26844c2679772a90fee8dd3d3f150f74391d097871820ce9a95b2ce998dcf50
-  status: tested
+  evidence_verified_against: contract-sha256:6156abe571374407c871b6136bf4fef37ac746daf64509bb971b23296779c515
+  status: review
   qa_tier: standard
   evaluation_mode: routed
   qa:
@@ -247,8 +247,10 @@ skills:
     eval_strategy_path: eval/01-specification/pc-acceptance-criteria/evals/eval-strategy.md
     benchmark_plan_path: eval/01-specification/pc-acceptance-criteria/isolated-benchmark-plan.md
     benchmark_results_path: eval/01-specification/pc-acceptance-criteria/isolated-benchmark-review.md
-    findings_path: eval/01-specification/pc-acceptance-criteria/findings.md
+    findings_path: docs/reviews/2026-10-02-workflow-efficiency.md
     integration_test_path: eval/01-specification/pc-acceptance-criteria/testing-strategy-handoff-review.md
+    historical_findings_path: eval/01-specification/pc-acceptance-criteria/findings.md
+    revalidation_plan_path: docs/plans/2026-10-02-workflow-efficiency.md
 - name: pc-system-design
   phase: 02-architecture
   file: skills/02-architecture/pc-system-design/SKILL.md
@@ -449,7 +451,7 @@ skills:
 - name: pc-feature-development
   phase: 04-implementation
   file: skills/04-implementation/pc-feature-development/SKILL.md
-  evidence_verified_against: contract-sha256:0d158055bfd171dfa84ede9ae0607466823e89390fd94ca7cd4afcc2ffa6272d
+  evidence_verified_against: contract-sha256:90dd73f0a1d6a9db2c2aa1da62e26c610dfed0553d988e5bd2f0c03024961d99
   status: review
   qa_tier: critical
   evaluation_mode: routed

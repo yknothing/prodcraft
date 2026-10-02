@@ -210,17 +210,28 @@ bindings:
     digest: contract-sha256:745bd8617ed1c35490a089941985c876203e25eb01817ca233f85cfdad30aeb8
   package_bound_at: '2026-09-09'
 - skill: pc-acceptance-criteria
-  evidence_verified_against: contract-sha256:e26844c2679772a90fee8dd3d3f150f74391d097871820ce9a95b2ce998dcf50
-  verified_at: '2026-07-16'
-  verification_scope: reviewed-existing-evidence
+  evidence_verified_against: contract-sha256:6156abe571374407c871b6136bf4fef37ac746daf64509bb971b23296779c515
+  verified_at: '2026-10-02'
+  verification_scope: workflow-efficiency-candidate-local-contracts-and-independent-review
   evidence_paths:
-  - eval/01-specification/pc-acceptance-criteria/isolated-benchmark-review.md
-  - eval/01-specification/pc-acceptance-criteria/findings.md
-  - eval/01-specification/pc-acceptance-criteria/testing-strategy-handoff-review.md
-  previous_contract_projection:
-    algorithm: contract-projection.v2
-    digest: contract-sha256:30b04ce320570e4636d69aae044bf99ab6661657d78514f1a6b1e6edb2a6520c
-  package_bound_at: '2026-09-09'
+  - docs/reviews/2026-10-02-workflow-efficiency.md
+  package_bound_at: '2026-10-02'
+  previous_revision:
+    source_commit: 8b7c4038ae0be8397ffe730f63ad6659b9cb92e7
+    status: tested
+    binding:
+      skill: pc-acceptance-criteria
+      evidence_verified_against: contract-sha256:e26844c2679772a90fee8dd3d3f150f74391d097871820ce9a95b2ce998dcf50
+      verified_at: '2026-07-16'
+      verification_scope: reviewed-existing-evidence
+      evidence_paths:
+      - eval/01-specification/pc-acceptance-criteria/isolated-benchmark-review.md
+      - eval/01-specification/pc-acceptance-criteria/findings.md
+      - eval/01-specification/pc-acceptance-criteria/testing-strategy-handoff-review.md
+      previous_contract_projection:
+        algorithm: contract-projection.v2
+        digest: contract-sha256:30b04ce320570e4636d69aae044bf99ab6661657d78514f1a6b1e6edb2a6520c
+      package_bound_at: '2026-09-09'
 - skill: pc-data-modeling
   evidence_verified_against: contract-sha256:217979e9280cdc88b47693af0b16f8be897e231da45bd30ce5876290b896103b
   verified_at: '2026-07-16'
@@ -432,43 +443,54 @@ bindings:
         digest: contract-sha256:0851cde34903abf33cb7546292d955a4ffcbdf339b8d197a8ea69c8e5875a0f2
       package_bound_at: '2026-09-09'
 - skill: pc-feature-development
-  evidence_verified_against: contract-sha256:0d158055bfd171dfa84ede9ae0607466823e89390fd94ca7cd4afcc2ffa6272d
+  evidence_verified_against: contract-sha256:90dd73f0a1d6a9db2c2aa1da62e26c610dfed0553d988e5bd2f0c03024961d99
   verified_at: '2026-10-02'
-  verification_scope: workflow-efficiency-candidate-local-contracts-and-independent-review
+  verification_scope: workflow-efficiency-follow-up-handoff-cost-and-independent-review
   evidence_paths:
   - docs/reviews/2026-10-02-workflow-efficiency.md
   package_bound_at: '2026-10-02'
   previous_revision:
-    source_commit: f32950759a6c86bd4b1b63590d7cc230cec98cb1
+    source_commit: 8b7c4038ae0be8397ffe730f63ad6659b9cb92e7
     status: review
     binding:
       skill: pc-feature-development
-      evidence_verified_against: contract-sha256:e15919318a84ec4719f81b6cd25039a6dc0e85810738fe451adc93e053afba6a
-      verified_at: '2026-09-09'
-      verification_scope: design-review-behavior-evaluation-pending
+      evidence_verified_against: contract-sha256:0d158055bfd171dfa84ede9ae0607466823e89390fd94ca7cd4afcc2ffa6272d
+      verified_at: '2026-10-02'
+      verification_scope: workflow-efficiency-candidate-local-contracts-and-independent-review
       evidence_paths:
-      - eval/meta/2026-09-08-skill-design-handoff.md
-      - docs/architecture/2026-09-08-skill-execution-design.md
-      previous_contract_projection:
-        algorithm: contract-projection.v2
-        digest: contract-sha256:1256bc941412f9c9564f15fcfa28195884e9ab141d14b8f3be4cee394ee4075b
-      package_bound_at: '2026-09-09'
+      - docs/reviews/2026-10-02-workflow-efficiency.md
+      package_bound_at: '2026-10-02'
       previous_revision:
-        source_commit: fd05978dbbbf5a064205a695af47c8a550f1b224
-        status: tested
+        source_commit: f32950759a6c86bd4b1b63590d7cc230cec98cb1
+        status: review
         binding:
           skill: pc-feature-development
-          evidence_verified_against: contract-sha256:7c834d3f7d54908389b07f0f7608183e118547d48182ab589ed86ab305a730b1
-          verified_at: '2026-07-16'
-          verification_scope: reviewed-existing-evidence
+          evidence_verified_against: contract-sha256:e15919318a84ec4719f81b6cd25039a6dc0e85810738fe451adc93e053afba6a
+          verified_at: '2026-09-09'
+          verification_scope: design-review-behavior-evaluation-pending
           evidence_paths:
-          - eval/04-implementation/pc-feature-development/isolated-benchmark-review.md
-          - eval/04-implementation/pc-feature-development/findings.md
-          - eval/04-implementation/pc-feature-development/tdd-handoff-review.md
+          - eval/meta/2026-09-08-skill-design-handoff.md
+          - docs/architecture/2026-09-08-skill-execution-design.md
           previous_contract_projection:
             algorithm: contract-projection.v2
             digest: contract-sha256:1256bc941412f9c9564f15fcfa28195884e9ab141d14b8f3be4cee394ee4075b
           package_bound_at: '2026-09-09'
+          previous_revision:
+            source_commit: fd05978dbbbf5a064205a695af47c8a550f1b224
+            status: tested
+            binding:
+              skill: pc-feature-development
+              evidence_verified_against: contract-sha256:7c834d3f7d54908389b07f0f7608183e118547d48182ab589ed86ab305a730b1
+              verified_at: '2026-07-16'
+              verification_scope: reviewed-existing-evidence
+              evidence_paths:
+              - eval/04-implementation/pc-feature-development/isolated-benchmark-review.md
+              - eval/04-implementation/pc-feature-development/findings.md
+              - eval/04-implementation/pc-feature-development/tdd-handoff-review.md
+              previous_contract_projection:
+                algorithm: contract-projection.v2
+                digest: contract-sha256:1256bc941412f9c9564f15fcfa28195884e9ab141d14b8f3be4cee394ee4075b
+              package_bound_at: '2026-09-09'
 - skill: pc-refactoring
   evidence_verified_against: contract-sha256:3bdb47114b613484865b6d9e277b1b8abe3094a7885fcbeb7f563f6bab82e31a
   verified_at: '2026-09-09'

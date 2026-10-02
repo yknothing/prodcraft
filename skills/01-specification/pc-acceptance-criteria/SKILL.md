@@ -10,7 +10,7 @@ metadata:
   - acceptance-criteria-set
   prerequisites:
   - pc-requirements-engineering
-  quality_gate: Every P0/P1 requirement has at least one acceptance criterion, QA team has reviewed
+  quality_gate: Every P0/P1 requirement has a testable criterion and the review required by the accepted route is complete
   roles:
   - product-manager
   - qa-engineer
@@ -21,11 +21,9 @@ metadata:
 
 # Acceptance Criteria
 
-> If you can't test it, you can't ship it. Acceptance criteria make requirements verifiable.
-
 ## Context
 
-Acceptance criteria bridge the gap between "what we want" (requirements) and "how we verify it works" (tests).
+Acceptance criteria connect accepted requirements to observable test outcomes.
 
 See [context](references/context.md) and [anti-pattern](references/anti-patterns.md) notes.
 
@@ -67,9 +65,9 @@ Good: "Page loads in under 2 seconds on 3G connection with 95th percentile"
 Bad: "System handles many users"
 Good: "System supports 500 concurrent users with < 200ms response time at p95"
 
-### Step 4: Review with QA
+### Step 4: Review the Criteria
 
-QA engineers are expert at finding missing edge cases. Review criteria with them before finalizing. They should be able to write test cases directly from acceptance criteria.
+A tester must be able to derive tests directly. Use the reviewer required by the accepted route or project policy; reuse current approval of unchanged criteria. Where independent approval is not required, record self-review as such. Reopen only affected criteria.
 
 ## Outputs
 
@@ -80,4 +78,4 @@ Produce only declared outputs at their documented quality boundary.
 - [ ] Every P0/P1 requirement has at least one acceptance criterion
 - [ ] Happy path, edge cases, and error paths covered for critical features
 - [ ] All criteria are measurable and testable
-- [ ] QA team has reviewed and approved
+- [ ] The review required by the accepted route or project policy is complete, with its reviewer and scope recorded

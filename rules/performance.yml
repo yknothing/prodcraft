@@ -4,12 +4,12 @@
 rules:
   - id: PRF_001
     name: "Performance Budget Defined"
-    description: "Key operations must have explicit performance budgets (response time, throughput)"
+    description: "Critical operations need sourced performance budgets or an owned unresolved target"
     severity: H
     timing: pre
     phases: ["02-architecture", "05-quality"]
-    check: "Are performance budgets defined for critical user-facing operations?"
-    action: "Define budgets: API response <200ms p95, page load <2s, search <500ms, etc."
+    check: "Are latency/throughput targets tied to accepted requirements, measured constraints, or an owner and decision trigger?"
+    action: "Reuse supported targets and measurement conditions. Numeric examples such as API <200ms p95 are not default requirements; resolve unknown targets with their owner before making dependent performance claims."
 
   - id: PRF_002
     name: "No N+1 Queries"
@@ -30,13 +30,13 @@ rules:
     action: "Match data structure to access pattern; prefer hash-based lookups for frequent searches"
 
   - id: PRF_004
-    name: "Pagination Required"
-    description: "All list/collection APIs must support pagination -- never return unbounded results"
+    name: "Bounded Collection Responses"
+    description: "List/collection APIs must have a justified result bound; growing collections need pagination or another bounded access contract"
     severity: H
     timing: pre
     phases: ["02-architecture", "04-implementation"]
     check: "Can any API endpoint return an unbounded number of results?"
-    action: "Implement cursor-based or offset pagination with configurable page size and hard maximum"
+    action: "For growing collections, define pagination or another bounded access contract with a hard maximum. A small fixed enumeration may use its documented bound without inventing pagination."
 
   - id: PRF_005
     name: "Caching Strategy"

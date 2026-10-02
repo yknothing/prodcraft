@@ -9,8 +9,8 @@
 
 ## Outputs
 
-- **source-code** -- The accepted slice's implementation. Hand its diff/revision, relevant verification, contract changes, and unsupported or unverified scope to `pc-code-review`. An existing task/PR note can carry the handoff; a new report type is unnecessary.
+- **source-code** -- The accepted slice's implementation. Hand its diff/revision, verification, contract changes, and unverified scope to the next required consumer. Use one brief note in the existing task/PR, or the completion response when no durable handoff is required. Link unchanged scope and decisions; do not repeat the intake JSON or create a section for every review dimension unless the accepted route requires those records.
 
 A local bug fix with an accepted task and existing tests can continue from that evidence. A proposed new public API still needs its approved contract before dependent implementation. Required workflow obligations remain binding in both cases.
 
-Before consuming accepted work, check its revision, scope, and acceptance condition against the current input. Carry its pointer and constraints in the existing task record. If an upstream fact changes, return that fact to its owner and recheck only dependent implementation and evidence; preserve unaffected decisions and approval. Do not silently substitute a guessed contract or restart the whole workflow.
+Check accepted work's revision, scope, and acceptance condition before reuse. Return changed facts to their owner and recheck dependent implementation and evidence; preserve unaffected decisions and approval. Never replace a missing contract with a guess or restart unrelated work.

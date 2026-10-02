@@ -14,7 +14,7 @@ Verify that the implementation meets the specification, acceptance criteria, and
 
 ## Entry Criteria
 
-- All planned features are implemented and merged to the integration branch.
+- The accepted implementation slice is available as a reviewable branch or diff. Review happens before integration; merging still requires the agreed approvals and checks.
 - Automated test suite passes with no known failures.
 - Task/contract context is documented and available for validation.
 - Test environments are provisioned and configured.

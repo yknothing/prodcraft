@@ -130,7 +130,7 @@ class ManifestGovernanceTests(unittest.TestCase):
             "pc-problem-framing", "pc-user-research", "pc-requirements-engineering",
             "pc-spec-writing", "pc-api-design", "pc-debug-expert",
             "pc-e2e-scenario-design", "pc-ci-cd", "pc-tech-debt-management",
-            "pc-retrospective", "pc-documentation", "pc-observability",
+            "pc-retrospective", "pc-documentation", "pc-observability", "pc-acceptance-criteria",
         }, below_tested)
         for entry in registry["public_skills"]:
             if entry["name"] in below_tested:
