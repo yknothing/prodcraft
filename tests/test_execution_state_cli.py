@@ -4,8 +4,10 @@ import copy
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -22,6 +24,8 @@ from tools.execution_state import (
 
 ROOT = Path(__file__).resolve().parents[1]
 VALIDATOR = ROOT / "scripts" / "validate_prodcraft.py"
+
+
 # Task 1A may add json-v1 only to --output-format choice-list text; every other byte stays frozen.
 LEGACY_USAGE = (
     "usage: validate_prodcraft.py [-h]\n"
@@ -60,6 +64,45 @@ LEGACY_HELP = LEGACY_USAGE + (
     "                        Render the validation result as human-readable text or\n"
     "                        stable JSON.\n"
 )
+
+
+class InstalledRuntimeReadOnlyTests(unittest.TestCase):
+    def test_cli_startup_preserves_installed_runtime_tree(self):
+        environment = os.environ.copy()
+        environment.pop("PYTHONDONTWRITEBYTECODE", None)
+        environment.pop("PYTHONPYCACHEPREFIX", None)
+        for script in (
+            "validate_prodcraft.py",
+            "manage_execution_state.py",
+            "run_codex_strict.py",
+            "validate_execution_observability.py",
+        ):
+            for flags in ([], ["-I"]):
+                with self.subTest(script=script, flags=flags):
+                    with tempfile.TemporaryDirectory() as directory:
+                        runtime = Path(directory) / "runtime"
+                        for component in ("scripts", "tools"):
+                            shutil.copytree(
+                                ROOT / component,
+                                runtime / component,
+                                ignore=shutil.ignore_patterns("__pycache__", "*.pyc"),
+                            )
+                        before = sorted(str(path.relative_to(runtime)) for path in runtime.rglob("*"))
+                        result = subprocess.run(
+                            [sys.executable, *flags, str(runtime / "scripts" / script), "--help"],
+                            cwd=directory,
+                            env=environment,
+                            capture_output=True,
+                            text=True,
+                            timeout=10,
+                        )
+                        self.assertEqual(0, result.returncode, result.stderr)
+                        self.assertIn("usage:", result.stdout)
+                        self.assertEqual(
+                            before,
+                            sorted(str(path.relative_to(runtime)) for path in runtime.rglob("*")),
+                            "CLI startup must not create cache files in the installed runtime",
+                        )
 
 
 class ExecutionStateCLITests(unittest.TestCase):
