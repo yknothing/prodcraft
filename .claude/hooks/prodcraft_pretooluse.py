@@ -118,6 +118,8 @@ def read_project_file_snapshot(
         before = os.fstat(file_fd)
         if not stat.S_ISREG(before.st_mode):
             raise ValueError(f"{label} must be a regular file")
+        if before.st_nlink != 1:
+            raise ValueError(f"{label} must not share a hard-linked inode")
         if before.st_size > max_bytes:
             raise ValueError(f"{label} exceeds {max_bytes} bytes")
 
@@ -140,6 +142,18 @@ def read_project_file_snapshot(
     finally:
         for descriptor in reversed(descriptors):
             os.close(descriptor)
+
+
+def reject_intake_alias(requested_path: Path, brief_path: Path, snapshot: FileSnapshot | None) -> None:
+    if Path(os.path.realpath(requested_path)) == brief_path:
+        raise ValueError("write the canonical intake path directly, without a symlink alias")
+    if snapshot is not None:
+        try:
+            metadata = requested_path.stat()
+        except FileNotFoundError:
+            return
+        if (metadata.st_dev, metadata.st_ino) == snapshot.identity[:2]:
+            raise ValueError("write the canonical intake path directly, without a filesystem alias")
 
 
 def run_repository_validator(project_root: Path, brief_path: Path) -> None:
@@ -213,8 +227,6 @@ def main() -> int:
         else:
             requested_normalized = project_root / relative_request
         control_write = requested_normalized == brief_path
-        if not control_write and Path(os.path.realpath(requested_normalized)) == brief_path:
-            return block("write the canonical intake path directly, without a symlink alias")
 
         try:
             approved_snapshot = read_project_file_snapshot(
@@ -226,14 +238,8 @@ def main() -> int:
         except FileNotFoundError:
             approved_snapshot = None
 
-        if not control_write and approved_snapshot is not None:
-            try:
-                requested_metadata = requested_normalized.stat()
-            except FileNotFoundError:
-                pass
-            else:
-                if (requested_metadata.st_dev, requested_metadata.st_ino) == approved_snapshot.identity[:2]:
-                    return block("write the canonical intake path directly, without a filesystem alias")
+        if not control_write:
+            reject_intake_alias(requested_normalized, brief_path, approved_snapshot)
 
         if control_write:
             if tool_name != "Write":
@@ -247,8 +253,6 @@ def main() -> int:
             candidate = json.loads(content)
             if not isinstance(candidate, dict) or candidate.get("status") not in {"draft", "approved"}:
                 return block("intake candidate must be an object with draft or approved status")
-            if candidate.get("intake_mode") == "micro":
-                return block("micro intake does not grant blocking host-adapter authority")
             with tempfile.TemporaryDirectory(prefix="prodcraft-intake-candidate-") as temp_dir:
                 validation_path = Path(temp_dir) / "intake-brief.json"
                 validation_path.write_bytes(candidate_data)
@@ -259,7 +263,9 @@ def main() -> int:
                 current_snapshot = None
             if current_snapshot != approved_snapshot:
                 return block("intake brief changed during validation; retry with a stable brief")
-            if candidate["status"] == "approved":
+            # Micro records carry no write authority. Native policy still applies
+            # to storing this record, and every subsequent work write asks below.
+            if candidate["status"] == "approved" and candidate.get("intake_mode") != "micro":
                 approver = candidate.get("approver")
                 if not isinstance(approver, str) or not approver.strip():
                     return block("intake brief approver must be non-empty")
@@ -289,6 +295,9 @@ def main() -> int:
         )
         if current_snapshot != approved_snapshot:
             return block("intake brief changed during validation; retry with a stable approved brief")
+        # Validation can run for seconds. Recheck the target as well as the brief;
+        # this still cannot bind the host's later filesystem write atomically.
+        reject_intake_alias(requested_normalized, brief_path, approved_snapshot)
 
         brief = json.loads(approved_snapshot.data.decode("utf-8"))
         if brief.get("status") != "approved":
@@ -297,9 +306,11 @@ def main() -> int:
         if not isinstance(approver, str) or not approver.strip():
             return block("intake brief approver must be non-empty")
         if brief.get("intake_mode") == "micro":
-            return block(
-                "micro intake does not grant blocking host-adapter authority; use fast-track/full/resume"
-            )
+            print(json.dumps({"hookSpecificOutput": {
+                "hookEventName": "PreToolUse",
+                "permissionDecision": "ask",
+                "permissionDecisionReason": "Confirm this file change under the compact Prodcraft micro route. The micro record does not grant write authority.",
+            }}))
         return 0
     except Exception as exc:
         return block(str(exc))

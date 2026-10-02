@@ -164,7 +164,7 @@ raise SystemExit(int(os.environ.get("STUB_VALIDATOR_EXIT", "0")))
             self.make_repo(root)
             brief = self.write_brief(root)
             self.assertEqual(2, self.run_adapter(root, file_path=brief, tool_name="Edit").returncode)
-            for content in (None, "{", "[]", json.dumps({"status": "unknown"}), json.dumps({"status": "approved", "approver": "reviewer", "intake_mode": "micro"})):
+            for content in (None, "{", "[]", json.dumps({"status": "unknown"})):
                 with self.subTest(content=content):
                     result = self.run_adapter(root, file_path=brief, tool_input={"content": content})
                     self.assertEqual(2, result.returncode)
@@ -241,10 +241,67 @@ raise SystemExit(int(os.environ.get("STUB_VALIDATOR_EXIT", "0")))
             self.assertEqual(2, self.run_adapter(root).returncode)
             self.write_brief(root, approver="   ")
             self.assertEqual(2, self.run_adapter(root).returncode)
-            self.write_brief(root, intake_mode="micro")
-            micro = self.run_adapter(root)
-            self.assertEqual(2, micro.returncode)
-            self.assertIn("micro", micro.stderr)
+
+    def test_real_compact_micro_records_never_grant_write_authority(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            self.make_repo(root)
+            (root / "scripts" / "validate_prodcraft.py").write_text(
+                "import runpy\nrunpy.run_path(" + repr(str(REPO_ROOT / "scripts" / "validate_prodcraft.py")) + ", run_name='__main__')\n"
+            )
+            brief = root / ".prodcraft" / "artifacts" / "work-123" / "intake-brief.json"
+            brief.parent.mkdir(parents=True)
+            candidate = {
+                "artifact": "intake-brief", "schema_version": "intake-brief.v1",
+                "status": "approved", "intake_mode": "micro", "approver": "auto (micro policy)",
+                "request_summary": "Fix one documentation typo.", "recommended_next_skill": "pc-documentation",
+                "routing_rationale": "One reversible line, no behavior or contract change.",
+                "quality_target_context": {"runtime_context": "local_dev_harness", "exposure_profile": "no_network_listener"},
+                "micro_eligibility": {key: True for key in (
+                    "single_revert", "zero_questions", "no_external_effect", "no_security_impact", "no_irreversible_action")},
+            }
+            # Storing a micro record is bookkeeping; it supplies no native permission override.
+            bootstrap = self.run_adapter(root, file_path=brief, tool_input={"content": json.dumps(candidate)})
+            self.assertEqual(0, bootstrap.returncode, bootstrap.stderr)
+            self.assertEqual("", bootstrap.stdout)
+            brief.write_text(json.dumps(candidate))
+            for tool in ("Write", "Edit"):
+                for target in (root / "README.md", root / "src" / "app.py"):
+                    with self.subTest(tool=tool, target=target):
+                        result = self.run_adapter(root, file_path=target, tool_name=tool)
+                        self.assertEqual(0, result.returncode, result.stderr)
+                        self.assertEqual("ask", json.loads(result.stdout)["hookSpecificOutput"]["permissionDecision"])
+            for patch in (
+                {"status": "draft"}, {"approver": "reviewer"}, {"micro_eligibility": {}},
+                {"recommended_next_skill": "pc-does-not-exist"},
+                {"quality_target_context": {"runtime_context": "public_service", "exposure_profile": "public_internet"}},
+            ):
+                with self.subTest(patch=patch):
+                    invalid = json.dumps({**candidate, **patch})
+                    self.assertEqual(2, self.run_adapter(root, file_path=brief, tool_input={"content": invalid}).returncode)
+                    brief.write_text(invalid)
+                    self.assertEqual(2, self.run_adapter(root).returncode)
+            brief.write_text(json.dumps(candidate))
+            alias = root / "alias.json"
+            alias.symlink_to(brief)
+            self.assertEqual(2, self.run_adapter(root, file_path=alias).returncode)
+            hardlink = root / "hardlink.json"
+            os.link(brief, hardlink)
+            self.assertEqual(2, self.run_adapter(root, file_path=hardlink).returncode)
+            # A canonical-path write also must not mutate an aliased inode.
+            self.assertEqual(2, self.run_adapter(root, file_path=brief, tool_input={"content": json.dumps(candidate)}).returncode)
+            hardlink.unlink()
+            alias.unlink()
+            # The real validator runs, then a concurrent actor aliases the target.
+            target = root / "README.md"
+            target.write_text("local documentation")
+            (root / "scripts" / "validate_prodcraft.py").write_text(
+                "import runpy\nfrom pathlib import Path\ntry:\n    runpy.run_path("
+                + repr(str(REPO_ROOT / "scripts" / "validate_prodcraft.py")) + ", run_name='__main__')\n"
+                + "finally:\n    target = Path(" + repr(str(target)) + ")\n    target.unlink()\n    target.symlink_to(" + repr(str(brief)) + ")\n"
+            )
+            raced = self.run_adapter(root, file_path=target)
+            self.assertEqual(2, raced.returncode, raced.stdout)
 
     def test_validator_failure_and_symlinked_brief_map_to_blocking_exit_two(self):
         with tempfile.TemporaryDirectory() as tmpdir:

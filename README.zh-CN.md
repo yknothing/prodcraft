@@ -24,10 +24,10 @@ Prodcraft 是一个面向生产级软件开发的生命周期技能系统。它�
 
 ## 当前状态
 
-截至 2026-09-09，当前源码树中有：
+截至 2026-10-02，当前源码树中有：
 
 - 46 个 lifecycle skill packages
-- `manifest.yml` 中的成熟度为：0 个 `production`、13 个 `tested`、33 个 `review`、0 个 `draft`
+- `manifest.yml` 中的成熟度为：0 个 `production`、12 个 `tested`、34 个 `review`、0 个 `draft`
 - 6 个 workflow 文件，其中 3 个主流程、3 个 overlay
 - 7 个 advisory personas
 - 专用 [pc-debug-expert Skill](skills/04-implementation/pc-debug-expert/SKILL.md)，负责因果诊断与修复
@@ -73,7 +73,7 @@ Prodcraft 的入口是 `pc-intake`。
 
 目前完成的是 Skill 指令与组合规则的设计改进，并同步了源码和 `.curated/`。按需读取、产物复用等仍由 agent 执行，不是新增了自动加载或调度引擎；9 月 9 日修订将入口静态文本从 37,978 降到 35,721 字符，但尚未测得运行时上下文节省或工程结果改善。结构校验、原生解析通过，也不等于行为评测或全局安装已经完成。
 
-当前 Claude Edit/Write adapter 不接受 `micro`；在该适配器下需要已批准的 `fast-track` 路径，不能换工具绕过。9 月 9 日已修复技能包引用绑定、FIFO 阻塞和 draft intake 恢复；完整候选通过校验后，新的 approved 内容交给宿主确认。审查报告可以携带 blocker 交给作者，小任务可复用现有边界，保留失败工作不冒充交付成功。 后续 TOP 5 已进一步改进反馈处理、功能实现、重构、测试策略及估算排期，覆盖另外 6 个 Skill；改变后的行为仍待评测。
+10 月 2 日修订后，Claude Edit/Write adapter 接受精简的 `micro` 记录，但每次实际文件修改仍交给宿主确认；不能换工具绕过。9 月 9 日已修复技能包引用绑定、FIFO 阻塞和 draft intake 恢复；完整候选通过校验后，新的 approved 内容交给宿主确认。审查报告可以携带 blocker 交给作者，小任务可复用现有边界，保留失败工作不冒充交付成功。 后续 TOP 5 已进一步改进反馈处理、功能实现、重构、测试策略及估算排期，覆盖另外 6 个 Skill；改变后的行为仍待评测。
 
 ## 四层架构模型
 

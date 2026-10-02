@@ -48,7 +48,7 @@ Produce only declared outputs at their documented quality boundary.
 
 ## Quality Gate
 
-- [ ] Intake brief produced and approved (blocking confirmation, or notify-and-proceed for `micro`), covering work type, entry phase, any explicit workflow metadata needed for the route, and key risks.
+- [ ] Intake decision approved under the selected mode, with enough context for the next step; use the compact contract for `micro`.
 - [ ] Next skill to invoke is explicitly named in the brief (not a generic phase label).
 - [ ] Fast-track rationale documented if intake was shortened.
 
@@ -80,11 +80,11 @@ Use `micro` only when **all** of these hold:
 - no new dependency, contract, schema, or public behavior change
 - the route is unambiguous without asking any question
 
-Micro mode emits the brief as one compact block (all schema-required fields, one line each) **in the same message as the work**, then proceeds immediately: notify-and-proceed instead of a blocking approval round. Record `approver` as `auto (micro policy)` and record every `micro_eligibility` field (`single_revert`, `zero_questions`, `no_external_effect`, `no_security_impact`, and `no_irreversible_action`) as `true`. If any field cannot be asserted, the brief is not micro-eligible. Any user objection at any point converts the route into a normal `fast-track` or `full` re-route.
+State the concrete change, why it is low risk, and the check in one or two sentences, then proceed in the same turn. Do not display the machine form unless requested. When the runtime or a downstream consumer needs a stored brief, use the 10-field compact form in the [I/O contract](references/io-contract.md). Set `approver` to `auto (micro policy)` and all five `micro_eligibility` assertions to `true`. An uncertain assertion or user objection requires `fast-track` or `full` reassessment.
 
 Never use micro for anything irreversible or externally visible (deploy, publish, release, force-push, data deletion), for security-adjacent changes, or when any eligibility point is in doubt -- doubt means `fast-track`.
 
-The repository's current Claude Edit/Write adapter rejects `micro`. When that adapter is active, use an approved `fast-track` brief and its supported path. Do not switch tools to bypass enforcement.
+The Claude Edit/Write adapter validates compact micro records as bookkeeping, without granting write authority. Each actual work write still requests native host confirmation. Notify-and-proceed removes only the extra intake approval round; it never overrides host permission. Do not switch tools to bypass enforcement.
 
 ## Process
 
@@ -129,7 +129,7 @@ Record `workflow_overlays` only when one or more overlays are active. Omit the f
 
 Every intake brief must include `quality_target_context`. Infer it from the repository and request when possible, and ask at most one clarifying question only when the answer would change route, risk, or review severity.
 
-Record `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs` using the [I/O contract](references/io-contract.md).
+For micro, record `runtime_context` and `exposure_profile`; the request and rationale carry the small change's target and evidence. Other modes also require `production_target`, `non_targets`, and `evidence_refs` from the [I/O contract](references/io-contract.md).
 
 This context must calibrate quality and security handoff. An agent-internal skill or local tool does not inherit public service requirements from HTTP-shaped code. Use actual exposure and evidence, preserve service controls where they apply, and record `unknown` instead of inventing a boundary.
 
@@ -174,9 +174,7 @@ If routing is clear but the problem or solution direction is still too fuzzy for
 
 ## Observability Requirements
 
-Produce an `intake-brief.v1` record with `artifact`, `schema_version`, `status`, `approver`, `request_summary`, `source_language`, `artifact_record_language`, `user_presentation_locale`, `work_type`, `entry_phase`, `intake_mode`, `quality_target_context`, `scope_assessment`, `recommended_next_skill`, `routing_rationale`, `key_risks`, `questions_asked`, and `routing_changed_by_answers`.
-
-Use BCP-47 locales for language fields (`source_language` also permits `mixed`) and the repository's canonical artifact language. Add workflow metadata and `micro_eligibility` under the conditions above. Keep prior approval and artifact pointers in the rationale when resuming. Record meaningful alternatives and unresolved route questions without manufacturing either.
+Use the [I/O contract](references/io-contract.md) for the selected mode; the schema defines required machine fields. Write record prose in the requested language. Keep prior approval and artifact pointers in the rationale when resuming. Record meaningful alternatives or unresolved questions only when they affect the route.
 
 ## Distribution
 

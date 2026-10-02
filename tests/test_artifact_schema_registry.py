@@ -142,31 +142,13 @@ class ArtifactSchemaRegistryTests(unittest.TestCase):
         template_text = (REPO_ROOT / entry["template_path"]).read_text(encoding="utf-8")
 
         self.assertEqual(
-            {
-                "artifact",
-                "schema_version",
-                "status",
-                "request_summary",
-                "source_language",
-                "artifact_record_language",
-                "user_presentation_locale",
-                "intake_mode",
-                "work_type",
-                "entry_phase",
-                "quality_target_context",
-                "scope_assessment",
-                "recommended_next_skill",
-                "routing_rationale",
-                "key_risks",
-                "questions_asked",
-                "routing_changed_by_answers",
-                "approver",
-            },
+            {"artifact", "schema_version", "status", "request_summary", "intake_mode",
+             "quality_target_context", "recommended_next_skill", "routing_rationale", "approver"},
             set(schema["required"]),
         )
         self.assertFalse(schema["additionalProperties"])
         self.assertIn("oneOf", schema["properties"]["source_language"])
-        self.assertEqual("en", schema["properties"]["artifact_record_language"]["const"])
+        self.assertEqual("^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$", schema["properties"]["artifact_record_language"]["pattern"])
         self.assertIn("pattern", schema["properties"]["user_presentation_locale"])
         self.assertIn("enum", schema["properties"]["work_type"])
         self.assertIn("enum", schema["properties"]["entry_phase"])
@@ -524,7 +506,7 @@ class ArtifactSchemaRegistryTests(unittest.TestCase):
                 self.assertIn("artifact_record_language", schema["required"])
                 self.assertIn("user_presentation_locale", schema["required"])
                 self.assertIn({"const": "mixed"}, schema["properties"]["source_language"]["oneOf"])
-                self.assertEqual("en", schema["properties"]["artifact_record_language"]["const"])
+                self.assertEqual("^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$", schema["properties"]["artifact_record_language"]["pattern"])
                 self.assertEqual(
                     "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$",
                     schema["properties"]["user_presentation_locale"]["pattern"],

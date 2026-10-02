@@ -4,12 +4,12 @@
 rules:
   - id: TST_001
     name: "Test Before Code"
-    description: "Write a failing test that captures the requirement before writing implementation"
+    description: "For executable behavior, write a meaningful failing test before implementation; apply the documented pc-tdd exceptions at their actual boundary"
     severity: H
     timing: pre
     phases: ["04-implementation"]
-    check: "Does a failing test exist for the requirement being implemented?"
-    action: "Write the test first (RED), then implement (GREEN), then refactor"
+    check: "Does the changed behavior have a failing test, or a stated pc-tdd exception with an appropriate validation method?"
+    action: "Use RED/GREEN/refactor for executable behavior. Validate pure layout visually, configuration at its affected boundary, and documentation/skill prose through contracts, references, and loading. Do not manufacture a failing code test for non-executable changes."
 
   - id: TST_002
     name: "Test Pyramid Balance"
@@ -58,12 +58,12 @@ rules:
 
   - id: TST_007
     name: "Regression Tests for Bugs"
-    description: "Every bug fix must include a test that would have caught the bug"
+    description: "Every executable-behavior bug fix needs a regression test; other fixes need a check that exposes the actual defect"
     severity: H
     timing: pre
     phases: ["04-implementation"]
-    check: "Does the bug fix PR include a regression test?"
-    action: "Write a test that reproduces the bug first, then fix the code to make it pass"
+    check: "Does the fix include regression evidence at the affected behavior, visual, configuration, or documentation boundary?"
+    action: "Reproduce the defect, then verify the correction with the applicable test or documented pc-tdd exception; do not substitute text-matching tests for behavioral proof."
 
   - id: TST_008
     name: "Test Data Management"

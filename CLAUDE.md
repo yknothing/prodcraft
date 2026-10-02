@@ -35,7 +35,7 @@ For gray-rollout or production cutovers that need Prodcraft to become the author
 - Schema files: `skills/_schema.md`, `workflows/_schema.md`, `personas/_schema.md`
 - QA evidence: `eval/{phase}/{skill-name}/` mirrors the `skills/` directory tree; each directory holds eval sets, fixtures, benchmark results, and findings for one skill
 - All file names use kebab-case
-- Canonical repository content is in English. Localized companion reader guides are allowed only when explicitly requested, clearly labeled non-authoritative, and linked back to the English canonical artifacts they summarize. They must not define or modify repository rules, schemas, validators, workflow contracts, distribution registries, or architecture policy.
+- Canonical instructions, code, schemas, and workflow definitions are in English. Task records and user-facing reports or plans (including `docs/reviews/` and `docs/plans/`) use the requested language. Localized companion reader guides must be clearly labeled non-authoritative and linked to the canonical instructions they summarize; they do not redefine repository policy.
 
 ## Working with This Project
 
@@ -53,7 +53,7 @@ When integrating ideas from external skill systems:
 
 When producing user-facing skill outputs:
 - Match user-facing responses to the current substantive request's language: English requests receive English; Chinese requests receive Chinese. An explicit language request takes precedence. Ignore code, paths, API names, and quoted source text when choosing the language. For mixed prose use its dominant language; retain the established presentation locale when ambiguous.
-- Apply that language to explanations, headings, questions, human-facing tags, status labels, and completion feedback. Preserve canonical machine fields/enums, skill IDs, code, commands, paths, API names, and original diagnostics. Keep canonical repository artifact records in English and localize their user-facing summaries.
+- Apply that language to explanations, headings, questions, human-facing tags, status labels, and completion feedback. Preserve canonical machine fields/enums, skill IDs, code, commands, paths, API names, and original diagnostics. Write human-readable task record content in the requested language and record its locale where supported. Keep existing records in their original language unless translation is requested; a follow-up language switch changes the new presentation, not historical evidence. Lead with descriptive titles; show stable IDs only when needed to follow a reference.
 - Use plain language, short sentences, and direct explanations rather than abstract or inflated wording
 - Keep checking current system shape and collaboration quality when they materially affect routing, scope, risk, or handoff
 

@@ -31,7 +31,7 @@ Bootstrap and repair validate the proposed content through the same repository
 validator before returning. An existing draft or malformed JSON may be replaced
 with a valid draft. Drafts do not authorize ordinary work. Use complete `Write`
 replacement for this control file; `Edit` cannot bypass candidate validation.
-A new or changed approved candidate returns
+A new or changed non-micro approved candidate returns
 `hookSpecificOutput.permissionDecision: "ask"` to the host. An identical approved
 record needs no new approval. The adapter never emits `allow`; ordinary host
 permissions still apply. The host confirmation covers the displayed intake and
@@ -51,10 +51,11 @@ symlink aliases, symlinked parents, special files, and validation-time replaceme
 remain blocked. The hook is an Edit/Write preflight, not a filesystem security
 boundary against unrelated tools or processes.
 
-`micro` briefs do not grant blocking adapter authority. The schema records the
-eligibility assertions, but micro approval is still notify-and-proceed rather
-than an independent blocking confirmation. Use `fast-track`, `full`, or
-`resume` for this adapter.
+Updated October 2: valid compact `micro` records are accepted as bookkeeping,
+with no permission override when storing the record. Each subsequent work
+`Edit`/`Write` returns `permissionDecision: "ask"`, so micro never grants
+write authority. Non-micro approval behavior remains unchanged. The record
+must pass the same schema, path, and snapshot checks before either decision.
 
 ## Failure Semantics
 

@@ -9,16 +9,16 @@ import yaml
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
-class AcceptanceCriteriaTestedStatusTests(unittest.TestCase):
+class AcceptanceCriteriaStatusTests(unittest.TestCase):
     def setUp(self):
         self.manifest = yaml.safe_load((REPO_ROOT / "manifest.yml").read_text(encoding="utf-8"))
         self.entries = {entry["name"]: entry for entry in self.manifest["skills"]}
 
-    def test_manifest_registers_acceptance_criteria_as_tested_routed(self):
+    def test_revised_acceptance_contract_keeps_tested_evidence_as_history(self):
         entry = self.entries["pc-acceptance-criteria"]
 
         self.assertEqual("01-specification", entry["phase"])
-        self.assertEqual("tested", entry["status"])
+        self.assertEqual("review", entry["status"])
         self.assertEqual("standard", entry["qa_tier"])
         self.assertEqual("routed", entry["evaluation_mode"])
 
@@ -29,8 +29,18 @@ class AcceptanceCriteriaTestedStatusTests(unittest.TestCase):
         self.assertIn("benchmark_results_path", qa)
         self.assertIn("findings_path", qa)
         self.assertIn("integration_test_path", qa)
+        self.assertIn("revalidation_plan_path", qa)
 
-    def test_tested_artifacts_exist(self):
+        bindings = yaml.safe_load(
+            (REPO_ROOT / "eval/meta/skill-evidence-bindings.yml").read_text(encoding="utf-8")
+        )
+        current = next(record for record in bindings["bindings"] if record["skill"] == entry["name"])
+        previous = current["previous_revision"]
+        self.assertEqual("tested", previous["status"])
+        self.assertNotEqual(previous["binding"]["evidence_verified_against"], entry["evidence_verified_against"])
+        self.assertIn(qa["historical_findings_path"], previous["binding"]["evidence_paths"])
+
+    def test_historical_tested_artifacts_exist(self):
         targets = [
             REPO_ROOT / "eval" / "01-specification" / "pc-acceptance-criteria" / "findings.md",
             REPO_ROOT
@@ -72,7 +82,7 @@ class AcceptanceCriteriaTestedStatusTests(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertTrue(path.exists(), path)
 
-    def test_findings_and_artifact_flow_record_tested_promotion(self):
+    def test_historical_promotion_and_current_artifact_flow_are_preserved(self):
         findings = (
             REPO_ROOT / "eval" / "01-specification" / "pc-acceptance-criteria" / "findings.md"
         ).read_text(encoding="utf-8")

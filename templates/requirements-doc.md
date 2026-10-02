@@ -1,5 +1,6 @@
 # Requirements Document
 
+Translate headings and human-readable values into the requested language. Lead with the work's descriptive title; preserve machine fields, enums, and existing references.
 Use this template when `pc-requirements-engineering` converts approved upstream direction into a canonical requirements record.
 
 ## Required Artifact
@@ -8,7 +9,7 @@ Use this template when `pc-requirements-engineering` converts approved upstream 
 - schema_version: `requirements-doc.v1`
 - status:
 - source_language: `BCP-47 locale such as en or zh-Hans, or mixed`
-- artifact_record_language: `en`
+- artifact_record_language: `BCP-47 locale of record prose; normally user_presentation_locale`
 - user_presentation_locale: `BCP-47 locale`
 
 ## Source Context

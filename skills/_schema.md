@@ -39,6 +39,8 @@ A skill should resolve a specific decision or produce a usable outcome. Its proc
 - **Produce**: identify the output's consumer and acceptance condition. Use a section of an existing artifact where its contract permits; do not multiply files to make progress appear structured.
 - **Continue or stop**: continue within existing authority; stop only the dependent work when a missing fact, failed gate, or scope change requires resolution. State what would permit resumption.
 
+Keep the handoff in the existing task record: accepted result location/revision, constraints, unresolved facts, and consumer acceptance condition. Verify relevance and freshness before reuse. Return a specific defect to its producer, and invalidate only conclusions dependent on a changed input; preserve independent accepted work. Intake owns route and authority, workflows own sequencing and gates, and specialist skills own their decisions and evidence.
+
 Keep the main body sufficient to choose the next action. Load required I/O rules before acting, step-specific methods when needed, and gotchas on their trigger. Moving a rule to a reference does not lower its authority. Avoid copying the same policy into several skills; link its owner and keep only the local application.
 
 Use examples to teach meaningful decisions: an existing approved route, an already-satisfied input, an unmet acceptance condition, or a real escalation. Do not teach the agent to emit fields without consuming their meaning.

@@ -67,6 +67,6 @@
 
 ## 10. Open Questions
 
-<!-- Must be empty before implementation begins. -->
+<!-- Name each question's owner, decision stage, and dependent work. Close blockers for the accepted implementation slice; retain unrelated later-stage questions unless the governing workflow requires closure now. -->
 
 - [ ]

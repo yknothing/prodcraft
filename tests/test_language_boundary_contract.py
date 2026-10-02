@@ -52,12 +52,18 @@ class LanguageBoundaryContractTests(unittest.TestCase):
             {**requirements_doc, "source_language": "de", "user_presentation_locale": "de-DE"},
             self.load_schema("requirements-doc"),
         )
+        for name, payload in (("problem-frame", problem_frame), ("requirements-doc", requirements_doc)):
+            for locale in ("en", "zh", "zh-Hans", "fr-FR"):
+                with self.subTest(artifact=name, record_locale=locale):
+                    jsonschema.validate(
+                        {**payload, "artifact_record_language": locale}, self.load_schema(name)
+                    )
 
         invalid_payloads = (
             ("problem-frame", {**problem_frame, "source_language": "not_a_locale"}),
-            ("problem-frame", {**problem_frame, "artifact_record_language": "zh"}),
+            ("problem-frame", {**problem_frame, "artifact_record_language": "not_a_locale"}),
             ("requirements-doc", {**requirements_doc, "user_presentation_locale": "not_a_locale"}),
-            ("requirements-doc", {**requirements_doc, "artifact_record_language": "zh"}),
+            ("requirements-doc", {**requirements_doc, "artifact_record_language": "mixed"}),
         )
         for artifact_name, payload in invalid_payloads:
             with self.subTest(artifact=artifact_name, payload=payload):

@@ -46,7 +46,7 @@ Ask only about success criteria, scope, non-goals, or dependencies that change t
 
 ### Step 3: Record the Problem Frame
 
-State the problem, affected users/operators, constraints, non-goals, assumptions, and open questions. Carry `source_language`, `artifact_record_language`, and `user_presentation_locale` from intake. Canonical records remain English; use plain language and the user's locale for presentation.
+Use plain language to state the problem, affected users/operators, constraints, non-goals, assumptions, and open questions. Preserve intake source context and use its current `user_presentation_locale` for headings and new record prose. An explicit separate record-language request takes precedence for record prose. Set `artifact_record_language` to its actual language; keep stable references and historical evidence unchanged.
 
 Preserve `quality_target_context`: an internal skill or local harness does not become a public service merely because an interface resembles HTTP. Note ownership, collaboration quality, or system shape only when they affect this decision.
 

@@ -10,11 +10,11 @@ Verify that the implementation meets the specification, acceptance criteria, and
 - Unit and integration tests pass in CI.
 - Code is ready for review.
 - Reviewed task, contract, and architecture context are available for the reviewer.
-- The intake brief includes `quality_target_context` with `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs`.
+- The intake brief includes `quality_target_context`: `runtime_context`, `exposure_profile`, `production_target`, `non_targets`, and `evidence_refs`, under the [gateway quality-context rule](../_gateway.md). Eligible micro work may carry the last three in its request summary and rationale.
 
 ## Entry Criteria
 
-- All planned features are implemented and merged to the integration branch.
+- The accepted implementation slice is available as a reviewable branch or diff. Review happens before integration; merging still requires the agreed approvals and checks.
 - Automated test suite passes with no known failures.
 - Task/contract context is documented and available for validation.
 - Test environments are provisioned and configured.
