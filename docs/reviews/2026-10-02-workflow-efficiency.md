@@ -6,6 +6,8 @@
 
 开始优化前，既有源码已与远端核对，遗留研究和审计记录通过 [PR #7](https://github.com/yknothing/prodcraft/pull/7) 入库。本地与远端 `main` 同为 `f32950759a6c86bd4b1b63590d7cc230cec98cb1`，工作区干净。基线通过 508 项测试及 GitHub 检查。
 
+优化实现已提交为 `80252f9a8ead86d811b11f30abc2c9502d637ee9`，推送至 [草稿 PR #8](https://github.com/yknothing/prodcraft/pull/8)。该实现提交的 [GitHub validate-structure 检查](https://github.com/yknothing/prodcraft/actions/runs/37016100263/job/110867222257) 已通过。优化尚未合并 main，等待模型验收的授权范围明确；工作区已完成提交并与优化远端分支同步。
+
 本轮沿用现有入口、技能、交接记录和权限边界；未增加技能、调度器、依赖或平行状态系统。修改后的技能维持 `review`，不以本轮局部验收提升成熟度。
 
 ## 实际改动
