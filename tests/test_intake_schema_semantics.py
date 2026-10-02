@@ -99,8 +99,8 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
             self.schema["properties"]["source_language"]["oneOf"],
         )
         self.assertEqual(
-            "en",
-            self.schema["properties"]["artifact_record_language"]["const"],
+            "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$",
+            self.schema["properties"]["artifact_record_language"]["pattern"],
         )
         self.assertEqual(
             "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$",
@@ -135,9 +135,6 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
             {
                 "runtime_context",
                 "exposure_profile",
-                "production_target",
-                "non_targets",
-                "evidence_refs",
             },
             set(quality_target["required"]),
         )
@@ -232,6 +229,37 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
         }
         jsonschema.validate(valid_micro_payload, self.schema)
 
+        compact_fields = {
+            "artifact", "schema_version", "status", "intake_mode", "approver",
+            "request_summary", "recommended_next_skill", "routing_rationale",
+            "quality_target_context", "micro_eligibility",
+        }
+        compact = {key: value for key, value in valid_micro_payload.items() if key in compact_fields}
+        compact["quality_target_context"] = {
+            "runtime_context": "agent_internal_skill", "exposure_profile": "no_network_listener",
+        }
+        jsonschema.validate(compact, self.schema)
+        for field in compact_fields:
+            with self.subTest(missing=field), self.assertRaises(jsonschema.ValidationError):
+                jsonschema.validate({key: value for key, value in compact.items() if key != field}, self.schema)
+        for mode in ("fast-track", "full", "resume"):
+            with self.subTest(mode=mode), self.assertRaises(jsonschema.ValidationError):
+                payload = {**compact, "intake_mode": mode, "approver": "reviewer"}
+                payload.pop("micro_eligibility")
+                jsonschema.validate(payload, self.schema)
+        for mode in ("full", "resume", "fast-track"):
+            for field in ("source_language", "scope_assessment", "key_risks", "questions_asked"):
+                with self.subTest(mode=mode, missing=field), self.assertRaises(jsonschema.ValidationError):
+                    payload = {**valid_full_payload, "intake_mode": mode}
+                    payload.pop(field)
+                    jsonschema.validate(payload, self.schema)
+            for field in ("production_target", "non_targets", "evidence_refs"):
+                with self.subTest(mode=mode, missing=field), self.assertRaises(jsonschema.ValidationError):
+                    payload = {**valid_full_payload, "intake_mode": mode,
+                               "quality_target_context": dict(valid_full_payload["quality_target_context"])}
+                    payload["quality_target_context"].pop(field)
+                    jsonschema.validate(payload, self.schema)
+
         with self.assertRaises(jsonschema.ValidationError, msg="micro eligibility is required"):
             payload = dict(valid_micro_payload)
             payload.pop("micro_eligibility")
@@ -305,8 +333,9 @@ class IntakeSchemaSemanticTests(unittest.TestCase):
             with self.assertRaises(jsonschema.ValidationError, msg=field_name):
                 jsonschema.validate(payload, self.schema)
 
+        jsonschema.validate({**valid_full_payload, "artifact_record_language": "zh-Hans"}, self.schema)
         with self.assertRaises(jsonschema.ValidationError, msg="artifact_record_language"):
-            jsonschema.validate({**valid_full_payload, "artifact_record_language": "zh"}, self.schema)
+            jsonschema.validate({**valid_full_payload, "artifact_record_language": "not_a_locale"}, self.schema)
 
         with self.assertRaises(jsonschema.ValidationError, msg="unexpected property"):
             jsonschema.validate({**valid_full_payload, "unexpected": "value"}, self.schema)

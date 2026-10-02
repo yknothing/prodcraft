@@ -12,3 +12,5 @@
 - **source-code** -- The accepted slice's implementation. Hand its diff/revision, relevant verification, contract changes, and unsupported or unverified scope to `pc-code-review`. An existing task/PR note can carry the handoff; a new report type is unnecessary.
 
 A local bug fix with an accepted task and existing tests can continue from that evidence. A proposed new public API still needs its approved contract before dependent implementation. Required workflow obligations remain binding in both cases.
+
+Before consuming accepted work, check its revision, scope, and acceptance condition against the current input. Carry its pointer and constraints in the existing task record. If an upstream fact changes, return that fact to its owner and recheck only dependent implementation and evidence; preserve unaffected decisions and approval. Do not silently substitute a guessed contract or restart the whole workflow.

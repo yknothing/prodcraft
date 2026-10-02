@@ -2,7 +2,7 @@
 
 ## Inputs
 
-- **intake-brief** -- Required approved scope and `quality_target_context`, including runtime, exposure, production target, non-targets, and evidence references.
+- **intake-brief** -- Required approved scope and `quality_target_context`, including runtime and exposure. For eligible compact micro work, consume target, exclusions, and check basis from the request summary and rationale; other modes retain production target, non-targets, and evidence references. Reassess the route if the facts cannot support risk assessment.
 - **task-list** -- Required change/acceptance context from an existing reviewed task or equivalent accepted section. A separate task-list file is unnecessary unless the workflow requires it.
 - **source-code** -- Required for claims about an existing implementation. Before implementation, use accepted behavior/contracts and mark implementation-dependent checks as planned.
 - **architecture-doc**, **api-contract** -- Conditional on affected architecture or interface boundaries. Current accepted references can satisfy them; no public API artifact is needed for a target with no such surface.

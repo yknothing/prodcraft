@@ -726,9 +726,7 @@ def validate_language_boundary_schema_contract(schema: dict, schema_path: Path, 
     schema_source_language_field(properties.get("source_language"), "source_language", schema_path, errors)
     schema_locale_field(properties.get("user_presentation_locale"), "user_presentation_locale", schema_path, errors)
 
-    artifact_record_language = properties.get("artifact_record_language", {}) if isinstance(properties, dict) else {}
-    if not isinstance(artifact_record_language, dict) or artifact_record_language.get("const") != "en":
-        errors.append(f"{schema_path}: `artifact_record_language` must be a const `en` under current repo policy")
+    schema_locale_field(properties.get("artifact_record_language"), "artifact_record_language", schema_path, errors)
 
 
 def extract_phase_jump_pairs_from_text(

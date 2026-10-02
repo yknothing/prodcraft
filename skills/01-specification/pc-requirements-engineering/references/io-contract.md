@@ -17,7 +17,7 @@ Minimum expectation:
 
 Clarify only missing facts that prevent requirements from being stated without guessing. Use upstream framing when the direction is unresolved, not merely because a named artifact is absent. Missing discovery evidence limits claims about user demand; it does not erase an explicitly requested behavior change.
 
-When upstream artifacts declare `source_language`, `artifact_record_language`, and `user_presentation_locale`, copy those fields forward instead of re-deciding them implicitly.
+Preserve upstream `source_language` and use the current `user_presentation_locale` for new requirements prose and headings. Set `artifact_record_language` to the actual record language; an explicit record-language request takes precedence. A follow-up language switch changes new presentation without translating or renumbering accepted source evidence.
 
 ## Outputs
 

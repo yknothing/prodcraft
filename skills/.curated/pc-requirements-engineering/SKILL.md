@@ -85,7 +85,7 @@ Use MoSCoW (Must/Should/Could/Won't) or RICE (Reach x Impact x Confidence / Effo
 
 ### Step 5: Document with Traceability
 
-Each requirement should have: ID, description, priority, source (which user need), acceptance criteria reference, and status.
+Lead with a descriptive requirement title in the requested language, then its behavior, priority, source, acceptance reference, and status. Retain an existing ID or add one only when downstream traceability requires it; show the title alongside the ID. Do not renumber accepted requirements during handoff.
 
 If a metric, SLA, or retention bound is not directly supported by the source material, include it only as:
 - an explicitly labeled assumption, or

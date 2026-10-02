@@ -2,8 +2,6 @@
 
 > The routing logic that connects user intent to the right skill at the right time.
 
-This document defines how Prodcraft skills are discovered, selected, and composed. It is the equivalent of `using-superpowers` for the Prodcraft lifecycle system.
-
 ## Core Rule
 
 **Match the work to the next unmet obligation. Reuse an approved route while it still applies.**
@@ -12,7 +10,9 @@ Start new work or a material change to outcome, scope, risk, or authority with `
 
 Every workflow requires an approved `intake-brief`. For `micro`, approval means notify-and-proceed unless the user objects. When the route is clear but the problem or direction is not, invoke `pc-problem-framing` next.
 
-Match the current substantive request's language in all user-facing prose, headings, questions, human-facing tags, status labels, and completion feedback. English requests receive English; Chinese requests receive Chinese. An explicit language request takes precedence. Ignore code, paths, API names, and quoted source text when selecting the language. For mixed prose use its dominant language; retain the established presentation locale when ambiguous. Re-evaluate on a substantive follow-up, including a language switch, without restarting intake. Keep canonical machine fields/enums, skill IDs, code, commands, paths, and original diagnostics unchanged; localize their display labels and summaries. Canonical artifact records remain in English.
+Match the current substantive request's language for prose, headings, questions, labels, and new record content. Explicit language requests take precedence. Ignore code, paths, APIs, and quoted text when detecting language; use dominant prose or retain the established locale when ambiguous. Update presentation on substantive follow-ups without restarting intake. Record the actual content locale where supported; preserve machine fields/enums, skill IDs, code, diagnostics, and historical evidence.
+
+Lead with a meaningful outcome title. Show an ID beside its meaning only for a needed reference; reuse existing stable IDs rather than numbering every paragraph or minor task.
 
 ## Skill Selection Priority
 
@@ -82,7 +82,7 @@ Preserve workflow gates and artifact obligations. Reuse requires the same qualit
 
 Read the selected skill and required I/O contract first, then methods for the active step and gotchas on their trigger. Keep unchanged material available; defer unrelated bodies, examples, background, and workflows. References retain their authority.
 
-Handoff: outcome, approved scope and authority, artifact paths/revisions, gaps, next skill, and acceptance condition. Use relevant sections rather than the session transcript. This convention adds no artifact type or execution authority.
+Handoff uses relevant accepted artifact sections, not the whole transcript; use the composition rules below without adding artifact types or authority.
 
 ### Compose Reviews by Question
 
@@ -97,45 +97,20 @@ Use the dimensions required by the route and observed risks. Several skills may 
 
 ## Workflow Selection
 
-Once intake determines the work type, select the route in three layers:
+Select a primary workflow only when it affects the route: `spec-driven` for formal specifications or contractual delivery; `iterative-waterfall` for explicit phase gates; otherwise `agile-sprint`. Record it as `workflow_primary` for full/resume; fast-track and micro may omit it under intake rules.
 
-```
-Is production on fire?
-  YES -> add hotfix overlay
-  NO  -> continue
-
-Is this a brand new project?
-  YES -> add greenfield overlay
-  NO  -> continue
-
-Is this modernizing a legacy system?
-  YES -> add brownfield overlay
-  NO  -> continue
-
-What's the project methodology?
-  Formal specs required    -> workflow_primary = spec-driven
-  Sprint-based team        -> workflow_primary = agile-sprint
-  Phase-gated enterprise   -> workflow_primary = iterative-waterfall
-  Unknown/flexible         -> workflow_primary = agile-sprint (default)
-```
-
-The `intake-brief` should record:
-
-- `workflow_primary` when the approved route needs explicit primary governance
-- `workflow_overlays` when one or more overlays are active
-
-Examples:
-
-- `workflow_primary=agile-sprint`, `workflow_overlays=[brownfield]`
-- `workflow_primary=agile-sprint`, `workflow_overlays=[brownfield, hotfix]`
-- `workflow_primary=spec-driven`, `workflow_overlays=[greenfield]`
+Add applicable `workflow_overlays`: `hotfix` for active production failure, `greenfield` for a new system, and `brownfield` for coexistence or migration. Multiple overlays may apply; omit the field when none does. An overlay supplements rather than replaces primary governance.
 
 ## Skill Composition Patterns
 
-- **Sequential**: invoke a producer before its consumer, such as `pc-spec-writing -> pc-system-design -> pc-task-breakdown` when those outputs are required.
+- **Sequential**: consume an accepted producer output before invoking its consumer; run the producer only if its required result is missing or invalid.
 - **Parallel**: run independent work only when coordination costs less than waiting; API, data, and security design may share accepted architecture without waiting on each other.
 - **Iterative**: repeat implementation/review for unresolved findings, checking changed behavior and affected boundaries. A recurring blocker without new evidence needs diagnosis or upstream correction, not another approval loop.
 - **Conditional**: add accessibility for user-facing UI, internationalization for multiple languages, and security/compliance work according to actual exposure and policy.
+
+Intake owns route and authority; workflows own sequencing and gates; specialists own decisions and evidence. A specialist does not restart intake or recreate accepted upstream work to fill its template.
+
+In the existing task record, pass accepted result locations/revisions, constraints, gaps, and the next acceptance condition. Check relevance and freshness before reuse. Return the specific missing or contradictory fact to its producer; continue independent work. Invalidate only conclusions and checks dependent on changed inputs. Preserve other decisions and approval; changed scope, risk, or authority still needs intake reassessment.
 
 ## Entry Stack Rules
 
@@ -158,6 +133,8 @@ Before entering any `05-quality` skill, confirm the approved `intake-brief` incl
 - `production_target`
 - `non_targets`
 - `evidence_refs`
+
+For eligible micro work, consume the target, excluded behavior, and check basis from `request_summary` and `routing_rationale` instead of expanding the compact record. Missing facts that prevent risk assessment require reassessing the route. This does not make security-adjacent changes micro-eligible.
 
 Do not assume public HTTP service from implementation details such as Flask routes, HTTP clients, CORS configuration, model provider adapters, or API-shaped filenames. A codebase can use HTTP internally while the reviewed product target is an agent-internal skill, host runtime tool, or local harness.
 
@@ -242,7 +219,7 @@ Not every task needs the full lifecycle. Governance weight scales with the risk 
 
 `micro` eligibility and its notify-and-proceed semantics are owned by `pc-intake`'s Micro Mode section. Gateway summary: reversible single-revert trivia only, zero questions, never for irreversible or externally visible actions; doubt on any point means `fast-track`.
 
-The current repository Claude Edit/Write adapter rejects `micro`. Under that adapter, use an approved `fast-track` brief; do not work around the gate with another tool. Portable guidance alone provides no host enforcement.
+The repository Claude Edit/Write adapter validates compact micro records without granting work-write authority; each actual work write requests native host confirmation. Do not work around the gate with another tool. Portable guidance alone provides no host enforcement.
 
 Fast-track still requires:
 - an approved `intake-brief`

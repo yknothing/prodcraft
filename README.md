@@ -395,8 +395,8 @@ For routine local QA, prefer the installed `gemini` CLI where this repository as
 ## Contributing
 
 1. Start with `pc-intake`, even for small work. Use `micro` for reversible trivia and `fast-track` when the route is clear but the change still warrants blocking approval.
-2. Keep canonical repository artifacts in English.
-3. Put user-facing localized guidance in explicitly named companion docs only when needed.
+2. Keep canonical instructions, code, schemas, and workflow definitions in English.
+3. Write task records and user-facing reports/plans in the requested language. Use descriptive titles; preserve machine fields and stable references. Localized companion reader guides remain non-authoritative.
 4. Follow `skills/_schema.md` and the relevant artifact schemas.
 5. Update tests or validators when a claim becomes a repository contract.
 6. Run `scripts/validate_prodcraft.py` and the focused unit tests for the touched surface.

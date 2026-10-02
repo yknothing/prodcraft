@@ -97,7 +97,7 @@ skills:
 - name: pc-intake
   phase: 00-discovery
   file: skills/00-discovery/pc-intake/SKILL.md
-  evidence_verified_against: contract-sha256:01448a408ae2a44159e831fd514b356451f42d4a96f74302f53248db3d6355b9
+  evidence_verified_against: contract-sha256:495e65ff725ad8ae0ad8765564b948e835a96eba749f5148c946502550f6df27
   gateway: true
   status: review
   qa_tier: critical
@@ -119,7 +119,7 @@ skills:
 - name: pc-problem-framing
   phase: 00-discovery
   file: skills/00-discovery/pc-problem-framing/SKILL.md
-  evidence_verified_against: contract-sha256:daeb269dfde011ccfcdd223266a4c62e3f17bd8affa1b5598f83837fca0ad614
+  evidence_verified_against: contract-sha256:5b4a70d6837ffabcea791eb0798eb20499531ea6d711dd9cd5679d7e3caa63aa
   status: review
   qa_tier: critical
   evaluation_mode: routed
@@ -183,7 +183,7 @@ skills:
 - name: pc-requirements-engineering
   phase: 01-specification
   file: skills/01-specification/pc-requirements-engineering/SKILL.md
-  evidence_verified_against: contract-sha256:4c5b7a9f4f5916638b7b89c088a50fd388eba61be9511bc1205f035453d3c6fd
+  evidence_verified_against: contract-sha256:7338f15229108f77408f83974ff3bf52afc2c74b64628f66e635cc8cec6636dd
   status: review
   qa_tier: critical
   evaluation_mode: routed
@@ -449,7 +449,7 @@ skills:
 - name: pc-feature-development
   phase: 04-implementation
   file: skills/04-implementation/pc-feature-development/SKILL.md
-  evidence_verified_against: contract-sha256:e15919318a84ec4719f81b6cd25039a6dc0e85810738fe451adc93e053afba6a
+  evidence_verified_against: contract-sha256:0d158055bfd171dfa84ede9ae0607466823e89390fd94ca7cd4afcc2ffa6272d
   status: review
   qa_tier: critical
   evaluation_mode: routed
@@ -483,7 +483,7 @@ skills:
 - name: pc-code-review
   phase: 05-quality
   file: skills/05-quality/pc-code-review/SKILL.md
-  evidence_verified_against: contract-sha256:2cedc3cc6248fb851a0373a4c2c239a85fae636ee33a2e497900b0aa81850df6
+  evidence_verified_against: contract-sha256:654e17872c4a8d06137422ab9e1cc00fa46c67423d2293917e5a2cde61ea8c18
   status: review
   qa_tier: critical
   evaluation_mode: routed
@@ -547,7 +547,7 @@ skills:
 - name: pc-testing-strategy
   phase: 05-quality
   file: skills/05-quality/pc-testing-strategy/SKILL.md
-  evidence_verified_against: contract-sha256:0f622394c9f0d423f08b8ee977eed8361fbdce7467e1622f8b4135098a42b4fd
+  evidence_verified_against: contract-sha256:b45f77a6258aabb2e0dc2a2d8cdd4b8aad6d7dbe1ea9a99ce2ba4e3b6848b608
   status: review
   qa_tier: standard
   evaluation_mode: routed

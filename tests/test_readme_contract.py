@@ -11,8 +11,7 @@ README = REPO_ROOT / "README.md"
 CHINESE_README = REPO_ROOT / "README.zh-CN.md"
 CHINESE_DESIGN = REPO_ROOT / "docs" / "architecture" / "2026-09-08-skill-execution-design.zh-CN.md"
 CHINESE_DEBUG_DESIGN = REPO_ROOT / "docs" / "architecture" / "2026-09-13-debug-expert-design.zh-CN.md"
-CHINESE_AUDIT = REPO_ROOT / "docs" / "reviews" / "bs-skill-auditor" / "2026-10-02-health-report.md"
-LOCALIZED_COMPANION_DOCS = {CHINESE_README, CHINESE_DESIGN, CHINESE_DEBUG_DESIGN, CHINESE_AUDIT}
+LOCALIZED_COMPANION_DOCS = {CHINESE_README, CHINESE_DESIGN, CHINESE_DEBUG_DESIGN}
 TEXT_FILE_SUFFIXES = {".json", ".md", ".py", ".yaml", ".yml"}
 SKIPPED_DIRS = {".git", ".pytest_cache", "__pycache__", "build"}
 CANONICAL_SCAN_ROOTS = (
@@ -90,19 +89,22 @@ class ReadmeContractTests(unittest.TestCase):
         self.assertIn("validators", content)
         self.assertIn("distribution registries", content)
 
-    def test_language_policy_allows_only_explicit_localized_companion_docs(self):
+    def test_language_policy_distinguishes_normative_source_from_task_records(self):
         claude = (REPO_ROOT / "CLAUDE.md").read_text(encoding="utf-8")
         english = README.read_text(encoding="utf-8")
         chinese = CHINESE_README.read_text(encoding="utf-8")
 
-        self.assertIn("Canonical repository content is in English", claude)
+        self.assertIn("Canonical instructions, code, schemas, and workflow definitions are in English", claude)
         self.assertIn("Localized companion reader guides", claude)
+        self.assertIn("`docs/reviews/` and `docs/plans/`", claude)
         self.assertIn("non-authoritative", claude)
         self.assertIsNone(CJK_RE.search(english))
         self.assertIsNotNone(CJK_RE.search(chinese))
 
         for path in iter_canonical_text_files():
-            if path in LOCALIZED_COMPANION_DOCS:
+            if path in LOCALIZED_COMPANION_DOCS or any(
+                path.is_relative_to(REPO_ROOT / "docs" / directory) for directory in ("reviews", "plans")
+            ):
                 continue
             with self.subTest(path=path.relative_to(REPO_ROOT)):
                 self.assertIsNone(CJK_RE.search(path.read_text(encoding="utf-8")))

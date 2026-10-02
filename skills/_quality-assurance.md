@@ -209,7 +209,7 @@ Track these metrics for each skill over time:
 
 ## QA Evidence in the Repo
 
-Prodcraft tracks QA state directly in [`manifest.yml`](../../manifest.yml):
+Prodcraft tracks QA state directly in [`manifest.yml`](../manifest.yml):
 
 - Every active skill declares a `status`
 - Every active skill declares a `qa_tier`
