@@ -97,7 +97,7 @@ skills:
 - name: pc-intake
   phase: 00-discovery
   file: skills/00-discovery/pc-intake/SKILL.md
-  evidence_verified_against: contract-sha256:495e65ff725ad8ae0ad8765564b948e835a96eba749f5148c946502550f6df27
+  evidence_verified_against: contract-sha256:a5767d3f859eb0d95e3bb71c77e83bd8e103b61e0cbb9a2c71e5987c3720baee
   gateway: true
   status: review
   qa_tier: critical

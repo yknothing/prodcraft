@@ -13,6 +13,10 @@ import sys
 import tempfile
 from pathlib import Path
 
+if __name__ == "__main__":
+    # Installed runtime files are immutable, including during isolated startup.
+    sys.dont_write_bytecode = True
+
 import yaml
 
 

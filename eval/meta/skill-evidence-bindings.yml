@@ -2,61 +2,72 @@ schema_version: skill-evidence-bindings.v1
 algorithm: skill-package.v3
 bindings:
 - skill: pc-intake
-  evidence_verified_against: contract-sha256:495e65ff725ad8ae0ad8765564b948e835a96eba749f5148c946502550f6df27
-  verified_at: '2026-10-02'
-  verification_scope: workflow-efficiency-candidate-local-contracts-and-independent-review
+  evidence_verified_against: contract-sha256:a5767d3f859eb0d95e3bb71c77e83bd8e103b61e0cbb9a2c71e5987c3720baee
+  verified_at: '2026-10-03'
+  verification_scope: real-consumer-enum-failure-and-local-contract-revalidation
   evidence_paths:
   - docs/reviews/2026-10-02-workflow-efficiency.md
-  package_bound_at: '2026-10-02'
+  package_bound_at: '2026-10-03'
   previous_revision:
-    source_commit: f32950759a6c86bd4b1b63590d7cc230cec98cb1
+    source_commit: a7efde0be15ed7bcd1db76166f5e6dd8d173dce0
     status: review
     binding:
       skill: pc-intake
-      evidence_verified_against: contract-sha256:01448a408ae2a44159e831fd514b356451f42d4a96f74302f53248db3d6355b9
-      verified_at: '2026-09-13'
-      verification_scope: canonical-debug-skill-rename-and-local-contract-revalidation
+      evidence_verified_against: contract-sha256:495e65ff725ad8ae0ad8765564b948e835a96eba749f5148c946502550f6df27
+      verified_at: '2026-10-02'
+      verification_scope: workflow-efficiency-candidate-local-contracts-and-independent-review
       evidence_paths:
-      - docs/architecture/2026-09-13-debug-expert-design.md
-      package_bound_at: '2026-09-13'
+      - docs/reviews/2026-10-02-workflow-efficiency.md
+      package_bound_at: '2026-10-02'
       previous_revision:
+        source_commit: f32950759a6c86bd4b1b63590d7cc230cec98cb1
         status: review
         binding:
           skill: pc-intake
-          evidence_verified_against: contract-sha256:ef07a1f07ac2fb3fe8ec4306673593742b376c1272b6faefe6adfe6921ed6ced
-          verified_at: '2026-09-11'
-          verification_scope: prompt-language-native-samples-and-deterministic-contract-revalidation
+          evidence_verified_against: contract-sha256:01448a408ae2a44159e831fd514b356451f42d4a96f74302f53248db3d6355b9
+          verified_at: '2026-09-13'
+          verification_scope: canonical-debug-skill-rename-and-local-contract-revalidation
           evidence_paths:
-          - docs/reviews/2026-09-11-strict-host-closure.md
+          - docs/architecture/2026-09-13-debug-expert-design.md
+          package_bound_at: '2026-09-13'
           previous_revision:
-            source_commit: 85562ed7a34acdb2cf3426162963507733231c4c
             status: review
             binding:
               skill: pc-intake
-              evidence_verified_against: contract-sha256:3409c6247d7950646732e6906fa205a5dfb6ccb40a9525f06f8c4229ece0f2c8
-              verified_at: '2026-09-08'
-              verification_scope: design-review-behavior-evaluation-pending
+              evidence_verified_against: contract-sha256:ef07a1f07ac2fb3fe8ec4306673593742b376c1272b6faefe6adfe6921ed6ced
+              verified_at: '2026-09-11'
+              verification_scope: prompt-language-native-samples-and-deterministic-contract-revalidation
               evidence_paths:
-              - eval/meta/2026-09-08-skill-design-handoff.md
-              - docs/architecture/2026-09-08-skill-execution-design.md
+              - docs/reviews/2026-09-11-strict-host-closure.md
               previous_revision:
-                source_commit: fd05978dbbbf5a064205a695af47c8a550f1b224
-                status: production
+                source_commit: 85562ed7a34acdb2cf3426162963507733231c4c
+                status: review
                 binding:
                   skill: pc-intake
-                  evidence_verified_against: contract-sha256:fe01dc30dd81c7e9c100d8f34a0f6b01493a34b66dbc931c634af3087b7800a5
-                  verified_at: '2026-07-16'
-                  verification_scope: deterministic-contract-revalidation
+                  evidence_verified_against: contract-sha256:3409c6247d7950646732e6906fa205a5dfb6ccb40a9525f06f8c4229ece0f2c8
+                  verified_at: '2026-09-08'
+                  verification_scope: design-review-behavior-evaluation-pending
                   evidence_paths:
-                  - eval/00-discovery/pc-intake/contract-revalidation-2026-07-16.md
+                  - eval/meta/2026-09-08-skill-design-handoff.md
+                  - docs/architecture/2026-09-08-skill-execution-design.md
+                  previous_revision:
+                    source_commit: fd05978dbbbf5a064205a695af47c8a550f1b224
+                    status: production
+                    binding:
+                      skill: pc-intake
+                      evidence_verified_against: contract-sha256:fe01dc30dd81c7e9c100d8f34a0f6b01493a34b66dbc931c634af3087b7800a5
+                      verified_at: '2026-07-16'
+                      verification_scope: deterministic-contract-revalidation
+                      evidence_paths:
+                      - eval/00-discovery/pc-intake/contract-revalidation-2026-07-16.md
+                  previous_contract_projection:
+                    algorithm: contract-projection.v2
+                    digest: contract-sha256:5037f925c4c32435f3451b142c7ae3507b7ef043d46b3d073f83bd0926d65997
+                  package_bound_at: '2026-09-09'
               previous_contract_projection:
                 algorithm: contract-projection.v2
                 digest: contract-sha256:5037f925c4c32435f3451b142c7ae3507b7ef043d46b3d073f83bd0926d65997
-              package_bound_at: '2026-09-09'
-          previous_contract_projection:
-            algorithm: contract-projection.v2
-            digest: contract-sha256:5037f925c4c32435f3451b142c7ae3507b7ef043d46b3d073f83bd0926d65997
-          package_bound_at: '2026-09-11'
+              package_bound_at: '2026-09-11'
 - skill: pc-problem-framing
   evidence_verified_against: contract-sha256:5b4a70d6837ffabcea791eb0798eb20499531ea6d711dd9cd5679d7e3caa63aa
   verified_at: '2026-10-02'

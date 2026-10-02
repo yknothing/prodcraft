@@ -15,6 +15,10 @@ import signal
 import subprocess
 import sys
 
+if __name__ == "__main__":
+    # Installed runtime files are immutable, including during isolated startup.
+    sys.dont_write_bytecode = True
+
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
