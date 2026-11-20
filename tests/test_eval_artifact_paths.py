@@ -1,3 +1,4 @@
+import re
 import unittest
 from pathlib import Path
 
@@ -10,10 +11,10 @@ LEGACY_PATH_FRAGMENTS = (
     "user-research-workspace/",
     "intake-workspace/",
 )
-ABSOLUTE_REPO_PREFIX = '"/Users/whatsup/workspace/2026/prodcraft/'
+USER_HOME_PATH = re.compile(r"/(?:Users|home)/[A-Za-z0-9._-]+/")
+QUOTED_USER_HOME_PATH = re.compile(r'"/(?:Users|home)/[A-Za-z0-9._-]+/')
 EPHEMERAL_PATH_FRAGMENTS = ('"/var/folders/', '"/tmp/')
 MACHINE_SPECIFIC_TEXT_PATH_FRAGMENTS = (
-    "/Users/whatsup/",
     "/tmp/topbrains-orch/",
     "/var/folders/",
 )
@@ -67,7 +68,7 @@ class EvalArtifactPathTests(unittest.TestCase):
             if is_local_ignored_eval_artifact(path):
                 continue
             text = path.read_text(encoding="utf-8")
-            if ABSOLUTE_REPO_PREFIX in text:
+            if QUOTED_USER_HOME_PATH.search(text):
                 offenders.append(str(path.relative_to(REPO_ROOT)))
         self.assertEqual([], offenders)
 
@@ -92,6 +93,8 @@ class EvalArtifactPathTests(unittest.TestCase):
             for fragment in MACHINE_SPECIFIC_TEXT_PATH_FRAGMENTS:
                 if fragment in text:
                     offenders.append(f"{path.relative_to(REPO_ROOT)} -> {fragment}")
+            if USER_HOME_PATH.search(text):
+                offenders.append(f"{path.relative_to(REPO_ROOT)} -> user home path")
         self.assertEqual([], offenders)
 
     def test_run_metadata_records_runner(self):
