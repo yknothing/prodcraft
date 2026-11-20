@@ -5,8 +5,8 @@ trigger-eval harness.
 
 Source captured on 2026-03-19 from the locally installed skill-creator cache:
 
-- `/Users/whatsup/.claude/plugins/cache/claude-plugins-official/skill-creator/b36fd4b75301/skills/skill-creator/scripts/run_eval.py`
-- `/Users/whatsup/.claude/plugins/cache/claude-plugins-official/skill-creator/b36fd4b75301/skills/skill-creator/scripts/utils.py`
+- `~/.claude/plugins/cache/claude-plugins-official/skill-creator/b36fd4b75301/skills/skill-creator/scripts/run_eval.py`
+- `~/.claude/plugins/cache/claude-plugins-official/skill-creator/b36fd4b75301/skills/skill-creator/scripts/utils.py`
 
 Why vendored here:
 

@@ -155,7 +155,7 @@ class RunExplicitSkillBenchmarkTests(unittest.TestCase):
         module = load_module()
         output = (
             "I drafted the implementation plan and saved it to "
-            "`/Users/whatsup/.gemini/tmp/baseline-16/uuid-123/plans/demo.md`."
+            "`/Users/example/.gemini/tmp/baseline-16/uuid-123/plans/demo.md`."
         )
 
         self.assertEqual(
